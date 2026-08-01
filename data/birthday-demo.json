@@ -2,7 +2,7 @@
   "id": "evt_bday_hsalamanca_2026",
   "slug": "h-birthday-2026",
   "hostName": "H Salamanca",
-  "title": "H Salamanca · Birthday",
+  "title": "H Salamanca \u00b7 Birthday",
   "headline": "A Night to Celebrate",
   "tagline": "An evening of good food, close friends, and a little dancing.",
   "dateISO": "2026-09-12",
@@ -24,7 +24,7 @@
     }
   },
   "heroImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&q=80&auto=format&fit=crop",
-  "customDomain": "hsalamanca.event-invite.app",
+  "customDomain": "h-birthday.ownvite.app",
   "rsvpFields": {
     "plusOnes": {
       "enabled": true,
@@ -38,11 +38,14 @@
     },
     "attendance": {
       "enabled": true,
-      "options": ["Joyfully attending", "Regretfully declining"]
+      "options": [
+        "Joyfully attending",
+        "Regretfully declining"
+      ]
     },
     "deadline": "2026-09-05",
     "prompt": "Kindly respond by September 5 so we can save you a seat."
   },
-  "about": "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.",
+  "about": "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks \u2014 no gifts, just your presence.",
   "published": true
 }

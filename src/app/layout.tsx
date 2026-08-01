@@ -37,8 +37,8 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Gatherly — Host on your own domain",
-    template: "%s · Gatherly",
+    default: "Ownvite — Host on your own domain",
+    template: "%s · Ownvite",
   },
   description:
     "Designer-grade digital invitations with deep customization and custom domains. Start with your birthday — grow into every celebration.",

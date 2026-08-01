@@ -299,7 +299,7 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
 
       <footer className="invite-footer">
         <p>Hosted by {event.hostName}</p>
-        <p className="invite-footer-attr">Gatherly</p>
+        <p className="invite-footer-attr">Ownvite</p>
       </footer>
 
       <style jsx>{`

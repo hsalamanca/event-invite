@@ -31,7 +31,7 @@ for i in $(seq 1 180); do
 done
 
 echo "Deploying as $(npx vercel whoami 2>/dev/null || echo unknown)"
-npx vercel link --yes --project gatherly 2>&1 || true
+npx vercel link --yes --project ownvite 2>&1 || true
 echo "=== PREVIEW ===" | tee /tmp/vercel-deploy-out.log
 npx vercel deploy --yes 2>&1 | tee -a /tmp/vercel-deploy-out.log
 echo "=== PROD ===" | tee -a /tmp/vercel-deploy-out.log

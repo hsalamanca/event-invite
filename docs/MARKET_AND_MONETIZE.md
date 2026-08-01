@@ -1,4 +1,4 @@
-# Gatherly — Go-to-Market & Monetization Strategy
+# Ownvite — Go-to-Market & Monetization Strategy
 
 **One-liner:** Your event, your domain, your design — designer-grade invites without ads, coins, or per-guest math.
 
@@ -8,14 +8,14 @@
 
 Digital invitations sit between three broken models:
 
-| Incumbent | Model | Gap Gatherly fills |
+| Incumbent | Model | Gap Ownvite fills |
 |-----------|--------|-------------------|
 | **Evite** | Free + ads; basic templates | No custom domain; customization capped; brand feels generic |
 | **Paperless Post** | Coin economy; premium per design | Opaque pricing; no true custom domain; mobile-first, not web-native |
 | **Greenvelope** | Per-guest pricing ($1–3+) | Cost scales with list size; domains are subpaths, not yours |
 | **Partiful** | Social/casual; link-in-bio aesthetic | Not built for branded events, weddings, or corporate polish |
 
-**The wedge:** Hosts who treat an invite as part of their personal or professional brand want a **dedicated URL** (`emma-30.gatherly.app` → `thirty.emmahart.com`) and **pixel-level control** (fonts, motion, layout, media) — not a template picker inside someone else's product chrome.
+**The wedge:** Hosts who treat an invite as part of their personal or professional brand want a **dedicated URL** (`emma-30.ownvite.app` → `thirty.emmahart.com`) and **pixel-level control** (fonts, motion, layout, media) — not a template picker inside someone else's product chrome.
 
 Custom domains signal seriousness (weddings, milestone birthdays, launch parties) and shareability (memorable link, no `evite.com/b/abc123`). Designer-grade customization turns the invite into a micro-site guests actually want to open.
 
@@ -44,7 +44,7 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 ### One-liner
 
-**Gatherly — Host on your own domain. Design like you mean it.**
+**Ownvite — Host on your own domain. Design like you mean it.**
 
 ### Three proof points vs. incumbents
 
@@ -58,14 +58,14 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 | Tier | Price | Includes | Best for |
 |------|-------|----------|----------|
-| **Free** | $0 | Subdomain (`yourname.gatherly.app`), standard templates, Gatherly footer/watermark, optional non-intrusive ads | Try-before-buy, casual gatherings |
+| **Free** | $0 | Subdomain (`yourname.ownvite.app`), standard templates, Ownvite footer/watermark, optional non-intrusive ads | Try-before-buy, casual gatherings |
 | **Pro Event** | **$29** one-time (promo launch: $19) | Custom domain + auto SSL, premium templates, no ads/watermark, RSVP + guest messaging, 500 email sends | Milestone birthdays, showers, reunions |
 | **Studio** | **$12/mo** or **$99/yr** | 5 active events, all Pro features, template overrides (CSS/fonts), analytics, priority support | Frequent hosts, small businesses, creators |
 | **Agency / White-label** | **$199/mo** + setup | Custom branding, client sub-accounts, bulk domains, API, revenue share on client events | Wedding planners, event agencies, venues |
 
 **Pricing principles**
 
-- Anchor Pro Event against Greenvelope's ~$2/guest × 30 guests ($60) — Gatherly wins on clarity.
+- Anchor Pro Event against Greenvelope's ~$2/guest × 30 guests ($60) — Ownvite wins on clarity.
 - Studio ARPU target: hosts running quarterly events or micro-businesses.
 - Agency priced on seats + active client domains, not per guest.
 
@@ -91,7 +91,7 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 ### Proof before scale
 
 1. **Founder's birthday invite** — Ship one real event on a custom domain (`turning-[age].[name].com`). Document the build (before/after vs. Evite). This is demo, case study, and dogfood in one.
-2. **"Made with Gatherly" footer** — On Free tier only. Tappable, shows template + domain story. Every share is a billboard.
+2. **"Made with Ownvite" footer** — On Free tier only. Tappable, shows template + domain story. Every share is a billboard.
 3. **Template loops on Instagram/TikTok** — 15–30s screen recordings: domain typing into browser → invite reveal → RSVP tap. Hashtags: `#partyinvite #customdomain #birthdayparty`. Repost user-generated loops with permission.
 4. **Wedding planner partnerships** — Offer 3 planners free Agency trial + **$10/event** referral for Pro Event conversions. Planners need white-label domains for clients; one planner = dozens of events/year.
 5. **Niche communities** — Facebook groups for milestone birthdays, Reddit r/weddingplanning (value-first posts, not spam), local event Facebook groups.
@@ -107,7 +107,7 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 - Personal outreach to 20 aesthetic-conscious friends → ask for one real event each
 - Collect 5 testimonials with domain URLs
-- Publish comparison page: Gatherly vs Evite vs Paperless Post (pricing calculator)
+- Publish comparison page: Ownvite vs Evite vs Paperless Post (pricing calculator)
 
 ---
 
@@ -130,7 +130,7 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| **Domain setup friction** | Users abandon before publish | Default to `name.gatherly.app`; wizard for CNAME with registrar-specific screenshots; "we'll do it for you" concierge on Pro |
+| **Domain setup friction** | Users abandon before publish | Default to `name.ownvite.app`; wizard for CNAME with registrar-specific screenshots; "we'll do it for you" concierge on Pro |
 | **Email deliverability** | RSVPs land in spam | Dedicated sending domain, SPF/DKIM/DMARC from day one; warmup; transactional-only on Free |
 | **Template quality bar** | Free tier looks cheap; hurts brand | Curate ≤10 launch templates; no user-submitted until marketplace QA; hire 1 contract designer for wedding + birthday hero sets |
 | **Incumbent copy** | Evite adds domains | Move fast on customization depth + flat pricing; own "your domain" SEO |
@@ -138,9 +138,9 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 ---
 
-## Brand: Gatherly
+## Brand: Ownvite
 
-**Why Gatherly:** Short, warm, event-native — not an Evite echo. Works as verb ("Gatherly it") and domain (`gatherly.app`). Implies bringing people together without locking you into a generic subdomain forever.
+**Why Ownvite:** Short, warm, event-native — not an Evite echo. Works as verb ("Ownvite it") and domain (`ownvite.app`). Implies bringing people together without locking you into a generic subdomain forever.
 
 **Tagline options:** *Gather beautifully.* / *Your event. Your URL.*
 

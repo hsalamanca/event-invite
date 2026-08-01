@@ -1,8 +1,11 @@
-# Gatherly
+# Ownvite
 
 **Host on your own domain. Design like you mean it.**
 
-Gatherly is a digital invitation platform — Evite-class RSVPs with designer-grade customization and **custom domains** for every event.
+Ownvite is a digital invitation platform — Evite-class RSVPs with designer-grade customization and **custom domains** for every event.
+
+**Live:** [ownvite.com](https://ownvite.com) · [ownvite.app](https://ownvite.app)  
+**Birthday invite:** [/e/h-birthday-2026](https://ownvite.com/e/h-birthday-2026)
 
 ## Quick start
 
@@ -23,7 +26,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Product wedge
 
-- **Custom domains** — `party.yourname.com` (BYO) or `{slug}.gatherly.app`
+- **Custom domains** — `party.yourname.com` (BYO) or `{slug}.ownvite.app`
 - **Deep customization** — fonts, palette, hero, motion, RSVP fields
 - **Honest pricing** — Free / Pro Event ($29) / Studio / Agency — see `docs/MARKET_AND_MONETIZE.md`
 

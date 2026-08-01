@@ -32,7 +32,7 @@ export default async function HostEditorPage({ params }: PageProps) {
               href="/"
               className="font-[family-name:var(--font-cormorant)] text-xl tracking-wide text-[var(--champagne)]"
             >
-              Gatherly
+              Ownvite
             </Link>
             <span className="hidden text-sm text-[var(--mist)] sm:inline">
               Host studio · {event.title}

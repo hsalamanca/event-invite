@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Full DNS/SSL verification lands later — see docs/CUSTOM_DOMAINS.md.
  */
 const DOMAIN_TO_SLUG: Record<string, string> = {
-  "hsalamanca.event-invite.app": "h-birthday-2026",
+  "h-birthday.ownvite.app": "h-birthday-2026",
   "party.hsalamanca.com": "h-birthday-2026",
 };
 

@@ -43,15 +43,15 @@ export function getEventByDomain(domain: string): EventRecord | undefined {
 const PLATFORM_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
-  "gatherly.app",
-  "www.gatherly.app",
-  "event-invite.app",
-  "www.event-invite.app",
+  "ownvite.com",
+  "www.ownvite.com",
+  "ownvite.app",
+  "www.ownvite.app",
 ]);
 
 /**
  * Resolve an event from the request Host header.
- * Supports: `{slug}.gatherly.app`, BYO custom domains, and skips platform hosts.
+ * Supports: `{slug}.ownvite.app`, BYO custom domains, and skips platform hosts.
  */
 export function resolveEventFromHost(host: string): EventRecord | undefined {
   const hostname = host.split(":")[0]?.toLowerCase() ?? "";
@@ -60,7 +60,7 @@ export function resolveEventFromHost(host: string): EventRecord | undefined {
   const byDomain = getEventByDomain(hostname);
   if (byDomain?.published) return byDomain;
 
-  const platformSuffixes = [".gatherly.app", ".event-invite.app", ".localhost"];
+  const platformSuffixes = [".ownvite.app", ".ownvite.com", ".localhost"];
   for (const suffix of platformSuffixes) {
     if (hostname.endsWith(suffix)) {
       const slug = hostname.slice(0, -suffix.length);

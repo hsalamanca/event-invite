@@ -13,10 +13,10 @@ const tiers = [
     price: "$0",
     detail: "Forever",
     points: [
-      "Subdomain on gatherly.app",
+      "Subdomain on ownvite.app",
       "Standard templates",
       "RSVP collection",
-      "Gatherly footer",
+      "Ownvite footer",
     ],
     cta: "Start free",
     href: "/host/h-birthday-2026",
@@ -47,7 +47,7 @@ const tiers = [
       "Analytics & priority support",
     ],
     cta: "Talk to us",
-    href: "mailto:hello@gatherly.app",
+    href: "mailto:hello@ownvite.com",
     featured: false,
   },
 ];
@@ -67,7 +67,7 @@ export default function PricingPage() {
           href="/"
           className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]"
         >
-          Gatherly
+          Ownvite
         </Link>
         <Link
           href="/e/h-birthday-2026"
@@ -138,10 +138,10 @@ export default function PricingPage() {
         <p className="mt-12 text-sm text-[var(--mist)]">
           Agency / white-label from $199/mo —{" "}
           <a
-            href="mailto:hello@gatherly.app"
+            href="mailto:hello@ownvite.com"
             className="text-[var(--champagne)] underline-offset-2 hover:underline"
           >
-            hello@gatherly.app
+            hello@ownvite.com
           </a>
         </p>
       </section>

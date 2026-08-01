@@ -1,10 +1,10 @@
 # Custom Domains — Technical Architecture
 
-**Product:** Gatherly  
+**Product:** Ownvite  
 **Stack:** Next.js 15 App Router  
 **Status:** MVP design note (implementation not yet wired)
 
-This document describes how Gatherly serves event invitations across three URL shapes — path-based, platform subdomain, and bring-your-own custom domain — and how middleware, DNS, and data resolution fit together.
+This document describes how Ownvite serves event invitations across three URL shapes — path-based, platform subdomain, and bring-your-own custom domain — and how middleware, DNS, and data resolution fit together.
 
 ---
 
@@ -14,20 +14,20 @@ Guests can reach the same event page through three equivalent entry points. All 
 
 | Access pattern | Example | Who uses it | Notes |
 |--------------|---------|-------------|-------|
-| **Path on apex** | `https://gatherly.app/e/h-birthday-2026` | Free tier default, share links, admin preview | Always works; no DNS setup |
-| **Platform subdomain** | `https://h-birthday-2026.gatherly.app` | Free/Pro branded link | Wildcard DNS on `*.gatherly.app` |
-| **Custom domain (BYOD)** | `https://party.customer.com` | Pro Event tier | Customer CNAMEs to Gatherly |
+| **Path on apex** | `https://ownvite.app/e/h-birthday-2026` | Free tier default, share links, admin preview | Always works; no DNS setup |
+| **Platform subdomain** | `https://h-birthday-2026.ownvite.app` | Free/Pro branded link | Wildcard DNS on `*.ownvite.app` |
+| **Custom domain (BYOD)** | `https://party.customer.com` | Pro Event tier | Customer CNAMEs to Ownvite |
 
 ### Canonical vs. served URL
 
-- **Canonical URL** (for SEO, Open Graph, sitemap): the host the host chose at publish time — usually the custom domain if configured, otherwise `{slug}.gatherly.app`.
+- **Canonical URL** (for SEO, Open Graph, sitemap): the host the host chose at publish time — usually the custom domain if configured, otherwise `{slug}.ownvite.app`.
 - **Served URL**: whatever the guest typed. Middleware normalizes all valid hosts to the same internal route; we do **not** 302 guests away from a valid host to another (avoids redirect loops and preserves share links).
 
 ```
 Guest request                    Middleware resolves              App renders
 ─────────────────────────────────────────────────────────────────────────────
-gatherly.app/e/{slug}      →     slug lookup               →     /e/{slug}
-{slug}.gatherly.app      →     subdomain → eventId       →     rewrite → /e/{slug}
+ownvite.app/e/{slug}      →     slug lookup               →     /e/{slug}
+{slug}.ownvite.app      →     subdomain → eventId       →     rewrite → /e/{slug}
 party.customer.com       →     customDomain → eventId     →     rewrite → /e/{slug}
 ```
 
@@ -51,10 +51,10 @@ flowchart TD
   B -->|no| X[400 Bad Request]
   B -->|yes| C[Normalize host: lowercase, strip port]
   C --> D{Platform host?}
-  D -->|gatherly.app / www| E{Path starts with /e/?}
+  D -->|ownvite.app / www| E{Path starts with /e/?}
   E -->|yes| F[Pass through to /e/slug]
   E -->|no| G[Marketing / app routes]
-  D -->|*.gatherly.app| H[Extract subdomain label]
+  D -->|*.ownvite.app| H[Extract subdomain label]
   H --> I{Reserved label?}
   I -->|yes| J[404 or redirect to apex]
   I -->|no| K[Lookup by slug = subdomain]
@@ -79,14 +79,14 @@ function normalizeHost(raw: string | null): string | null {
 
 | Constant | Value | Purpose |
 |----------|-------|---------|
-| `APEX_HOST` | `gatherly.app` | Marketing, path-based invites |
-| `SUBDOMAIN_SUFFIX` | `.gatherly.app` | Wildcard tenant subdomains |
-| `CNAME_TARGET` | `cname.gatherly.app` | Customer DNS instruction target |
+| `APEX_HOST` | `ownvite.app` | Marketing, path-based invites |
+| `SUBDOMAIN_SUFFIX` | `.ownvite.app` | Wildcard tenant subdomains |
+| `CNAME_TARGET` | `cname.ownvite.app` | Customer DNS instruction target |
 
 ### Resolution order
 
-1. If host is `gatherly.app` (or `www.gatherly.app` → treat as apex): no rewrite for `/e/*`; other paths unchanged.
-2. If host ends with `.gatherly.app` and is not apex: treat leftmost label as `slug` → `getEventBySlug(slug)`.
+1. If host is `ownvite.app` (or `www.ownvite.app` → treat as apex): no rewrite for `/e/*`; other paths unchanged.
+2. If host ends with `.ownvite.app` and is not apex: treat leftmost label as `slug` → `getEventBySlug(slug)`.
 3. Otherwise: treat full host as `customDomain` → `getEventByCustomDomain(host)`.
 4. On match: `NextResponse.rewrite(new URL(`/e/${event.slug}`, request.url))`.
 5. On miss: `NextResponse.rewrite(new URL('/invite-not-found', request.url))` or plain 404.
@@ -122,36 +122,36 @@ The host adds two DNS records at their registrar or DNS provider:
 
 | Type | Name | Value | Purpose |
 |------|------|-------|---------|
-| **CNAME** | `party` (or `@` via ALIAS/ANAME — see edge cases) | `cname.gatherly.app` | Route traffic to Gatherly |
-| **TXT** | `_gatherly-verify.party` | `gatherly-verify={eventId}` | Prove domain ownership before we accept the mapping |
+| **CNAME** | `party` (or `@` via ALIAS/ANAME — see edge cases) | `cname.ownvite.app` | Route traffic to Ownvite |
+| **TXT** | `_ownvite-verify.party` | `ownvite-verify={eventId}` | Prove domain ownership before we accept the mapping |
 
 **Verification flow (post-MVP, design now):**
 
-1. Host enters `party.customer.com` in Gatherly settings → status `pending_dns`.
-2. Gatherly stores desired TXT token keyed to `eventId`.
+1. Host enters `party.customer.com` in Ownvite settings → status `pending_dns`.
+2. Ownvite stores desired TXT token keyed to `eventId`.
 3. Background job (or on-demand API) resolves TXT; on match → status `verified`.
 4. Only `verified` domains are added to the edge routing table / Cloudflare custom hostname list.
 5. SSL certificate issued automatically once hostname is active.
 
-### Gatherly infrastructure DNS
+### Ownvite infrastructure DNS
 
 | Record | Configuration |
 |--------|---------------|
-| `gatherly.app` | A/AAAA to hosting (Vercel or origin) |
-| `*.gatherly.app` | Wildcard CNAME to hosting |
-| `cname.gatherly.app` | CNAME to hosting (stable target for customer CNAMEs) |
+| `ownvite.app` | A/AAAA to hosting (Vercel or origin) |
+| `*.ownvite.app` | Wildcard CNAME to hosting |
+| `cname.ownvite.app` | CNAME to hosting (stable target for customer CNAMEs) |
 
 ### Cloudflare for SaaS (recommended for production SSL)
 
 Use [Cloudflare for SaaS](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/) (or equivalent: Vercel Domains API, AWS CloudFront + ACM) to terminate TLS for arbitrary customer hostnames:
 
-1. Gatherly zone: `gatherly.app` on Cloudflare.
+1. Ownvite zone: `ownvite.app` on Cloudflare.
 2. Fallback origin points to Next.js deployment.
 3. Each verified `party.customer.com` registered as a **Custom Hostname**.
 4. Cloudflare issues Universal SSL or DCV cert per hostname.
-5. Optional: Cloudflare validates TXT on behalf of Gatherly via custom metadata.
+5. Optional: Cloudflare validates TXT on behalf of Ownvite via custom metadata.
 
-**MVP shortcut:** Run only `*.gatherly.app` + apex on Vercel; defer BYOD SSL to a staging flag or manual hostname allowlist in the dashboard.
+**MVP shortcut:** Run only `*.ownvite.app` + apex on Vercel; defer BYOD SSL to a staging flag or manual hostname allowlist in the dashboard.
 
 ---
 
@@ -204,7 +204,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Apex: path-based routing — no rewrite for /e/*
-  if (host === "gatherly.app") {
+  if (host === "ownvite.app") {
     return NextResponse.next();
   }
 
@@ -224,9 +224,9 @@ export function middleware(request: NextRequest) {
 Add to `/etc/hosts` (or use a `.local` tool):
 
 ```
-127.0.0.1  gatherly.app
-127.0.0.1  h-birthday-2026.gatherly.app
-127.0.0.1  hsalamanca.gatherly.app
+127.0.0.1  ownvite.app
+127.0.0.1  h-birthday-2026.ownvite.app
+127.0.0.1  hsalamanca.ownvite.app
 ```
 
 Point `customDomain` in seed JSON at a dev hostname (e.g. `party.local.test`) and map accordingly.
@@ -239,15 +239,15 @@ Point `customDomain` in seed JSON at a dev hostname (e.g. `party.local.test`) an
 
 - **Problem:** CNAME at zone apex is invalid per DNS RFC; many registrars forbid it.
 - **MVP:** Document subdomain-only BYOD (`party.customer.com`). Reject apex in the UI with a clear message.
-- **Later:** Support apex via DNS provider **ALIAS/ANAME/flattened CNAME** (Cloudflare CNAME flattening, Route 53 ALIAS) pointing to `cname.gatherly.app`, or **A records** to a fixed anycast IP (Cloudflare for SaaS).
+- **Later:** Support apex via DNS provider **ALIAS/ANAME/flattened CNAME** (Cloudflare CNAME flattening, Route 53 ALIAS) pointing to `cname.ownvite.app`, or **A records** to a fixed anycast IP (Cloudflare for SaaS).
 
 ### `www` variants
 
 | Request | Behavior |
 |---------|----------|
-| `www.gatherly.app` | 301 to `gatherly.app` (preserve path + query) |
+| `www.ownvite.app` | 301 to `ownvite.app` (preserve path + query) |
 | `www.party.customer.com` | Prefer 301 to apex `party.customer.com` if both verified; MVP: register both hostnames or normalize `www.` away before lookup |
-| `www` as subdomain label on `*.gatherly.app` | Treat as reserved; do not serve invites |
+| `www` as subdomain label on `*.ownvite.app` | Treat as reserved; do not serve invites |
 
 Normalize by stripping leading `www.` before map lookup **only** for custom domains, not for platform marketing pages.
 
@@ -286,15 +286,15 @@ function isPreviewDeployment(host: string): boolean {
 
 ### Host header validation
 
-- **Allowlist** acceptable host patterns: `gatherly.app`, `*.gatherly.app`, and explicitly registered `customDomain` values.
+- **Allowlist** acceptable host patterns: `ownvite.app`, `*.ownvite.app`, and explicitly registered `customDomain` values.
 - Reject missing `Host`, malformed hosts, IP literals, and hosts containing `@ or `\`.
 - Do not reflect raw `Host` into HTML or redirects without validation.
 
 ```ts
-const PLATFORM_SUFFIX = ".gatherly.app";
+const PLATFORM_SUFFIX = ".ownvite.app";
 
 function isAllowedHost(host: string): boolean {
-  if (host === "gatherly.app") return true;
+  if (host === "ownvite.app") return true;
   if (host.endsWith(PLATFORM_SUFFIX)) return true;
   if (isPreviewDeployment(host)) return true;
   return byCustomDomain.has(host); // only registered BYOD
@@ -340,9 +340,9 @@ function isAllowedHost(host: string): boolean {
 
 ### Configure now (infra minimum)
 
-- [ ] Wildcard DNS `*.gatherly.app` → deployment
-- [ ] Apex `gatherly.app` → deployment
-- [ ] `cname.gatherly.app` CNAME → deployment (can be same target as apex)
+- [ ] Wildcard DNS `*.ownvite.app` → deployment
+- [ ] Apex `ownvite.app` → deployment
+- [ ] `cname.ownvite.app` CNAME → deployment (can be same target as apex)
 - [ ] TLS cert covering apex + wildcard
 
 ### Defer (post-MVP)
@@ -351,7 +351,7 @@ function isAllowedHost(host: string): boolean {
 - [ ] Cloudflare for SaaS custom hostname automation
 - [ ] Apex/ALIAS support wizard per registrar
 - [ ] Postgres (or KV) backing store + cache invalidation
-- [ ] Canonical 301 from `{slug}.gatherly.app` to custom domain (optional SEO)
+- [ ] Canonical 301 from `{slug}.ownvite.app` to custom domain (optional SEO)
 - [ ] Domain purchase / transfer integration
 - [ ] Audit log for domain attach/detach
 - [ ] Multi-event Studio accounts on one custom domain (path routing — out of scope for v1)
@@ -399,19 +399,19 @@ export interface EventTheme {
 }
 
 /**
- * Canonical event record for Gatherly invites.
+ * Canonical event record for Ownvite invites.
  * Loaded from JSON in MVP; persisted to DB later.
  */
 export interface EventRecord {
   /** Stable internal id, e.g. "evt_bday_hsalamanca_2026" */
   id: string;
 
-  /** URL path segment; also the *.gatherly.app subdomain label */
+  /** URL path segment; also the *.ownvite.app subdomain label */
   slug: string;
 
   /**
    * Full hostname for BYOD routing (no scheme, no path).
-   * e.g. "party.customer.com" or "emma-30.gatherly.app"
+   * e.g. "party.customer.com" or "emma-30.ownvite.app"
    * Used by middleware for customDomain lookup.
    */
   customDomain: string | null;

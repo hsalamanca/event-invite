@@ -160,7 +160,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
     <div className="host-shell" style={shellVars}>
       <header className="host-header">
         <div>
-          <p className="host-eyebrow">Gatherly</p>
+          <p className="host-eyebrow">Ownvite</p>
           <h1 className="host-title">Customize invite</h1>
         </div>
         <button

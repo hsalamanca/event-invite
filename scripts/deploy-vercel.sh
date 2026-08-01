@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy Gatherly to Vercel (preview by default; pass --prod for production).
+# Deploy Ownvite to Vercel (preview by default; pass --prod for production).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

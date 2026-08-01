@@ -1,6 +1,6 @@
 # Birthday Invitation — Design Brief & Content Seed
 
-**Product:** event-invite  
+**Product:** Ownvite  
 **Host (default):** H Salamanca  
 **Occasion:** Birthday celebration  
 **Audience:** Guests receiving a premium, shareable invite link  
@@ -102,7 +102,7 @@ The hero is **full-bleed** — edge-to-edge atmospheric imagery with a controlle
 | **Details** | Date, time, venue, address, dress code (optional) |
 | **About** | 2–3 sentences from host; personal, not marketing copy |
 | **RSVP** | Name, email, attendance, plus-ones, dietary restrictions |
-| **Footer** | “Hosted by {hostName}” + subtle event-invite attribution |
+| **Footer** | “Hosted by {hostName}” + subtle Ownvite attribution |
 
 Keep section count minimal. One scroll narrative: atmosphere → logistics → response.
 
@@ -110,7 +110,7 @@ Keep section count minimal. One scroll narrative: atmosphere → logistics → r
 
 ## 4. Customization Knobs (Product API)
 
-Expose these fields in the event-invite editor and persist to invite config:
+Expose these fields in the Ownvite editor and persist to invite config:
 
 | Knob | Type | Notes |
 |------|------|-------|
@@ -126,7 +126,7 @@ Expose these fields in the event-invite editor and persist to invite config:
 | `heroImage` | URL | Full-bleed background; recommend 1920×1080+ |
 | `rsvpFields` | object | Toggle plus-ones, dietary, custom questions |
 | `slug` | string | Path segment, e.g. `/h-birthday-2026` |
-| `customDomain` | string | Subdomain or custom domain, e.g. `hsalamanca.event-invite.app` |
+| `customDomain` | string | Subdomain or custom domain, e.g. `h-birthday.ownvite.app` |
 | `hostName` | string | Display name; default “H Salamanca” |
 | `about` | markdown/string | Host message below fold |
 
