@@ -3,7 +3,7 @@ import Link from "next/link";
 const features = [
   {
     title: "Your domain",
-    body: "Share party.yourname.com — not a forgettable path under someone else's brand.",
+    body: "Share party.yourname.com — point a CNAME at Ownvite and guests never see our chrome.",
   },
   {
     title: "Pixel control",
@@ -40,6 +40,9 @@ export default function LandingPage() {
           Ownvite
         </span>
         <nav className="flex items-center gap-5 text-sm text-[var(--mist)]">
+          <Link href="/domains" className="hover:text-[var(--ivory)]">
+            Domains
+          </Link>
           <Link href="/pricing" className="hover:text-[var(--ivory)]">
             Pricing
           </Link>

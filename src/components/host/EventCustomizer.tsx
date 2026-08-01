@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import DomainConnect from "@/components/host/DomainConnect";
 import InvitePage from "@/components/invite/InvitePage";
 import type { EventRecord, Theme } from "@/lib/types";
 
@@ -254,15 +255,15 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
                 onChange={(e) => updateField("heroImage", e.target.value)}
               />
             </label>
-            <label>
-              <span>Custom domain</span>
-              <input
-                value={draft.customDomain}
-                placeholder="party.example.com"
-                onChange={(e) => updateField("customDomain", e.target.value)}
-              />
-            </label>
           </fieldset>
+
+          <DomainConnect
+            slug={event.slug}
+            initialDomain={draft.customDomain || event.customDomain}
+            onDomainChange={(domain) =>
+              updateField("customDomain", domain ?? "")
+            }
+          />
 
           <fieldset>
             <legend>Colors</legend>

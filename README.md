@@ -22,7 +22,20 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/e/h-birthday-2026` | Live birthday invite (H Salamanca) |
 | `/host/h-birthday-2026` | Host studio — customize colors, copy, domain |
 | `/pricing` | Monetization tiers |
+| `/domains` | How to point your domain at Ownvite |
 | `/api/rsvp` | RSVP collect + list |
+| `/api/domains` | Connect / status / remove custom domains |
+
+## Custom domains (hosts)
+
+1. Open Host studio → **Custom domain**
+2. Enter `party.yourdomain.com` → **Connect**
+3. Add the CNAME Ownvite shows (`→ cname.vercel-dns.com`)
+4. Click **Verify DNS** until status is **active**
+
+Full walkthrough: [`/domains`](https://ownvite.com/domains) · [`docs/CUSTOM_DOMAIN_SETUP.md`](docs/CUSTOM_DOMAIN_SETUP.md)
+
+**Platform wildcard (operators):** add `CNAME * → cname.vercel-dns.com` on `ownvite.app` so `{slug}.ownvite.app` works.
 
 ## Product wedge
 
@@ -34,7 +47,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 - [`docs/MARKET_AND_MONETIZE.md`](docs/MARKET_AND_MONETIZE.md) — GTM & pricing
 - [`docs/BIRTHDAY_INVITE_BRIEF.md`](docs/BIRTHDAY_INVITE_BRIEF.md) — first-event creative direction
-- [`docs/CUSTOM_DOMAINS.md`](docs/CUSTOM_DOMAINS.md) — DNS, SSL, middleware contract
+- [`docs/CUSTOM_DOMAIN_SETUP.md`](docs/CUSTOM_DOMAIN_SETUP.md) — host + operator DNS how-to
+- [`docs/CUSTOM_DOMAINS.md`](docs/CUSTOM_DOMAINS.md) — architecture contract
 
 ## Stack
 
