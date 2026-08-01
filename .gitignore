@@ -39,3 +39,5 @@ next-env.d.ts
 
 # local RSVP writes (keep empty seed in repo)
 # data/rsvps.json is committed as []
+.vercel
+.env*
