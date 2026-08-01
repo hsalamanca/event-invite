@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0f1a2e;
+  --slate: #1a2744;
+  --champagne: #c9a962;
+  --ember: #e07a5f;
+  --ivory: #f4f0e8;
+  --mist: #9ba8bc;
+  --background: var(--ink);
+  --foreground: var(--ivory);
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-source-sans), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--champagne) 45%, transparent);
+  color: var(--ivory);
+}
+
+@keyframes gatherly-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gatherly-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(0, -1.5%, 0) scale(1.08);
+  }
+}

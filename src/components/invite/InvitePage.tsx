@@ -30,6 +30,17 @@ function mapsUrl(address: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
 
+const FONT_STACK: Record<string, string> = {
+  "Cormorant Garamond": "var(--font-cormorant), Georgia, serif",
+  Fraunces: "var(--font-fraunces), Georgia, serif",
+  "Source Sans 3": "var(--font-source-sans), system-ui, sans-serif",
+  "DM Sans": "var(--font-dm-sans), system-ui, sans-serif",
+};
+
+function fontStack(name: string, fallback: string): string {
+  return FONT_STACK[name] ?? `"${name}", ${fallback}`;
+}
+
 export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
   const { theme, rsvpFields } = event;
   const attendanceOptions = rsvpFields.attendance.options;
@@ -106,8 +117,8 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
     "--invite-accent-2": theme.colors.accentSecondary,
     "--invite-text": theme.colors.textPrimary,
     "--invite-muted": theme.colors.textMuted,
-    "--font-display": `"${theme.fonts.display}", Georgia, serif`,
-    "--font-body": `"${theme.fonts.body}", system-ui, sans-serif`,
+    "--font-display": fontStack(theme.fonts.display, "Georgia, serif"),
+    "--font-body": fontStack(theme.fonts.body, "system-ui, sans-serif"),
   } as CSSProperties;
 
   return (

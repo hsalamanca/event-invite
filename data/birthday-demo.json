@@ -1,0 +1,48 @@
+{
+  "id": "evt_bday_hsalamanca_2026",
+  "slug": "h-birthday-2026",
+  "hostName": "H Salamanca",
+  "title": "H Salamanca · Birthday",
+  "headline": "A Night to Celebrate",
+  "tagline": "An evening of good food, close friends, and a little dancing.",
+  "dateISO": "2026-09-12",
+  "timeLabel": "7:00 PM",
+  "venue": "The Terrace at Meridian",
+  "address": "428 Westlake Avenue, Seattle, WA 98109",
+  "theme": {
+    "colors": {
+      "background": "#0F1A2E",
+      "surface": "#1A2744",
+      "accentPrimary": "#C9A962",
+      "accentSecondary": "#E07A5F",
+      "textPrimary": "#F4F0E8",
+      "textMuted": "#9BA8BC"
+    },
+    "fonts": {
+      "display": "Cormorant Garamond",
+      "body": "Source Sans 3"
+    }
+  },
+  "heroImage": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&q=80&auto=format&fit=crop",
+  "customDomain": "hsalamanca.event-invite.app",
+  "rsvpFields": {
+    "plusOnes": {
+      "enabled": true,
+      "label": "Guest count",
+      "max": 2
+    },
+    "dietary": {
+      "enabled": true,
+      "label": "Dietary restrictions or allergies",
+      "placeholder": "Vegetarian, gluten-free, etc."
+    },
+    "attendance": {
+      "enabled": true,
+      "options": ["Joyfully attending", "Regretfully declining"]
+    },
+    "deadline": "2026-09-05",
+    "prompt": "Kindly respond by September 5 so we can save you a seat."
+  },
+  "about": "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.",
+  "published": true
+}

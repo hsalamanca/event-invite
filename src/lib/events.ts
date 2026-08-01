@@ -18,8 +18,8 @@ function seed() {
   if (eventsBySlug.size > 0) return;
 
   const seedEvent: EventRecord = {
-    ...(birthdayDemo as Omit<EventRecord, "published">),
-    published: true,
+    ...(birthdayDemo as EventRecord),
+    published: birthdayDemo.published ?? true,
     customDomain: birthdayDemo.customDomain ?? null,
   };
 
@@ -37,6 +37,40 @@ export function getEventByDomain(domain: string): EventRecord | undefined {
   const slug = domainIndex.get(domain.toLowerCase());
   if (!slug) return undefined;
   return eventsBySlug.get(slug);
+}
+
+/** Platform hosts that serve the marketing site + path-based invites. */
+const PLATFORM_HOSTS = new Set([
+  "localhost",
+  "127.0.0.1",
+  "gatherly.app",
+  "www.gatherly.app",
+  "event-invite.app",
+  "www.event-invite.app",
+]);
+
+/**
+ * Resolve an event from the request Host header.
+ * Supports: `{slug}.gatherly.app`, BYO custom domains, and skips platform hosts.
+ */
+export function resolveEventFromHost(host: string): EventRecord | undefined {
+  const hostname = host.split(":")[0]?.toLowerCase() ?? "";
+  if (!hostname || PLATFORM_HOSTS.has(hostname)) return undefined;
+
+  const byDomain = getEventByDomain(hostname);
+  if (byDomain?.published) return byDomain;
+
+  const platformSuffixes = [".gatherly.app", ".event-invite.app", ".localhost"];
+  for (const suffix of platformSuffixes) {
+    if (hostname.endsWith(suffix)) {
+      const slug = hostname.slice(0, -suffix.length);
+      if (!slug || slug.includes(".")) continue;
+      const event = getEventBySlug(slug);
+      if (event?.published) return event;
+    }
+  }
+
+  return undefined;
 }
 
 export function listEvents(): EventRecord[] {
