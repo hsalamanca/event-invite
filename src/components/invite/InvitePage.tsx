@@ -1223,6 +1223,8 @@ export default function InvitePage({
           line-height: 1.5;
         }
 
+        :global(.btn-primary),
+        :global(.btn-ghost),
         .btn-primary,
         .btn-ghost {
           display: inline-flex;
