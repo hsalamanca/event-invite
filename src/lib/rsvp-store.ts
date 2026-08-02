@@ -1,4 +1,4 @@
-import { list, put } from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
 import type { RsvpSubmission } from "./types";
@@ -10,26 +10,43 @@ function hasBlobToken() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
+async function streamToString(
+  stream: ReadableStream<Uint8Array>
+): Promise<string> {
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) chunks.push(value);
+  }
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return new TextDecoder().decode(merged);
+}
+
 async function readFromBlob(): Promise<RsvpSubmission[] | null> {
   if (!hasBlobToken()) return null;
   try {
-    const result = await list({
-      prefix: BLOB_PATH,
-      limit: 10,
+    const result = await get(BLOB_PATH, {
+      access: "private",
+      useCache: false,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
-    const match = result.blobs.find((b) => b.pathname === BLOB_PATH);
-    if (!match) return [];
-    const res = await fetch(match.url, {
-      headers: {
-        Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-      },
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const parsed = (await res.json()) as RsvpSubmission[];
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      return [];
+    }
+    const text = await streamToString(result.stream);
+    if (!text.trim()) return [];
+    const parsed = JSON.parse(text) as RsvpSubmission[];
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (err) {
+    console.error("RSVP blob read failed", err);
     return null;
   }
 }
