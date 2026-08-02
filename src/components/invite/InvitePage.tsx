@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import InviteCover from "@/components/invite/InviteCover";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
+import { resolveInviteLayout } from "@/lib/templates";
 import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 import type { WeatherSnapshot } from "@/lib/weather";
 
@@ -248,6 +250,7 @@ export default function InvitePage({
     }
   }
 
+  const layout = resolveInviteLayout(event.templateId);
   const cssVars = {
     "--invite-bg": theme.colors.background,
     "--invite-surface": theme.colors.surface,
@@ -260,52 +263,30 @@ export default function InvitePage({
   } as CSSProperties;
 
   return (
-    <div className="invite-root" style={cssVars}>
-      <section className="invite-hero" aria-label="Invitation hero">
-        <div
-          className="invite-hero-media"
-          style={{ transform: `translateY(${parallaxY}px)` }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={event.heroImage}
-            alt=""
-            className="invite-hero-img"
-            fetchPriority="high"
-          />
-          <div className="invite-hero-overlay" aria-hidden />
-        </div>
+    <div className="invite-root" data-layout={layout} style={cssVars}>
+      <InviteCover
+        layout={layout}
+        hostName={event.hostName}
+        title={event.title}
+        headline={event.headline}
+        tagline={event.tagline}
+        dateLabel={formatDateLabel(event.dateISO, locale)}
+        timeLabel={event.timeLabel}
+        venue={event.venue}
+        address={event.address}
+        heroImage={event.heroImage}
+        invitesYou={ui.invitesYou}
+        rsvpLabel={ui.rsvp}
+        detailsLabel={ui.details}
+        calendarLabel={ui.addToCalendar}
+        calendarHref={`/api/events/${event.slug}/ics`}
+        copyLabel={copied ? ui.copied : ui.copyLink}
+        isPast={isPast}
+        onCopyLink={() => void copyInviteLink()}
+        parallaxY={parallaxY}
+      />
 
-        <div className="invite-hero-content">
-          <p className="invite-brand fade-up fade-up-1">{event.title}</p>
-          <h1 className="invite-headline fade-up fade-up-2">{event.headline}</h1>
-          <p className="invite-tagline fade-up fade-up-3">{event.tagline}</p>
-          <div className="invite-cta fade-up fade-up-4">
-            {isPast ? (
-              <a className="btn-primary" href="#guestbook">
-                Leave a note
-              </a>
-            ) : (
-              <a className="btn-primary" href="#rsvp">
-                {ui.rsvp}
-              </a>
-            )}
-            <a className="btn-ghost" href="#details">
-              {ui.details}
-            </a>
-          </div>
-          <div className="invite-share fade-up fade-up-4">
-            <a className="btn-ghost" href={`/api/events/${event.slug}/ics`}>
-              {ui.addToCalendar}
-            </a>
-            <button type="button" className="btn-ghost" onClick={() => void copyInviteLink()}>
-              {copied ? ui.copied : ui.copyLink}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="details" className="invite-section">
+      <section id="details" className="invite-section invite-section--paper">
         <h2 className="invite-section-title">{ui.details}</h2>
         <dl className="invite-meta">
           <div>
@@ -800,96 +781,324 @@ export default function InvitePage({
           scroll-behavior: smooth;
         }
 
-        .invite-hero {
+        :global(.invite-cover) {
           position: relative;
           min-height: 100vh;
           min-height: 100dvh;
           display: flex;
-          align-items: flex-end;
+          align-items: center;
+          justify-content: center;
           overflow: hidden;
+          padding: clamp(1.25rem, 4vw, 3rem);
+          padding-top: calc(clamp(1.25rem, 4vw, 3rem) + env(safe-area-inset-top, 0px));
+          padding-bottom: calc(clamp(1.5rem, 5vw, 3.5rem) + env(safe-area-inset-bottom, 0px));
         }
 
-        .invite-hero-media {
+        :global(.invite-cover-atmosphere) {
           position: absolute;
-          inset: -8% 0 0 0;
+          inset: -6% 0 0 0;
           z-index: 0;
           will-change: transform;
         }
 
-        .invite-hero-img {
+        :global(.invite-cover-atmosphere-img) {
           width: 100%;
           height: 100%;
           object-fit: cover;
           object-position: center;
           display: block;
-          animation: heroScale 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          filter: saturate(1.05);
+          animation: heroScale 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        .invite-hero-overlay {
+        :global(.invite-cover-atmosphere-veil) {
           position: absolute;
           inset: 0;
-          /* Fade photo into the (light) page background — celebratory, not moody */
-          background: linear-gradient(
-            to bottom,
-            color-mix(in srgb, var(--invite-bg) 15%, transparent) 0%,
-            color-mix(in srgb, var(--invite-bg) 55%, transparent) 42%,
-            color-mix(in srgb, var(--invite-bg) 92%, transparent) 72%,
-            var(--invite-bg) 100%
-          );
+          background:
+            radial-gradient(
+              ellipse 70% 60% at 50% 40%,
+              color-mix(in srgb, var(--invite-bg) 20%, transparent),
+              transparent 70%
+            ),
+            linear-gradient(
+              to bottom,
+              color-mix(in srgb, var(--invite-bg) 35%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 72%, transparent) 55%,
+              var(--invite-bg) 100%
+            );
         }
 
-        .invite-hero-content {
+        :global(.invite-cover-stage) {
           position: relative;
           z-index: 1;
-          width: 100%;
-          max-width: 40rem;
-          padding: clamp(2rem, 6vw, 4rem);
-          padding-bottom: calc(clamp(2.5rem, 8vw, 5rem) + env(safe-area-inset-bottom, 0px));
-          padding-left: calc(clamp(1.5rem, 5vw, 3rem) + env(safe-area-inset-left, 0px));
-          padding-right: calc(clamp(1.5rem, 5vw, 3rem) + env(safe-area-inset-right, 0px));
-          text-shadow: 0 1px 0 color-mix(in srgb, var(--invite-bg) 65%, transparent);
+          width: min(100%, 34rem);
         }
 
-        .invite-brand {
-          margin: 0 0 1rem;
+        :global(.invite-card) {
+          background: color-mix(in srgb, var(--invite-surface) 92%, white);
+          color: var(--invite-text);
+          border: 1px solid color-mix(in srgb, var(--invite-accent) 35%, transparent);
+          box-shadow:
+            0 1px 0 color-mix(in srgb, white 55%, transparent) inset,
+            0 24px 60px color-mix(in srgb, var(--invite-text) 14%, transparent);
+          overflow: hidden;
+          backdrop-filter: blur(6px);
+        }
+
+        :global(.invite-card-body) {
+          padding: clamp(1.6rem, 5vw, 2.75rem) clamp(1.35rem, 4vw, 2.4rem);
+          text-align: center;
+        }
+
+        :global(.invite-card-photo) {
+          position: relative;
+          overflow: hidden;
+          aspect-ratio: 16 / 10;
+        }
+
+        :global(.invite-card-photo img) {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        :global(.invite-card-photo--inset) {
+          aspect-ratio: 16 / 9;
+          margin: 1.25rem auto 0;
+          max-width: 92%;
+          border: 1px solid color-mix(in srgb, var(--invite-accent) 28%, transparent);
+        }
+
+        :global(.invite-ornament) {
+          display: block;
+          width: min(9rem, 55%);
+          margin: 0 auto 1rem;
+          color: var(--invite-accent);
+        }
+
+        :global(.invite-ornament--line) {
+          height: 1px;
+          width: min(6rem, 40%);
+          background: color-mix(in srgb, var(--invite-accent) 70%, transparent);
+          margin-bottom: 1.1rem;
+        }
+
+        :global(.invite-ornament--dots) {
+          display: flex;
+          justify-content: center;
+          gap: 0.45rem;
+          width: auto;
+          margin-bottom: 1rem;
+        }
+
+        :global(.invite-ornament--dots span) {
+          width: 0.4rem;
+          height: 0.4rem;
+          border-radius: 999px;
+          background: var(--invite-accent);
+          animation: inviteTwinkle 2.8s ease-in-out infinite;
+        }
+
+        :global(.invite-ornament--dots span:nth-child(2)) {
+          background: var(--invite-accent-2);
+          animation-delay: 0.35s;
+        }
+        :global(.invite-ornament--dots span:nth-child(3)) {
+          animation-delay: 0.7s;
+        }
+        :global(.invite-ornament--dots span:nth-child(4)) {
+          background: var(--invite-accent-2);
+          animation-delay: 1s;
+        }
+        :global(.invite-ornament--dots span:nth-child(5)) {
+          animation-delay: 1.3s;
+        }
+
+        :global(.invite-card-host) {
+          margin: 0 0 0.35rem;
           font-family: var(--font-display);
-          font-size: 0.8125rem;
-          font-weight: 500;
-          letter-spacing: 0.18em;
+          font-size: 0.78rem;
+          letter-spacing: 0.22em;
           text-transform: uppercase;
           color: var(--invite-accent);
         }
 
-        .invite-headline {
-          margin: 0 0 0.75rem;
+        :global(.invite-card-invite-line) {
+          margin: 0 0 0.85rem;
+          font-size: 0.95rem;
+          font-style: italic;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-card-headline) {
+          margin: 0 0 1rem;
           font-family: var(--font-display);
           font-weight: 600;
-          font-size: clamp(1.75rem, 6vw, 3.25rem);
-          line-height: 1.15;
+          font-size: clamp(2rem, 7vw, 3.15rem);
+          line-height: 1.08;
           color: var(--invite-text);
         }
 
-        .invite-tagline {
-          margin: 0 0 1.75rem;
-          font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+        :global(.invite-card-when) {
+          margin: 0.25rem 0 0;
+          display: grid;
+          gap: 0.2rem;
+        }
+
+        :global(.invite-card-date) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: 1.15rem;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-card-time),
+        :global(.invite-card-venue) {
+          margin: 0;
+          font-size: 1rem;
+          color: color-mix(in srgb, var(--invite-text) 88%, var(--invite-muted));
+        }
+
+        :global(.invite-card-address) {
+          margin: 0.15rem 0 0;
+          font-size: 0.92rem;
+          color: var(--invite-muted);
+          line-height: 1.4;
+        }
+
+        :global(.invite-card-tagline) {
+          margin: 1.15rem 0 0;
+          font-size: 1.02rem;
           line-height: 1.5;
           color: var(--invite-muted);
-          max-width: 28rem;
         }
 
-        .invite-cta {
+        :global(.invite-card-actions) {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.75rem 1.25rem;
-          align-items: center;
+          gap: 0.7rem;
+          justify-content: center;
+          margin-top: 1.5rem;
         }
 
-        .invite-share {
+        :global(.invite-card-share) {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.75rem 1rem;
-          align-items: center;
-          margin-top: 0.85rem;
+          gap: 0.85rem 1.2rem;
+          justify-content: center;
+          margin-top: 1rem;
+        }
+
+        :global(.invite-text-link) {
+          background: none;
+          border: 0;
+          padding: 0;
+          font: inherit;
+          font-size: 0.88rem;
+          color: var(--invite-accent);
+          text-decoration: underline;
+          text-underline-offset: 0.18em;
+          cursor: pointer;
+        }
+
+        /* Layout variants */
+        :global(.invite-cover[data-layout="foil"] .invite-card),
+        :global(.invite-cover[data-layout="glam"] .invite-card) {
+          border-width: 2px;
+          border-color: color-mix(in srgb, var(--invite-accent) 65%, white);
+          box-shadow:
+            0 0 0 6px color-mix(in srgb, var(--invite-surface) 90%, white),
+            0 0 0 7px color-mix(in srgb, var(--invite-accent) 45%, transparent),
+            0 28px 70px color-mix(in srgb, var(--invite-text) 16%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="script"] .invite-card-headline) {
+          font-weight: 400;
+          font-size: clamp(2.4rem, 9vw, 3.8rem);
+          line-height: 1.12;
+        }
+
+        :global(.invite-cover[data-layout="arch"] .invite-card-photo) {
+          aspect-ratio: 1 / 1.05;
+          margin: 1.1rem 1.1rem 0;
+          border-radius: 999px 999px 1.25rem 1.25rem;
+        }
+
+        :global(.invite-cover[data-layout="arch"] .invite-card) {
+          border-radius: 1.5rem;
+        }
+
+        :global(.invite-cover[data-layout="party"] .invite-card) {
+          border: 0;
+          border-radius: 1.35rem;
+          background:
+            radial-gradient(
+              circle at 12% 18%,
+              color-mix(in srgb, var(--invite-accent-2) 22%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 88% 12%,
+              color-mix(in srgb, var(--invite-accent) 20%, transparent),
+              transparent 40%
+            ),
+            color-mix(in srgb, var(--invite-surface) 94%, white);
+        }
+
+        :global(.invite-cover[data-layout="fiesta"] .invite-card) {
+          border: 3px solid var(--invite-accent);
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, var(--invite-accent-2) 12%, var(--invite-surface)),
+              var(--invite-surface) 40%,
+              color-mix(in srgb, var(--invite-accent) 10%, var(--invite-surface))
+            );
+        }
+
+        :global(.invite-cover[data-layout="fiesta"] .invite-card-host) {
+          letter-spacing: 0.28em;
+        }
+
+        :global(.invite-cover[data-layout="botanical"] .invite-card),
+        :global(.invite-cover[data-layout="coastal"] .invite-card) {
+          border-style: solid;
+          border-color: color-mix(in srgb, var(--invite-accent) 40%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="kraft"] .invite-card) {
+          background:
+            repeating-linear-gradient(
+              -12deg,
+              transparent,
+              transparent 11px,
+              color-mix(in srgb, var(--invite-text) 3%, transparent) 11px,
+              color-mix(in srgb, var(--invite-text) 3%, transparent) 12px
+            ),
+            var(--invite-surface);
+          border: 1px dashed color-mix(in srgb, var(--invite-accent) 45%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="minimal"] .invite-card) {
+          border: 0;
+          box-shadow: 0 18px 50px color-mix(in srgb, var(--invite-text) 10%, transparent);
+          background: var(--invite-bg);
+        }
+
+        :global(.invite-cover[data-layout="minimal"] .invite-card-body) {
+          border: 1px solid color-mix(in srgb, var(--invite-text) 12%, transparent);
+          margin: 0.85rem;
+          padding: clamp(1.5rem, 4vw, 2.4rem);
+        }
+
+        .invite-section--paper {
+          background:
+            linear-gradient(
+              180deg,
+              color-mix(in srgb, var(--invite-surface) 55%, var(--invite-bg)),
+              var(--invite-bg)
+            );
         }
 
         .invite-registry {
@@ -1290,21 +1499,26 @@ export default function InvitePage({
           color: color-mix(in srgb, var(--invite-muted) 70%, transparent);
         }
 
+        :global(.fade-up),
         .fade-up {
           opacity: 0;
           transform: translateY(16px);
           animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
+        :global(.fade-up-1),
         .fade-up-1 {
           animation-delay: 0.05s;
         }
+        :global(.fade-up-2),
         .fade-up-2 {
           animation-delay: 0.15s;
         }
+        :global(.fade-up-3),
         .fade-up-3 {
           animation-delay: 0.28s;
         }
+        :global(.fade-up-4),
         .fade-up-4 {
           animation-delay: 0.4s;
         }
@@ -1322,6 +1536,18 @@ export default function InvitePage({
           }
           to {
             transform: scale(1);
+          }
+        }
+
+        @keyframes inviteTwinkle {
+          0%,
+          100% {
+            opacity: 0.35;
+            transform: scale(0.85);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.15);
           }
         }
 
@@ -1363,19 +1589,21 @@ export default function InvitePage({
         }
 
         @media (prefers-reduced-motion: reduce) {
+          :global(.fade-up),
           .fade-up,
-          .invite-hero-img,
+          :global(.invite-cover-atmosphere-img),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;
           }
 
+          :global(.fade-up),
           .fade-up {
             opacity: 1;
             transform: none;
           }
 
-          .invite-hero-img {
+          :global(.invite-cover-atmosphere-img) {
             transform: none;
           }
 

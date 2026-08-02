@@ -9,6 +9,20 @@ export type TemplateCategory =
   | "party"
   | "graduation";
 
+/** Visual composition for the guest-facing invitation card */
+export type InviteLayout =
+  | "classic"
+  | "foil"
+  | "script"
+  | "botanical"
+  | "party"
+  | "minimal"
+  | "arch"
+  | "fiesta"
+  | "coastal"
+  | "kraft"
+  | "glam";
+
 export type EventTemplate = {
   id: string;
   name: string;
@@ -19,6 +33,8 @@ export type EventTemplate = {
   inspiredBy: string;
   inspiredByEs: string;
   categories: TemplateCategory[];
+  /** How the invite card is composed for guests */
+  layout: InviteLayout;
   theme: Theme;
   heroImage: string;
   headline: string;
@@ -302,6 +318,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite cocktail & dinner classics",
     inspiredByEs: "Clásicos de cóctel y cena de Evite",
     categories: ["dinner", "birthday", "party"],
+    layout: "foil",
     theme: evening,
     heroImage:
       "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&q=80&auto=format&fit=crop",
@@ -319,6 +336,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Festive Gold Confetti",
     inspiredByEs: "Evite Festive Gold Confetti",
     categories: ["birthday", "party", "graduation"],
+    layout: "party",
     premium: true,
     theme: goldConfetti,
     heroImage:
@@ -337,6 +355,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Garden Party + Canva greenery",
     inspiredByEs: "Evite Garden Party + verdor Canva",
     categories: ["brunch", "baby", "party"],
+    layout: "botanical",
     theme: garden,
     heroImage:
       "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1920&q=80&auto=format&fit=crop",
@@ -354,6 +373,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Olive Minimal",
     inspiredByEs: "Evite Olive Minimal",
     categories: ["dinner", "wedding", "brunch"],
+    layout: "minimal",
     theme: oliveMinimal,
     heroImage:
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80&auto=format&fit=crop",
@@ -371,6 +391,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Canva floral wedding + Evite Baby’s Breath",
     inspiredByEs: "Boda floral Canva + Baby’s Breath de Evite",
     categories: ["wedding", "baby", "brunch"],
+    layout: "script",
     theme: ivoryBloom,
     heroImage:
       "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80&auto=format&fit=crop",
@@ -388,6 +409,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Gold Frame Wedding / Ivory & Gold",
     inspiredByEs: "Evite Gold Frame Wedding / Ivory & Gold",
     categories: ["wedding", "dinner"],
+    layout: "foil",
     premium: true,
     theme: champagneWedding,
     heroImage:
@@ -406,6 +428,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Canva blush baby + Evite pastel bows",
     inspiredByEs: "Bebé blush Canva + lazos pastel Evite",
     categories: ["baby", "brunch", "party"],
+    layout: "script",
     theme: blushShower,
     heroImage:
       "https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=1920&q=80&auto=format&fit=crop",
@@ -423,6 +446,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Modern Black & White (light remix)",
     inspiredByEs: "Evite Modern Black & White (versión clara)",
     categories: ["dinner", "birthday", "party"],
+    layout: "glam",
     theme: blackTie,
     heroImage:
       "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1920&q=80&auto=format&fit=crop",
@@ -440,6 +464,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Citrus / Garden Party",
     inspiredByEs: "Evite Citrus / Garden Party",
     categories: ["brunch", "wedding", "baby"],
+    layout: "botanical",
     theme: citrusBrunch,
     heroImage:
       "https://images.unsplash.com/photo-1496412705862-e008682476bd?w=1920&q=80&auto=format&fit=crop",
@@ -457,6 +482,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Canva boho rustic + Evite earthy",
     inspiredByEs: "Boho rústico Canva + earthy Evite",
     categories: ["wedding", "party", "brunch"],
+    layout: "kraft",
     theme: bohoSunset,
     heroImage:
       "https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=1920&q=80&auto=format&fit=crop",
@@ -474,6 +500,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Canva modern celebration",
     inspiredByEs: "Celebración moderna Canva",
     categories: ["graduation", "birthday", "party"],
+    layout: "classic",
     theme: celebration,
     heroImage:
       "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1920&q=80&auto=format&fit=crop",
@@ -491,6 +518,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Retro / maximal celebration",
     inspiredByEs: "Evite Retro / celebración maximalista",
     categories: ["party", "birthday"],
+    layout: "party",
     theme: retroGlow,
     heroImage:
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&q=80&auto=format&fit=crop",
@@ -508,6 +536,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Lovely Linen / Simple Kraft",
     inspiredByEs: "Evite Lovely Linen / Simple Kraft",
     categories: ["dinner", "brunch", "party"],
+    layout: "kraft",
     theme: linenKraft,
     heroImage:
       "https://images.unsplash.com/photo-1478144592103-25e218a04891?w=1920&q=80&auto=format&fit=crop",
@@ -525,6 +554,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Birthday Balloons / Pastel Balloons",
     inspiredByEs: "Evite Birthday Balloons / Pastel Balloons",
     categories: ["birthday", "party", "baby"],
+    layout: "party",
     theme: balloonBash,
     heroImage:
       "https://images.unsplash.com/photo-1464349153735-7db55f04b818?w=1920&q=80&auto=format&fit=crop",
@@ -542,6 +572,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Basic Watercolor + Canva floral",
     inspiredByEs: "Evite Basic Watercolor + floral Canva",
     categories: ["wedding", "baby", "brunch"],
+    layout: "script",
     premium: true,
     theme: watercolorRose,
     heroImage:
@@ -560,6 +591,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Nautical / Travel & Destination",
     inspiredByEs: "Evite Nautical / Travel & Destination",
     categories: ["wedding", "party", "brunch"],
+    layout: "coastal",
     theme: coastalBreeze,
     heroImage:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80&auto=format&fit=crop",
@@ -577,6 +609,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Tinsel Nights (bright remix)",
     inspiredByEs: "Evite Tinsel Nights (versión luminosa)",
     categories: ["party", "birthday", "dinner"],
+    layout: "foil",
     theme: tinselNights,
     heroImage:
       "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1920&q=80&auto=format&fit=crop",
@@ -594,6 +627,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Modern Arch Party",
     inspiredByEs: "Evite Modern Arch Party",
     categories: ["party", "birthday", "graduation"],
+    layout: "arch",
     theme: modernArch,
     heroImage:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&q=80&auto=format&fit=crop",
@@ -613,6 +647,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Latin American celebration / Canva fiesta & quince",
     inspiredByEs: "Celebración latinoamericana / Canva fiesta y quince",
     categories: ["birthday", "wedding", "party", "baby"],
+    layout: "fiesta",
     premium: true,
     theme: latinFiesta,
     heroImage:
@@ -625,6 +660,12 @@ export const TEMPLATES: EventTemplate[] = [
       "Música, familia y el sabor de estar juntos — estás invitado.",
   },
 ];
+
+
+export function resolveInviteLayout(templateId?: string | null): InviteLayout {
+  if (!templateId) return "classic";
+  return getTemplate(templateId).layout;
+}
 
 export function getTemplate(id: string): EventTemplate {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0]!;

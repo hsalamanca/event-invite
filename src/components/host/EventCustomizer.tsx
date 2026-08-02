@@ -48,6 +48,7 @@ type Draft = {
   registryUrl: string;
   registryLabel: string;
   published: boolean;
+  templateId: string;
   colors: Theme["colors"];
   fonts: Theme["fonts"];
   rsvpPrompt: string;
@@ -93,6 +94,7 @@ function toDraft(event: EventRecord): Draft {
     registryUrl: event.registryUrl ?? "",
     registryLabel: event.registryLabel ?? "",
     published: event.published ?? true,
+    templateId: event.templateId || "evening",
     colors: { ...event.theme.colors },
     fonts: { ...event.theme.fonts },
     rsvpPrompt: event.rsvpFields.prompt ?? "",
@@ -142,6 +144,7 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
     registryUrl: draft.registryUrl.trim() || null,
     registryLabel: draft.registryLabel.trim() || null,
     published: draft.published,
+    templateId: draft.templateId || base.templateId || "evening",
     theme: {
       colors: { ...draft.colors },
       fonts: { ...draft.fonts },
@@ -238,6 +241,7 @@ export default function EventCustomizer({
       registryUrl: preview.registryUrl,
       registryLabel: preview.registryLabel,
       published: draft.published,
+      templateId: draft.templateId,
       theme: {
         colors: draft.colors,
         fonts: draft.fonts,
@@ -430,6 +434,7 @@ export default function EventCustomizer({
                   const tpl = getTemplate(id);
                   setDraft((prev) => ({
                     ...prev,
+                    templateId: tpl.id,
                     headline:
                       locale === "es" ? tpl.headlineEs : tpl.headline,
                     tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,

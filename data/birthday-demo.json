@@ -47,5 +47,6 @@
     "prompt": "Kindly respond by September 5 so we can save you a seat."
   },
   "about": "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks \u2014 no gifts, just your presence.",
-  "published": true
+  "published": true,
+  "templateId": "evening"
 }
