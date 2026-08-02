@@ -9,6 +9,10 @@ import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 type InvitePageProps = {
   event: EventRecord;
   locale?: Locale;
+  seatsTaken?: number;
+  atCapacity?: boolean;
+  /** Set false in host live preview to avoid polluting open stats */
+  trackViews?: boolean;
   onRsvpSubmit?: (payload: {
     eventId: string;
     name: string;
@@ -76,6 +80,9 @@ function fontStack(name: string, fallback: string): string {
 export default function InvitePage({
   event,
   locale = "en",
+  seatsTaken = 0,
+  atCapacity = false,
+  trackViews = true,
   onRsvpSubmit,
 }: InvitePageProps) {
   const { theme, rsvpFields } = event;
@@ -129,6 +136,15 @@ export default function InvitePage({
       cancelled = true;
     };
   }, [event.slug]);
+
+  useEffect(() => {
+    if (!trackViews) return;
+    void fetch(`/api/events/${encodeURIComponent(event.slug)}/views`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    }).catch(() => undefined);
+  }, [event.slug, trackViews]);
 
   async function copyInviteLink() {
     try {
@@ -447,6 +463,13 @@ export default function InvitePage({
                 : `RSVP within ${deadlineDays} day${deadlineDays === 1 ? "" : "s"} (by ${rsvpFields.deadline}).`}
           </p>
         ) : null}
+        {event.capacity ? (
+          <p className="invite-deadline">
+            {atCapacity
+              ? "This celebration is at capacity — RSVPs are closed for new guests."
+              : `${Math.max(0, event.capacity - seatsTaken)} of ${event.capacity} seats still open.`}
+          </p>
+        ) : null}
 
         {success ? (
           <div className="rsvp-success" role="status">
@@ -465,8 +488,12 @@ export default function InvitePage({
               </p>
             ) : null}
           </div>
-        ) : deadlinePassed ? (
-          <p className="invite-prompt">This RSVP form is closed.</p>
+        ) : deadlinePassed || atCapacity ? (
+          <p className="invite-prompt">
+            {atCapacity
+              ? "This event is full. Contact the host if you need to change an existing RSVP."
+              : "This RSVP form is closed."}
+          </p>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
             <label className="rsvp-field">

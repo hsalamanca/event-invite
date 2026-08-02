@@ -187,6 +187,7 @@ export default function EventCustomizer({
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     setDraft(toDraft(event));
@@ -310,17 +311,26 @@ export default function EventCustomizer({
           <p className="host-eyebrow">Ownvite</p>
           <h1 className="host-title">{t.customize}</h1>
         </div>
-        <button
-          type="submit"
-          form="host-customize-form"
-          className="host-save"
-          disabled={saving}
-        >
-          {saving ? t.saving : t.save}
-        </button>
+        <div className="host-header-actions">
+          <button
+            type="button"
+            className="host-preview-toggle"
+            onClick={() => setShowPreview((v) => !v)}
+          >
+            {showPreview ? "Edit" : t.livePreview}
+          </button>
+          <button
+            type="submit"
+            form="host-customize-form"
+            className="host-save"
+            disabled={saving}
+          >
+            {saving ? t.saving : t.save}
+          </button>
+        </div>
       </header>
 
-      <div className="host-layout">
+      <div className={`host-layout ${showPreview ? "show-preview" : ""}`}>
         <form
           id="host-customize-form"
           className="host-form"
@@ -956,7 +966,11 @@ export default function EventCustomizer({
           <p className="host-preview-label">{t.livePreview}</p>
           <div className="host-preview-frame">
             <div className="host-preview-scale">
-              <InvitePage event={previewEvent} locale={locale} />
+              <InvitePage
+                event={previewEvent}
+                locale={locale}
+                trackViews={false}
+              />
             </div>
           </div>
         </div>
@@ -993,6 +1007,26 @@ export default function EventCustomizer({
           font-weight: 500;
         }
 
+        .host-header-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          align-items: center;
+        }
+
+        .host-preview-toggle {
+          display: none;
+          min-height: 44px;
+          padding: 0.65rem 1rem;
+          background: transparent;
+          border: 1px solid color-mix(in srgb, var(--host-muted) 40%, transparent);
+          border-radius: 2px;
+          color: var(--host-text);
+          font-family: inherit;
+          font-size: 0.875rem;
+          cursor: pointer;
+        }
+
         .host-save {
           min-height: 44px;
           padding: 0.65rem 1.35rem;
@@ -1004,6 +1038,10 @@ export default function EventCustomizer({
           font-size: 0.9375rem;
           font-weight: 500;
           cursor: pointer;
+        }
+
+        .host-mobile-save {
+          display: none;
         }
 
         .host-save:hover:not(:disabled) {
@@ -1200,6 +1238,20 @@ export default function EventCustomizer({
         }
 
         @media (max-width: 960px) {
+          .host-header {
+            position: sticky;
+            top: 0;
+            z-index: 15;
+            background: color-mix(in srgb, var(--host-bg) 94%, transparent);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+          }
+
+          .host-preview-toggle {
+            display: inline-flex;
+            align-items: center;
+          }
+
           .host-layout {
             grid-template-columns: 1fr;
           }
@@ -1207,18 +1259,72 @@ export default function EventCustomizer({
           .host-form {
             max-height: none;
             border-right: none;
-            border-bottom: 1px solid color-mix(in srgb, var(--host-muted) 25%, transparent);
+            border-bottom: none;
+            padding-bottom: 5.5rem;
+          }
+
+          .host-preview {
+            display: none;
+            padding: 0.75rem 1rem 5.5rem;
+          }
+
+          .host-layout.show-preview .host-form {
+            display: none;
+          }
+
+          .host-layout.show-preview .host-preview {
+            display: flex;
           }
 
           .host-preview-frame {
-            max-height: 70vh;
+            max-height: calc(100dvh - 8rem);
           }
 
           .nested-row {
             grid-template-columns: 1fr;
           }
+
+          .host-mobile-save {
+            display: flex;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 20;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+            background: color-mix(in srgb, var(--host-bg) 92%, transparent);
+            border-top: 1px solid color-mix(in srgb, var(--host-accent) 25%, transparent);
+            backdrop-filter: blur(12px);
+          }
+
+          .host-mobile-save .host-save,
+          .host-mobile-save .host-preview-toggle {
+            flex: 1;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+          }
         }
       `}</style>
+
+      <div className="host-mobile-save">
+        <button
+          type="button"
+          className="host-preview-toggle"
+          onClick={() => setShowPreview((v) => !v)}
+        >
+          {showPreview ? "Edit" : t.livePreview}
+        </button>
+        <button
+          type="submit"
+          form="host-customize-form"
+          className="host-save"
+          disabled={saving}
+        >
+          {saving ? t.saving : t.save}
+        </button>
+      </div>
     </div>
   );
 }

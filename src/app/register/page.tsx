@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { auth, isGoogleAuthEnabled } from "@/auth";
 import AuthShell from "@/components/auth/AuthShell";
 import RegisterForm from "@/components/auth/RegisterForm";
 
@@ -15,7 +15,7 @@ export default async function RegisterPage() {
       title="Create your account"
       subtitle="Register once, then create as many invitations as you need — like Evite, without the ads."
     >
-      <RegisterForm />
+      <RegisterForm googleEnabled={isGoogleAuthEnabled} />
     </AuthShell>
   );
 }

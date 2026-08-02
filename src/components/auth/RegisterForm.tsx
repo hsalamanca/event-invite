@@ -5,7 +5,11 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
-export default function RegisterForm() {
+export default function RegisterForm({
+  googleEnabled = false,
+}: {
+  googleEnabled?: boolean;
+}) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +41,8 @@ export default function RegisterForm() {
         router.push("/login");
         return;
       }
-      router.push("/events/new");
+      // Soft verification: account works; verify link was emailed
+      router.push("/events/new?verify=1");
       router.refresh();
     } catch {
       setError("Could not create account. Try again.");
@@ -47,6 +52,21 @@ export default function RegisterForm() {
   }
 
   return (
+    <div className="space-y-4">
+      {googleEnabled ? (
+        <button
+          type="button"
+          onClick={() => void signIn("google", { callbackUrl: "/events/new" })}
+          className="w-full rounded-md border border-white/20 px-4 py-3 text-sm font-medium text-[var(--ivory)] transition hover:border-[var(--champagne)]/50"
+        >
+          Continue with Google
+        </button>
+      ) : null}
+      {googleEnabled ? (
+        <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--mist)]">
+          or email
+        </p>
+      ) : null}
     <form onSubmit={onSubmit} className="space-y-4">
       <label className="block text-sm">
         <span className="text-[var(--mist)]">Your name</span>
@@ -95,11 +115,15 @@ export default function RegisterForm() {
         {loading ? "Creating…" : "Create account"}
       </button>
       <p className="text-center text-sm text-[var(--mist)]">
+        We’ll email a verification link. You can start creating right away.
+      </p>
+      <p className="text-center text-sm text-[var(--mist)]">
         Already have an account?{" "}
         <Link href="/login" className="text-[var(--champagne)] underline">
           Sign in
         </Link>
       </p>
     </form>
+    </div>
   );
 }

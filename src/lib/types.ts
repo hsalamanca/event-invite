@@ -130,7 +130,22 @@ export type UserRecord = {
   id: string;
   email: string;
   name: string;
+  /** Empty for OAuth-only accounts */
   passwordHash: string;
+  emailVerifiedAt?: string | null;
+  verifyToken?: string | null;
+  verifyTokenExpires?: string | null;
+  resetToken?: string | null;
+  resetTokenExpires?: string | null;
+  createdAt: string;
+};
+
+export type InviteView = {
+  id: string;
+  eventId: string;
+  /** Optional guest email if known */
+  email?: string | null;
+  userAgent?: string | null;
   createdAt: string;
 };
 

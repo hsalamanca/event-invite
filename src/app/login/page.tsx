@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { auth, isGoogleAuthEnabled } from "@/auth";
 import AuthShell from "@/components/auth/AuthShell";
 import LoginForm from "@/components/auth/LoginForm";
 
@@ -17,7 +17,7 @@ export default async function LoginPage() {
       subtitle="Sign in to manage your invitations, guests, and domains."
     >
       <Suspense fallback={<p className="text-[var(--mist)]">Loading…</p>}>
-        <LoginForm />
+        <LoginForm googleEnabled={isGoogleAuthEnabled} />
       </Suspense>
     </AuthShell>
   );

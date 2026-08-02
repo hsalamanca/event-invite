@@ -637,7 +637,52 @@ export function templatesByCategory(
   return TEMPLATES.filter((t) => t.categories.includes(category));
 }
 
-export function defaultRsvpFields(deadlineISO: string) {
+const LATIN_TEMPLATE_IDS = new Set([
+  "latin-fiesta",
+  "watercolor-rose",
+  "champagne-wedding",
+]);
+
+export function defaultRsvpFields(
+  deadlineISO: string,
+  opts?: { locale?: "en" | "es"; templateId?: string },
+) {
+  const preferEs =
+    opts?.locale === "es" ||
+    (opts?.templateId ? LATIN_TEMPLATE_IDS.has(opts.templateId) : false);
+
+  if (preferEs) {
+    return {
+      plusOnes: { enabled: true, label: "Número de invitados", max: 2 },
+      dietary: {
+        enabled: true,
+        label: "Restricciones alimentarias o alergias",
+        placeholder: "Vegetariano, sin gluten, etc.",
+      },
+      attendance: {
+        enabled: true,
+        options: ["Asistiré con gusto", "Lamento no poder asistir"],
+      },
+      deadline: deadlineISO,
+      prompt: "Por favor confirma para reservarte un lugar.",
+      customQuestions: [
+        {
+          id: "meal",
+          type: "meal" as const,
+          label: "Preferencia de platillo",
+          options: [
+            "Pollo",
+            "Pescado",
+            "Vegetariano",
+            "Vegano",
+            "Menú infantil",
+          ],
+          required: false,
+        },
+      ],
+    };
+  }
+
   return {
     plusOnes: { enabled: true, label: "Guest count", max: 2 },
     dietary: {
@@ -692,12 +737,18 @@ export function buildEventFromTemplate(input: {
     theme: tpl.theme,
     heroImage: tpl.heroImage,
     customDomain: null,
-    rsvpFields: defaultRsvpFields(input.dateISO),
+    rsvpFields: defaultRsvpFields(input.dateISO, {
+      locale: input.locale,
+      templateId: tpl.id,
+    }),
     about: input.about,
     published: true,
     visibility: "public",
     capacity: null,
     registryUrl: null,
     templateId: tpl.id,
+    showOwnviteFooter: true,
+    tier: "free",
+    premiumTheme: Boolean(tpl.premium),
   };
 }

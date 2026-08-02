@@ -6,6 +6,7 @@ import InviteUnlock from "@/components/invite/InviteUnlock";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
+import { listRsvpsByEventId } from "@/lib/rsvp-store";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -43,10 +44,7 @@ export default async function EventInvitePage({ params }: PageProps) {
   if (!event || !event.published) notFound();
   const locale = await getRequestLocale();
 
-  if (
-    event.visibility === "private" &&
-    event.invitePasswordHash
-  ) {
+  if (event.visibility === "private" && event.invitePasswordHash) {
     const jar = await cookies();
     const unlocked = isUnlocked(jar.get(UNLOCK_COOKIE)?.value, slug);
     if (!unlocked) {
@@ -54,15 +52,34 @@ export default async function EventInvitePage({ params }: PageProps) {
     }
   }
 
+  const rsvps = await listRsvpsByEventId(event.id);
+  const seatsTaken = rsvps
+    .filter((r) => r.attendance.toLowerCase().includes("attend"))
+    .reduce((n, r) => n + (r.guestCount || 1), 0);
+  const atCapacity =
+    event.capacity != null && event.capacity > 0 && seatsTaken >= event.capacity;
+
   // Never send password hash to the client
-  const safeEvent = { ...event, invitePasswordHash: null };
+  const safeEvent = {
+    ...event,
+    invitePasswordHash: null,
+    showOwnviteFooter:
+      event.tier === "pro" || event.tier === "studio"
+        ? false
+        : event.showOwnviteFooter !== false,
+  };
 
   return (
     <div className="relative">
       <div className="absolute right-4 top-4 z-30">
         <LanguageSwitcher locale={locale} />
       </div>
-      <InvitePage event={safeEvent} locale={locale} />
+      <InvitePage
+        event={safeEvent}
+        locale={locale}
+        seatsTaken={seatsTaken}
+        atCapacity={atCapacity}
+      />
     </div>
   );
 }

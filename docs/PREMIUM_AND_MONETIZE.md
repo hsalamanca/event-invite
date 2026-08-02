@@ -82,7 +82,17 @@ Lower priority / later:
 - Lock premium template publish unless `tier !== free` or one-time unlock
 - Cap email sends without credits
 
-Until checkout exists, **do not brick hosts** — collect demand with clear CTAs to `mailto:hello@ownvite.com` / Studio.
+### Stripe checkout (implemented)
+
+Host studio → **Upgrade to Pro · $29** calls `POST /api/billing/checkout` (Stripe Checkout one-time payment). Webhook `POST /api/billing/webhook` sets `tier=pro`, `showOwnviteFooter=false`.
+
+Env vars:
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET` (endpoint `/api/billing/webhook`)
+- Optional Google auth: `AUTH_GOOGLE_CLIENT_ID`, `AUTH_GOOGLE_CLIENT_SECRET`
+- Email for verify/reset: `RESEND_API_KEY`, `EMAIL_FROM`
+
+Without Stripe keys, upgrade falls back to `mailto:hello@ownvite.com`.
 
 ---
 
