@@ -21,7 +21,8 @@ export type InviteLayout =
   | "fiesta"
   | "coastal"
   | "kraft"
-  | "glam";
+  | "glam"
+  | "comic";
 
 export type EventTemplate = {
   id: string;
@@ -197,6 +198,19 @@ const retroGlow: Theme = {
     textMuted: "#8A5540",
   },
   fonts: { display: "Fraunces", body: "Outfit" },
+};
+
+/** Canva Red & Yellow Funky Comic — pop-art birthday bash */
+const funkyComic: Theme = {
+  colors: {
+    background: "#FFE566",
+    surface: "#FFF8E7",
+    accentPrimary: "#E30613",
+    accentSecondary: "#FF8A00",
+    textPrimary: "#111111",
+    textMuted: "#4A3A2A",
+  },
+  fonts: { display: "Bangers", body: "Outfit" },
 };
 
 /** Evite Lovely Linen — airy natural neutrals */
@@ -658,6 +672,26 @@ export const TEMPLATES: EventTemplate[] = [
       "Música, familia, y el sabor de estar juntos — you're invited.",
     taglineEs:
       "Música, familia y el sabor de estar juntos — estás invitado.",
+  },
+  {
+    id: "funky-comic",
+    name: "Funky comic",
+    nameEs: "Cómic funky",
+    description:
+      "Red + yellow pop-art comic — kids’ birthdays, superhero parties, high-energy bashes.",
+    descriptionEs:
+      "Cómic pop rojo + amarillo — cumpleaños infantiles, fiestas de superhéroes.",
+    inspiredBy: "Canva Red and Yellow Funky Comic Birthday Invitation",
+    inspiredByEs: "Canva invitación cómic funky rojo y amarillo",
+    categories: ["birthday", "party", "baby"],
+    layout: "comic",
+    theme: funkyComic,
+    heroImage:
+      "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=1920&q=80&auto=format&fit=crop",
+    headline: "You're Invited!",
+    headlineEs: "¡Estás invitado!",
+    tagline: "Cake, games, and comic-book levels of fun — suit up and show up!",
+    taglineEs: "Pastel, juegos y diversión de cómic — ¡ponte el traje y llega!",
   },
 ];
 
