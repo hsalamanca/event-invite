@@ -6,13 +6,18 @@ import ImageUpload from "@/components/host/ImageUpload";
 import InvitePage from "@/components/invite/InvitePage";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { TEMPLATES, getTemplate } from "@/lib/templates";
 import type { EventRecord, Theme } from "@/lib/types";
 
 const FONT_OPTIONS = [
   "Cormorant Garamond",
   "Fraunces",
+  "Playfair Display",
+  "Lora",
+  "Great Vibes",
   "Source Sans 3",
   "DM Sans",
+  "Outfit",
 ] as const;
 
 type EventCustomizerProps = {
@@ -286,6 +291,40 @@ export default function EventCustomizer({
               onChange={(url) => updateField("heroImage", url)}
               labels={uploadLabels}
             />
+          </fieldset>
+
+          <fieldset>
+            <legend>{t.applyTemplate}</legend>
+            <p className="field-hint">{t.applyTemplateHint}</p>
+            <label>
+              <span>{t.applyTemplate}</span>
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  const id = e.target.value;
+                  if (!id) return;
+                  const tpl = getTemplate(id);
+                  setDraft((prev) => ({
+                    ...prev,
+                    headline:
+                      locale === "es" ? tpl.headlineEs : tpl.headline,
+                    tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,
+                    heroImage: tpl.heroImage,
+                    colors: { ...tpl.theme.colors },
+                    fonts: { ...tpl.theme.fonts },
+                  }));
+                  setSaveMessage(null);
+                  e.target.value = "";
+                }}
+              >
+                <option value="">—</option>
+                {TEMPLATES.map((tpl) => (
+                  <option key={tpl.id} value={tpl.id}>
+                    {locale === "es" ? tpl.nameEs : tpl.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -584,6 +623,13 @@ export default function EventCustomizer({
           min-height: 44px;
           padding: 0.2rem;
           cursor: pointer;
+        }
+
+        .field-hint {
+          margin: 0 0 0.75rem;
+          font-size: 0.8rem;
+          color: var(--host-muted);
+          line-height: 1.4;
         }
 
         .host-status {

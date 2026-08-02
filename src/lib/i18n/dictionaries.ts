@@ -109,6 +109,8 @@ export type Dictionary = {
     capacityHint: string;
     registryUrl: string;
     published: string;
+    applyTemplate: string;
+    applyTemplateHint: string;
   };
   dashboard: {
     eyebrow: string;
@@ -422,6 +424,8 @@ const en: Dictionary = {
     capacityHint: "Leave blank for unlimited",
     registryUrl: "Gift registry / wishlist URL",
     published: "Published (visible to guests)",
+    applyTemplate: "Apply template look",
+    applyTemplateHint: "Updates colors, fonts, hero, and headlines from a template.",
   },
   dashboard: {
     eyebrow: "Your events",
@@ -441,7 +445,8 @@ const en: Dictionary = {
     stepTemplate: "Template",
     stepDetails: "Details",
     pickTemplate: "Choose a look",
-    pickSupport: "Start from a designer template — you can change everything later.",
+    pickSupport:
+      "18 looks inspired by top Evite & Canva styles — gold confetti, olive minimal, blush shower, coastal, and more. Change everything later.",
     continue: "Continue",
     detailsTitle: "Event details",
     detailsSupport: "Guests will see these on your invitation page.",
@@ -744,6 +749,9 @@ const es: Dictionary = {
     capacityHint: "Vacío = sin límite",
     registryUrl: "URL de lista de regalos",
     published: "Publicado (visible para invitados)",
+    applyTemplate: "Aplicar look de plantilla",
+    applyTemplateHint:
+      "Actualiza colores, fuentes, imagen y titulares desde una plantilla.",
   },
   dashboard: {
     eyebrow: "Tus eventos",
@@ -765,7 +773,7 @@ const es: Dictionary = {
     stepDetails: "Detalles",
     pickTemplate: "Elige un estilo",
     pickSupport:
-      "Empieza con una plantilla — luego puedes cambiarlo todo.",
+      "18 looks inspirados en Evite y Canva — confeti dorado, olivo minimal, blush shower, costa y más. Luego puedes cambiarlo todo.",
     continue: "Continuar",
     detailsTitle: "Detalles del evento",
     detailsSupport: "Los invitados verán esto en tu página.",

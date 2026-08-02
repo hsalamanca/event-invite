@@ -38,6 +38,10 @@ const FONT_STACK: Record<string, string> = {
   Fraunces: "var(--font-fraunces), Georgia, serif",
   "Source Sans 3": "var(--font-source-sans), system-ui, sans-serif",
   "DM Sans": "var(--font-dm-sans), system-ui, sans-serif",
+  "Playfair Display": "var(--font-playfair), Georgia, serif",
+  Outfit: "var(--font-outfit), system-ui, sans-serif",
+  Lora: "var(--font-lora), Georgia, serif",
+  "Great Vibes": "var(--font-great-vibes), cursive",
 };
 
 function fontStack(name: string, fallback: string): string {

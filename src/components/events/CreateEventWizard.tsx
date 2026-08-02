@@ -4,7 +4,12 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import { TEMPLATES } from "@/lib/templates";
+import {
+  TEMPLATE_CATEGORIES,
+  TEMPLATES,
+  templatesByCategory,
+  type TemplateCategory,
+} from "@/lib/templates";
 
 function slugify(input: string): string {
   return input
@@ -24,6 +29,7 @@ export default function CreateEventWizard({
   const t = getDictionary(locale).create;
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [category, setCategory] = useState<TemplateCategory | "all">("all");
   const [templateId, setTemplateId] = useState(TEMPLATES[0]!.id);
   const [title, setTitle] = useState("");
   const [hostName, setHostName] = useState(defaultHostName);
@@ -37,6 +43,10 @@ export default function CreateEventWizard({
   const [loading, setLoading] = useState(false);
 
   const suggestedSlug = useMemo(() => slugify(title || "my-event"), [title]);
+  const visibleTemplates = useMemo(
+    () => templatesByCategory(category),
+    [category],
+  );
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -76,7 +86,7 @@ export default function CreateEventWizard({
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-3xl">
+    <form onSubmit={onSubmit} className="mx-auto max-w-5xl">
       <div className="mb-8 flex gap-2 text-xs uppercase tracking-[0.2em] text-[var(--mist)]">
         <span className={step === 1 ? "text-[var(--champagne)]" : ""}>
           1 · {t.stepTemplate}
@@ -92,43 +102,120 @@ export default function CreateEventWizard({
           <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-tight">
             {t.pickTemplate}
           </h1>
-          <p className="mt-2 text-[var(--mist)]">{t.pickSupport}</p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {TEMPLATES.map((tpl) => {
+          <p className="mt-2 max-w-2xl text-[var(--mist)]">{t.pickSupport}</p>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {TEMPLATE_CATEGORIES.map((cat) => {
+              const active = category === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategory(cat.id)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-medium tracking-wide transition ${
+                    active
+                      ? "bg-[var(--champagne)] text-[var(--ink)]"
+                      : "border border-white/15 text-[var(--mist)] hover:border-white/30 hover:text-[var(--ivory)]"
+                  }`}
+                >
+                  {locale === "es" ? cat.labelEs : cat.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleTemplates.map((tpl) => {
               const selected = templateId === tpl.id;
               return (
                 <button
                   key={tpl.id}
                   type="button"
                   onClick={() => setTemplateId(tpl.id)}
-                  className={`overflow-hidden text-left transition ${
+                  className={`group overflow-hidden text-left transition ${
                     selected
                       ? "ring-2 ring-[var(--champagne)]"
                       : "ring-1 ring-white/10 hover:ring-white/25"
                   }`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={tpl.heroImage}
-                    alt=""
-                    className="aspect-[4/3] w-full object-cover"
-                  />
-                  <div className="bg-white/5 px-3 py-3">
-                    <p className="font-medium">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={tpl.heroImage}
+                      alt=""
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-1/2"
+                      style={{
+                        background: `linear-gradient(transparent, ${tpl.theme.colors.background})`,
+                      }}
+                    />
+                    <div className="absolute bottom-2 left-2 right-2 flex gap-1">
+                      {tpl.categories.slice(0, 2).map((c) => (
+                        <span
+                          key={c}
+                          className="rounded bg-black/45 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-white/90"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="px-3 py-3"
+                    style={{
+                      background: tpl.theme.colors.surface,
+                      color: tpl.theme.colors.textPrimary,
+                    }}
+                  >
+                    <p
+                      className="text-lg leading-tight"
+                      style={{
+                        fontFamily: `var(--font-${
+                          tpl.theme.fonts.display === "Playfair Display"
+                            ? "playfair"
+                            : tpl.theme.fonts.display === "Great Vibes"
+                              ? "great-vibes"
+                              : tpl.theme.fonts.display === "Lora"
+                                ? "lora"
+                                : tpl.theme.fonts.display === "Fraunces"
+                                  ? "fraunces"
+                                  : tpl.theme.fonts.display === "Outfit"
+                                    ? "outfit"
+                                    : "cormorant"
+                        })`,
+                      }}
+                    >
                       {locale === "es" ? tpl.nameEs : tpl.name}
                     </p>
-                    <p className="mt-1 text-xs text-[var(--mist)]">
+                    <p
+                      className="mt-1 text-xs leading-snug"
+                      style={{ color: tpl.theme.colors.textMuted }}
+                    >
                       {locale === "es" ? tpl.descriptionEs : tpl.description}
+                    </p>
+                    <p
+                      className="mt-2 text-[10px] uppercase tracking-[0.14em]"
+                      style={{ color: tpl.theme.colors.accentPrimary }}
+                    >
+                      {locale === "es" ? tpl.inspiredByEs : tpl.inspiredBy}
                     </p>
                   </div>
                 </button>
               );
             })}
           </div>
+
+          {visibleTemplates.length === 0 ? (
+            <p className="mt-8 text-[var(--mist)]">No templates in this category.</p>
+          ) : null}
+
           <button
             type="button"
             onClick={() => setStep(2)}
-            className="mt-8 rounded-md bg-[var(--champagne)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]"
+            disabled={!templateId}
+            className="mt-8 rounded-md bg-[var(--champagne)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] disabled:opacity-50"
           >
             {t.continue}
           </button>

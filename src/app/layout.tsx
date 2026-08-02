@@ -4,6 +4,10 @@ import {
   Source_Sans_3,
   Fraunces,
   DM_Sans,
+  Playfair_Display,
+  Outfit,
+  Lora,
+  Great_Vibes,
 } from "next/font/google";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
@@ -37,6 +41,34 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-lora",
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-great-vibes",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const meta = getDictionary(locale).meta;
@@ -59,7 +91,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} antialiased`}
+        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} antialiased`}
       >
         {children}
       </body>
