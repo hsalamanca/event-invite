@@ -80,8 +80,8 @@ export default async function EventInvitePage({ params }: PageProps) {
 
   return (
     <div className="relative">
-      <div className="absolute right-4 top-4 z-30">
-        <LanguageSwitcher locale={locale} />
+      <div className="absolute right-3 top-3 z-30 sm:right-5 sm:top-5">
+        <LanguageSwitcher locale={locale} variant="invite" />
       </div>
       <InvitePage
         event={safeEvent}

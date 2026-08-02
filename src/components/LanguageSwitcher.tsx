@@ -8,17 +8,25 @@ type LanguageSwitcherProps = {
   locale: Locale;
   /** Kept for call-site compatibility; URLs no longer change with language. */
   path?: string;
+  /** Stronger contrast for invite pages over photography. */
+  variant?: "default" | "invite";
 };
 
-export default function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
+const LOCALES: { code: Locale; label: string }[] = [
+  { code: "en", label: "EN" },
+  { code: "es", label: "ES" },
+];
+
+export default function LanguageSwitcher({
+  locale,
+  variant = "default",
+}: LanguageSwitcherProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [busy, setBusy] = useState(false);
 
-  const nextLocale: Locale = locale === "en" ? "es" : "en";
-  const label = locale === "en" ? "ES" : "EN";
-
-  async function switchLocale() {
+  async function switchLocale(nextLocale: Locale) {
+    if (nextLocale === locale || busy || pending) return;
     setBusy(true);
     try {
       await fetch("/api/locale", {
@@ -34,15 +42,45 @@ export default function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
     }
   }
 
+  const shellClass =
+    variant === "invite"
+      ? "inline-flex items-center rounded-full border border-black/10 bg-white/95 p-1 shadow-md backdrop-blur-sm"
+      : "inline-flex items-center rounded-full border border-white/25 bg-black/35 p-0.5 shadow-sm backdrop-blur-sm";
+
+  const activeClass =
+    variant === "invite"
+      ? "bg-[var(--ink)] text-white shadow-sm"
+      : "bg-[var(--champagne)] text-[var(--ink)] shadow-sm";
+
+  const idleClass =
+    variant === "invite"
+      ? "text-black/55 hover:text-black/80"
+      : "text-white/70 hover:text-white";
+
   return (
-    <button
-      type="button"
-      onClick={() => void switchLocale()}
-      disabled={busy || pending}
-      className="rounded-md border border-white/15 px-2.5 py-1 text-xs font-medium tracking-wide text-[var(--mist)] transition hover:border-[var(--champagne)]/40 hover:text-[var(--ivory)] disabled:opacity-60"
-      aria-label={locale === "en" ? "Cambiar a español" : "Switch to English"}
+    <div
+      className={shellClass}
+      role="group"
+      aria-label={locale === "en" ? "Language" : "Idioma"}
     >
-      {label}
-    </button>
+      {LOCALES.map(({ code, label }) => {
+        const active = locale === code;
+        return (
+          <button
+            key={code}
+            type="button"
+            onClick={() => void switchLocale(code)}
+            disabled={busy || pending}
+            aria-pressed={active}
+            aria-label={code === "en" ? "English" : "Español"}
+            className={`min-w-[2.75rem] rounded-full px-3 py-1.5 text-sm font-semibold tracking-wide transition disabled:opacity-60 ${
+              active ? activeClass : idleClass
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
