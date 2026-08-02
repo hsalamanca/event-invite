@@ -490,10 +490,13 @@ export default function InvitePage({
         .invite-hero-overlay {
           position: absolute;
           inset: 0;
+          /* Fade photo into the (light) page background — celebratory, not moody */
           background: linear-gradient(
             to bottom,
-            rgba(15, 26, 46, 0.55) 0%,
-            rgba(15, 26, 46, 0.85) 100%
+            color-mix(in srgb, var(--invite-bg) 15%, transparent) 0%,
+            color-mix(in srgb, var(--invite-bg) 55%, transparent) 42%,
+            color-mix(in srgb, var(--invite-bg) 92%, transparent) 72%,
+            var(--invite-bg) 100%
           );
         }
 
@@ -506,6 +509,7 @@ export default function InvitePage({
           padding-bottom: calc(clamp(2.5rem, 8vw, 5rem) + env(safe-area-inset-bottom, 0px));
           padding-left: calc(clamp(1.5rem, 5vw, 3rem) + env(safe-area-inset-left, 0px));
           padding-right: calc(clamp(1.5rem, 5vw, 3rem) + env(safe-area-inset-right, 0px));
+          text-shadow: 0 1px 0 color-mix(in srgb, var(--invite-bg) 65%, transparent);
         }
 
         .invite-brand {

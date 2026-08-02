@@ -446,7 +446,7 @@ const en: Dictionary = {
     stepDetails: "Details",
     pickTemplate: "Choose a look",
     pickSupport:
-      "18 looks inspired by top Evite & Canva styles — gold confetti, olive minimal, blush shower, coastal, and more. Change everything later.",
+      "19 bright, celebratory looks inspired by Evite & Canva — sunny gold, garden green, blush, Latin fiesta, and more. Change everything later.",
     continue: "Continue",
     detailsTitle: "Event details",
     detailsSupport: "Guests will see these on your invitation page.",
@@ -773,7 +773,7 @@ const es: Dictionary = {
     stepDetails: "Detalles",
     pickTemplate: "Elige un estilo",
     pickSupport:
-      "18 looks inspirados en Evite y Canva — confeti dorado, olivo minimal, blush shower, costa y más. Luego puedes cambiarlo todo.",
+      "19 looks luminosos inspirados en Evite y Canva — oro soleado, jardín, blush, fiesta latina y más. Luego puedes cambiarlo todo.",
     continue: "Continuar",
     detailsTitle: "Detalles del evento",
     detailsSupport: "Los invitados verán esto en tu página.",

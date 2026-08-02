@@ -27,77 +27,78 @@ export type EventTemplate = {
   taglineEs: string;
 };
 
+/** Bright champagne cocktail — sunny celebration, not a nightclub */
 const evening: Theme = {
   colors: {
-    background: "#0F1A2E",
-    surface: "#1A2744",
-    accentPrimary: "#C9A962",
-    accentSecondary: "#E07A5F",
-    textPrimary: "#F4F0E8",
-    textMuted: "#9BA8BC",
+    background: "#FFF9F0",
+    surface: "#FFF1DE",
+    accentPrimary: "#E8A317",
+    accentSecondary: "#FF6B4A",
+    textPrimary: "#2C2118",
+    textMuted: "#7A6554",
   },
   fonts: { display: "Cormorant Garamond", body: "Source Sans 3" },
 };
 
 const garden: Theme = {
   colors: {
-    background: "#14241A",
-    surface: "#1E3326",
-    accentPrimary: "#C4A35A",
-    accentSecondary: "#7FA38B",
-    textPrimary: "#F3F0E6",
-    textMuted: "#A8B5A4",
+    background: "#F3FAF4",
+    surface: "#E4F4E8",
+    accentPrimary: "#2F9E6B",
+    accentSecondary: "#F0B429",
+    textPrimary: "#1C3A28",
+    textMuted: "#5A7A64",
   },
   fonts: { display: "Fraunces", body: "DM Sans" },
 };
 
 const celebration: Theme = {
   colors: {
-    background: "#1A1520",
-    surface: "#2A2233",
-    accentPrimary: "#E8B4A0",
-    accentSecondary: "#C9A962",
-    textPrimary: "#F7F1EA",
-    textMuted: "#B8A9B5",
+    background: "#FFF5F8",
+    surface: "#FFE8EF",
+    accentPrimary: "#F25C8A",
+    accentSecondary: "#FFB347",
+    textPrimary: "#3A1F2B",
+    textMuted: "#8A5A6C",
   },
   fonts: { display: "Cormorant Garamond", body: "Source Sans 3" },
 };
 
-/** Evite “Festive Gold Confetti” energy — champagne sparkle on deep ink */
+/** Evite “Festive Gold Confetti” — sunny gold on bright white */
 const goldConfetti: Theme = {
   colors: {
-    background: "#14110F",
-    surface: "#241E1A",
-    accentPrimary: "#E0C37A",
-    accentSecondary: "#F2E6C8",
-    textPrimary: "#FBF6EC",
-    textMuted: "#B8A990",
+    background: "#FFFCF7",
+    surface: "#FFF4D6",
+    accentPrimary: "#E6A800",
+    accentSecondary: "#FF5C7A",
+    textPrimary: "#2A2416",
+    textMuted: "#7A6A40",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
 
-/** Evite “Olive Minimal” — quiet botanical green */
+/** Evite “Olive Minimal” — fresh botanical on soft mint */
 const oliveMinimal: Theme = {
   colors: {
-    background: "#1C2118",
-    surface: "#2A3224",
-    accentPrimary: "#A8B57A",
-    accentSecondary: "#D9C9A3",
-    textPrimary: "#F2EFE6",
-    textMuted: "#A7AB99",
+    background: "#F7FAF2",
+    surface: "#EAF3DE",
+    accentPrimary: "#6B9A3E",
+    accentSecondary: "#E0A84A",
+    textPrimary: "#243018",
+    textMuted: "#6A7A58",
   },
   fonts: { display: "Lora", body: "DM Sans" },
 };
 
-/** Canva floral / Evite Baby’s Breath — soft ivory romance */
+/** Canva floral / Evite Baby’s Breath — airy ivory romance */
 const ivoryBloom: Theme = {
   colors: {
-    background: "#2A2420",
-    surface: "#3A322C",
-    accentPrimary: "#E8D5C4",
-    accentSecondary: "#C7A98A",
-    textPrimary: "#FAF6F1",
-    textMuted: "#C4B5A8",
+    background: "#FFFBFA",
+    surface: "#FFF0EE",
+    accentPrimary: "#E8919A",
+    accentSecondary: "#F0C96A",
+    textPrimary: "#3A2826",
+    textMuted: "#8A6A66",
   },
   fonts: { display: "Great Vibes", body: "Lora" },
 };
@@ -105,90 +106,90 @@ const ivoryBloom: Theme = {
 /** Canva blush pastel baby shower */
 const blushShower: Theme = {
   colors: {
-    background: "#2B2226",
-    surface: "#3A2E34",
-    accentPrimary: "#E8B4C8",
-    accentSecondary: "#F0D5C8",
-    textPrimary: "#FFF7F9",
-    textMuted: "#C9B0BA",
+    background: "#FFF7FA",
+    surface: "#FFEAF2",
+    accentPrimary: "#F48FB1",
+    accentSecondary: "#80DEEA",
+    textPrimary: "#4A2A38",
+    textMuted: "#8A6070",
   },
   fonts: { display: "Cormorant Garamond", body: "Outfit" },
 };
 
-/** Evite “Modern Black & White” glam */
+/** Clean modern glam — bright white with charcoal accents */
 const blackTie: Theme = {
   colors: {
-    background: "#0A0A0A",
-    surface: "#1A1A1A",
-    accentPrimary: "#F5F5F5",
-    accentSecondary: "#A0A0A0",
-    textPrimary: "#FAFAFA",
-    textMuted: "#8C8C8C",
+    background: "#FFFFFF",
+    surface: "#F3F4F6",
+    accentPrimary: "#111827",
+    accentSecondary: "#EC4899",
+    textPrimary: "#111827",
+    textMuted: "#6B7280",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
 
-/** Evite citrus / garden brunch */
+/** Evite citrus / garden brunch — lemonade bright */
 const citrusBrunch: Theme = {
   colors: {
-    background: "#1F2414",
-    surface: "#2C331C",
-    accentPrimary: "#E8B84A",
-    accentSecondary: "#E07A4F",
-    textPrimary: "#F7F3E8",
-    textMuted: "#B5B49A",
+    background: "#FFFCEB",
+    surface: "#FFF3C4",
+    accentPrimary: "#F5A623",
+    accentSecondary: "#FF6F3C",
+    textPrimary: "#3A2A10",
+    textMuted: "#8A6A30",
   },
   fonts: { display: "Fraunces", body: "DM Sans" },
 };
 
-/** Canva boho / rustic sunset */
+/** Canva boho — warm peach sunshine */
 const bohoSunset: Theme = {
   colors: {
-    background: "#2A1D16",
-    surface: "#3B2A20",
-    accentPrimary: "#D4A574",
-    accentSecondary: "#8B6F5C",
-    textPrimary: "#F6EDE3",
-    textMuted: "#BCA490",
+    background: "#FFF6EF",
+    surface: "#FFE4D2",
+    accentPrimary: "#E07A45",
+    accentSecondary: "#F2B705",
+    textPrimary: "#3A2418",
+    textMuted: "#8A6048",
   },
   fonts: { display: "Lora", body: "Source Sans 3" },
 };
 
-/** Evite Gold Frame Wedding / ivory & gold */
+/** Evite Gold Frame Wedding — luminous ivory & gold */
 const champagneWedding: Theme = {
   colors: {
-    background: "#1A1714",
-    surface: "#2B2621",
-    accentPrimary: "#D4AF6A",
-    accentSecondary: "#F0E6D4",
-    textPrimary: "#FBF7F0",
-    textMuted: "#B8AA96",
+    background: "#FFFAF5",
+    surface: "#FFF0DC",
+    accentPrimary: "#D4A017",
+    accentSecondary: "#E8919A",
+    textPrimary: "#3A2E1E",
+    textMuted: "#8A7458",
   },
   fonts: { display: "Great Vibes", body: "Cormorant Garamond" },
 };
 
-/** Retro disco / maximal celebration */
+/** Retro party — bright coral & sunny orange (no dark purple) */
 const retroGlow: Theme = {
   colors: {
-    background: "#1A1024",
-    surface: "#2A1A38",
-    accentPrimary: "#F0A35E",
-    accentSecondary: "#E85D75",
-    textPrimary: "#FFF4EC",
-    textMuted: "#C4A8B8",
+    background: "#FFF8F2",
+    surface: "#FFE8D6",
+    accentPrimary: "#FF5A36",
+    accentSecondary: "#FFB703",
+    textPrimary: "#3A1E14",
+    textMuted: "#8A5540",
   },
   fonts: { display: "Fraunces", body: "Outfit" },
 };
 
-/** Evite Lovely Linen / Simple Kraft */
+/** Evite Lovely Linen — airy natural neutrals */
 const linenKraft: Theme = {
   colors: {
-    background: "#221E1A",
-    surface: "#322C26",
-    accentPrimary: "#C4A882",
-    accentSecondary: "#8A7A68",
-    textPrimary: "#F4EDE3",
-    textMuted: "#B0A090",
+    background: "#FAF7F2",
+    surface: "#F0E8DC",
+    accentPrimary: "#C4894B",
+    accentSecondary: "#7EB8A8",
+    textPrimary: "#3A3228",
+    textMuted: "#7A6E60",
   },
   fonts: { display: "Lora", body: "Source Sans 3" },
 };
@@ -196,80 +197,80 @@ const linenKraft: Theme = {
 /** Evite Birthday Balloons — playful sky celebration */
 const balloonBash: Theme = {
   colors: {
-    background: "#152033",
-    surface: "#1E2E48",
-    accentPrimary: "#7EB8E8",
-    accentSecondary: "#F2A0B8",
-    textPrimary: "#F5F8FC",
-    textMuted: "#9AADC4",
+    background: "#F3F9FF",
+    surface: "#E3F1FF",
+    accentPrimary: "#3B9EFF",
+    accentSecondary: "#FF6BA8",
+    textPrimary: "#1A2A44",
+    textMuted: "#5A6E8A",
   },
   fonts: { display: "Fraunces", body: "Outfit" },
 };
 
-/** Canva / Evite watercolor romance */
+/** Canva / Evite watercolor romance — soft rose light */
 const watercolorRose: Theme = {
   colors: {
-    background: "#241820",
-    surface: "#342430",
-    accentPrimary: "#D4A0B0",
-    accentSecondary: "#E8C8B8",
-    textPrimary: "#FBF4F6",
-    textMuted: "#C4A8B0",
+    background: "#FFF8FA",
+    surface: "#FFE9F0",
+    accentPrimary: "#E86A8C",
+    accentSecondary: "#F2C14E",
+    textPrimary: "#3A2430",
+    textMuted: "#8A6070",
   },
   fonts: { display: "Great Vibes", body: "Lora" },
 };
 
-/** Destination / coastal */
+/** Destination / coastal — bright sea glass */
 const coastalBreeze: Theme = {
   colors: {
-    background: "#122028",
-    surface: "#1A2E38",
-    accentPrimary: "#7EB8B0",
-    accentSecondary: "#E8D4A8",
-    textPrimary: "#F2F7F6",
-    textMuted: "#9AB0B4",
+    background: "#F2FBFA",
+    surface: "#DDF4F1",
+    accentPrimary: "#1A9B8E",
+    accentSecondary: "#F0B429",
+    textPrimary: "#16363A",
+    textMuted: "#4A7074",
   },
   fonts: { display: "Playfair Display", body: "DM Sans" },
 };
 
-/** Evite Tinsel Nights — NYE / holiday sparkle */
+/** Holiday sparkle — bright winter celebration */
 const tinselNights: Theme = {
   colors: {
-    background: "#0E1420",
-    surface: "#1A2438",
-    accentPrimary: "#C9D4E8",
-    accentSecondary: "#E0A85C",
-    textPrimary: "#F4F7FC",
-    textMuted: "#96A4BC",
+    background: "#F7FBFF",
+    surface: "#E8F2FF",
+    accentPrimary: "#3B82F6",
+    accentSecondary: "#F59E0B",
+    textPrimary: "#1E2A44",
+    textMuted: "#5A6A88",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
 
-/** Evite Modern Arch Party */
+/** Evite Modern Arch Party — clean peach editorial */
 const modernArch: Theme = {
   colors: {
-    background: "#18161C",
-    surface: "#28242E",
-    accentPrimary: "#E8C4A0",
-    accentSecondary: "#8A9EAE",
-    textPrimary: "#F7F2EC",
-    textMuted: "#A8A0A8",
+    background: "#FFF9F6",
+    surface: "#FFEDE4",
+    accentPrimary: "#F07850",
+    accentSecondary: "#3DB8A0",
+    textPrimary: "#2E221C",
+    textMuted: "#7A6458",
   },
   fonts: { display: "Outfit", body: "DM Sans" },
 };
 
 /**
- * Latin celebration — marigold gold + turquoise on deep espresso.
+ * Latin celebration — marigold + turquoise on sunny cream.
  * For quinceañeras, bodas, bautizos, fiestas familiares.
  */
 const latinFiesta: Theme = {
   colors: {
-    background: "#1A120E",
-    surface: "#2C1E16",
-    accentPrimary: "#E8A820",
-    accentSecondary: "#2A9B8F",
-    textPrimary: "#FFF6E8",
-    textMuted: "#C4A890",
+    background: "#FFF8EC",
+    surface: "#FFE9C2",
+    accentPrimary: "#F0A010",
+    accentSecondary: "#12A89A",
+    textPrimary: "#3A2410",
+    textMuted: "#8A6438",
   },
   fonts: { display: "Playfair Display", body: "Source Sans 3" },
 };
@@ -292,10 +293,10 @@ export const TEMPLATE_CATEGORIES: {
 export const TEMPLATES: EventTemplate[] = [
   {
     id: "evening",
-    name: "Evening celebration",
-    nameEs: "Celebración nocturna",
-    description: "Ink navy + champagne — dinners, birthdays, cocktail parties.",
-    descriptionEs: "Azul noche + champán — cenas, cumpleaños, cócteles.",
+    name: "Champagne toast",
+    nameEs: "Brindis champán",
+    description: "Sunny champagne + coral — dinners, birthdays, cocktail parties.",
+    descriptionEs: "Champán soleado + coral — cenas, cumpleaños, cócteles.",
     inspiredBy: "Evite cocktail & dinner classics",
     inspiredByEs: "Clásicos de cóctel y cena de Evite",
     categories: ["dinner", "birthday", "party"],
@@ -328,8 +329,8 @@ export const TEMPLATES: EventTemplate[] = [
     id: "garden",
     name: "Garden gathering",
     nameEs: "Encuentro en el jardín",
-    description: "Deep green + gold — brunches, showers, outdoor parties.",
-    descriptionEs: "Verde profundo + oro — brunches, baby showers, al aire libre.",
+    description: "Fresh green + sunshine gold — brunches, showers, outdoor parties.",
+    descriptionEs: "Verde fresco + oro soleado — brunches, baby showers, al aire libre.",
     inspiredBy: "Evite Garden Party + Canva greenery",
     inspiredByEs: "Evite Garden Party + verdor Canva",
     categories: ["brunch", "baby", "party"],
@@ -411,20 +412,20 @@ export const TEMPLATES: EventTemplate[] = [
   },
   {
     id: "black-tie",
-    name: "Black & white glam",
-    nameEs: "Glam blanco y negro",
-    description: "Crisp monochrome — galas, formal birthdays, after-parties.",
-    descriptionEs: "Monocromo nítido — galas, cumpleaños formales, after-parties.",
-    inspiredBy: "Evite Modern Black & White",
-    inspiredByEs: "Evite Modern Black & White",
+    name: "Modern glam",
+    nameEs: "Glam moderno",
+    description: "Bright white + pink pop — galas, formal birthdays, chic parties.",
+    descriptionEs: "Blanco brillante + toque rosa — galas, cumpleaños formales, fiestas chic.",
+    inspiredBy: "Evite Modern Black & White (light remix)",
+    inspiredByEs: "Evite Modern Black & White (versión clara)",
     categories: ["dinner", "birthday", "party"],
     theme: blackTie,
     heroImage:
       "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1920&q=80&auto=format&fit=crop",
-    headline: "Black Tie Optional",
-    headlineEs: "Etiqueta opcional",
-    tagline: "Sharp looks, late music, and a night that photographs well.",
-    taglineEs: "Looks impecables, música hasta tarde y una noche para fotos.",
+    headline: "Dress to Celebrate",
+    headlineEs: "Vístete para celebrar",
+    tagline: "Sharp looks, great music, and a night that photographs well.",
+    taglineEs: "Looks impecables, buena música y una noche para fotos.",
   },
   {
     id: "citrus-brunch",
@@ -564,20 +565,20 @@ export const TEMPLATES: EventTemplate[] = [
   },
   {
     id: "tinsel-nights",
-    name: "Tinsel nights",
-    nameEs: "Noches de oropel",
-    description: "Cool sparkle — New Year’s, holidays, winter parties.",
-    descriptionEs: "Brillo frío — Año Nuevo, fiestas y noches de invierno.",
-    inspiredBy: "Evite Tinsel Nights / Gleaming Gold",
-    inspiredByEs: "Evite Tinsel Nights / Gleaming Gold",
+    name: "Holiday sparkle",
+    nameEs: "Brillo festivo",
+    description: "Bright blue + gold sparkle — New Year’s, holidays, winter parties.",
+    descriptionEs: "Azul brillante + oro — Año Nuevo, fiestas y celebraciones de invierno.",
+    inspiredBy: "Evite Tinsel Nights (bright remix)",
+    inspiredByEs: "Evite Tinsel Nights (versión luminosa)",
     categories: ["party", "birthday", "dinner"],
     theme: tinselNights,
     heroImage:
       "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1920&q=80&auto=format&fit=crop",
-    headline: "Sparkle Into the Night",
-    headlineEs: "Brilla en la noche",
-    tagline: "Midnight toasts, silver light, and a room full of cheer.",
-    taglineEs: "Brindis a medianoche, luz plateada y mucha alegría.",
+    headline: "Let's Sparkle Together",
+    headlineEs: "Brillemos juntos",
+    tagline: "Toasts, bright cheer, and a room full of joy.",
+    taglineEs: "Brindis, alegría y una sala llena de fiesta.",
   },
   {
     id: "modern-arch",
@@ -601,9 +602,9 @@ export const TEMPLATES: EventTemplate[] = [
     name: "Latin fiesta",
     nameEs: "Fiesta latina",
     description:
-      "Marigold gold + turquoise — quinceañeras, bodas, bautizos, and family celebrations.",
+      "Sunny marigold + turquoise — quinceañeras, bodas, bautizos, and family celebrations.",
     descriptionEs:
-      "Oro cempasúchil + turquesa — quinceañeras, bodas, bautizos y fiestas familiares.",
+      "Cempasúchil soleado + turquesa — quinceañeras, bodas, bautizos y fiestas familiares.",
     inspiredBy: "Latin American celebration / Canva fiesta & quince",
     inspiredByEs: "Celebración latinoamericana / Canva fiesta y quince",
     categories: ["birthday", "wedding", "party", "baby"],
