@@ -101,7 +101,7 @@ export default function InvitePage({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState(defaultAttendance);
-  const [guestCount, setGuestCount] = useState(1);
+  const [guestCount, setGuestCount] = useState<number | "">(1);
   const [dietary, setDietary] = useState("");
   const [note, setNote] = useState("");
   const [answers, setAnswers] = useState<RsvpAnswers>({});
@@ -218,7 +218,9 @@ export default function InvitePage({
       name: name.trim(),
       email: email.trim(),
       attendance,
-      guestCount: rsvpFields.plusOnes.enabled ? guestCount : 1,
+      guestCount: rsvpFields.plusOnes.enabled
+        ? Math.max(1, Number(guestCount) || 1)
+        : 1,
       dietary: rsvpFields.dietary.enabled ? dietary.trim() : "",
       note: note.trim(),
       answers,
@@ -588,7 +590,23 @@ export default function InvitePage({
                   min={1}
                   max={rsvpFields.plusOnes.max}
                   value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value) || 1)}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    if (next === "") {
+                      setGuestCount("");
+                      return;
+                    }
+                    const n = Number(next);
+                    if (!Number.isFinite(n)) return;
+                    setGuestCount(
+                      Math.min(rsvpFields.plusOnes.max, Math.max(0, n)),
+                    );
+                  }}
+                  onBlur={() => {
+                    if (guestCount === "" || guestCount < 1) {
+                      setGuestCount(1);
+                    }
+                  }}
                 />
               </label>
             )}
@@ -833,7 +851,7 @@ export default function InvitePage({
         :global(.invite-cover-stage) {
           position: relative;
           z-index: 1;
-          width: min(100%, 34rem);
+          width: min(100%, 42rem);
         }
 
         :global(.invite-card) {

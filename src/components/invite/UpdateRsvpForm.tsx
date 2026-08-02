@@ -122,7 +122,7 @@ export default function UpdateRsvpForm({
   const fields = event.rsvpFields;
   const [name, setName] = useState(rsvp.name);
   const [attendance, setAttendance] = useState(rsvp.attendance);
-  const [guestCount, setGuestCount] = useState(rsvp.guestCount);
+  const [guestCount, setGuestCount] = useState<number | "">(rsvp.guestCount);
   const [dietary, setDietary] = useState(rsvp.dietary);
   const [note, setNote] = useState(rsvp.note);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>(
@@ -145,7 +145,7 @@ export default function UpdateRsvpForm({
           token,
           name,
           attendance,
-          guestCount,
+          guestCount: Math.max(1, Number(guestCount) || 1),
           dietary,
           note,
           answers,
@@ -225,7 +225,23 @@ export default function UpdateRsvpForm({
                   min={1}
                   max={fields.plusOnes.max}
                   value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value) || 1)}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    if (next === "") {
+                      setGuestCount("");
+                      return;
+                    }
+                    const n = Number(next);
+                    if (!Number.isFinite(n)) return;
+                    setGuestCount(
+                      Math.min(fields.plusOnes.max, Math.max(0, n)),
+                    );
+                  }}
+                  onBlur={() => {
+                    if (guestCount === "" || guestCount < 1) {
+                      setGuestCount(1);
+                    }
+                  }}
                   className="w-full rounded-md border border-white/15 bg-white/5 px-3 py-2"
                 />
               </label>
