@@ -78,6 +78,16 @@ export async function POST(request: Request) {
 
   try {
     const event = await createEvent(base);
+    // Provision {slug}.ownvite.app / .com so HTTPS certs issue (HTTP-01).
+    // Wildcard SSL needs Vercel nameservers; per-host add works with * CNAME.
+    try {
+      const { ensurePlatformSubdomains } = await import(
+        "@/lib/platform-subdomains"
+      );
+      await ensurePlatformSubdomains(event.slug);
+    } catch (err) {
+      console.error("platform subdomain SSL provision failed", err);
+    }
     return NextResponse.json({ ok: true, event }, { status: 201 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Could not create event";

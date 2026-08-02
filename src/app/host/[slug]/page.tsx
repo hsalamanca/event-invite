@@ -40,6 +40,16 @@ export default async function HostEditorPage({ params }: PageProps) {
     access.session?.user?.id && event.ownerId === access.session.user.id,
   );
 
+  // Best-effort: ensure platform subdomains have SSL certs on the edge
+  try {
+    const { ensurePlatformSubdomains } = await import(
+      "@/lib/platform-subdomains"
+    );
+    await ensurePlatformSubdomains(event.slug);
+  } catch {
+    /* non-blocking */
+  }
+
   return (
     <HostStudioShell
       event={event}

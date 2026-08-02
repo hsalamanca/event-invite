@@ -54,13 +54,13 @@ Public guide: [`/domains`](https://ownvite.com/domains)
 Already on Vercel project `ownvite`:
 
 - `ownvite.com` / `www.ownvite.com` / `ownvite.app`
-- `*.ownvite.app` (wildcard) — add at Namecheap:
+- `*.ownvite.com` / `*.ownvite.app` — at Namecheap:
 
 | Type | Host | Value |
 |------|------|-------|
 | CNAME | `*` | `cname.vercel-dns.com` |
 
-Until the wildcard is live, free subdomains may not resolve; path URLs still work.
+**SSL note:** a `*` CNAME alone is not enough for secure wildcards. Vercel needs **nameservers** on Vercel DNS (or `_acme-challenge` NS delegation) for `*.domain` certificates. Until then the app auto-registers each `{slug}.ownvite.com` / `.app` host so HTTP-01 certs issue. See [`PLATFORM_SUBDOMAIN_SSL.md`](./PLATFORM_SUBDOMAIN_SSL.md).
 
 ## Troubleshooting
 

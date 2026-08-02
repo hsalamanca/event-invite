@@ -118,6 +118,27 @@ export default function AdminDashboard() {
     }
   }
 
+  async function ensureAllSsl() {
+    setBusy("__ssl__");
+    setError(null);
+    try {
+      const res = await fetch("/api/domains/ensure-platform", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ all: true }),
+      });
+      const j = (await res.json()) as { error?: string; events?: unknown[] };
+      if (!res.ok) {
+        setError(j.error || "SSL provision failed");
+        return;
+      }
+      setError(null);
+      alert(`Provisioned SSL hosts for ${j.events?.length ?? 0} events.`);
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function setTier(event: AdminEvent, tier: "free" | "pro" | "studio") {
     setBusy(event.slug);
     try {
@@ -201,8 +222,8 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      <div>
-        <label className="block text-sm text-[var(--mist)]">
+      <div className="flex flex-wrap items-end gap-3">
+        <label className="block flex-1 text-sm text-[var(--mist)]">
           Search users & events
           <input
             value={q}
@@ -211,10 +232,18 @@ export default function AdminDashboard() {
             className="mt-1.5 w-full max-w-xl rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
           />
         </label>
-        {error ? (
-          <p className="mt-2 text-sm text-[var(--coral)]">{error}</p>
-        ) : null}
+        <button
+          type="button"
+          disabled={busy === "__ssl__"}
+          onClick={() => void ensureAllSsl()}
+          className="rounded-md border border-[var(--champagne)]/40 px-3 py-2 text-sm text-[var(--champagne)] hover:bg-[var(--champagne)]/10 disabled:opacity-50"
+        >
+          {busy === "__ssl__" ? "Provisioning…" : "Fix subdomain SSL"}
+        </button>
       </div>
+      {error ? (
+        <p className="text-sm text-[var(--coral)]">{error}</p>
+      ) : null}
 
       <section>
         <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">

@@ -58,5 +58,14 @@ export async function POST(
     templateId: source.templateId,
   });
 
+  try {
+    const { ensurePlatformSubdomains } = await import(
+      "@/lib/platform-subdomains"
+    );
+    await ensurePlatformSubdomains(created.slug);
+  } catch (err) {
+    console.error("platform subdomain SSL provision failed", err);
+  }
+
   return NextResponse.json({ event: created }, { status: 201 });
 }
