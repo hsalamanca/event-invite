@@ -78,38 +78,31 @@ export async function middleware(request: NextRequest) {
   let response: NextResponse | null = null;
 
   // Host-based invite routing (custom domains / platform subdomains)
-  if (hostname && !PLATFORM_HOSTS.has(hostname)) {
-    if (hostname.endsWith(".ownvite.app") || hostname.endsWith(".ownvite.com")) {
+  // Prefer domain registry first so aliases like h-birthday.ownvite.app
+  // can point at a different event slug than the hostname label.
+  if (hostname && !PLATFORM_HOSTS.has(hostname) && (pathname === "/" || pathname === "")) {
+    const map = await loadDomainMap(request);
+    const mappedSlug = map[hostname];
+    if (mappedSlug) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/e/${mappedSlug}`;
+      response = NextResponse.rewrite(url);
+    } else if (
+      hostname.endsWith(".ownvite.app") ||
+      hostname.endsWith(".ownvite.com")
+    ) {
       const suffix = hostname.endsWith(".ownvite.app")
         ? ".ownvite.app"
         : ".ownvite.com";
       const slug = hostname.slice(0, -suffix.length);
       if (slug && !slug.includes(".") && slug !== "www") {
-        if (pathname === "/" || pathname === "") {
-          const url = request.nextUrl.clone();
-          url.pathname = `/e/${slug}`;
-          response = NextResponse.rewrite(url);
-        }
-      }
-    }
-
-    if (
-      !response &&
-      hostname.endsWith(".localhost") &&
-      (pathname === "/" || pathname === "")
-    ) {
-      const slug = hostname.replace(/\.localhost$/, "");
-      if (slug && !slug.includes(".")) {
         const url = request.nextUrl.clone();
         url.pathname = `/e/${slug}`;
         response = NextResponse.rewrite(url);
       }
-    }
-
-    if (!response && (pathname === "/" || pathname === "")) {
-      const map = await loadDomainMap(request);
-      const slug = map[hostname];
-      if (slug) {
+    } else if (hostname.endsWith(".localhost")) {
+      const slug = hostname.replace(/\.localhost$/, "");
+      if (slug && !slug.includes(".")) {
         const url = request.nextUrl.clone();
         url.pathname = `/e/${slug}`;
         response = NextResponse.rewrite(url);
