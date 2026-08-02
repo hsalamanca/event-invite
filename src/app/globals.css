@@ -6,10 +6,12 @@
   --ink: #0f1a2e;
   --slate: #1a2744;
   --champagne: #c9a962;
+  --champagne-bright: #e4c77a;
   --ember: #e07a5f;
   --ivory: #f4f0e8;
   --mist: #9ba8bc;
   --coral: #e07a5f;
+  --sun: #ffc857;
   --background: var(--ink);
   --foreground: var(--ivory);
   --font-display: var(--font-cormorant), Georgia, serif;
@@ -34,7 +36,7 @@ body {
 @keyframes ownvite-fade-up {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(22px);
   }
   to {
     opacity: 1;
@@ -42,12 +44,107 @@ body {
   }
 }
 
+@keyframes ownvite-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes ownvite-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(1.05);
+    transform: translate3d(0, 0, 0) scale(1.06);
   }
   50% {
-    transform: translate3d(0, -1.5%, 0) scale(1.08);
+    transform: translate3d(-1.2%, -1.8%, 0) scale(1.12);
+  }
+}
+
+@keyframes ownvite-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ownvite-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.15) rotate(18deg);
+  }
+}
+
+@keyframes ownvite-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes ownvite-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ownvite-rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ownvite-spark-spin {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.cta-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    #c9a962 0%,
+    #ffc857 35%,
+    #e4c77a 50%,
+    #c9a962 70%,
+    #e07a5f 100%
+  );
+  background-size: 200% 100%;
+  animation: ownvite-shimmer 3.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

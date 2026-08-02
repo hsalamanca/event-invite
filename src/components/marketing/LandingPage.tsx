@@ -5,151 +5,236 @@ import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=2000&q=80&auto=format&fit=crop";
+
 export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
   const t = getDictionary(locale).landing;
   const nav = getDictionary(locale).nav;
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--ink)] text-[var(--ivory)]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 70% at 70% 10%, rgba(224,122,95,0.16) 0%, transparent 50%), radial-gradient(ellipse 70% 50% at 15% 80%, rgba(201,169,98,0.12) 0%, transparent 45%), linear-gradient(180deg, #0f1a2e 0%, #121f38 45%, #0f1a2e 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-        }}
-      />
+    <main className="relative min-h-screen overflow-x-hidden bg-[var(--ink)] text-[var(--ivory)]">
+      {/* Full-bleed celebratory hero */}
+      <section className="relative min-h-[100svh] overflow-hidden">
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HERO_IMAGE}
+            alt=""
+            className="h-full w-full object-cover object-center"
+            style={{ animation: "ownvite-drift 22s ease-in-out infinite" }}
+            fetchPriority="high"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(15,26,46,0.35) 0%, rgba(15,26,46,0.55) 42%, rgba(15,26,46,0.92) 100%), radial-gradient(ellipse 70% 55% at 20% 30%, rgba(255,200,87,0.28) 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 85% 70%, rgba(224,122,95,0.22) 0%, transparent 50%)",
+            }}
+          />
+        </div>
 
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <BrandLogo tone="champagne" height={30} />
-        <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--mist)] sm:gap-4">
-          <LanguageSwitcher locale={locale} path="/" />
-          <Link
-            href={localePath(locale, "/domains")}
-            className="hover:text-[var(--ivory)]"
-          >
-            {nav.domains}
-          </Link>
-          <Link
-            href={localePath(locale, "/pricing")}
-            className="hover:text-[var(--ivory)]"
-          >
-            {nav.pricing}
-          </Link>
-          <Link
-            href="/login"
-            className="hover:text-[var(--ivory)]"
-          >
-            {nav.signIn}
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-md bg-[var(--champagne)] px-3.5 py-2 font-medium text-[var(--ink)] transition hover:brightness-110"
-          >
-            {nav.signUp}
-          </Link>
-        </nav>
-      </header>
-
-      <section className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-center gap-12 px-6 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        {/* Soft ambient glows */}
         <div
-          className="max-w-xl"
-          style={{ animation: "ownvite-fade-up 0.8s ease both" }}
+          aria-hidden
+          className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full blur-3xl"
+          style={{
+            background: "rgba(255,200,87,0.35)",
+            animation: "ownvite-glow-pulse 7s ease-in-out infinite",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 bottom-32 h-80 w-80 rounded-full blur-3xl"
+          style={{
+            background: "rgba(224,122,95,0.28)",
+            animation: "ownvite-glow-pulse 9s ease-in-out 1s infinite",
+          }}
+        />
+
+        {/* Twinkling spark accents */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          {[
+            { top: "18%", left: "12%", delay: "0s", size: 10 },
+            { top: "28%", left: "78%", delay: "0.8s", size: 14 },
+            { top: "62%", left: "88%", delay: "1.4s", size: 9 },
+            { top: "72%", left: "18%", delay: "2s", size: 12 },
+            { top: "40%", left: "55%", delay: "1.1s", size: 8 },
+          ].map((s, i) => (
+            <span
+              key={i}
+              className="absolute block"
+              style={{
+                top: s.top,
+                left: s.left,
+                width: s.size,
+                height: s.size,
+                background:
+                  "radial-gradient(circle, #ffc857 0%, transparent 70%)",
+                animation: `ownvite-twinkle 3.2s ease-in-out ${s.delay} infinite`,
+              }}
+            />
+          ))}
+        </div>
+
+        <header
+          className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6"
+          style={{ animation: "ownvite-fade-in 0.7s ease both" }}
         >
-          <p className="mb-5 text-xs uppercase tracking-[0.32em] text-[var(--champagne)]">
-            {t.brand}
-          </p>
-          <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.05] tracking-tight">
-            {t.headline1}
-            <span className="block text-[var(--champagne)]">{t.headline2}</span>
-          </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-[var(--mist)]">
-            {t.support}
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <BrandLogo tone="champagne" height={30} />
+          <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--ivory)]/85 sm:gap-4">
+            <LanguageSwitcher locale={locale} path="/" />
+            <Link
+              href={localePath(locale, "/domains")}
+              className="transition hover:text-[var(--champagne-bright)]"
+            >
+              {nav.domains}
+            </Link>
+            <Link
+              href={localePath(locale, "/pricing")}
+              className="transition hover:text-[var(--champagne-bright)]"
+            >
+              {nav.pricing}
+            </Link>
+            <Link
+              href="/login"
+              className="transition hover:text-[var(--champagne-bright)]"
+            >
+              {nav.signIn}
+            </Link>
             <Link
               href="/register"
-              className="rounded-md bg-[var(--champagne)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition hover:brightness-110"
+              className="rounded-md bg-[var(--champagne)] px-3.5 py-2 font-medium text-[var(--ink)] transition hover:brightness-110"
+            >
+              {nav.signUp}
+            </Link>
+          </nav>
+        </header>
+
+        <div className="relative z-10 mx-auto flex min-h-[calc(100svh-5.5rem)] max-w-6xl flex-col justify-end px-6 pb-16 pt-10 sm:pb-20">
+          <div className="max-w-2xl">
+            <p
+              className="mb-4 font-[family-name:var(--font-cormorant)] text-[clamp(2.5rem,8vw,4.75rem)] font-semibold leading-none tracking-tight text-[var(--champagne-bright)]"
+              style={{ animation: "ownvite-fade-up 0.85s ease both" }}
+            >
+              {t.brand}
+            </p>
+            <h1
+              className="font-[family-name:var(--font-cormorant)] text-[clamp(2rem,5.5vw,3.5rem)] leading-[1.08] tracking-tight text-[var(--ivory)]"
+              style={{ animation: "ownvite-fade-up 0.9s ease 0.08s both" }}
+            >
+              {t.headline1}{" "}
+              <span className="text-[var(--sun)]">{t.headline2}</span>
+            </h1>
+            <p
+              className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--ivory)]/85"
+              style={{ animation: "ownvite-fade-up 0.9s ease 0.16s both" }}
+            >
+              {t.support}
+            </p>
+            <div
+              className="mt-9 flex flex-wrap gap-3"
+              style={{ animation: "ownvite-fade-up 0.9s ease 0.24s both" }}
+            >
+              <Link
+                href="/register"
+                className="cta-shimmer rounded-md px-6 py-3.5 text-sm font-semibold text-[var(--ink)] transition hover:brightness-105"
+              >
+                {t.ctaStart}
+              </Link>
+              <Link
+                href={localePath(locale, "/e/h-birthday-2026")}
+                className="rounded-md border border-[var(--ivory)]/35 bg-white/5 px-6 py-3.5 text-sm font-medium text-[var(--ivory)] backdrop-blur-sm transition hover:border-[var(--champagne)]/70 hover:bg-white/10"
+              >
+                {t.ctaDemo}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* One job: why Ownvite feels joyful to host with */}
+      <section className="relative overflow-hidden border-t border-white/10">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,169,98,0.14) 0%, transparent 55%), linear-gradient(180deg, #121f38 0%, #0f1a2e 100%)",
+          }}
+        />
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-24">
+          <p
+            className="text-xs uppercase tracking-[0.28em] text-[var(--champagne)]"
+            style={{ animation: "ownvite-fade-up 0.7s ease both" }}
+          >
+            {locale === "es" ? "Hecho para celebrar" : "Made for celebrating"}
+          </p>
+          <div className="mt-10 grid gap-12 md:grid-cols-3 md:gap-10">
+            {t.features.map((feature, i) => (
+              <div
+                key={feature.title}
+                className="group"
+                style={{
+                  animation: `ownvite-rise 0.8s ease ${0.1 + i * 0.12}s both`,
+                }}
+              >
+                <div
+                  className="mb-4 h-1 w-10 origin-left rounded-full bg-[var(--champagne)] transition duration-500 group-hover:w-16"
+                  style={{
+                    animation: `ownvite-shimmer 4s linear ${i * 0.4}s infinite`,
+                    backgroundImage:
+                      "linear-gradient(90deg, #c9a962, #ffc857, #e07a5f, #c9a962)",
+                    backgroundSize: "200% 100%",
+                  }}
+                />
+                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl text-[var(--ivory)]">
+                  {feature.title}
+                </h2>
+                <p className="mt-3 leading-relaxed text-[var(--mist)]">
+                  {feature.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Closing invitation */}
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 70% at 50% 100%, rgba(224,122,95,0.18) 0%, transparent 55%), linear-gradient(180deg, #0f1a2e 0%, #15243d 100%)",
+          }}
+        />
+        <div
+          className="relative z-10 mx-auto max-w-3xl px-6 py-24 text-center"
+          style={{ animation: "ownvite-fade-up 0.85s ease both" }}
+        >
+          <h2 className="font-[family-name:var(--font-cormorant)] text-[clamp(2rem,4vw,3rem)] leading-tight">
+            {t.compareTitle}
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-[var(--mist)]">
+            {t.compareBody}
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/register"
+              className="cta-shimmer rounded-md px-6 py-3.5 text-sm font-semibold text-[var(--ink)]"
             >
               {t.ctaStart}
             </Link>
             <Link
-              href={localePath(locale, "/e/h-birthday-2026")}
-              className="rounded-md border border-white/20 px-5 py-3 text-sm font-medium text-[var(--ivory)] transition hover:border-[var(--champagne)]/50"
+              href={localePath(locale, "/pricing")}
+              className="text-sm font-medium text-[var(--champagne-bright)] underline-offset-4 transition hover:underline"
             >
-              {t.ctaDemo}
+              {t.seePricing}
             </Link>
           </div>
         </div>
-
-        <Link
-          href={localePath(locale, "/e/h-birthday-2026")}
-          className="group relative block overflow-hidden rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--champagne)]"
-          style={{ animation: "ownvite-fade-up 0.9s ease 0.12s both" }}
-        >
-          <div className="aspect-[4/5] overflow-hidden sm:aspect-[5/6]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80&auto=format&fit=crop"
-              alt=""
-              className="h-full w-full object-cover transition duration-[1.4s] ease-out group-hover:scale-105"
-              style={{ animation: "ownvite-drift 18s ease-in-out infinite" }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)] via-[var(--ink)]/35 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-              <p className="text-xs uppercase tracking-[0.28em] text-[var(--champagne)]">
-                {t.previewEyebrow}
-              </p>
-              <p className="mt-2 font-[family-name:var(--font-cormorant)] text-3xl leading-tight sm:text-4xl">
-                {t.previewHeadline}
-              </p>
-              <p className="mt-2 text-sm text-[var(--mist)]">{t.previewMeta}</p>
-            </div>
-          </div>
-        </Link>
-      </section>
-
-      <section className="relative z-10 border-t border-white/10 bg-[var(--slate)]/40">
-        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-3">
-          {t.features.map((feature, i) => (
-            <div
-              key={feature.title}
-              style={{
-                animation: `ownvite-fade-up 0.7s ease ${0.1 + i * 0.08}s both`,
-              }}
-            >
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]">
-                {feature.title}
-              </h2>
-              <p className="mt-3 leading-relaxed text-[var(--mist)]">
-                {feature.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="relative z-10 mx-auto max-w-6xl px-6 py-20 text-center">
-        <h2 className="font-[family-name:var(--font-cormorant)] text-3xl sm:text-4xl">
-          {t.compareTitle}
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-[var(--mist)]">
-          {t.compareBody}
-        </p>
-        <Link
-          href={localePath(locale, "/pricing")}
-          className="mt-8 inline-block text-sm font-medium text-[var(--champagne)] underline-offset-4 hover:underline"
-        >
-          {t.seePricing}
-        </Link>
       </section>
 
       <footer className="relative z-10 border-t border-white/10 px-6 py-8 text-center text-sm text-[var(--mist)]">
