@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function AuthShell({
   title,
@@ -23,12 +23,9 @@ export default function AuthShell({
         }}
       />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
-        <Link
-          href="/"
-          className="mb-10 font-[family-name:var(--font-cormorant)] text-2xl tracking-wide text-[var(--champagne)]"
-        >
-          Ownvite
-        </Link>
+        <div className="mb-10">
+          <BrandLogo tone="champagne" height={32} />
+        </div>
         <h1 className="font-[family-name:var(--font-cormorant)] text-4xl leading-tight tracking-tight">
           {title}
         </h1>

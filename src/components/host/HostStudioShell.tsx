@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import EventCustomizer from "@/components/host/EventCustomizer";
 import GuestManager from "@/components/host/GuestManager";
@@ -34,12 +35,11 @@ export default function HostStudioShell({
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[var(--ink)]/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-4">
-            <Link
+            <BrandLogo
               href={localePath(locale, showDashboard ? "/dashboard" : "/")}
-              className="font-[family-name:var(--font-cormorant)] text-xl tracking-wide text-[var(--champagne)]"
-            >
-              Ownvite
-            </Link>
+              tone="champagne"
+              height={26}
+            />
             <span className="hidden text-sm text-[var(--mist)] sm:inline">
               {t.studio} · {event.title}
             </span>

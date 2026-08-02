@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
+import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { isAdminEmail } from "@/lib/admin";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -25,12 +26,7 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-[var(--ink)] text-[var(--ivory)]">
       <header className="border-b border-white/10">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-5">
-          <Link
-            href="/"
-            className="font-[family-name:var(--font-cormorant)] text-2xl tracking-wide text-[var(--champagne)]"
-          >
-            Ownvite
-          </Link>
+          <BrandLogo tone="champagne" height={28} />
           <div className="flex items-center gap-3 text-sm">
             <LanguageSwitcher locale={locale} path="/dashboard" />
             {isAdmin ? (
