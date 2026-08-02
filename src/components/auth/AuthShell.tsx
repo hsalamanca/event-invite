@@ -24,18 +24,18 @@ export default function AuthShell({
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute left-[10%] top-[20%] h-48 w-48 rounded-full blur-3xl"
+        className="pointer-events-none absolute left-[8%] top-[16%] h-64 w-64 rounded-full blur-3xl"
         style={{
-          background: "rgba(201,169,98,0.18)",
-          animation: "ownvite-glow-pulse 9s ease-in-out infinite",
+          background: "rgba(255,200,87,0.28)",
+          animation: "ownvite-glow-pulse 7s ease-in-out infinite",
         }}
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-[15%] right-[8%] h-56 w-56 rounded-full blur-3xl"
+        className="pointer-events-none absolute bottom-[12%] right-[4%] h-72 w-72 rounded-full blur-3xl"
         style={{
-          background: "rgba(224,122,95,0.14)",
-          animation: "ownvite-glow-pulse 11s ease-in-out 1s infinite",
+          background: "rgba(224,122,95,0.22)",
+          animation: "ownvite-glow-pulse 9s ease-in-out 1s infinite",
         }}
       />
 

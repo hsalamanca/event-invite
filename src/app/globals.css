@@ -130,13 +130,13 @@ body {
   background-image: linear-gradient(
     110deg,
     #c9a962 0%,
-    #ffc857 35%,
-    #e4c77a 50%,
-    #c9a962 70%,
+    #ffc857 28%,
+    #ffe29a 45%,
+    #e4c77a 58%,
     #e07a5f 100%
   );
-  background-size: 200% 100%;
-  animation: ownvite-shimmer 3.5s linear infinite;
+  background-size: 220% 100%;
+  animation: ownvite-shimmer 2.4s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

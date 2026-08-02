@@ -55,11 +55,12 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
         {/* Twinkling spark accents */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
           {[
-            { top: "18%", left: "12%", delay: "0s", size: 10 },
-            { top: "28%", left: "78%", delay: "0.8s", size: 14 },
-            { top: "62%", left: "88%", delay: "1.4s", size: 9 },
-            { top: "72%", left: "18%", delay: "2s", size: 12 },
-            { top: "40%", left: "55%", delay: "1.1s", size: 8 },
+            { top: "16%", left: "10%", delay: "0s", size: 16 },
+            { top: "26%", left: "76%", delay: "0.7s", size: 22 },
+            { top: "58%", left: "86%", delay: "1.3s", size: 14 },
+            { top: "70%", left: "16%", delay: "1.9s", size: 18 },
+            { top: "38%", left: "52%", delay: "1.0s", size: 12 },
+            { top: "48%", left: "30%", delay: "2.4s", size: 10 },
           ].map((s, i) => (
             <span
               key={i}
@@ -70,8 +71,8 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
                 width: s.size,
                 height: s.size,
                 background:
-                  "radial-gradient(circle, #ffc857 0%, transparent 70%)",
-                animation: `ownvite-twinkle 3.2s ease-in-out ${s.delay} infinite`,
+                  "radial-gradient(circle, #ffc857 0%, rgba(255,200,87,0.35) 40%, transparent 72%)",
+                animation: `ownvite-twinkle 2.6s ease-in-out ${s.delay} infinite`,
               }}
             />
           ))}
@@ -82,17 +83,17 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           style={{ animation: "ownvite-fade-in 0.7s ease both" }}
         >
           <BrandLogo tone="champagne" height={30} />
-          <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--ivory)]/85 sm:gap-4">
+          <nav className="flex flex-wrap items-center justify-end gap-2.5 text-sm text-[var(--ivory)]/85 sm:gap-4">
             <LanguageSwitcher locale={locale} path="/" />
             <Link
               href={localePath(locale, "/domains")}
-              className="transition hover:text-[var(--champagne-bright)]"
+              className="hidden transition hover:text-[var(--champagne-bright)] sm:inline"
             >
               {nav.domains}
             </Link>
             <Link
               href={localePath(locale, "/pricing")}
-              className="transition hover:text-[var(--champagne-bright)]"
+              className="hidden transition hover:text-[var(--champagne-bright)] sm:inline"
             >
               {nav.pricing}
             </Link>
@@ -114,13 +115,13 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-5.5rem)] max-w-6xl flex-col justify-end px-6 pb-16 pt-10 sm:pb-20">
           <div className="max-w-2xl">
             <p
-              className="mb-4 font-[family-name:var(--font-cormorant)] text-[clamp(2.5rem,8vw,4.75rem)] font-semibold leading-none tracking-tight text-[var(--champagne-bright)]"
+              className="mb-3 font-[family-name:var(--font-cormorant)] text-[clamp(3.25rem,11vw,6rem)] font-semibold leading-none tracking-tight text-[var(--champagne-bright)]"
               style={{ animation: "ownvite-fade-up 0.85s ease both" }}
             >
               {t.brand}
             </p>
             <h1
-              className="font-[family-name:var(--font-cormorant)] text-[clamp(2rem,5.5vw,3.5rem)] leading-[1.08] tracking-tight text-[var(--ivory)]"
+              className="font-[family-name:var(--font-cormorant)] text-[clamp(1.75rem,4.5vw,2.85rem)] leading-[1.1] tracking-tight text-[var(--ivory)]"
               style={{ animation: "ownvite-fade-up 0.9s ease 0.08s both" }}
             >
               {t.headline1}{" "}
