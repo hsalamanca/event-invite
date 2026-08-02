@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { getEventBySlug, updateEvent } from "@/lib/events";
+import { auth } from "@/auth";
+import { deleteEvent, getEventBySlug, updateEvent } from "@/lib/events";
 import type { EventRecord } from "@/lib/types";
 
 type Params = { params: Promise<{ slug: string }> };
 
 export async function GET(_request: Request, { params }: Params) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
@@ -15,9 +16,14 @@ export async function GET(_request: Request, { params }: Params) {
 
 export async function PATCH(request: Request, { params }: Params) {
   const { slug } = await params;
-  const existing = getEventBySlug(slug);
+  const existing = await getEventBySlug(slug);
   if (!existing) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  const session = await auth();
+  if (existing.ownerId && existing.ownerId !== session?.user?.id) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
   let body: unknown;
@@ -27,7 +33,24 @@ export async function PATCH(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const partial = body as Partial<EventRecord>;
-  const updated = updateEvent(slug, partial);
-  return NextResponse.json({ event: updated });
+  try {
+    const updated = await updateEvent(slug, body as Partial<EventRecord>);
+    return NextResponse.json({ event: updated });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Update failed";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}
+
+export async function DELETE(_request: Request, { params }: Params) {
+  const { slug } = await params;
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
+  const ok = await deleteEvent(slug, session.user.id);
+  if (!ok) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true });
 }

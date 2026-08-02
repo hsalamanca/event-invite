@@ -35,6 +35,7 @@ export type RsvpFields = {
 export type EventRecord = {
   id: string;
   slug: string;
+  ownerId: string | null;
   hostName: string;
   title: string;
   headline: string;
@@ -49,6 +50,13 @@ export type EventRecord = {
   rsvpFields: RsvpFields;
   about: string;
   published: boolean;
+  /** public = anyone with link; unlisted = same but not on demo lists */
+  visibility: "public" | "unlisted";
+  capacity: number | null;
+  registryUrl: string | null;
+  templateId: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type RsvpSubmission = {
@@ -60,5 +68,30 @@ export type RsvpSubmission = {
   guestCount: number;
   dietary: string;
   note: string;
+  createdAt: string;
+};
+
+export type UserRecord = {
+  id: string;
+  email: string;
+  name: string;
+  passwordHash: string;
+  createdAt: string;
+};
+
+export type GuestMessage = {
+  id: string;
+  eventId: string;
+  name: string;
+  body: string;
+  createdAt: string;
+};
+
+export type ManualGuest = {
+  id: string;
+  eventId: string;
+  name: string;
+  email: string;
+  status: "invited" | "opened" | "going" | "maybe" | "declined";
   createdAt: string;
 };

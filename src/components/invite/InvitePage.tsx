@@ -64,6 +64,75 @@ export default function InvitePage({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [parallaxY, setParallaxY] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [gbName, setGbName] = useState("");
+  const [gbBody, setGbBody] = useState("");
+  const [gbDone, setGbDone] = useState(false);
+  const [gbError, setGbError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<
+    { id: string; name: string; body: string; createdAt: string }[]
+  >([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/messages?slug=${encodeURIComponent(event.slug)}`,
+        );
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          messages?: { id: string; name: string; body: string; createdAt: string }[];
+        };
+        if (!cancelled && data.messages) setMessages(data.messages);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [event.slug]);
+
+  async function copyInviteLink() {
+    try {
+      const url = `${window.location.origin}/e/${event.slug}`;
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function submitGuestbook(e: FormEvent) {
+    e.preventDefault();
+    setGbError(null);
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: event.slug,
+          name: gbName.trim(),
+          body: gbBody.trim(),
+        }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        message?: { id: string; name: string; body: string; createdAt: string };
+      };
+      if (!res.ok || !data.message) {
+        setGbError(data.error || "Could not post");
+        return;
+      }
+      setMessages((m) => [data.message!, ...m]);
+      setGbBody("");
+      setGbDone(true);
+    } catch {
+      setGbError("Could not post");
+    }
+  }
 
   useEffect(() => {
     const reduce =
@@ -158,6 +227,14 @@ export default function InvitePage({
               {ui.details}
             </a>
           </div>
+          <div className="invite-share fade-up fade-up-4">
+            <a className="btn-ghost" href={`/api/events/${event.slug}/ics`}>
+              {ui.addToCalendar}
+            </a>
+            <button type="button" className="btn-ghost" onClick={() => void copyInviteLink()}>
+              {copied ? ui.copied : ui.copyLink}
+            </button>
+          </div>
         </div>
       </section>
 
@@ -196,6 +273,18 @@ export default function InvitePage({
           </h3>
           <p>{event.about}</p>
         </div>
+        {event.registryUrl ? (
+          <p className="invite-registry">
+            <a
+              href={event.registryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              {ui.registryCta}
+            </a>
+          </p>
+        ) : null}
       </section>
 
       <section id="rsvp" className="invite-section invite-section--surface">
@@ -308,6 +397,53 @@ export default function InvitePage({
         )}
       </section>
 
+      <section id="guestbook" className="invite-section">
+        <h2 className="invite-section-title">{ui.guestbook}</h2>
+        <p className="invite-prompt">{ui.guestbookPrompt}</p>
+        {gbDone ? (
+          <p className="rsvp-success-sub">{ui.guestbookThanks}</p>
+        ) : (
+          <form className="rsvp-form" onSubmit={submitGuestbook}>
+            <label className="rsvp-field">
+              <span>{ui.guestbookName}</span>
+              <input
+                required
+                value={gbName}
+                onChange={(e) => setGbName(e.target.value)}
+              />
+            </label>
+            <label className="rsvp-field">
+              <span>{ui.guestbookMessage}</span>
+              <textarea
+                required
+                rows={3}
+                maxLength={500}
+                value={gbBody}
+                onChange={(e) => setGbBody(e.target.value)}
+              />
+            </label>
+            {gbError ? (
+              <p className="rsvp-error" role="alert">
+                {gbError}
+              </p>
+            ) : null}
+            <button type="submit" className="btn-primary btn-submit">
+              {ui.guestbookSubmit}
+            </button>
+          </form>
+        )}
+        {messages.length > 0 ? (
+          <ul className="guestbook-list">
+            {messages.slice(0, 12).map((m) => (
+              <li key={m.id}>
+                <strong>{m.name}</strong>
+                <p>{m.body}</p>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
+
       <footer className="invite-footer">
         <p>Hosted by {event.hostName}</p>
         <p className="invite-footer-attr">Ownvite</p>
@@ -400,6 +536,42 @@ export default function InvitePage({
           flex-wrap: wrap;
           gap: 0.75rem 1.25rem;
           align-items: center;
+        }
+
+        .invite-share {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem 1rem;
+          align-items: center;
+          margin-top: 0.85rem;
+        }
+
+        .invite-registry {
+          margin-top: 1.5rem;
+        }
+
+        .guestbook-list {
+          list-style: none;
+          margin: 2rem 0 0;
+          padding: 0;
+          display: grid;
+          gap: 1rem;
+        }
+
+        .guestbook-list li {
+          border-top: 1px solid color-mix(in srgb, var(--invite-muted) 35%, transparent);
+          padding-top: 1rem;
+        }
+
+        .guestbook-list strong {
+          font-family: var(--font-display);
+          font-size: 1.1rem;
+        }
+
+        .guestbook-list p {
+          margin: 0.35rem 0 0;
+          color: var(--invite-muted);
+          line-height: 1.5;
         }
 
         .btn-primary,

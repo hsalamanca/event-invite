@@ -32,6 +32,10 @@ type Draft = {
   about: string;
   heroImage: string;
   customDomain: string;
+  visibility: EventRecord["visibility"];
+  capacity: string;
+  registryUrl: string;
+  published: boolean;
   colors: Theme["colors"];
   fonts: Theme["fonts"];
 };
@@ -49,12 +53,19 @@ function toDraft(event: EventRecord): Draft {
     about: event.about,
     heroImage: event.heroImage,
     customDomain: event.customDomain ?? "",
+    visibility: event.visibility ?? "public",
+    capacity: event.capacity != null ? String(event.capacity) : "",
+    registryUrl: event.registryUrl ?? "",
+    published: event.published ?? true,
     colors: { ...event.theme.colors },
     fonts: { ...event.theme.fonts },
   };
 }
 
 function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
+  const capacityNum = draft.capacity.trim()
+    ? Number(draft.capacity)
+    : null;
   return {
     ...base,
     hostName: draft.hostName,
@@ -68,6 +79,13 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
     about: draft.about,
     heroImage: draft.heroImage,
     customDomain: draft.customDomain.trim() || null,
+    visibility: draft.visibility,
+    capacity:
+      capacityNum != null && Number.isFinite(capacityNum) && capacityNum > 0
+        ? capacityNum
+        : null,
+    registryUrl: draft.registryUrl.trim() || null,
+    published: draft.published,
     theme: {
       colors: { ...draft.colors },
       fonts: { ...draft.fonts },
@@ -117,6 +135,7 @@ export default function EventCustomizer({
     setSaveError(null);
     setSaveMessage(null);
 
+    const preview = toPreviewEvent(event, draft);
     const body = {
       hostName: draft.hostName,
       title: draft.title,
@@ -129,6 +148,10 @@ export default function EventCustomizer({
       about: draft.about,
       heroImage: draft.heroImage,
       customDomain: draft.customDomain.trim() || null,
+      visibility: draft.visibility,
+      capacity: preview.capacity,
+      registryUrl: preview.registryUrl,
+      published: draft.published,
       theme: {
         colors: draft.colors,
         fonts: draft.fonts,
@@ -263,6 +286,52 @@ export default function EventCustomizer({
               onChange={(url) => updateField("heroImage", url)}
               labels={uploadLabels}
             />
+          </fieldset>
+
+          <fieldset>
+            <legend>{t.settings}</legend>
+            <label>
+              <span>{t.visibility}</span>
+              <select
+                value={draft.visibility}
+                onChange={(e) =>
+                  updateField(
+                    "visibility",
+                    e.target.value as EventRecord["visibility"],
+                  )
+                }
+              >
+                <option value="public">{t.visibilityPublic}</option>
+                <option value="unlisted">{t.visibilityUnlisted}</option>
+              </select>
+            </label>
+            <label>
+              <span>{t.capacity}</span>
+              <input
+                type="number"
+                min={1}
+                placeholder={t.capacityHint}
+                value={draft.capacity}
+                onChange={(e) => updateField("capacity", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>{t.registryUrl}</span>
+              <input
+                type="url"
+                placeholder="https://…"
+                value={draft.registryUrl}
+                onChange={(e) => updateField("registryUrl", e.target.value)}
+              />
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.published}
+                onChange={(e) => updateField("published", e.target.checked)}
+              />
+              <span>{t.published}</span>
+            </label>
           </fieldset>
 
           <DomainConnect
@@ -486,6 +555,18 @@ export default function EventCustomizer({
         select:focus {
           outline: none;
           border-color: var(--host-accent);
+        }
+
+        .checkbox-row {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+          width: auto;
+          min-height: auto;
         }
 
         .color-row {

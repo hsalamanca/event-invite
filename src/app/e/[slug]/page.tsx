@@ -9,11 +9,13 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
   if (!event) return { title: "Invitation not found" };
   return {
     title: event.title,
@@ -28,7 +30,7 @@ export async function generateMetadata({
 
 export default async function EventInvitePage({ params }: PageProps) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
   if (!event || !event.published) notFound();
   const locale = await getRequestLocale();
 

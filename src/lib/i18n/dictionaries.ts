@@ -11,6 +11,10 @@ export type Dictionary = {
     openInvite: string;
     customize: string;
     language: string;
+    signIn: string;
+    signUp: string;
+    dashboard: string;
+    createEvent: string;
   };
   landing: {
     brand: string;
@@ -19,6 +23,8 @@ export type Dictionary = {
     support: string;
     ctaInvite: string;
     ctaCustomize: string;
+    ctaStart: string;
+    ctaDemo: string;
     previewEyebrow: string;
     previewHeadline: string;
     previewMeta: string;
@@ -95,6 +101,81 @@ export type Dictionary = {
     accentPrimary: string;
     accentSecondary: string;
     textPrimary: string;
+    settings: string;
+    visibility: string;
+    visibilityPublic: string;
+    visibilityUnlisted: string;
+    capacity: string;
+    capacityHint: string;
+    registryUrl: string;
+    published: string;
+  };
+  dashboard: {
+    eyebrow: string;
+    title: string;
+    support: string;
+    create: string;
+    emptyTitle: string;
+    emptyBody: string;
+    edit: string;
+    view: string;
+    guests: string;
+    draft: string;
+    signOut: string;
+  };
+  create: {
+    stepTemplate: string;
+    stepDetails: string;
+    pickTemplate: string;
+    pickSupport: string;
+    continue: string;
+    detailsTitle: string;
+    detailsSupport: string;
+    title: string;
+    host: string;
+    slug: string;
+    date: string;
+    time: string;
+    venue: string;
+    address: string;
+    about: string;
+    back: string;
+    create: string;
+    creating: string;
+    error: string;
+  };
+  guests: {
+    title: string;
+    support: string;
+    exportCsv: string;
+    rsvps: string;
+    yes: string;
+    no: string;
+    headcount: string;
+    manual: string;
+    namePh: string;
+    emailPh: string;
+    add: string;
+    error: string;
+    colName: string;
+    colEmail: string;
+    colStatus: string;
+    colGuests: string;
+    colNote: string;
+    empty: string;
+    manualTag: string;
+  };
+  hostActions: {
+    title: string;
+    support: string;
+    copy: string;
+    copied: string;
+    copyFail: string;
+    calendar: string;
+    duplicate: string;
+    delete: string;
+    deleteConfirm: string;
+    error: string;
   };
   upload: {
     title: string;
@@ -144,6 +225,18 @@ export type Dictionary = {
     submitting: string;
     successTitle: string;
     successBody: string;
+    addToCalendar: string;
+    share: string;
+    copyLink: string;
+    copied: string;
+    guestbook: string;
+    guestbookPrompt: string;
+    guestbookName: string;
+    guestbookMessage: string;
+    guestbookSubmit: string;
+    guestbookThanks: string;
+    registry: string;
+    registryCta: string;
   };
 };
 
@@ -159,6 +252,10 @@ const en: Dictionary = {
     openInvite: "Open birthday invite",
     customize: "Customize it",
     language: "ES",
+    signIn: "Sign in",
+    signUp: "Sign up",
+    dashboard: "Dashboard",
+    createEvent: "Create event",
   },
   landing: {
     brand: "Ownvite",
@@ -168,6 +265,8 @@ const en: Dictionary = {
       "Digital invitations with deep customization and custom domains — starting with H Salamanca's birthday as the first live proof.",
     ctaInvite: "View the birthday invite",
     ctaCustomize: "Customize it",
+    ctaStart: "Create free account",
+    ctaDemo: "See demo invite",
     previewEyebrow: "H Salamanca · Birthday",
     previewHeadline: "A Night to Celebrate",
     previewMeta: "Saturday, September 12 · Open invite →",
@@ -315,6 +414,82 @@ const en: Dictionary = {
     accentPrimary: "Accent primary",
     accentSecondary: "Accent secondary",
     textPrimary: "Text primary",
+    settings: "Event settings",
+    visibility: "Visibility",
+    visibilityPublic: "Public link",
+    visibilityUnlisted: "Unlisted link",
+    capacity: "Capacity (optional)",
+    capacityHint: "Leave blank for unlimited",
+    registryUrl: "Gift registry / wishlist URL",
+    published: "Published (visible to guests)",
+  },
+  dashboard: {
+    eyebrow: "Your events",
+    title: "Host dashboard",
+    support: "Create invitations, manage guests, share links, and connect domains.",
+    create: "Create event",
+    emptyTitle: "No events yet",
+    emptyBody:
+      "Pick a template, set the date and venue, then customize fonts, colors, and your domain.",
+    edit: "Customize",
+    view: "View invite",
+    guests: "Guests",
+    draft: "Draft",
+    signOut: "Sign out",
+  },
+  create: {
+    stepTemplate: "Template",
+    stepDetails: "Details",
+    pickTemplate: "Choose a look",
+    pickSupport: "Start from a designer template — you can change everything later.",
+    continue: "Continue",
+    detailsTitle: "Event details",
+    detailsSupport: "Guests will see these on your invitation page.",
+    title: "Event title",
+    host: "Host name",
+    slug: "URL slug (optional)",
+    date: "Date",
+    time: "Time",
+    venue: "Venue",
+    address: "Address",
+    about: "About / note to guests",
+    back: "Back",
+    create: "Create invitation",
+    creating: "Creating…",
+    error: "Could not create event.",
+  },
+  guests: {
+    title: "Guest list",
+    support: "RSVPs plus guests you add manually — export anytime as CSV.",
+    exportCsv: "Export CSV",
+    rsvps: "RSVPs",
+    yes: "yes",
+    no: "no",
+    headcount: "headcount",
+    manual: "manual",
+    namePh: "Guest name",
+    emailPh: "Email (optional)",
+    add: "Add guest",
+    error: "Could not update guests.",
+    colName: "Name",
+    colEmail: "Email",
+    colStatus: "Status",
+    colGuests: "Guests",
+    colNote: "Notes",
+    empty: "No guests yet — share your invite link to collect RSVPs.",
+    manualTag: "Added by host",
+  },
+  hostActions: {
+    title: "Share & manage",
+    support: "Copy your link, text guests, add to calendar, or duplicate this event.",
+    copy: "Copy invite link",
+    copied: "Copied!",
+    copyFail: "Could not copy link.",
+    calendar: "Download .ics",
+    duplicate: "Duplicate",
+    delete: "Delete event",
+    deleteConfirm: "Delete this event permanently?",
+    error: "Something went wrong.",
   },
   upload: {
     title: "Hero image",
@@ -372,6 +547,18 @@ const en: Dictionary = {
     submitting: "Sending…",
     successTitle: "You're on the list",
     successBody: "Thanks — we've recorded your response.",
+    addToCalendar: "Add to calendar",
+    share: "Share",
+    copyLink: "Copy link",
+    copied: "Link copied",
+    guestbook: "Guestbook",
+    guestbookPrompt: "Leave a note for the host",
+    guestbookName: "Your name",
+    guestbookMessage: "Your message",
+    guestbookSubmit: "Post message",
+    guestbookThanks: "Thanks for writing!",
+    registry: "Gift ideas",
+    registryCta: "View registry",
   },
 };
 
@@ -387,6 +574,10 @@ const es: Dictionary = {
     openInvite: "Ver invitación",
     customize: "Personalizar",
     language: "EN",
+    signIn: "Entrar",
+    signUp: "Crear cuenta",
+    dashboard: "Panel",
+    createEvent: "Crear evento",
   },
   landing: {
     brand: "Ownvite",
@@ -396,6 +587,8 @@ const es: Dictionary = {
       "Invitaciones digitales con personalización profunda y dominios personalizados — empezando con el cumpleaños de H Salamanca como primera prueba en vivo.",
     ctaInvite: "Ver la invitación de cumpleaños",
     ctaCustomize: "Personalizarla",
+    ctaStart: "Crear cuenta gratis",
+    ctaDemo: "Ver demo",
     previewEyebrow: "H Salamanca · Cumpleaños",
     previewHeadline: "Una noche para celebrar",
     previewMeta: "Sábado 12 de septiembre · Abrir invitación →",
@@ -543,6 +736,86 @@ const es: Dictionary = {
     accentPrimary: "Acento principal",
     accentSecondary: "Acento secundario",
     textPrimary: "Texto principal",
+    settings: "Ajustes del evento",
+    visibility: "Visibilidad",
+    visibilityPublic: "Enlace público",
+    visibilityUnlisted: "Enlace no listado",
+    capacity: "Capacidad (opcional)",
+    capacityHint: "Vacío = sin límite",
+    registryUrl: "URL de lista de regalos",
+    published: "Publicado (visible para invitados)",
+  },
+  dashboard: {
+    eyebrow: "Tus eventos",
+    title: "Panel del anfitrión",
+    support:
+      "Crea invitaciones, gestiona invitados, comparte enlaces y conecta dominios.",
+    create: "Crear evento",
+    emptyTitle: "Aún no hay eventos",
+    emptyBody:
+      "Elige una plantilla, define fecha y lugar, y luego personaliza fuentes, colores y tu dominio.",
+    edit: "Personalizar",
+    view: "Ver invitación",
+    guests: "Invitados",
+    draft: "Borrador",
+    signOut: "Salir",
+  },
+  create: {
+    stepTemplate: "Plantilla",
+    stepDetails: "Detalles",
+    pickTemplate: "Elige un estilo",
+    pickSupport:
+      "Empieza con una plantilla — luego puedes cambiarlo todo.",
+    continue: "Continuar",
+    detailsTitle: "Detalles del evento",
+    detailsSupport: "Los invitados verán esto en tu página.",
+    title: "Título del evento",
+    host: "Nombre del anfitrión",
+    slug: "Slug de URL (opcional)",
+    date: "Fecha",
+    time: "Hora",
+    venue: "Lugar",
+    address: "Dirección",
+    about: "Nota para invitados",
+    back: "Atrás",
+    create: "Crear invitación",
+    creating: "Creando…",
+    error: "No se pudo crear el evento.",
+  },
+  guests: {
+    title: "Lista de invitados",
+    support:
+      "RSVPs más invitados que agregues a mano — exporta CSV cuando quieras.",
+    exportCsv: "Exportar CSV",
+    rsvps: "RSVPs",
+    yes: "sí",
+    no: "no",
+    headcount: "asistentes",
+    manual: "manuales",
+    namePh: "Nombre",
+    emailPh: "Correo (opcional)",
+    add: "Agregar",
+    error: "No se pudo actualizar.",
+    colName: "Nombre",
+    colEmail: "Correo",
+    colStatus: "Estado",
+    colGuests: "Invitados",
+    colNote: "Notas",
+    empty: "Sin invitados aún — comparte tu enlace para recibir RSVPs.",
+    manualTag: "Agregado por el anfitrión",
+  },
+  hostActions: {
+    title: "Compartir y gestionar",
+    support:
+      "Copia el enlace, escribe a tus invitados, descarga el calendario o duplica el evento.",
+    copy: "Copiar enlace",
+    copied: "¡Copiado!",
+    copyFail: "No se pudo copiar.",
+    calendar: "Descargar .ics",
+    duplicate: "Duplicar",
+    delete: "Eliminar evento",
+    deleteConfirm: "¿Eliminar este evento permanentemente?",
+    error: "Algo salió mal.",
   },
   upload: {
     title: "Imagen principal",
@@ -600,6 +873,18 @@ const es: Dictionary = {
     submitting: "Enviando…",
     successTitle: "Estás en la lista",
     successBody: "Gracias — registramos tu respuesta.",
+    addToCalendar: "Agregar al calendario",
+    share: "Compartir",
+    copyLink: "Copiar enlace",
+    copied: "Enlace copiado",
+    guestbook: "Libro de visitas",
+    guestbookPrompt: "Deja una nota para el anfitrión",
+    guestbookName: "Tu nombre",
+    guestbookMessage: "Tu mensaje",
+    guestbookSubmit: "Publicar",
+    guestbookThanks: "¡Gracias por escribir!",
+    registry: "Ideas de regalo",
+    registryCta: "Ver lista",
   },
 };
 

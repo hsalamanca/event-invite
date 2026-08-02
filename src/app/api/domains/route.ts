@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import {
   buildDnsInstructions,
   isPlatformDomain,
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "slug required" }, { status: 400 });
   }
   const binding = await getBindingBySlug(slug);
-  const event = getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
   return NextResponse.json({
     binding: binding ?? null,
     eventDomain: event?.customDomain ?? null,
@@ -70,9 +71,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const event = getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  const session = await auth();
+  if (event.ownerId && event.ownerId !== session?.user?.id) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
   const existing = await getBindingBySlug(slug);
@@ -105,7 +111,7 @@ export async function POST(request: Request) {
     dns,
   });
 
-  updateEvent(slug, { customDomain: domain });
+  await updateEvent(slug, { customDomain: domain });
 
   return NextResponse.json({
     ok: true,
@@ -132,9 +138,7 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const binding = slug
-    ? await getBindingBySlug(slug)
-    : null;
+  const binding = slug ? await getBindingBySlug(slug) : null;
   const domain = normalizeDomain(domainParam ?? binding?.domain ?? "");
   if (!domain) {
     return NextResponse.json({ error: "Domain not found" }, { status: 404 });
@@ -143,7 +147,7 @@ export async function DELETE(request: Request) {
   await removeDomainFromProject(domain);
   await removeBinding(domain);
   if (binding || slug) {
-    updateEvent(binding?.slug ?? slug!, { customDomain: null });
+    await updateEvent(binding?.slug ?? slug!, { customDomain: null });
   }
 
   return NextResponse.json({ ok: true });

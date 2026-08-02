@@ -31,7 +31,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
         <span className="font-[family-name:var(--font-cormorant)] text-2xl tracking-wide text-[var(--champagne)]">
           Ownvite
         </span>
-        <nav className="flex items-center gap-4 text-sm text-[var(--mist)] sm:gap-5">
+        <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--mist)] sm:gap-4">
           <LanguageSwitcher locale={locale} path="/" />
           <Link
             href={localePath(locale, "/domains")}
@@ -46,10 +46,16 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
             {nav.pricing}
           </Link>
           <Link
-            href={localePath(locale, "/e/h-birthday-2026")}
+            href="/login"
+            className="hover:text-[var(--ivory)]"
+          >
+            {nav.signIn}
+          </Link>
+          <Link
+            href="/register"
             className="rounded-md bg-[var(--champagne)] px-3.5 py-2 font-medium text-[var(--ink)] transition hover:brightness-110"
           >
-            {nav.openInvite}
+            {nav.signUp}
           </Link>
         </nav>
       </header>
@@ -71,16 +77,16 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
-              href={localePath(locale, "/e/h-birthday-2026")}
+              href="/register"
               className="rounded-md bg-[var(--champagne)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition hover:brightness-110"
             >
-              {t.ctaInvite}
+              {t.ctaStart}
             </Link>
             <Link
-              href={localePath(locale, "/host/h-birthday-2026")}
+              href={localePath(locale, "/e/h-birthday-2026")}
               className="rounded-md border border-white/20 px-5 py-3 text-sm font-medium text-[var(--ivory)] transition hover:border-[var(--champagne)]/50"
             >
-              {t.ctaCustomize}
+              {t.ctaDemo}
             </Link>
           </div>
         </div>

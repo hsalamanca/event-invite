@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getEventBySlug, listEvents } from "@/lib/events";
+import { getEventById, getEventBySlug } from "@/lib/events";
 import { appendRsvp, listRsvpsByEventId } from "@/lib/rsvp-store";
 
 export async function POST(request: Request) {
@@ -26,9 +26,25 @@ export async function POST(request: Request) {
     );
   }
 
-  const event = listEvents().find((e) => e.id === eventId);
+  const event = await getEventById(eventId);
   if (!event || !event.published) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  if (event.capacity) {
+    const existing = await listRsvpsByEventId(eventId);
+    const going = existing
+      .filter((r) => r.attendance.toLowerCase().includes("attend"))
+      .reduce((n, r) => n + (r.guestCount || 1), 0);
+    const nextCount = attendance.toLowerCase().includes("attend")
+      ? Math.max(1, guestCount || 1)
+      : 0;
+    if (going + nextCount > event.capacity) {
+      return NextResponse.json(
+        { error: "This event is at capacity" },
+        { status: 409 }
+      );
+    }
   }
 
   try {
@@ -59,7 +75,7 @@ export async function GET(request: Request) {
 
   let id = eventId;
   if (!id && slug) {
-    id = getEventBySlug(slug)?.id ?? null;
+    id = (await getEventBySlug(slug))?.id ?? null;
   }
   if (!id) {
     return NextResponse.json(
