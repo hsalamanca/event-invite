@@ -44,6 +44,7 @@ type Overview = {
     domains: number;
     rsvps: number;
   };
+  googleAuthEnabled?: boolean;
   users: AdminUser[];
   events: AdminEvent[];
   domains: DomainBinding[];
@@ -220,6 +221,32 @@ export default function AdminDashboard() {
             </p>
           </div>
         ))}
+      </div>
+
+      <div
+        className={`rounded-md border px-4 py-3 text-sm ${
+          data.googleAuthEnabled
+            ? "border-[var(--champagne)]/35 bg-[var(--champagne)]/10 text-[var(--champagne)]"
+            : "border-white/15 bg-white/[0.03] text-[var(--mist)]"
+        }`}
+      >
+        <p className="font-medium text-[var(--ivory)]">
+          Google sign-in:{" "}
+          {data.googleAuthEnabled ? "Enabled" : "Not configured"}
+        </p>
+        {!data.googleAuthEnabled ? (
+          <p className="mt-1">
+            Set <code className="text-[var(--champagne)]">AUTH_GOOGLE_ID</code>{" "}
+            and{" "}
+            <code className="text-[var(--champagne)]">AUTH_GOOGLE_SECRET</code>{" "}
+            in Vercel, then redeploy. Setup guide:{" "}
+            <code className="text-[var(--champagne)]">docs/GOOGLE_AUTH.md</code>
+          </p>
+        ) : (
+          <p className="mt-1">
+            Login and register show Continue with Google.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap items-end gap-3">

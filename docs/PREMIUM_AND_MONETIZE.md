@@ -89,7 +89,7 @@ Host studio → **Upgrade to Pro · $29** calls `POST /api/billing/checkout` (St
 Env vars:
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET` (endpoint `/api/billing/webhook`)
-- Optional Google auth: `AUTH_GOOGLE_CLIENT_ID`, `AUTH_GOOGLE_CLIENT_SECRET`
+- Google auth: `AUTH_GOOGLE_ID` + `AUTH_GOOGLE_SECRET` (aliases `AUTH_GOOGLE_CLIENT_ID` / `AUTH_GOOGLE_CLIENT_SECRET` also work). See `docs/GOOGLE_AUTH.md`.
 - Email for verify/reset: `RESEND_API_KEY`, `EMAIL_FROM`
 
 Without Stripe keys, upgrade falls back to `mailto:hello@ownvite.com`.

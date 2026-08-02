@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth, isGoogleAuthEnabled } from "@/auth";
 import { isAdminEmail } from "@/lib/admin";
 import { listEvents } from "@/lib/events";
 import { listUsers, findUserById } from "@/lib/users";
@@ -62,6 +62,7 @@ export async function GET() {
       domains: Array.isArray(domains) ? domains.length : 0,
       rsvps: eventsWithMeta.reduce((n, e) => n + e.rsvpCount, 0),
     },
+    googleAuthEnabled: isGoogleAuthEnabled,
     users,
     events: eventsWithMeta,
     domains,

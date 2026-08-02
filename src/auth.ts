@@ -4,15 +4,21 @@ import Google from "next-auth/providers/google";
 import { compare } from "bcryptjs";
 import { findUserByEmail, upsertOAuthUser } from "@/lib/users";
 
-const googleConfigured =
-  Boolean(process.env.AUTH_GOOGLE_CLIENT_ID) &&
-  Boolean(process.env.AUTH_GOOGLE_CLIENT_SECRET);
+/** Auth.js auto-detects AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET; also accept CLIENT_* aliases. */
+const googleClientId =
+  process.env.AUTH_GOOGLE_ID || process.env.AUTH_GOOGLE_CLIENT_ID || "";
+const googleClientSecret =
+  process.env.AUTH_GOOGLE_SECRET ||
+  process.env.AUTH_GOOGLE_CLIENT_SECRET ||
+  "";
+const googleConfigured = Boolean(googleClientId && googleClientSecret);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   providers: [
     Credentials({
@@ -41,8 +47,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...(googleConfigured
       ? [
           Google({
-            clientId: process.env.AUTH_GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET!,
+            clientId: googleClientId,
+            clientSecret: googleClientSecret,
+            allowDangerousEmailAccountLinking: true,
+            authorization: {
+              params: {
+                prompt: "select_account",
+              },
+            },
           }),
         ]
       : []),

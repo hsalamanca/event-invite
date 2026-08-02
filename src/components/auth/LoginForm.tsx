@@ -4,6 +4,19 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+
+const OAUTH_ERRORS: Record<string, string> = {
+  OAuthSignin: "Could not start Google sign-in. Try again.",
+  OAuthCallback: "Google sign-in was interrupted. Try again.",
+  OAuthCreateAccount: "Could not create your Ownvite account from Google.",
+  OAuthAccountNotLinked:
+    "This email is already registered. Sign in with email, or use the same Google account.",
+  Callback: "Sign-in callback failed. Try again.",
+  AccessDenied: "Google sign-in was denied.",
+  Configuration: "Google sign-in is misconfigured. Contact support.",
+  Default: "Could not sign in with Google. Try again.",
+};
 
 export default function LoginForm({
   googleEnabled = false,
@@ -14,9 +27,14 @@ export default function LoginForm({
   const search = useSearchParams();
   const callbackUrl = search.get("callbackUrl") || "/dashboard";
   const resetOk = search.get("reset") === "1";
+  const oauthError = search.get("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    oauthError
+      ? OAUTH_ERRORS[oauthError] || OAUTH_ERRORS.Default || null
+      : null,
+  );
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: FormEvent) {
@@ -51,19 +69,12 @@ export default function LoginForm({
       ) : null}
 
       {googleEnabled ? (
-        <button
-          type="button"
-          onClick={() => void signIn("google", { callbackUrl })}
-          className="w-full rounded-md border border-white/20 px-4 py-3 text-sm font-medium text-[var(--ivory)] transition hover:border-[var(--champagne)]/50"
-        >
-          Continue with Google
-        </button>
-      ) : null}
-
-      {googleEnabled ? (
-        <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--mist)]">
-          or email
-        </p>
+        <>
+          <GoogleSignInButton callbackUrl={callbackUrl} />
+          <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--mist)]">
+            or email
+          </p>
+        </>
       ) : null}
 
       <form onSubmit={onSubmit} className="space-y-4">
