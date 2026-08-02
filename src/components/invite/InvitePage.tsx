@@ -76,6 +76,7 @@ const FONT_STACK: Record<string, string> = {
   Outfit: "var(--font-outfit), system-ui, sans-serif",
   Lora: "var(--font-lora), Georgia, serif",
   "Great Vibes": "var(--font-great-vibes), cursive",
+  Bangers: "var(--font-bangers), Impact, system-ui, sans-serif",
 };
 
 function fontStack(name: string, fallback: string): string {
@@ -276,6 +277,7 @@ export default function InvitePage({
         address={event.address}
         heroImage={event.heroImage}
         invitesYou={ui.invitesYou}
+        comicPresents={ui.comicPresents}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -1092,6 +1094,196 @@ export default function InvitePage({
           padding: clamp(1.5rem, 4vw, 2.4rem);
         }
 
+        :global(.invite-cover[data-layout="comic"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 20% 20%,
+              color-mix(in srgb, var(--invite-accent) 35%, transparent),
+              transparent 45%
+            ),
+            radial-gradient(
+              circle at 80% 30%,
+              color-mix(in srgb, var(--invite-accent-2) 40%, transparent),
+              transparent 42%
+            ),
+            linear-gradient(
+              160deg,
+              color-mix(in srgb, var(--invite-bg) 55%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 70%,
+              var(--invite-bg) 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="comic"] .comic-halftone) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.18;
+          background-image: radial-gradient(#111 18%, transparent 19%);
+          background-size: 14px 14px;
+          mix-blend-mode: multiply;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card) {
+          position: relative;
+          border: 4px solid #111;
+          border-radius: 1.1rem;
+          background:
+            radial-gradient(
+              circle at 12% 10%,
+              color-mix(in srgb, var(--invite-accent-2) 28%, transparent),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at 90% 0%,
+              color-mix(in srgb, var(--invite-accent) 18%, transparent),
+              transparent 38%
+            ),
+            var(--invite-surface);
+          box-shadow:
+            8px 8px 0 #111,
+            0 28px 50px color-mix(in srgb, #111 22%, transparent);
+          transform: rotate(-1.2deg);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-photo) {
+          margin: 0.9rem 0.9rem 0;
+          border: 3px solid #111;
+          border-radius: 0.75rem;
+          box-shadow: 4px 4px 0 var(--invite-accent);
+          aspect-ratio: 16 / 10;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-size: 1.05rem;
+          letter-spacing: 0.08em;
+          color: var(--invite-accent);
+          text-shadow: 2px 2px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-invite-line) {
+          font-style: normal;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          font-size: 0.82rem;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 400;
+          font-size: clamp(2.6rem, 10vw, 4rem);
+          line-height: 0.95;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+          color: var(--invite-accent);
+          -webkit-text-stroke: 1.5px #111;
+          paint-order: stroke fill;
+          text-shadow: 4px 4px 0 var(--invite-bg), 6px 6px 0 #111;
+          transform: rotate(-2deg);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-when) {
+          margin-top: 0.85rem;
+          padding: 0.85rem 1rem;
+          background: var(--invite-bg);
+          border: 3px solid #111;
+          border-radius: 0.65rem;
+          box-shadow: 3px 3px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-size: 1.35rem;
+          letter-spacing: 0.03em;
+          text-transform: uppercase;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .invite-ornament--comic) {
+          width: auto;
+          margin-bottom: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .comic-burst) {
+          display: inline-block;
+          padding: 0.35rem 0.7rem;
+          background: var(--invite-accent);
+          color: var(--invite-bg);
+          border: 3px solid #111;
+          border-radius: 999px;
+          font-family: var(--font-display);
+          font-size: 1.1rem;
+          letter-spacing: 0.04em;
+          transform: rotate(-8deg);
+          box-shadow: 3px 3px 0 #111;
+          animation: comicPop 2.4s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .comic-sticker) {
+          position: absolute;
+          z-index: 2;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 3.4rem;
+          min-height: 3.4rem;
+          padding: 0.35rem;
+          background: var(--invite-accent-2);
+          color: #111;
+          border: 3px solid #111;
+          border-radius: 999px;
+          font-family: var(--font-display);
+          font-size: 0.95rem;
+          letter-spacing: 0.04em;
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .comic-sticker--tl) {
+          top: 0.65rem;
+          left: 0.55rem;
+          transform: rotate(-14deg);
+          background: var(--invite-accent);
+          color: var(--invite-bg);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .comic-sticker--tr) {
+          top: 1.1rem;
+          right: 0.55rem;
+          transform: rotate(12deg);
+        }
+
+        :global(.invite-cover[data-layout="comic"] .btn-primary) {
+          border: 3px solid #111;
+          border-radius: 0.55rem;
+          box-shadow: 3px 3px 0 #111;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 700;
+        }
+
+        :global(.invite-cover[data-layout="comic"] .btn-ghost) {
+          border: 3px solid #111;
+          border-radius: 0.55rem;
+          background: var(--invite-bg);
+          box-shadow: 3px 3px 0 var(--invite-accent-2);
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          font-weight: 700;
+        }
+
+        @keyframes comicPop {
+          0%,
+          100% {
+            transform: rotate(-8deg) scale(1);
+          }
+          50% {
+            transform: rotate(-4deg) scale(1.08);
+          }
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(
@@ -1599,6 +1791,7 @@ export default function InvitePage({
           :global(.fade-up),
           .fade-up,
           :global(.invite-cover-atmosphere-img),
+          :global(.comic-burst),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;

@@ -15,6 +15,7 @@ type InviteCoverProps = {
   address: string;
   heroImage: string;
   invitesYou: string;
+  comicPresents?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -26,6 +27,13 @@ type InviteCoverProps = {
 };
 
 function Ornament({ layout }: { layout: InviteLayout }) {
+  if (layout === "comic") {
+    return (
+      <div className="invite-ornament invite-ornament--comic" aria-hidden>
+        <span className="comic-burst">POW!</span>
+      </div>
+    );
+  }
   if (layout === "script" || layout === "botanical") {
     return (
       <svg className="invite-ornament" viewBox="0 0 120 24" aria-hidden>
@@ -105,6 +113,7 @@ export default function InviteCover({
   address,
   heroImage,
   invitesYou,
+  comicPresents,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -114,7 +123,12 @@ export default function InviteCover({
   onCopyLink,
   parallaxY = 0,
 }: InviteCoverProps) {
-  const photoTop = layout === "arch" || layout === "party" || layout === "glam";
+  const photoTop =
+    layout === "arch" ||
+    layout === "party" ||
+    layout === "glam" ||
+    layout === "comic";
+  const isComic = layout === "comic";
 
   return (
     <section
@@ -124,15 +138,32 @@ export default function InviteCover({
     >
       <div
         className="invite-cover-atmosphere"
-        style={{ transform: `translateY(${parallaxY * 0.4}px)` } as CSSProperties}
+        style={
+          { transform: `translateY(${parallaxY * 0.4}px)` } as CSSProperties
+        }
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={heroImage} alt="" className="invite-cover-atmosphere-img" />
         <div className="invite-cover-atmosphere-veil" aria-hidden />
       </div>
 
+      {isComic ? (
+        <div className="comic-halftone" aria-hidden />
+      ) : null}
+
       <div className="invite-cover-stage">
         <article className="invite-card fade-up fade-up-1">
+          {isComic ? (
+            <>
+              <span className="comic-sticker comic-sticker--tl" aria-hidden>
+                BAM!
+              </span>
+              <span className="comic-sticker comic-sticker--tr" aria-hidden>
+                ZAP!
+              </span>
+            </>
+          ) : null}
+
           {photoTop ? (
             <div className="invite-card-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -144,7 +175,9 @@ export default function InviteCover({
             <Ornament layout={layout} />
 
             <p className="invite-card-host">{hostName || title}</p>
-            <p className="invite-card-invite-line">{invitesYou}</p>
+            <p className="invite-card-invite-line">
+              {isComic ? comicPresents || invitesYou : invitesYou}
+            </p>
 
             <h1 className="invite-card-headline">{headline}</h1>
 
