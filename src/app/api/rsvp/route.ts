@@ -31,17 +31,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  const record = await appendRsvp({
-    eventId,
-    name,
-    email,
-    attendance: attendance || "Joyfully attending",
-    guestCount: Number.isFinite(guestCount) ? Math.max(1, guestCount) : 1,
-    dietary,
-    note,
-  });
+  try {
+    const record = await appendRsvp({
+      eventId,
+      name,
+      email,
+      attendance: attendance || "Joyfully attending",
+      guestCount: Number.isFinite(guestCount) ? Math.max(1, guestCount) : 1,
+      dietary,
+      note,
+    });
 
-  return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
+    return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
+  } catch (err) {
+    console.error("RSVP append failed", err);
+    return NextResponse.json(
+      { error: "Unable to submit RSVP" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(request: Request) {
@@ -60,6 +68,14 @@ export async function GET(request: Request) {
     );
   }
 
-  const rsvps = await listRsvpsByEventId(id);
-  return NextResponse.json({ rsvps });
+  try {
+    const rsvps = await listRsvpsByEventId(id);
+    return NextResponse.json({ rsvps });
+  } catch (err) {
+    console.error("RSVP list failed", err);
+    return NextResponse.json(
+      { error: "Unable to load RSVPs" },
+      { status: 500 }
+    );
+  }
 }
