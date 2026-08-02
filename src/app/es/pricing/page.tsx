@@ -3,10 +3,10 @@ import PricingPageView from "@/components/marketing/PricingPage";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const metadata: Metadata = {
-  title: getDictionary("en").pricing.title,
-  description: getDictionary("en").pricing.support,
+  title: getDictionary("es").pricing.title,
+  description: getDictionary("es").pricing.support,
 };
 
-export default function PricingPage() {
-  return <PricingPageView locale="en" />;
+export default function SpanishPricingPage() {
+  return <PricingPageView locale="es" />;
 }

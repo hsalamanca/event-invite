@@ -2,7 +2,10 @@
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import DomainConnect from "@/components/host/DomainConnect";
+import ImageUpload from "@/components/host/ImageUpload";
 import InvitePage from "@/components/invite/InvitePage";
+import type { Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import type { EventRecord, Theme } from "@/lib/types";
 
 const FONT_OPTIONS = [
@@ -14,6 +17,7 @@ const FONT_OPTIONS = [
 
 type EventCustomizerProps = {
   event: EventRecord;
+  locale?: Locale;
 };
 
 type Draft = {
@@ -71,7 +75,12 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
   };
 }
 
-export default function EventCustomizer({ event }: EventCustomizerProps) {
+export default function EventCustomizer({
+  event,
+  locale = "en",
+}: EventCustomizerProps) {
+  const t = getDictionary(locale).host;
+  const uploadLabels = getDictionary(locale).upload;
   const [draft, setDraft] = useState<Draft>(() => toDraft(event));
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -138,7 +147,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
         } | null;
         throw new Error(data?.error ?? "Failed to save event");
       }
-      setSaveMessage("Saved");
+      setSaveMessage(t.saved);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -162,7 +171,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
       <header className="host-header">
         <div>
           <p className="host-eyebrow">Ownvite</p>
-          <h1 className="host-title">Customize invite</h1>
+          <h1 className="host-title">{t.customize}</h1>
         </div>
         <button
           type="submit"
@@ -170,7 +179,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
           className="host-save"
           disabled={saving}
         >
-          {saving ? "Saving…" : "Save"}
+          {saving ? t.saving : t.save}
         </button>
       </header>
 
@@ -181,30 +190,30 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
           onSubmit={handleSave}
         >
           <fieldset>
-            <legend>Content</legend>
+            <legend>{t.content}</legend>
             <label>
-              <span>Host name</span>
+              <span>{t.hostName}</span>
               <input
                 value={draft.hostName}
                 onChange={(e) => updateField("hostName", e.target.value)}
               />
             </label>
             <label>
-              <span>Title</span>
+              <span>{t.title}</span>
               <input
                 value={draft.title}
                 onChange={(e) => updateField("title", e.target.value)}
               />
             </label>
             <label>
-              <span>Headline</span>
+              <span>{t.headline}</span>
               <input
                 value={draft.headline}
                 onChange={(e) => updateField("headline", e.target.value)}
               />
             </label>
             <label>
-              <span>Tagline</span>
+              <span>{t.tagline}</span>
               <textarea
                 rows={2}
                 value={draft.tagline}
@@ -212,7 +221,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               />
             </label>
             <label>
-              <span>Date</span>
+              <span>{t.date}</span>
               <input
                 type="date"
                 value={draft.dateISO}
@@ -220,45 +229,45 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               />
             </label>
             <label>
-              <span>Time</span>
+              <span>{t.time}</span>
               <input
                 value={draft.timeLabel}
                 onChange={(e) => updateField("timeLabel", e.target.value)}
               />
             </label>
             <label>
-              <span>Venue</span>
+              <span>{t.venue}</span>
               <input
                 value={draft.venue}
                 onChange={(e) => updateField("venue", e.target.value)}
               />
             </label>
             <label>
-              <span>Address</span>
+              <span>{t.address}</span>
               <input
                 value={draft.address}
                 onChange={(e) => updateField("address", e.target.value)}
               />
             </label>
             <label>
-              <span>About</span>
+              <span>{t.about}</span>
               <textarea
                 rows={4}
                 value={draft.about}
                 onChange={(e) => updateField("about", e.target.value)}
               />
             </label>
-            <label>
-              <span>Hero image URL</span>
-              <input
-                value={draft.heroImage}
-                onChange={(e) => updateField("heroImage", e.target.value)}
-              />
-            </label>
+            <ImageUpload
+              slug={event.slug}
+              value={draft.heroImage}
+              onChange={(url) => updateField("heroImage", url)}
+              labels={uploadLabels}
+            />
           </fieldset>
 
           <DomainConnect
             slug={event.slug}
+            locale={locale}
             initialDomain={draft.customDomain || event.customDomain}
             onDomainChange={(domain) =>
               updateField("customDomain", domain ?? "")
@@ -266,9 +275,9 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
           />
 
           <fieldset>
-            <legend>Colors</legend>
+            <legend>{t.colors}</legend>
             <label className="color-row">
-              <span>Background</span>
+              <span>{t.background}</span>
               <input
                 type="color"
                 value={draft.colors.background}
@@ -280,7 +289,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               />
             </label>
             <label className="color-row">
-              <span>Accent primary</span>
+              <span>{t.accentPrimary}</span>
               <input
                 type="color"
                 value={draft.colors.accentPrimary}
@@ -292,7 +301,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               />
             </label>
             <label className="color-row">
-              <span>Accent secondary</span>
+              <span>{t.accentSecondary}</span>
               <input
                 type="color"
                 value={draft.colors.accentSecondary}
@@ -304,7 +313,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               />
             </label>
             <label className="color-row">
-              <span>Text primary</span>
+              <span>{t.textPrimary}</span>
               <input
                 type="color"
                 value={draft.colors.textPrimary}
@@ -318,9 +327,9 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
           </fieldset>
 
           <fieldset>
-            <legend>Fonts</legend>
+            <legend>{t.fonts}</legend>
             <label>
-              <span>Display</span>
+              <span>{t.display}</span>
               <select
                 value={draft.fonts.display}
                 onChange={(e) => updateFont("display", e.target.value)}
@@ -333,7 +342,7 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
               </select>
             </label>
             <label>
-              <span>Body</span>
+              <span>{t.body}</span>
               <select
                 value={draft.fonts.body}
                 onChange={(e) => updateFont("body", e.target.value)}
@@ -352,10 +361,10 @@ export default function EventCustomizer({ event }: EventCustomizerProps) {
         </form>
 
         <div className="host-preview">
-          <p className="host-preview-label">Live preview</p>
+          <p className="host-preview-label">{t.livePreview}</p>
           <div className="host-preview-frame">
             <div className="host-preview-scale">
-              <InvitePage event={previewEvent} />
+              <InvitePage event={previewEvent} locale={locale} />
             </div>
           </div>
         </div>

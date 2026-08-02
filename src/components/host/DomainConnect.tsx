@@ -2,11 +2,15 @@
 
 import { useEffect, useState } from "react";
 import type { DomainBinding, DnsRecordInstruction } from "@/lib/domain-types";
+import type { Locale } from "@/lib/i18n/config";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 type DomainConnectProps = {
   slug: string;
   initialDomain?: string | null;
   onDomainChange?: (domain: string | null) => void;
+  locale?: Locale;
 };
 
 type StatusPayload = {
@@ -21,7 +25,9 @@ export default function DomainConnect({
   slug,
   initialDomain,
   onDomainChange,
+  locale = "en",
 }: DomainConnectProps) {
+  const t = getDictionary(locale).domainConnect;
   const [domainInput, setDomainInput] = useState(initialDomain ?? "");
   const [binding, setBinding] = useState<DomainBinding | null>(null);
   const [platformUrls, setPlatformUrls] = useState<StatusPayload["platformUrls"]>(
@@ -125,32 +131,26 @@ export default function DomainConnect({
   return (
     <section className="domain-connect">
       <header className="domain-head">
-        <h2>Custom domain</h2>
-        <p>
-          Point your own hostname at Ownvite so guests open{" "}
-          <em>party.yourdomain.com</em> instead of an Ownvite path.
-        </p>
+        <h2>{t.title}</h2>
+        <p>{t.intro}</p>
       </header>
 
       {platformUrls && (
         <div className="domain-platform">
-          <p className="label">Always works (no DNS)</p>
+          <p className="label">{t.alwaysWorks}</p>
           <a href={platformUrls.path} target="_blank" rel="noreferrer">
             {platformUrls.path}
           </a>
-          <p className="label">Free Ownvite subdomain</p>
+          <p className="label">{t.freeSub}</p>
           <a href={platformUrls.subdomain} target="_blank" rel="noreferrer">
             {platformUrls.subdomain}
           </a>
-          <p className="hint">
-            Subdomain requires a <code>*</code> CNAME on ownvite.app (platform
-            DNS). Path link works today.
-          </p>
+          <p className="hint">{t.subHint}</p>
         </div>
       )}
 
       <label className="domain-input">
-        <span>Your domain</span>
+        <span>{t.yourDomain}</span>
         <div className="row">
           <input
             value={domainInput}
@@ -159,32 +159,29 @@ export default function DomainConnect({
             disabled={busy}
           />
           <button type="button" onClick={connect} disabled={busy || !domainInput.trim()}>
-            {busy ? "Working…" : binding ? "Update" : "Connect"}
+            {busy ? t.working : binding ? t.update : t.connect}
           </button>
         </div>
       </label>
 
       {status && (
         <p className={`status status-${status}`}>
-          Status: <strong>{status.replace("_", " ")}</strong>
-          {binding?.vercelVerified ? " · SSL ready" : ""}
+          {t.status}: <strong>{status.replace("_", " ")}</strong>
+          {binding?.vercelVerified ? " · SSL" : ""}
         </p>
       )}
 
       {dns.length > 0 && (
         <div className="dns-box">
-          <h3>DNS records to add</h3>
-          <p>
-            At your registrar (Namecheap, Cloudflare, GoDaddy, Google Domains),
-            open DNS settings for the parent domain and add:
-          </p>
+          <h3>{t.dnsTitle}</h3>
+          <p>{t.dnsIntro}</p>
           <div className="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>Host / Name</th>
-                  <th>Value / Points to</th>
+                  <th>{t.type}</th>
+                  <th>{t.host}</th>
+                  <th>{t.value}</th>
                 </tr>
               </thead>
               <tbody>
@@ -205,21 +202,17 @@ export default function DomainConnect({
             </table>
           </div>
           <ul className="tips">
-            <li>TTL: Automatic or 5 minutes while testing.</li>
-            <li>Remove conflicting A/AAAA/CNAME records for the same host.</li>
-            <li>
-              Apex domains (<code>yourdomain.com</code>) need A records; prefer a
-              subdomain like <code>party.</code> when you can.
-            </li>
-            <li>Propagation is often minutes; can take up to 24–48 hours.</li>
+            {t.tips.map((tip) => (
+              <li key={tip}>{tip}</li>
+            ))}
           </ul>
           <div className="actions">
             <button type="button" className="primary" onClick={verify} disabled={busy}>
-              Verify DNS
+              {t.verify}
             </button>
             {binding && (
               <button type="button" className="ghost" onClick={disconnect} disabled={busy}>
-                Remove domain
+                {t.remove}
               </button>
             )}
           </div>
@@ -230,7 +223,10 @@ export default function DomainConnect({
       {error && <p className="msg err">{error}</p>}
 
       <p className="more">
-        Full guide: <a href="/domains">ownvite.com/domains</a>
+        {t.more}{" "}
+        <a href={localePath(locale, "/domains")}>
+          ownvite.com{localePath(locale, "/domains")}
+        </a>
       </p>
 
       <style jsx>{`

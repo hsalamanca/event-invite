@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import type { Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import type { EventRecord } from "@/lib/types";
 
 type InvitePageProps = {
   event: EventRecord;
+  locale?: Locale;
   onRsvpSubmit?: (payload: {
     eventId: string;
     name: string;
@@ -16,10 +19,10 @@ type InvitePageProps = {
   }) => Promise<void> | void;
 };
 
-function formatDateLabel(dateISO: string): string {
+function formatDateLabel(dateISO: string, locale: Locale): string {
   const d = new Date(`${dateISO}T12:00:00`);
   if (Number.isNaN(d.getTime())) return dateISO;
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -41,8 +44,13 @@ function fontStack(name: string, fallback: string): string {
   return FONT_STACK[name] ?? `"${name}", ${fallback}`;
 }
 
-export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
+export default function InvitePage({
+  event,
+  locale = "en",
+  onRsvpSubmit,
+}: InvitePageProps) {
   const { theme, rsvpFields } = event;
+  const ui = getDictionary(locale).invite;
   const attendanceOptions = rsvpFields.attendance.options;
   const defaultAttendance = attendanceOptions[0] ?? "Joyfully attending";
 
@@ -144,32 +152,32 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
           <p className="invite-tagline fade-up fade-up-3">{event.tagline}</p>
           <div className="invite-cta fade-up fade-up-4">
             <a className="btn-primary" href="#rsvp">
-              RSVP
+              {ui.rsvp}
             </a>
             <a className="btn-ghost" href="#details">
-              Details
+              {ui.details}
             </a>
           </div>
         </div>
       </section>
 
       <section id="details" className="invite-section">
-        <h2 className="invite-section-title">Details</h2>
+        <h2 className="invite-section-title">{ui.details}</h2>
         <dl className="invite-meta">
           <div>
-            <dt>Date</dt>
-            <dd>{formatDateLabel(event.dateISO)}</dd>
+            <dt>{ui.date}</dt>
+            <dd>{formatDateLabel(event.dateISO, locale)}</dd>
           </div>
           <div>
-            <dt>Time</dt>
+            <dt>{ui.time}</dt>
             <dd>{event.timeLabel}</dd>
           </div>
           <div>
-            <dt>Venue</dt>
+            <dt>{ui.venue}</dt>
             <dd>{event.venue}</dd>
           </div>
           <div>
-            <dt>Address</dt>
+            <dt>{ui.address}</dt>
             <dd>
               <a
                 href={mapsUrl(event.address)}
@@ -183,13 +191,15 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
           </div>
         </dl>
         <div className="invite-about">
-          <h3 className="invite-section-title invite-section-title--sm">About</h3>
+          <h3 className="invite-section-title invite-section-title--sm">
+            {ui.about}
+          </h3>
           <p>{event.about}</p>
         </div>
       </section>
 
       <section id="rsvp" className="invite-section invite-section--surface">
-        <h2 className="invite-section-title">RSVP</h2>
+        <h2 className="invite-section-title">{ui.rsvp}</h2>
         <p className="invite-prompt">{rsvpFields.prompt}</p>
 
         {success ? (
@@ -197,12 +207,13 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
             <span className="rsvp-check" aria-hidden>
               ✓
             </span>
-            <p className="rsvp-success-text">You&apos;re on the list</p>
+            <p className="rsvp-success-text">{ui.successTitle}</p>
+            <p className="rsvp-success-sub">{ui.successBody}</p>
           </div>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
             <label className="rsvp-field">
-              <span>Name</span>
+              <span>{ui.name}</span>
               <input
                 type="text"
                 name="name"
@@ -214,7 +225,7 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
             </label>
 
             <label className="rsvp-field">
-              <span>Email</span>
+              <span>{ui.email}</span>
               <input
                 type="email"
                 name="email"
@@ -227,7 +238,7 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
 
             {rsvpFields.attendance.enabled && (
               <label className="rsvp-field">
-                <span>Attendance</span>
+                <span>{ui.attendance}</span>
                 <select
                   name="attendance"
                   value={attendance}
@@ -270,13 +281,13 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
             )}
 
             <label className="rsvp-field">
-              <span>Note</span>
+              <span>{ui.note}</span>
               <textarea
                 name="note"
                 rows={3}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Optional message for the host"
+                placeholder={ui.note}
               />
             </label>
 
@@ -291,7 +302,7 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
               className="btn-primary btn-submit"
               disabled={submitting}
             >
-              {submitting ? "Sending…" : "Submit RSVP"}
+              {submitting ? ui.submitting : ui.submit}
             </button>
           </form>
         )}
@@ -599,6 +610,12 @@ export default function InvitePage({ event, onRsvpSubmit }: InvitePageProps) {
           color: var(--invite-accent-2);
           position: relative;
           display: inline-block;
+        }
+
+        .rsvp-success-sub {
+          margin: 0.5rem 0 0;
+          color: var(--invite-muted);
+          font-size: 0.95rem;
         }
 
         .rsvp-success-text::after {

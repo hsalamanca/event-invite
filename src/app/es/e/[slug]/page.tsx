@@ -13,7 +13,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const event = getEventBySlug(slug);
-  if (!event) return { title: "Invitation not found" };
+  if (!event) return { title: "Invitación no encontrada" };
   return {
     title: event.title,
     description: event.tagline,
@@ -25,7 +25,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function EventInvitePage({ params }: PageProps) {
+export default async function SpanishEventInvitePage({ params }: PageProps) {
   const { slug } = await params;
   const event = getEventBySlug(slug);
   if (!event || !event.published) notFound();
@@ -33,9 +33,9 @@ export default async function EventInvitePage({ params }: PageProps) {
   return (
     <div className="relative">
       <div className="absolute right-4 top-4 z-30">
-        <LanguageSwitcher locale="en" path={`/e/${slug}`} />
+        <LanguageSwitcher locale="es" path={`/e/${slug}`} />
       </div>
-      <InvitePage event={event} locale="en" />
+      <InvitePage event={event} locale="es" />
     </div>
   );
 }

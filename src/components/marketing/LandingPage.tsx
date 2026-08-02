@@ -1,21 +1,13 @@
 import Link from "next/link";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import type { Locale } from "@/lib/i18n/config";
+import { localePath } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-const features = [
-  {
-    title: "Your domain",
-    body: "Share party.yourname.com — point a CNAME at Ownvite and guests never see our chrome.",
-  },
-  {
-    title: "Pixel control",
-    body: "Fonts, colors, hero media, motion, and copy — tuned live before you send.",
-  },
-  {
-    title: "Honest pricing",
-    body: "One event pass. Invite twelve or one-twenty. No coins, no guest-count math.",
-  },
-];
+export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
+  const t = getDictionary(locale).landing;
+  const nav = getDictionary(locale).nav;
 
-export default function LandingPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[var(--ink)] text-[var(--ivory)]">
       <div
@@ -39,18 +31,25 @@ export default function LandingPage() {
         <span className="font-[family-name:var(--font-cormorant)] text-2xl tracking-wide text-[var(--champagne)]">
           Ownvite
         </span>
-        <nav className="flex items-center gap-5 text-sm text-[var(--mist)]">
-          <Link href="/domains" className="hover:text-[var(--ivory)]">
-            Domains
-          </Link>
-          <Link href="/pricing" className="hover:text-[var(--ivory)]">
-            Pricing
+        <nav className="flex items-center gap-4 text-sm text-[var(--mist)] sm:gap-5">
+          <LanguageSwitcher locale={locale} path="/" />
+          <Link
+            href={localePath(locale, "/domains")}
+            className="hover:text-[var(--ivory)]"
+          >
+            {nav.domains}
           </Link>
           <Link
-            href="/e/h-birthday-2026"
+            href={localePath(locale, "/pricing")}
+            className="hover:text-[var(--ivory)]"
+          >
+            {nav.pricing}
+          </Link>
+          <Link
+            href={localePath(locale, "/e/h-birthday-2026")}
             className="rounded-md bg-[var(--champagne)] px-3.5 py-2 font-medium text-[var(--ink)] transition hover:brightness-110"
           >
-            Open birthday invite
+            {nav.openInvite}
           </Link>
         </nav>
       </header>
@@ -61,36 +60,33 @@ export default function LandingPage() {
           style={{ animation: "ownvite-fade-up 0.8s ease both" }}
         >
           <p className="mb-5 text-xs uppercase tracking-[0.32em] text-[var(--champagne)]">
-            Ownvite
+            {t.brand}
           </p>
           <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.05] tracking-tight">
-            Host on your own domain.
-            <span className="block text-[var(--champagne)]">
-              Design like you mean it.
-            </span>
+            {t.headline1}
+            <span className="block text-[var(--champagne)]">{t.headline2}</span>
           </h1>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-[var(--mist)]">
-            Digital invitations with deep customization and custom domains —
-            starting with H Salamanca&apos;s birthday as the first live proof.
+            {t.support}
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
-              href="/e/h-birthday-2026"
+              href={localePath(locale, "/e/h-birthday-2026")}
               className="rounded-md bg-[var(--champagne)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition hover:brightness-110"
             >
-              View the birthday invite
+              {t.ctaInvite}
             </Link>
             <Link
-              href="/host/h-birthday-2026"
+              href={localePath(locale, "/host/h-birthday-2026")}
               className="rounded-md border border-white/20 px-5 py-3 text-sm font-medium text-[var(--ivory)] transition hover:border-[var(--champagne)]/50"
             >
-              Customize it
+              {t.ctaCustomize}
             </Link>
           </div>
         </div>
 
         <Link
-          href="/e/h-birthday-2026"
+          href={localePath(locale, "/e/h-birthday-2026")}
           className="group relative block overflow-hidden rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--champagne)]"
           style={{ animation: "ownvite-fade-up 0.9s ease 0.12s both" }}
         >
@@ -98,21 +94,19 @@ export default function LandingPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80&auto=format&fit=crop"
-              alt="Evening celebration atmosphere for the birthday invite preview"
+              alt=""
               className="h-full w-full object-cover transition duration-[1.4s] ease-out group-hover:scale-105"
               style={{ animation: "ownvite-drift 18s ease-in-out infinite" }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)] via-[var(--ink)]/35 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
               <p className="text-xs uppercase tracking-[0.28em] text-[var(--champagne)]">
-                H Salamanca · Birthday
+                {t.previewEyebrow}
               </p>
               <p className="mt-2 font-[family-name:var(--font-cormorant)] text-3xl leading-tight sm:text-4xl">
-                A Night to Celebrate
+                {t.previewHeadline}
               </p>
-              <p className="mt-2 text-sm text-[var(--mist)]">
-                Saturday, September 12 · Open invite →
-              </p>
+              <p className="mt-2 text-sm text-[var(--mist)]">{t.previewMeta}</p>
             </div>
           </div>
         </Link>
@@ -120,7 +114,7 @@ export default function LandingPage() {
 
       <section className="relative z-10 border-t border-white/10 bg-[var(--slate)]/40">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-3">
-          {features.map((feature, i) => (
+          {t.features.map((feature, i) => (
             <div
               key={feature.title}
               style={{
@@ -130,7 +124,7 @@ export default function LandingPage() {
               <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]">
                 {feature.title}
               </h2>
-              <p className="mt-3 text-[var(--mist)] leading-relaxed">
+              <p className="mt-3 leading-relaxed text-[var(--mist)]">
                 {feature.body}
               </p>
             </div>
@@ -140,23 +134,21 @@ export default function LandingPage() {
 
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-20 text-center">
         <h2 className="font-[family-name:var(--font-cormorant)] text-3xl sm:text-4xl">
-          Built to beat ads, coins, and per-guest fees
+          {t.compareTitle}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-[var(--mist)]">
-          Evite puts ads on your guests. Paperless Post hides cost in coins.
-          Greenvelope charges by headcount. Ownvite ships a branded micro-site
-          on your domain — flat event pricing.
+          {t.compareBody}
         </p>
         <Link
-          href="/pricing"
+          href={localePath(locale, "/pricing")}
           className="mt-8 inline-block text-sm font-medium text-[var(--champagne)] underline-offset-4 hover:underline"
         >
-          See pricing →
+          {t.seePricing}
         </Link>
       </section>
 
       <footer className="relative z-10 border-t border-white/10 px-6 py-8 text-center text-sm text-[var(--mist)]">
-        Ownvite · Your event, your domain, your design
+        {t.footer}
       </footer>
     </main>
   );
