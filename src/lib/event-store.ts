@@ -124,6 +124,22 @@ export async function listEventsByOwner(
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
+/** Events where the user email is listed as co-host (not owner). */
+export async function listEventsByCoHostEmail(
+  email: string
+): Promise<EventRecord[]> {
+  const key = email.trim().toLowerCase();
+  if (!key) return [];
+  const registry = await load();
+  return registry.events
+    .filter(
+      (e) =>
+        (e.coHostEmails ?? []).map((x) => x.toLowerCase()).includes(key) &&
+        e.ownerId !== null,
+    )
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+
 export async function getEventByDomain(
   domain: string
 ): Promise<EventRecord | undefined> {

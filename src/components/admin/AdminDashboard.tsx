@@ -18,6 +18,7 @@ type AdminEvent = {
   dateISO: string;
   published: boolean;
   visibility: string;
+  tier: string;
   templateId: string;
   customDomain: string | null;
   ownerId: string | null;
@@ -109,6 +110,25 @@ export default function AdminDashboard() {
       if (!res.ok) {
         const j = (await res.json()) as { error?: string };
         setError(j.error || "Update failed");
+        return;
+      }
+      await load();
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function setTier(event: AdminEvent, tier: "free" | "pro" | "studio") {
+    setBusy(event.slug);
+    try {
+      const res = await fetch(`/api/admin/events/${event.slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier }),
+      });
+      if (!res.ok) {
+        const j = (await res.json()) as { error?: string };
+        setError(j.error || "Tier update failed");
         return;
       }
       await load();
@@ -269,6 +289,8 @@ export default function AdminDashboard() {
                   {" · "}
                   {event.published ? "published" : "draft"}
                   {" · "}
+                  tier: {event.tier ?? "free"}
+                  {" · "}
                   {event.ownerEmail ?? "no owner (demo)"}
                 </p>
               </div>
@@ -285,6 +307,21 @@ export default function AdminDashboard() {
                 >
                   View invite
                 </Link>
+                <select
+                  value={event.tier ?? "free"}
+                  disabled={busy === event.slug}
+                  onChange={(e) =>
+                    void setTier(
+                      event,
+                      e.target.value as "free" | "pro" | "studio",
+                    )
+                  }
+                  className="rounded-md border border-white/15 bg-[var(--ink)] px-2 py-1.5"
+                >
+                  <option value="free">tier: free</option>
+                  <option value="pro">tier: pro</option>
+                  <option value="studio">tier: studio</option>
+                </select>
                 <button
                   type="button"
                   disabled={busy === event.slug}

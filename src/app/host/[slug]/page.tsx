@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/auth";
 import HostStudioShell from "@/components/host/HostStudioShell";
-import { isAdminEmail } from "@/lib/admin";
+import { canManageEvent } from "@/lib/access";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
@@ -24,31 +23,30 @@ export default async function HostEditorPage({ params }: PageProps) {
   const event = await getEventBySlug(slug);
   if (!event) notFound();
 
-  const session = await auth();
-  const isAdmin = isAdminEmail(session?.user?.email);
-  const isOwner = Boolean(
-    session?.user?.id && event.ownerId === session.user.id,
-  );
+  const access = await canManageEvent(event);
 
   if (event.ownerId) {
-    if (!session?.user?.id) {
+    if (!access.session?.user?.id) {
       redirect(`/login?callbackUrl=/host/${slug}`);
     }
-    if (!isOwner && !isAdmin) {
+    if (!access.allowed) {
       redirect("/dashboard");
     }
   }
 
   const rsvps = await listRsvpsByEventId(event.id);
   const locale = await getRequestLocale();
+  const isOwner = Boolean(
+    access.session?.user?.id && event.ownerId === access.session.user.id,
+  );
 
   return (
     <HostStudioShell
       event={event}
       rsvps={rsvps}
       locale={locale}
-      canDelete={isOwner || isAdmin}
-      showDashboard={Boolean(session?.user?.id)}
+      canDelete={isOwner || access.isAdmin}
+      showDashboard={Boolean(access.session?.user?.id)}
     />
   );
 }

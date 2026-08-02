@@ -82,6 +82,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
+  const { eventIsPro } = await import("@/lib/tier");
+  const isFreePlatformSub =
+    domain.endsWith(".ownvite.app") || domain.endsWith(".ownvite.com");
+  if (!eventIsPro(event) && !access.isAdmin && !isFreePlatformSub) {
+    return NextResponse.json(
+      {
+        error:
+          "Custom domains are included with Pro Event ($29). Upgrade in Host studio, or use your free {slug}.ownvite.app link.",
+        upgradeRequired: true,
+      },
+      { status: 402 },
+    );
+  }
+
   const existing = await getBindingBySlug(slug);
   if (existing && existing.domain !== domain) {
     await removeDomainFromProject(existing.domain);

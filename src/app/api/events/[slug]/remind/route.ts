@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import { sendEventEmail } from "@/lib/email";
+import { inviteEmailHtml } from "@/lib/email-templates";
 import { getEventBySlug } from "@/lib/events";
 import { listManualGuests } from "@/lib/guest-extras";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
+import { eventIsPro, FREE_EMAIL_BLAST_CAP } from "@/lib/tier";
 
 export const runtime = "nodejs";
 
@@ -58,6 +60,10 @@ export async function POST(
     });
   }
 
+  const cap = eventIsPro(event) ? 100 : FREE_EMAIL_BLAST_CAP;
+  const capped = targets.slice(0, cap);
+  const truncated = targets.length > capped.length;
+
   const subject =
     type === "event_reminder"
       ? `Reminder: ${event.title}`
@@ -65,14 +71,27 @@ export async function POST(
         ? `You're invited: ${event.title}`
         : `Please RSVP: ${event.title}`;
 
+  const html = inviteEmailHtml({
+    hostName: event.hostName,
+    title: event.title,
+    dateISO: event.dateISO,
+    timeLabel: event.timeLabel,
+    venue: event.venue,
+    address: event.address,
+    inviteUrl,
+    kind: type,
+  });
+
   const results = [];
-  for (const to of targets.slice(0, 100)) {
+  for (const to of capped) {
     const bodyText = [
       `Hi!`,
       "",
       type === "event_reminder"
         ? `Friendly reminder about ${event.title} on ${event.dateISO} at ${event.timeLabel}.`
-        : `Please RSVP for ${event.title}.`,
+        : type === "invite"
+          ? `You're invited to ${event.title}.`
+          : `Please RSVP for ${event.title}.`,
       "",
       `${event.venue} — ${event.address}`,
       inviteUrl,
@@ -87,6 +106,7 @@ export async function POST(
         to,
         subject,
         body: bodyText,
+        html,
       }),
     );
   }
@@ -97,8 +117,16 @@ export async function POST(
     preview: results.filter((r) => r.status === "preview").length,
     failed: results.filter((r) => r.status === "failed").length,
     results,
-    note: process.env.RESEND_API_KEY
-      ? undefined
-      : "RESEND_API_KEY not set — messages saved as preview (copy/paste).",
+    truncated,
+    note: [
+      !process.env.RESEND_API_KEY
+        ? "RESEND_API_KEY not set — messages saved as preview (copy/paste)."
+        : null,
+      truncated
+        ? `Free tier sends up to ${FREE_EMAIL_BLAST_CAP} emails per blast — upgrade to Pro for larger lists.`
+        : null,
+    ]
+      .filter(Boolean)
+      .join(" "),
   });
 }

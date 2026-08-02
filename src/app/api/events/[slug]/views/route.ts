@@ -64,6 +64,28 @@ export async function GET(
   }
 
   const views = await listViewsByEventId(event.id);
+  const { searchParams } = new URL(_request.url);
+  if (searchParams.get("format") === "csv") {
+    const rows = [
+      ["id", "createdAt", "email", "userAgent"],
+      ...views.map((v) => [
+        v.id,
+        v.createdAt,
+        v.email ?? "",
+        (v.userAgent ?? "").replace(/"/g, '""'),
+      ]),
+    ];
+    const csv = rows
+      .map((r) => r.map((c) => `"${String(c)}"`).join(","))
+      .join("\n");
+    return new NextResponse(csv, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="${slug}-opens.csv"`,
+      },
+    });
+  }
+
   return NextResponse.json({
     summary: summarizeViews(views),
     recent: views.slice(0, 50),

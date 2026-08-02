@@ -262,7 +262,10 @@ export default function EventCustomizer({
       thankYouMessage: draft.thankYouMessage,
       coHostEmails: preview.coHostEmails,
       checkInEnabled: draft.checkInEnabled,
-      showOwnviteFooter: draft.showOwnviteFooter,
+      showOwnviteFooter:
+        event.tier === "pro" || event.tier === "studio"
+          ? false
+          : true,
     };
 
     if (draft.invitePassword.trim()) {
@@ -532,12 +535,21 @@ export default function EventCustomizer({
             <label className="checkbox-row">
               <input
                 type="checkbox"
-                checked={draft.showOwnviteFooter}
+                checked={
+                  event.tier === "pro" || event.tier === "studio"
+                    ? false
+                    : draft.showOwnviteFooter
+                }
+                disabled={event.tier === "pro" || event.tier === "studio"}
                 onChange={(e) =>
                   updateField("showOwnviteFooter", e.target.checked)
                 }
               />
-              <span>Show Ownvite footer (Free)</span>
+              <span>
+                {event.tier === "pro" || event.tier === "studio"
+                  ? "Ownvite footer removed (Pro)"
+                  : "Show Ownvite footer (upgrade to Pro to remove)"}
+              </span>
             </label>
             <label>
               <span>Co-host emails</span>

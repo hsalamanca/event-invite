@@ -7,6 +7,7 @@ import {
   getEventBySlug,
   updateEvent,
 } from "@/lib/events";
+import { eventIsPro } from "@/lib/tier";
 import type { EventRecord } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -29,8 +30,8 @@ export async function PATCH(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  const { allowed } = await canManageEvent(existing);
-  if (!allowed) {
+  const access = await canManageEvent(existing);
+  if (!access.allowed) {
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
@@ -66,6 +67,25 @@ export async function PATCH(request: Request, { params }: Params) {
     partial.coHostEmails = data.coHostEmails
       .map((e) => String(e).trim().toLowerCase())
       .filter(Boolean);
+  }
+
+  // Free tier always shows Ownvite footer (Pro removes it via Stripe webhook)
+  if (!eventIsPro(existing) && !access.isAdmin) {
+    if (partial.showOwnviteFooter === false) {
+      return NextResponse.json(
+        {
+          error: "Upgrade to Pro Event to remove the Ownvite footer.",
+          upgradeRequired: true,
+        },
+        { status: 402 },
+      );
+    }
+    partial.showOwnviteFooter = true;
+  }
+
+  // Clients cannot self-assign paid tiers
+  if (!access.isAdmin) {
+    delete partial.tier;
   }
 
   try {

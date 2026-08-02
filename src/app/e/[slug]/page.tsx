@@ -7,6 +7,8 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
+import { shouldShowOwnviteFooter } from "@/lib/tier";
+import { fetchEventWeather } from "@/lib/weather";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -59,14 +61,21 @@ export default async function EventInvitePage({ params }: PageProps) {
   const atCapacity =
     event.capacity != null && event.capacity > 0 && seatsTaken >= event.capacity;
 
-  // Never send password hash to the client
+  const today = new Date().toISOString().slice(0, 10);
+  const isPast = Boolean(event.dateISO && event.dateISO < today);
+
+  const weather =
+    !isPast && event.address
+      ? await fetchEventWeather({
+          address: event.address,
+          dateISO: event.dateISO,
+        })
+      : null;
+
   const safeEvent = {
     ...event,
     invitePasswordHash: null,
-    showOwnviteFooter:
-      event.tier === "pro" || event.tier === "studio"
-        ? false
-        : event.showOwnviteFooter !== false,
+    showOwnviteFooter: shouldShowOwnviteFooter(event),
   };
 
   return (
@@ -79,6 +88,8 @@ export default async function EventInvitePage({ params }: PageProps) {
         locale={locale}
         seatsTaken={seatsTaken}
         atCapacity={atCapacity}
+        isPast={isPast}
+        weather={weather}
       />
     </div>
   );

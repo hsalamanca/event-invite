@@ -44,12 +44,25 @@ export async function PATCH(request: Request, { params }: Params) {
   const data = body as Partial<EventRecord> & { transferOwnerId?: string };
   const patch: Partial<EventRecord> = {};
   if (typeof data.published === "boolean") patch.published = data.published;
-  if (data.visibility === "public" || data.visibility === "unlisted") {
+  if (
+    data.visibility === "public" ||
+    data.visibility === "unlisted" ||
+    data.visibility === "private"
+  ) {
     patch.visibility = data.visibility;
   }
   if (typeof data.title === "string") patch.title = data.title.trim();
   if (data.transferOwnerId !== undefined) {
     patch.ownerId = data.transferOwnerId || null;
+  }
+  if (data.tier === "free" || data.tier === "pro" || data.tier === "studio") {
+    patch.tier = data.tier;
+    if (data.tier === "pro" || data.tier === "studio") {
+      patch.showOwnviteFooter = false;
+      patch.premiumTheme = true;
+    } else {
+      patch.showOwnviteFooter = true;
+    }
   }
 
   try {

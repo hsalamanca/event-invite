@@ -265,7 +265,7 @@ const en: Dictionary = {
     headline1: "Host on your own domain.",
     headline2: "Design like you mean it.",
     support:
-      "Digital invitations with deep customization and custom domains — starting with H Salamanca's birthday as the first live proof.",
+      "Designer-grade invites with custom domains, meal RSVPs, password privacy, check-in, and open tracking — flat event pricing, no ads on your guests.",
     ctaInvite: "View the birthday invite",
     ctaCustomize: "Customize it",
     ctaStart: "Create free account",
@@ -276,20 +276,20 @@ const en: Dictionary = {
     features: [
       {
         title: "Your domain",
-        body: "Share party.yourname.com — point a CNAME at Ownvite and guests never see our chrome.",
+        body: "Share party.yourname.com on Pro — guests see your brand in the URL bar, not ours.",
       },
       {
-        title: "Pixel control",
-        body: "Fonts, colors, hero media, motion, and copy — tuned live before you send.",
+        title: "Celebration toolkit",
+        body: "Meal questions, schedule, FAQ, gallery, QR check-in, co-hosts, and email reminders in one studio.",
       },
       {
         title: "Honest pricing",
-        body: "One event pass. Invite twelve or one-twenty. No coins, no guest-count math.",
+        body: "Free to start. Pro Event $29 once — invite twelve or one-twenty. No coins, no per-guest math.",
       },
     ],
     compareTitle: "Built to beat ads, coins, and per-guest fees",
     compareBody:
-      "Evite puts ads on your guests. Paperless Post hides cost in coins. Greenvelope charges by headcount. Ownvite ships a branded micro-site on your domain — flat event pricing.",
+      "Evite puts ads on your guests. Paperless Post hides cost in coins. Greenvelope charges by headcount. Ownvite ships a branded micro-site — flat event pricing with real host tools.",
     seePricing: "See pricing →",
     footer: "Ownvite · Your event, your domain, your design",
   },
@@ -592,7 +592,7 @@ const es: Dictionary = {
     headline1: "Tu evento en tu propio dominio.",
     headline2: "Diseña con intención.",
     support:
-      "Invitaciones digitales con personalización profunda y dominios personalizados — empezando con el cumpleaños de H Salamanca como primera prueba en vivo.",
+      "Invitaciones de diseñador con dominio propio, menú RSVP, privacidad con contraseña, check-in y seguimiento de aperturas — precio fijo, sin anuncios.",
     ctaInvite: "Ver la invitación de cumpleaños",
     ctaCustomize: "Personalizarla",
     ctaStart: "Crear cuenta gratis",
@@ -603,20 +603,20 @@ const es: Dictionary = {
     features: [
       {
         title: "Tu dominio",
-        body: "Comparte fiesta.tunombre.com — apunta un CNAME a Ownvite y tus invitados no ven nuestra marca.",
+        body: "Comparte fiesta.tunombre.com en Pro — tus invitados ven tu marca en la barra de dirección.",
       },
       {
-        title: "Control total",
-        body: "Fuentes, colores, imagen hero, animación y textos — ajústalos en vivo antes de enviar.",
+        title: "Kit de celebración",
+        body: "Menú, agenda, FAQ, galería, check-in QR, co-anfitriones y recordatorios por email en un solo estudio.",
       },
       {
         title: "Precio claro",
-        body: "Un pago por evento. Invita a doce o a ciento veinte. Sin monedas ni cobros por invitado.",
+        body: "Empieza gratis. Pro Evento $29 una vez — invita a doce o a ciento veinte. Sin monedas ni cobros por persona.",
       },
     ],
     compareTitle: "Hecho para superar anuncios, monedas y cobros por persona",
     compareBody:
-      "Evite pone anuncios a tus invitados. Paperless Post esconde el costo en monedas. Greenvelope cobra por cabeza. Ownvite publica un micro-sitio con tu marca en tu dominio — precio fijo por evento.",
+      "Evite pone anuncios a tus invitados. Paperless Post esconde el costo en monedas. Greenvelope cobra por cabeza. Ownvite publica un micro-sitio con herramientas reales de anfitrión — precio fijo por evento.",
     seePricing: "Ver precios →",
     footer: "Ownvite · Tu evento, tu dominio, tu diseño",
   },

@@ -72,15 +72,15 @@ Lower priority / later:
 
 ## 4. Soft gates vs hard gates (ship now)
 
-**Soft (ship without Stripe):**
+**Soft:**
 - Badge “Premium” on templates
 - Pricing page copy for theme packs + add-ons
-- Footer on Free; host can toggle `showOwnviteFooter` (honor when billing exists)
 
-**Hard (when Stripe is ready):**
-- Block custom domain attach on Free (or charge $9)
-- Lock premium template publish unless `tier !== free` or one-time unlock
-- Cap email sends without credits
+**Hard (shipped):**
+- Custom domain attach blocked on Free (use `{slug}.ownvite.app`; Pro unlocks BYO domain)
+- Free cannot remove Ownvite footer (`showOwnviteFooter` forced true)
+- Free email blasts capped at 15 recipients per send
+- Clients cannot self-assign `tier` (admin + Stripe webhook only)
 
 ### Stripe checkout (implemented)
 

@@ -5,12 +5,15 @@ import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
+import type { WeatherSnapshot } from "@/lib/weather";
 
 type InvitePageProps = {
   event: EventRecord;
   locale?: Locale;
   seatsTaken?: number;
   atCapacity?: boolean;
+  isPast?: boolean;
+  weather?: WeatherSnapshot | null;
   /** Set false in host live preview to avoid polluting open stats */
   trackViews?: boolean;
   onRsvpSubmit?: (payload: {
@@ -82,6 +85,8 @@ export default function InvitePage({
   locale = "en",
   seatsTaken = 0,
   atCapacity = false,
+  isPast = false,
+  weather = null,
   trackViews = true,
   onRsvpSubmit,
 }: InvitePageProps) {
@@ -276,9 +281,15 @@ export default function InvitePage({
           <h1 className="invite-headline fade-up fade-up-2">{event.headline}</h1>
           <p className="invite-tagline fade-up fade-up-3">{event.tagline}</p>
           <div className="invite-cta fade-up fade-up-4">
-            <a className="btn-primary" href="#rsvp">
-              {ui.rsvp}
-            </a>
+            {isPast ? (
+              <a className="btn-primary" href="#guestbook">
+                Leave a note
+              </a>
+            ) : (
+              <a className="btn-primary" href="#rsvp">
+                {ui.rsvp}
+              </a>
+            )}
             <a className="btn-ghost" href="#details">
               {ui.details}
             </a>
@@ -334,19 +345,48 @@ export default function InvitePage({
             }}
           />
         </div>
-        {event.registryUrl ? (
+        {weather ? (
+          <p className="invite-extra-line">
+            <strong>Weather</strong>
+            {weather.summary}
+            {weather.tempC != null ? ` · ~${Math.round(weather.tempC)}°C` : ""}
+            {weather.precipChance != null
+              ? ` · ${weather.precipChance}% rain chance`
+              : ""}
+          </p>
+        ) : null}
+      </section>
+
+      {isPast ? (
+        <section id="after" className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">Thank you</h2>
+          <p className="invite-prompt">
+            {event.thankYouMessage?.trim() ||
+              "Thank you for celebrating with us. Share a memory in the guestbook below."}
+          </p>
+        </section>
+      ) : null}
+
+      {event.registryUrl ? (
+        <section id="registry" className="invite-section">
+          <h2 className="invite-section-title">
+            {event.registryLabel || ui.registry}
+          </h2>
+          <p className="invite-prompt">
+            If you’d like to celebrate with a gift, here’s where we’re registered.
+          </p>
           <p className="invite-registry">
             <a
               href={event.registryUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-ghost"
+              className="btn-primary"
             >
               {event.registryLabel || ui.registryCta}
             </a>
           </p>
-        ) : null}
-      </section>
+        </section>
+      ) : null}
 
       {(event.schedule?.length ||
         event.dressCode ||
@@ -400,12 +440,24 @@ export default function InvitePage({
             </p>
           ) : null}
           {(event.contactEmail || event.contactPhone) && (
-            <p className="invite-extra-line">
-              <strong>Contact</strong>{" "}
-              {[event.contactEmail, event.contactPhone]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
+            <div className="invite-contact-cta">
+              <strong>Contact host</strong>
+              <div className="invite-cta" style={{ marginTop: "0.75rem" }}>
+                {event.contactEmail ? (
+                  <a
+                    className="btn-primary"
+                    href={`mailto:${event.contactEmail}?subject=${encodeURIComponent(`About ${event.title}`)}`}
+                  >
+                    Email {event.hostName}
+                  </a>
+                ) : null}
+                {event.contactPhone ? (
+                  <a className="btn-ghost" href={`tel:${event.contactPhone}`}>
+                    Call / text
+                  </a>
+                ) : null}
+              </div>
+            </div>
           )}
         </section>
       )}
@@ -453,6 +505,13 @@ export default function InvitePage({
 
       <section id="rsvp" className="invite-section invite-section--surface">
         <h2 className="invite-section-title">{ui.rsvp}</h2>
+        {isPast ? (
+          <p className="invite-prompt">
+            This celebration has already happened. Thanks for being part of it —
+            leave a guestbook note below.
+          </p>
+        ) : (
+          <>
         <p className="invite-prompt">{rsvpFields.prompt}</p>
         {rsvpFields.deadline ? (
           <p className="invite-deadline">
@@ -673,6 +732,8 @@ export default function InvitePage({
               {submitting ? ui.submitting : ui.submit}
             </button>
           </form>
+        )}
+          </>
         )}
       </section>
 

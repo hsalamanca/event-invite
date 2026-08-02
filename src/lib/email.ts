@@ -19,6 +19,7 @@ export async function sendEventEmail(input: {
   to: string;
   subject: string;
   body: string;
+  html?: string;
 }): Promise<OutboundMessage> {
   const registry = await load();
   const base: OutboundMessage = {
@@ -58,6 +59,7 @@ export async function sendEventEmail(input: {
         to: [input.to],
         subject: input.subject,
         text: input.body,
+        ...(input.html ? { html: input.html } : {}),
       }),
     });
     if (!res.ok) {

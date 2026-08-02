@@ -36,6 +36,7 @@ export async function GET() {
         dateISO: event.dateISO,
         published: event.published,
         visibility: event.visibility,
+        tier: event.tier ?? "free",
         templateId: event.templateId,
         customDomain: event.customDomain,
         ownerId: event.ownerId,

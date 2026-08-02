@@ -43,12 +43,23 @@ export function OpenTracking({ slug }: { slug: string }) {
 
   return (
     <section className="scroll-mt-24 border-t border-white/10 pt-8">
-      <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
-        Open tracking
-      </h2>
-      <p className="mt-1 text-sm text-[var(--mist)]">
-        Invite page views and guests who still haven’t opened after an invite.
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+            Open tracking
+          </h2>
+          <p className="mt-1 text-sm text-[var(--mist)]">
+            Invite page views and guests who still haven’t opened after an
+            invite.
+          </p>
+        </div>
+        <a
+          href={`/api/events/${encodeURIComponent(slug)}/views?format=csv`}
+          className="rounded-md border border-white/15 px-3 py-1.5 text-sm hover:border-[var(--champagne)]/40"
+        >
+          Export opens CSV
+        </a>
+      </div>
       <div className="mt-4 flex flex-wrap gap-3">
         <div className="min-w-[7rem] rounded-md border border-white/10 bg-white/[0.03] px-4 py-3">
           <strong className="block text-xl">{summary?.total ?? "—"}</strong>

@@ -8,9 +8,9 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
   const t = getDictionary(locale).pricing;
 
   const hrefs = [
-    localePath(locale, "/host/h-birthday-2026"),
-    localePath(locale, "/host/h-birthday-2026"),
-    "mailto:hello@ownvite.com",
+    "/register",
+    "/register?next=/dashboard",
+    "mailto:hello@ownvite.com?subject=Ownvite%20Studio",
   ];
 
   return (
