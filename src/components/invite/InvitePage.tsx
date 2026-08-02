@@ -4,7 +4,7 @@ import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
-import type { EventRecord } from "@/lib/types";
+import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 
 type InvitePageProps = {
   event: EventRecord;
@@ -17,8 +17,32 @@ type InvitePageProps = {
     guestCount: number;
     dietary: string;
     note: string;
+    answers?: RsvpAnswers;
+    mealChoice?: string;
   }) => Promise<void> | void;
 };
+
+function spotifyEmbed(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (!u.hostname.includes("spotify.com")) return null;
+    const parts = u.pathname.split("/").filter(Boolean);
+    const type = parts[0];
+    const id = parts[1];
+    if (!type || !id) return null;
+    return `https://open.spotify.com/embed/${type}/${id}`;
+  } catch {
+    return null;
+  }
+}
+
+function daysUntil(deadline: string): number | null {
+  if (!deadline) return null;
+  const end = new Date(`${deadline}T23:59:59`);
+  if (Number.isNaN(end.getTime())) return null;
+  const ms = end.getTime() - Date.now();
+  return Math.ceil(ms / (1000 * 60 * 60 * 24));
+}
 
 function formatDateLabel(dateISO: string, locale: Locale): string {
   const d = new Date(`${dateISO}T12:00:00`);
@@ -65,9 +89,16 @@ export default function InvitePage({
   const [guestCount, setGuestCount] = useState(1);
   const [dietary, setDietary] = useState("");
   const [note, setNote] = useState("");
+  const [answers, setAnswers] = useState<RsvpAnswers>({});
+  const [mealChoice, setMealChoice] = useState("");
+  const [editToken, setEditToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const customQuestions = rsvpFields.customQuestions ?? [];
+  const deadlineDays = daysUntil(rsvpFields.deadline);
+  const deadlinePassed = deadlineDays != null && deadlineDays < 0;
+  const embed = event.spotifyUrl ? spotifyEmbed(event.spotifyUrl) : null;
   const [parallaxY, setParallaxY] = useState(0);
   const [copied, setCopied] = useState(false);
   const [gbName, setGbName] = useState("");
@@ -166,6 +197,8 @@ export default function InvitePage({
       guestCount: rsvpFields.plusOnes.enabled ? guestCount : 1,
       dietary: rsvpFields.dietary.enabled ? dietary.trim() : "",
       note: note.trim(),
+      answers,
+      mealChoice: mealChoice || undefined,
     };
 
     try {
@@ -177,12 +210,14 @@ export default function InvitePage({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
+        const body = (await res.json().catch(() => null)) as {
+          error?: string;
+          rsvp?: { editToken?: string };
+        } | null;
         if (!res.ok) {
-          const body = (await res.json().catch(() => null)) as {
-            error?: string;
-          } | null;
           throw new Error(body?.error ?? "Unable to submit RSVP");
         }
+        if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
@@ -291,15 +326,127 @@ export default function InvitePage({
               rel="noopener noreferrer"
               className="btn-ghost"
             >
-              {ui.registryCta}
+              {event.registryLabel || ui.registryCta}
             </a>
           </p>
         ) : null}
       </section>
 
+      {(event.schedule?.length ||
+        event.dressCode ||
+        event.parking ||
+        event.whatToBring ||
+        event.hotelInfo ||
+        event.travelInfo ||
+        event.contactEmail ||
+        event.contactPhone) && (
+        <section id="info" className="invite-section">
+          <h2 className="invite-section-title">Guest info</h2>
+          {event.schedule && event.schedule.length > 0 ? (
+            <div className="invite-extra-block">
+              <h3 className="invite-section-title invite-section-title--sm">
+                Schedule
+              </h3>
+              <ul className="invite-schedule">
+                {event.schedule.map((item) => (
+                  <li key={item.id}>
+                    <strong>{item.time}</strong>
+                    <span>{item.title}</span>
+                    {item.description ? <em>{item.description}</em> : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {event.dressCode ? (
+            <p className="invite-extra-line">
+              <strong>Dress code</strong> {event.dressCode}
+            </p>
+          ) : null}
+          {event.parking ? (
+            <p className="invite-extra-line">
+              <strong>Parking</strong> {event.parking}
+            </p>
+          ) : null}
+          {event.whatToBring ? (
+            <p className="invite-extra-line">
+              <strong>What to bring</strong> {event.whatToBring}
+            </p>
+          ) : null}
+          {event.hotelInfo ? (
+            <p className="invite-extra-line">
+              <strong>Stay</strong> {event.hotelInfo}
+            </p>
+          ) : null}
+          {event.travelInfo ? (
+            <p className="invite-extra-line">
+              <strong>Travel</strong> {event.travelInfo}
+            </p>
+          ) : null}
+          {(event.contactEmail || event.contactPhone) && (
+            <p className="invite-extra-line">
+              <strong>Contact</strong>{" "}
+              {[event.contactEmail, event.contactPhone]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          )}
+        </section>
+      )}
+
+      {event.faqs && event.faqs.length > 0 ? (
+        <section id="faq" className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">FAQ</h2>
+          <dl className="invite-faq">
+            {event.faqs.map((f) => (
+              <div key={f.id}>
+                <dt>{f.question}</dt>
+                <dd>{f.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ) : null}
+
+      {event.gallery && event.gallery.length > 0 ? (
+        <section id="gallery" className="invite-section">
+          <h2 className="invite-section-title">Gallery</h2>
+          <div className="invite-gallery">
+            {event.gallery.map((src) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={src} src={src} alt="" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {embed ? (
+        <section id="playlist" className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">Playlist</h2>
+          <iframe
+            title="Spotify playlist"
+            src={embed}
+            width="100%"
+            height="152"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            style={{ border: 0, borderRadius: 8 }}
+          />
+        </section>
+      ) : null}
+
       <section id="rsvp" className="invite-section invite-section--surface">
         <h2 className="invite-section-title">{ui.rsvp}</h2>
         <p className="invite-prompt">{rsvpFields.prompt}</p>
+        {rsvpFields.deadline ? (
+          <p className="invite-deadline">
+            {deadlinePassed
+              ? "RSVP deadline has passed."
+              : deadlineDays === 0
+                ? "RSVP by today."
+                : `RSVP within ${deadlineDays} day${deadlineDays === 1 ? "" : "s"} (by ${rsvpFields.deadline}).`}
+          </p>
+        ) : null}
 
         {success ? (
           <div className="rsvp-success" role="status">
@@ -307,8 +454,19 @@ export default function InvitePage({
               ✓
             </span>
             <p className="rsvp-success-text">{ui.successTitle}</p>
-            <p className="rsvp-success-sub">{ui.successBody}</p>
+            <p className="rsvp-success-sub">
+              {event.thankYouMessage?.trim() || ui.successBody}
+            </p>
+            {editToken ? (
+              <p className="rsvp-success-sub">
+                <a href={`/rsvp/${editToken}`} className="invite-address">
+                  Update or cancel your RSVP
+                </a>
+              </p>
+            ) : null}
           </div>
+        ) : deadlinePassed ? (
+          <p className="invite-prompt">This RSVP form is closed.</p>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
             <label className="rsvp-field">
@@ -378,6 +536,90 @@ export default function InvitePage({
                 />
               </label>
             )}
+
+            {customQuestions.map((q: CustomQuestion) => {
+              if (q.type === "meal" || q.type === "multiple") {
+                const value =
+                  q.type === "meal"
+                    ? mealChoice || String(answers[q.id] ?? "")
+                    : String(answers[q.id] ?? "");
+                return (
+                  <label key={q.id} className="rsvp-field">
+                    <span>
+                      {q.label}
+                      {q.required ? " *" : ""}
+                    </span>
+                    <select
+                      required={q.required}
+                      value={value}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (q.type === "meal") {
+                          setMealChoice(v);
+                          setAnswers((a) => ({ ...a, [q.id]: v }));
+                        } else {
+                          setAnswers((a) => ({ ...a, [q.id]: v }));
+                        }
+                      }}
+                    >
+                      <option value="">Select…</option>
+                      {(q.options ?? []).map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              }
+              if (q.type === "checkbox") {
+                const selected = Array.isArray(answers[q.id])
+                  ? (answers[q.id] as string[])
+                  : [];
+                return (
+                  <fieldset key={q.id} className="rsvp-field">
+                    <legend>
+                      {q.label}
+                      {q.required ? " *" : ""}
+                    </legend>
+                    {(q.options ?? []).map((opt) => {
+                      const checked = selected.includes(opt);
+                      return (
+                        <label key={opt} className="rsvp-check">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => {
+                              const next = checked
+                                ? selected.filter((x) => x !== opt)
+                                : [...selected, opt];
+                              setAnswers((a) => ({ ...a, [q.id]: next }));
+                            }}
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      );
+                    })}
+                  </fieldset>
+                );
+              }
+              return (
+                <label key={q.id} className="rsvp-field">
+                  <span>
+                    {q.label}
+                    {q.required ? " *" : ""}
+                  </span>
+                  <input
+                    type="text"
+                    required={q.required}
+                    value={String(answers[q.id] ?? "")}
+                    onChange={(e) =>
+                      setAnswers((a) => ({ ...a, [q.id]: e.target.value }))
+                    }
+                  />
+                </label>
+              );
+            })}
 
             <label className="rsvp-field">
               <span>{ui.note}</span>
@@ -456,7 +698,9 @@ export default function InvitePage({
 
       <footer className="invite-footer">
         <p>Hosted by {event.hostName}</p>
-        <p className="invite-footer-attr">Ownvite</p>
+        {event.showOwnviteFooter !== false ? (
+          <p className="invite-footer-attr">Ownvite</p>
+        ) : null}
       </footer>
 
       <style jsx>{`
@@ -562,6 +806,100 @@ export default function InvitePage({
 
         .invite-registry {
           margin-top: 1.5rem;
+        }
+
+        .invite-extra-block {
+          margin-bottom: 1.5rem;
+        }
+
+        .invite-schedule {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: grid;
+          gap: 0.85rem;
+        }
+
+        .invite-schedule li {
+          display: grid;
+          gap: 0.15rem;
+        }
+
+        .invite-schedule strong {
+          font-size: 0.8rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--invite-accent);
+        }
+
+        .invite-schedule em {
+          font-style: normal;
+          color: var(--invite-muted);
+          font-size: 0.95rem;
+        }
+
+        .invite-extra-line {
+          margin: 0.65rem 0 0;
+          line-height: 1.55;
+          color: color-mix(in srgb, var(--invite-text) 92%, var(--invite-muted));
+        }
+
+        .invite-extra-line strong {
+          display: block;
+          margin-bottom: 0.15rem;
+          font-size: 0.75rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--invite-accent);
+        }
+
+        .invite-faq {
+          display: grid;
+          gap: 1.1rem;
+          margin: 0;
+        }
+
+        .invite-faq dt {
+          font-family: var(--font-display);
+          font-size: 1.15rem;
+          margin-bottom: 0.25rem;
+        }
+
+        .invite-faq dd {
+          margin: 0;
+          color: var(--invite-muted);
+          line-height: 1.55;
+        }
+
+        .invite-gallery {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 0.65rem;
+        }
+
+        .invite-gallery img {
+          width: 100%;
+          aspect-ratio: 1;
+          object-fit: cover;
+          display: block;
+        }
+
+        .invite-deadline {
+          margin: -0.75rem 0 1.25rem;
+          font-size: 0.95rem;
+          color: var(--invite-accent);
+        }
+
+        .rsvp-check {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center;
+          gap: 0.55rem;
+          margin-top: 0.35rem;
+          text-transform: none !important;
+          letter-spacing: normal !important;
+          font-size: 0.95rem !important;
+          color: var(--invite-text) !important;
         }
 
         .guestbook-list {

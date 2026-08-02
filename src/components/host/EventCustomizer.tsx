@@ -7,7 +7,13 @@ import InvitePage from "@/components/invite/InvitePage";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { TEMPLATES, getTemplate } from "@/lib/templates";
-import type { EventRecord, Theme } from "@/lib/types";
+import type {
+  CustomQuestion,
+  EventRecord,
+  FaqItem,
+  ScheduleItem,
+  Theme,
+} from "@/lib/types";
 
 const FONT_OPTIONS = [
   "Cormorant Garamond",
@@ -40,10 +46,34 @@ type Draft = {
   visibility: EventRecord["visibility"];
   capacity: string;
   registryUrl: string;
+  registryLabel: string;
   published: boolean;
   colors: Theme["colors"];
   fonts: Theme["fonts"];
+  rsvpPrompt: string;
+  rsvpDeadline: string;
+  customQuestions: CustomQuestion[];
+  schedule: ScheduleItem[];
+  faqs: FaqItem[];
+  galleryText: string;
+  parking: string;
+  dressCode: string;
+  whatToBring: string;
+  contactEmail: string;
+  contactPhone: string;
+  hotelInfo: string;
+  travelInfo: string;
+  spotifyUrl: string;
+  thankYouMessage: string;
+  invitePassword: string;
+  coHostEmailsText: string;
+  checkInEnabled: boolean;
+  showOwnviteFooter: boolean;
 };
+
+function newId(prefix: string) {
+  return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
+}
 
 function toDraft(event: EventRecord): Draft {
   return {
@@ -61,9 +91,29 @@ function toDraft(event: EventRecord): Draft {
     visibility: event.visibility ?? "public",
     capacity: event.capacity != null ? String(event.capacity) : "",
     registryUrl: event.registryUrl ?? "",
+    registryLabel: event.registryLabel ?? "",
     published: event.published ?? true,
     colors: { ...event.theme.colors },
     fonts: { ...event.theme.fonts },
+    rsvpPrompt: event.rsvpFields.prompt ?? "",
+    rsvpDeadline: event.rsvpFields.deadline ?? "",
+    customQuestions: [...(event.rsvpFields.customQuestions ?? [])],
+    schedule: [...(event.schedule ?? [])],
+    faqs: [...(event.faqs ?? [])],
+    galleryText: (event.gallery ?? []).join("\n"),
+    parking: event.parking ?? "",
+    dressCode: event.dressCode ?? "",
+    whatToBring: event.whatToBring ?? "",
+    contactEmail: event.contactEmail ?? "",
+    contactPhone: event.contactPhone ?? "",
+    hotelInfo: event.hotelInfo ?? "",
+    travelInfo: event.travelInfo ?? "",
+    spotifyUrl: event.spotifyUrl ?? "",
+    thankYouMessage: event.thankYouMessage ?? "",
+    invitePassword: "",
+    coHostEmailsText: (event.coHostEmails ?? []).join(", "),
+    checkInEnabled: event.checkInEnabled ?? false,
+    showOwnviteFooter: event.showOwnviteFooter ?? true,
   };
 }
 
@@ -90,11 +140,40 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
         ? capacityNum
         : null,
     registryUrl: draft.registryUrl.trim() || null,
+    registryLabel: draft.registryLabel.trim() || null,
     published: draft.published,
     theme: {
       colors: { ...draft.colors },
       fonts: { ...draft.fonts },
     },
+    rsvpFields: {
+      ...base.rsvpFields,
+      prompt: draft.rsvpPrompt,
+      deadline: draft.rsvpDeadline,
+      customQuestions: draft.customQuestions,
+    },
+    schedule: draft.schedule,
+    faqs: draft.faqs,
+    gallery: draft.galleryText
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean),
+    parking: draft.parking,
+    dressCode: draft.dressCode,
+    whatToBring: draft.whatToBring,
+    contactEmail: draft.contactEmail,
+    contactPhone: draft.contactPhone,
+    hotelInfo: draft.hotelInfo,
+    travelInfo: draft.travelInfo,
+    spotifyUrl: draft.spotifyUrl,
+    thankYouMessage: draft.thankYouMessage,
+    invitePasswordHash: null,
+    coHostEmails: draft.coHostEmailsText
+      .split(/[,\n]/)
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+    checkInEnabled: draft.checkInEnabled,
+    showOwnviteFooter: draft.showOwnviteFooter,
   };
 }
 
@@ -141,7 +220,7 @@ export default function EventCustomizer({
     setSaveMessage(null);
 
     const preview = toPreviewEvent(event, draft);
-    const body = {
+    const body: Record<string, unknown> = {
       hostName: draft.hostName,
       title: draft.title,
       headline: draft.headline,
@@ -156,12 +235,41 @@ export default function EventCustomizer({
       visibility: draft.visibility,
       capacity: preview.capacity,
       registryUrl: preview.registryUrl,
+      registryLabel: preview.registryLabel,
       published: draft.published,
       theme: {
         colors: draft.colors,
         fonts: draft.fonts,
       },
+      rsvpFields: {
+        ...event.rsvpFields,
+        prompt: draft.rsvpPrompt,
+        deadline: draft.rsvpDeadline,
+        customQuestions: draft.customQuestions,
+      },
+      schedule: draft.schedule,
+      faqs: draft.faqs,
+      gallery: preview.gallery,
+      parking: draft.parking,
+      dressCode: draft.dressCode,
+      whatToBring: draft.whatToBring,
+      contactEmail: draft.contactEmail,
+      contactPhone: draft.contactPhone,
+      hotelInfo: draft.hotelInfo,
+      travelInfo: draft.travelInfo,
+      spotifyUrl: draft.spotifyUrl,
+      thankYouMessage: draft.thankYouMessage,
+      coHostEmails: preview.coHostEmails,
+      checkInEnabled: draft.checkInEnabled,
+      showOwnviteFooter: draft.showOwnviteFooter,
     };
+
+    if (draft.invitePassword.trim()) {
+      body.invitePassword = draft.invitePassword.trim();
+    }
+    if (draft.visibility !== "private") {
+      body.clearInvitePassword = true;
+    }
 
     try {
       const res = await fetch(`/api/events/${encodeURIComponent(event.slug)}`, {
@@ -176,6 +284,7 @@ export default function EventCustomizer({
         throw new Error(data?.error ?? "Failed to save event");
       }
       setSaveMessage(t.saved);
+      updateField("invitePassword", "");
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -323,6 +432,7 @@ export default function EventCustomizer({
                 {TEMPLATES.map((tpl) => (
                   <option key={tpl.id} value={tpl.id}>
                     {locale === "es" ? tpl.nameEs : tpl.name}
+                    {tpl.premium ? " · Premium" : ""}
                   </option>
                 ))}
               </select>
@@ -344,8 +454,26 @@ export default function EventCustomizer({
               >
                 <option value="public">{t.visibilityPublic}</option>
                 <option value="unlisted">{t.visibilityUnlisted}</option>
+                <option value="private">Private (password)</option>
               </select>
             </label>
+            {draft.visibility === "private" ? (
+              <label>
+                <span>
+                  Invite password
+                  {event.invitePasswordHash ? " (leave blank to keep)" : ""}
+                </span>
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  value={draft.invitePassword}
+                  onChange={(e) =>
+                    updateField("invitePassword", e.target.value)
+                  }
+                  placeholder="Set a password guests must enter"
+                />
+              </label>
+            ) : null}
             <label>
               <span>{t.capacity}</span>
               <input
@@ -365,6 +493,14 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("registryUrl", e.target.value)}
               />
             </label>
+            <label>
+              <span>Registry label</span>
+              <input
+                value={draft.registryLabel}
+                onChange={(e) => updateField("registryLabel", e.target.value)}
+                placeholder="Gift registry"
+              />
+            </label>
             <label className="checkbox-row">
               <input
                 type="checkbox"
@@ -372,6 +508,352 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("published", e.target.checked)}
               />
               <span>{t.published}</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.checkInEnabled}
+                onChange={(e) =>
+                  updateField("checkInEnabled", e.target.checked)
+                }
+              />
+              <span>Enable door check-in</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.showOwnviteFooter}
+                onChange={(e) =>
+                  updateField("showOwnviteFooter", e.target.checked)
+                }
+              />
+              <span>Show Ownvite footer (Free)</span>
+            </label>
+            <label>
+              <span>Co-host emails</span>
+              <input
+                value={draft.coHostEmailsText}
+                onChange={(e) =>
+                  updateField("coHostEmailsText", e.target.value)
+                }
+                placeholder="friend@email.com, planner@email.com"
+              />
+              <span className="field-hint">
+                Co-hosts can open this studio and manage guests.
+              </span>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>RSVP questions</legend>
+            <label>
+              <span>RSVP prompt</span>
+              <textarea
+                rows={2}
+                value={draft.rsvpPrompt}
+                onChange={(e) => updateField("rsvpPrompt", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>RSVP deadline</span>
+              <input
+                type="date"
+                value={draft.rsvpDeadline}
+                onChange={(e) => updateField("rsvpDeadline", e.target.value)}
+              />
+            </label>
+            <p className="field-hint">
+              Meal choice and custom questions appear on the invite form and in
+              the meal dashboard below.
+            </p>
+            {draft.customQuestions.map((q, idx) => (
+              <div key={q.id} className="nested-block">
+                <label>
+                  <span>Question label</span>
+                  <input
+                    value={q.label}
+                    onChange={(e) => {
+                      const next = [...draft.customQuestions];
+                      next[idx] = { ...q, label: e.target.value };
+                      updateField("customQuestions", next);
+                    }}
+                  />
+                </label>
+                <label>
+                  <span>Type</span>
+                  <select
+                    value={q.type}
+                    onChange={(e) => {
+                      const next = [...draft.customQuestions];
+                      next[idx] = {
+                        ...q,
+                        type: e.target.value as CustomQuestion["type"],
+                      };
+                      updateField("customQuestions", next);
+                    }}
+                  >
+                    <option value="meal">Meal</option>
+                    <option value="multiple">Multiple choice</option>
+                    <option value="checkbox">Checkboxes</option>
+                    <option value="short">Short text</option>
+                  </select>
+                </label>
+                {q.type !== "short" ? (
+                  <label>
+                    <span>Options (one per line)</span>
+                    <textarea
+                      rows={3}
+                      value={(q.options ?? []).join("\n")}
+                      onChange={(e) => {
+                        const next = [...draft.customQuestions];
+                        next[idx] = {
+                          ...q,
+                          options: e.target.value
+                            .split("\n")
+                            .map((s) => s.trim())
+                            .filter(Boolean),
+                        };
+                        updateField("customQuestions", next);
+                      }}
+                    />
+                  </label>
+                ) : null}
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(q.required)}
+                    onChange={(e) => {
+                      const next = [...draft.customQuestions];
+                      next[idx] = { ...q, required: e.target.checked };
+                      updateField("customQuestions", next);
+                    }}
+                  />
+                  <span>Required</span>
+                </label>
+                <button
+                  type="button"
+                  className="host-ghost-btn"
+                  onClick={() =>
+                    updateField(
+                      "customQuestions",
+                      draft.customQuestions.filter((x) => x.id !== q.id),
+                    )
+                  }
+                >
+                  Remove question
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="host-ghost-btn"
+              onClick={() =>
+                updateField("customQuestions", [
+                  ...draft.customQuestions,
+                  {
+                    id: newId("q"),
+                    type: "short",
+                    label: "New question",
+                    options: [],
+                    required: false,
+                  },
+                ])
+              }
+            >
+              + Add question
+            </button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Celebration extras</legend>
+            <p className="field-hint">
+              Schedule, FAQ, parking, gallery, Spotify, and guest logistics.
+            </p>
+            <div className="nested-block">
+              <span className="nested-label">Day-of schedule</span>
+              {draft.schedule.map((item, idx) => (
+                <div key={item.id} className="nested-row">
+                  <input
+                    placeholder="Time"
+                    value={item.time}
+                    onChange={(e) => {
+                      const next = [...draft.schedule];
+                      next[idx] = { ...item, time: e.target.value };
+                      updateField("schedule", next);
+                    }}
+                  />
+                  <input
+                    placeholder="Title"
+                    value={item.title}
+                    onChange={(e) => {
+                      const next = [...draft.schedule];
+                      next[idx] = { ...item, title: e.target.value };
+                      updateField("schedule", next);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="host-ghost-btn"
+                    onClick={() =>
+                      updateField(
+                        "schedule",
+                        draft.schedule.filter((x) => x.id !== item.id),
+                      )
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="host-ghost-btn"
+                onClick={() =>
+                  updateField("schedule", [
+                    ...draft.schedule,
+                    {
+                      id: newId("sch"),
+                      time: "",
+                      title: "",
+                      description: "",
+                    },
+                  ])
+                }
+              >
+                + Add schedule row
+              </button>
+            </div>
+
+            <div className="nested-block">
+              <span className="nested-label">FAQ</span>
+              {draft.faqs.map((item, idx) => (
+                <div key={item.id} className="stack-gap">
+                  <input
+                    placeholder="Question"
+                    value={item.question}
+                    onChange={(e) => {
+                      const next = [...draft.faqs];
+                      next[idx] = { ...item, question: e.target.value };
+                      updateField("faqs", next);
+                    }}
+                  />
+                  <textarea
+                    rows={2}
+                    placeholder="Answer"
+                    value={item.answer}
+                    onChange={(e) => {
+                      const next = [...draft.faqs];
+                      next[idx] = { ...item, answer: e.target.value };
+                      updateField("faqs", next);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="host-ghost-btn"
+                    onClick={() =>
+                      updateField(
+                        "faqs",
+                        draft.faqs.filter((x) => x.id !== item.id),
+                      )
+                    }
+                  >
+                    Remove FAQ
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="host-ghost-btn"
+                onClick={() =>
+                  updateField("faqs", [
+                    ...draft.faqs,
+                    { id: newId("faq"), question: "", answer: "" },
+                  ])
+                }
+              >
+                + Add FAQ
+              </button>
+            </div>
+
+            <label>
+              <span>Gallery image URLs (one per line)</span>
+              <textarea
+                rows={3}
+                value={draft.galleryText}
+                onChange={(e) => updateField("galleryText", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Parking</span>
+              <textarea
+                rows={2}
+                value={draft.parking}
+                onChange={(e) => updateField("parking", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Dress code</span>
+              <input
+                value={draft.dressCode}
+                onChange={(e) => updateField("dressCode", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>What to bring</span>
+              <textarea
+                rows={2}
+                value={draft.whatToBring}
+                onChange={(e) => updateField("whatToBring", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Hotel / stay</span>
+              <textarea
+                rows={2}
+                value={draft.hotelInfo}
+                onChange={(e) => updateField("hotelInfo", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Travel</span>
+              <textarea
+                rows={2}
+                value={draft.travelInfo}
+                onChange={(e) => updateField("travelInfo", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Contact email</span>
+              <input
+                type="email"
+                value={draft.contactEmail}
+                onChange={(e) => updateField("contactEmail", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Contact phone</span>
+              <input
+                value={draft.contactPhone}
+                onChange={(e) => updateField("contactPhone", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Spotify playlist URL</span>
+              <input
+                type="url"
+                value={draft.spotifyUrl}
+                onChange={(e) => updateField("spotifyUrl", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Thank-you message (after RSVP)</span>
+              <textarea
+                rows={2}
+                value={draft.thankYouMessage}
+                onChange={(e) =>
+                  updateField("thankYouMessage", e.target.value)
+                }
+              />
             </label>
           </fieldset>
 
@@ -634,6 +1116,45 @@ export default function EventCustomizer({
           line-height: 1.4;
         }
 
+        .nested-block {
+          display: grid;
+          gap: 0.65rem;
+          padding: 0.75rem;
+          border: 1px solid color-mix(in srgb, var(--host-muted) 28%, transparent);
+          border-radius: 2px;
+        }
+
+        .nested-label {
+          font-size: 0.75rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--host-muted);
+        }
+
+        .nested-row {
+          display: grid;
+          grid-template-columns: 0.8fr 1.2fr auto;
+          gap: 0.4rem;
+        }
+
+        .stack-gap {
+          display: grid;
+          gap: 0.45rem;
+        }
+
+        .host-ghost-btn {
+          min-height: 36px;
+          padding: 0.4rem 0.75rem;
+          background: transparent;
+          border: 1px solid color-mix(in srgb, var(--host-muted) 40%, transparent);
+          border-radius: 2px;
+          color: var(--host-text);
+          font-family: inherit;
+          font-size: 0.8125rem;
+          cursor: pointer;
+          justify-self: start;
+        }
+
         .host-status {
           margin: 0;
           font-size: 0.875rem;
@@ -691,6 +1212,10 @@ export default function EventCustomizer({
 
           .host-preview-frame {
             max-height: 70vh;
+          }
+
+          .nested-row {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>

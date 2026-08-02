@@ -1,3 +1,4 @@
+import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import {
@@ -7,6 +8,8 @@ import {
   updateEvent,
 } from "@/lib/events";
 import type { EventRecord } from "@/lib/types";
+
+export const runtime = "nodejs";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -38,8 +41,35 @@ export async function PATCH(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  const data = body as Partial<EventRecord> & {
+    invitePassword?: string | null;
+    clearInvitePassword?: boolean;
+  };
+
+  const partial: Partial<EventRecord> = { ...data };
+  delete (partial as { invitePassword?: unknown }).invitePassword;
+  delete (partial as { clearInvitePassword?: unknown }).clearInvitePassword;
+
+  // Never accept a raw hash from the client
+  delete partial.invitePasswordHash;
+
+  if (data.clearInvitePassword) {
+    partial.invitePasswordHash = null;
+  } else if (
+    typeof data.invitePassword === "string" &&
+    data.invitePassword.trim()
+  ) {
+    partial.invitePasswordHash = await hash(data.invitePassword.trim(), 10);
+  }
+
+  if (Array.isArray(data.coHostEmails)) {
+    partial.coHostEmails = data.coHostEmails
+      .map((e) => String(e).trim().toLowerCase())
+      .filter(Boolean);
+  }
+
   try {
-    const updated = await updateEvent(slug, body as Partial<EventRecord>);
+    const updated = await updateEvent(slug, partial);
     return NextResponse.json({ event: updated });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Update failed";

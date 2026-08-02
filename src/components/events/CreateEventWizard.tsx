@@ -151,7 +151,12 @@ export default function CreateEventWizard({
                         background: `linear-gradient(transparent, ${tpl.theme.colors.background})`,
                       }}
                     />
-                    <div className="absolute bottom-2 left-2 right-2 flex gap-1">
+                    <div className="absolute bottom-2 left-2 right-2 flex flex-wrap gap-1">
+                      {tpl.premium ? (
+                        <span className="rounded bg-[var(--champagne)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--ink)]">
+                          Premium
+                        </span>
+                      ) : null}
                       {tpl.categories.slice(0, 2).map((c) => (
                         <span
                           key={c}

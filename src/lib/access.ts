@@ -3,20 +3,31 @@ import { auth } from "@/auth";
 import { isAdminEmail } from "@/lib/admin";
 import type { EventRecord } from "@/lib/types";
 
-/** Owner of the event, or Ownvite platform admin assisting them. */
+/** Owner, co-host, or Ownvite platform admin. */
 export async function canManageEvent(event: EventRecord): Promise<{
   allowed: boolean;
   isAdmin: boolean;
+  isCoHost: boolean;
   session: Session | null;
 }> {
   const session = (await auth()) as Session | null;
   const isAdmin = isAdminEmail(session?.user?.email);
+  const email = session?.user?.email?.toLowerCase() ?? "";
+  const isCoHost = Boolean(
+    email && (event.coHostEmails ?? []).map((e) => e.toLowerCase()).includes(email),
+  );
+
   if (!event.ownerId) {
-    return { allowed: true, isAdmin, session };
+    return { allowed: true, isAdmin, isCoHost, session };
   }
   if (!session?.user?.id) {
-    return { allowed: false, isAdmin, session };
+    return { allowed: false, isAdmin, isCoHost, session };
   }
   const isOwner = event.ownerId === session.user.id;
-  return { allowed: isOwner || isAdmin, isAdmin, session };
+  return {
+    allowed: isOwner || isAdmin || isCoHost,
+    isAdmin,
+    isCoHost,
+    session,
+  };
 }

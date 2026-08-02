@@ -3,25 +3,49 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import type { ManualGuest, RsvpSubmission } from "@/lib/types";
+import type { CustomQuestion, ManualGuest, RsvpSubmission } from "@/lib/types";
 
 type GuestManagerProps = {
   slug: string;
   locale?: Locale;
   initialRsvps: RsvpSubmission[];
+  questions?: CustomQuestion[];
 };
+
+function formatAnswers(
+  r: RsvpSubmission,
+  questions: CustomQuestion[],
+): string {
+  const parts: string[] = [];
+  if (r.mealChoice) parts.push(`Meal: ${r.mealChoice}`);
+  for (const q of questions) {
+    const raw = r.answers?.[q.id];
+    if (raw == null || raw === "" || (Array.isArray(raw) && !raw.length)) {
+      continue;
+    }
+    if (q.type === "meal" && r.mealChoice) continue;
+    parts.push(
+      `${q.label}: ${Array.isArray(raw) ? raw.join(", ") : String(raw)}`,
+    );
+  }
+  return parts.join(" · ");
+}
 
 export default function GuestManager({
   slug,
   locale = "en",
   initialRsvps,
+  questions = [],
 }: GuestManagerProps) {
   const t = getDictionary(locale).guests;
   const [rsvps, setRsvps] = useState(initialRsvps);
   const [guests, setGuests] = useState<ManualGuest[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [csvText, setCsvText] = useState("");
+  const [showImport, setShowImport] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
@@ -96,9 +120,86 @@ export default function GuestManager({
     }
   }
 
+  async function importCsv() {
+    setBusy(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const res = await fetch("/api/guests/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, csv: csvText }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        added?: number;
+        skipped?: number;
+      };
+      if (!res.ok) {
+        setError(data.error || t.error);
+        return;
+      }
+      setInfo(`Imported ${data.added ?? 0} guests (${data.skipped ?? 0} skipped).`);
+      setCsvText("");
+      setShowImport(false);
+      await load();
+    } catch {
+      setError(t.error);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function sendRemind(type: "invite" | "rsvp_reminder" | "event_reminder") {
+    setBusy(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const res = await fetch(`/api/events/${encodeURIComponent(slug)}/remind`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        sent?: number;
+        preview?: number;
+        message?: string;
+        note?: string;
+      };
+      if (!res.ok) {
+        setError(data.error || t.error);
+        return;
+      }
+      setInfo(
+        [
+          data.message,
+          `Sent ${data.sent ?? 0}, preview ${data.preview ?? 0}.`,
+          data.note,
+        ]
+          .filter(Boolean)
+          .join(" "),
+      );
+    } catch {
+      setError(t.error);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function exportCsv() {
     const rows = [
-      ["type", "name", "email", "status", "guests", "dietary", "note", "createdAt"],
+      [
+        "type",
+        "name",
+        "email",
+        "status",
+        "guests",
+        "dietary",
+        "note",
+        "answers",
+        "createdAt",
+      ],
       ...rsvps.map((r) => [
         "rsvp",
         r.name,
@@ -107,6 +208,7 @@ export default function GuestManager({
         String(r.guestCount),
         r.dietary,
         r.note,
+        formatAnswers(r, questions),
         r.createdAt,
       ]),
       ...guests.map((g) => [
@@ -115,6 +217,7 @@ export default function GuestManager({
         g.email,
         g.status,
         "1",
+        "",
         "",
         "",
         g.createdAt,
@@ -145,14 +248,73 @@ export default function GuestManager({
           </h2>
           <p className="mt-1 text-sm text-[var(--mist)]">{t.support}</p>
         </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setShowImport((v) => !v)}
+            className="rounded-md border border-white/15 px-3 py-1.5 text-sm hover:border-[var(--champagne)]/40"
+          >
+            Import CSV
+          </button>
+          <button
+            type="button"
+            onClick={exportCsv}
+            className="rounded-md border border-white/15 px-3 py-1.5 text-sm hover:border-[var(--champagne)]/40"
+          >
+            {t.exportCsv}
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2 text-sm">
         <button
           type="button"
-          onClick={exportCsv}
-          className="rounded-md border border-white/15 px-3 py-1.5 text-sm hover:border-[var(--champagne)]/40"
+          disabled={busy}
+          onClick={() => void sendRemind("invite")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
         >
-          {t.exportCsv}
+          Email invites
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void sendRemind("rsvp_reminder")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          RSVP reminders
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void sendRemind("event_reminder")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          Event reminders
         </button>
       </div>
+
+      {showImport ? (
+        <div className="mt-4 space-y-2 rounded-md border border-white/10 bg-white/[0.03] p-4">
+          <p className="text-sm text-[var(--mist)]">
+            Paste CSV with columns <code>name,email</code> (header optional).
+          </p>
+          <textarea
+            rows={5}
+            value={csvText}
+            onChange={(e) => setCsvText(e.target.value)}
+            className="w-full rounded-md border border-white/15 bg-[var(--ink)] px-3 py-2 text-sm"
+            placeholder={"name,email\nAda Lovelace,ada@example.com"}
+          />
+          <button
+            type="button"
+            disabled={busy || !csvText.trim()}
+            onClick={() => void importCsv()}
+            className="rounded-md bg-[var(--champagne)] px-3 py-1.5 text-sm font-semibold text-[var(--ink)] disabled:opacity-60"
+          >
+            Import guests
+          </button>
+        </div>
+      ) : null}
 
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-[var(--mist)]">
         <span>
@@ -201,9 +363,12 @@ export default function GuestManager({
       {error ? (
         <p className="mt-2 text-sm text-[var(--coral)]">{error}</p>
       ) : null}
+      {info ? (
+        <p className="mt-2 text-sm text-[var(--champagne)]">{info}</p>
+      ) : null}
 
       <div className="mt-6 overflow-x-auto">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="text-[var(--mist)]">
             <tr className="border-b border-white/10">
               <th className="py-2 pr-3 font-medium">{t.colName}</th>
@@ -214,17 +379,31 @@ export default function GuestManager({
             </tr>
           </thead>
           <tbody>
-            {rsvps.map((r) => (
-              <tr key={r.id} className="border-b border-white/5">
-                <td className="py-2.5 pr-3">{r.name}</td>
-                <td className="py-2.5 pr-3 text-[var(--mist)]">{r.email}</td>
-                <td className="py-2.5 pr-3">{r.attendance}</td>
-                <td className="py-2.5 pr-3">{r.guestCount}</td>
-                <td className="py-2.5 text-[var(--mist)]">
-                  {[r.dietary, r.note].filter(Boolean).join(" · ")}
-                </td>
-              </tr>
-            ))}
+            {rsvps.map((r) => {
+              const answers = formatAnswers(r, questions);
+              return (
+                <tr key={r.id} className="border-b border-white/5">
+                  <td className="py-2.5 pr-3">{r.name}</td>
+                  <td className="py-2.5 pr-3 text-[var(--mist)]">{r.email}</td>
+                  <td className="py-2.5 pr-3">{r.attendance}</td>
+                  <td className="py-2.5 pr-3">{r.guestCount}</td>
+                  <td className="py-2.5 text-[var(--mist)]">
+                    {[r.dietary, r.note, answers].filter(Boolean).join(" · ")}
+                    {r.editToken ? (
+                      <>
+                        {" · "}
+                        <a
+                          href={`/rsvp/${r.editToken}`}
+                          className="text-[var(--champagne)] underline-offset-2 hover:underline"
+                        >
+                          Edit link
+                        </a>
+                      </>
+                    ) : null}
+                  </td>
+                </tr>
+              );
+            })}
             {guests.map((g) => (
               <tr key={g.id} className="border-b border-white/5">
                 <td className="py-2.5 pr-3">{g.name}</td>

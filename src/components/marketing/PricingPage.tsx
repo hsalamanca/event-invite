@@ -95,6 +95,29 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
           ))}
         </div>
 
+        <div className="mx-auto mt-16 max-w-2xl text-left text-sm text-[var(--mist)]">
+          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--ivory)]">
+            {locale === "es" ? "Temas premium y extras" : "Premium themes & add-ons"}
+          </h2>
+          <ul className="mt-4 space-y-2">
+            <li>
+              {locale === "es"
+                ? "Desbloqueo de un tema premium: $7 · packs de temporada: $12"
+                : "Single premium theme unlock: $7 · seasonal packs: $12"}
+            </li>
+            <li>
+              {locale === "es"
+                ? "Dominio propio à la carte en Free: $9 · incluido en Pro"
+                : "Custom domain à la carte on Free: $9 · included in Pro"}
+            </li>
+            <li>
+              {locale === "es"
+                ? "Emails/SMS extras · invitaciones con contraseña · check-in en puerta"
+                : "Email/SMS overage · password invites · door check-in"}
+            </li>
+          </ul>
+        </div>
+
         <p className="mt-12 text-sm text-[var(--mist)]">
           {t.agency}{" "}
           <a

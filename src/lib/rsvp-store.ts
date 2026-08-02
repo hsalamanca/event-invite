@@ -102,13 +102,19 @@ async function writeAll(rsvps: RsvpSubmission[]): Promise<void> {
   await writeToLocal(rsvps);
 }
 
+function newToken() {
+  return `tok_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export async function appendRsvp(
-  submission: Omit<RsvpSubmission, "id" | "createdAt"> & {
+  submission: Omit<RsvpSubmission, "id" | "createdAt" | "editToken"> & {
     id?: string;
     createdAt?: string;
+    editToken?: string;
   }
 ): Promise<RsvpSubmission> {
   const rsvps = await readAll();
+  const now = new Date().toISOString();
   const record: RsvpSubmission = {
     id:
       submission.id ??
@@ -120,7 +126,13 @@ export async function appendRsvp(
     guestCount: submission.guestCount,
     dietary: submission.dietary,
     note: submission.note,
-    createdAt: submission.createdAt ?? new Date().toISOString(),
+    answers: submission.answers ?? {},
+    mealChoice: submission.mealChoice,
+    editToken: submission.editToken ?? newToken(),
+    checkedIn: false,
+    checkedInAt: null,
+    createdAt: submission.createdAt ?? now,
+    updatedAt: now,
   };
   rsvps.push(record);
   await writeAll(rsvps);
@@ -132,4 +144,49 @@ export async function listRsvpsByEventId(
 ): Promise<RsvpSubmission[]> {
   const rsvps = await readAll();
   return rsvps.filter((r) => r.eventId === eventId);
+}
+
+export async function getRsvpByToken(
+  token: string
+): Promise<RsvpSubmission | undefined> {
+  const rsvps = await readAll();
+  return rsvps.find((r) => r.editToken === token);
+}
+
+export async function updateRsvpByToken(
+  token: string,
+  partial: Partial<RsvpSubmission>
+): Promise<RsvpSubmission | undefined> {
+  const rsvps = await readAll();
+  const idx = rsvps.findIndex((r) => r.editToken === token);
+  if (idx < 0) return undefined;
+  const next: RsvpSubmission = {
+    ...rsvps[idx]!,
+    ...partial,
+    id: rsvps[idx]!.id,
+    eventId: rsvps[idx]!.eventId,
+    editToken: rsvps[idx]!.editToken,
+    createdAt: rsvps[idx]!.createdAt,
+    updatedAt: new Date().toISOString(),
+  };
+  rsvps[idx] = next;
+  await writeAll(rsvps);
+  return next;
+}
+
+export async function setCheckedIn(
+  rsvpId: string,
+  checkedIn: boolean
+): Promise<RsvpSubmission | undefined> {
+  const rsvps = await readAll();
+  const idx = rsvps.findIndex((r) => r.id === rsvpId);
+  if (idx < 0) return undefined;
+  rsvps[idx] = {
+    ...rsvps[idx]!,
+    checkedIn,
+    checkedInAt: checkedIn ? new Date().toISOString() : null,
+    updatedAt: new Date().toISOString(),
+  };
+  await writeAll(rsvps);
+  return rsvps[idx];
 }

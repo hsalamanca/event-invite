@@ -19,6 +19,7 @@ export default function HostActions({
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   const inviteUrl =
     typeof window !== "undefined"
@@ -81,6 +82,38 @@ export default function HostActions({
     }
   }
 
+  async function remind(type: "invite" | "rsvp_reminder" | "event_reminder") {
+    setBusy(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const res = await fetch(`/api/events/${slug}/remind`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        sent?: number;
+        preview?: number;
+        note?: string;
+      };
+      if (!res.ok) {
+        setError(data.error || t.error);
+        return;
+      }
+      setInfo(
+        `Emails: ${data.sent ?? 0} sent, ${data.preview ?? 0} preview.${
+          data.note ? ` ${data.note}` : ""
+        }`,
+      );
+    } catch {
+      setError(t.error);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const wa = `https://wa.me/?text=${encodeURIComponent(`You're invited: ${inviteUrl}`)}`;
   const mail = `mailto:?subject=${encodeURIComponent("You're invited")}&body=${encodeURIComponent(inviteUrl)}`;
 
@@ -113,11 +146,26 @@ export default function HostActions({
           Email
         </a>
         <a
+          href={`/api/events/${slug}/qr?format=png`}
+          download={`${slug}-qr.png`}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
+        >
+          Download QR
+        </a>
+        <a
           href={`/api/events/${slug}/ics`}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >
           {t.calendar}
         </a>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void remind("rsvp_reminder")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          Send RSVP reminders
+        </button>
         <button
           type="button"
           disabled={busy}
@@ -137,6 +185,9 @@ export default function HostActions({
           </button>
         ) : null}
       </div>
+      {info ? (
+        <p className="mt-2 text-sm text-[var(--champagne)]">{info}</p>
+      ) : null}
       {error ? (
         <p className="mt-2 text-sm text-[var(--coral)]">{error}</p>
       ) : null}

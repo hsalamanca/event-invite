@@ -84,6 +84,8 @@ Custom domains signal seriousness (weddings, milestone birthdays, launch parties
 
 **Stack priority at launch:** Event passes → domain attach → premium templates. Marketplace and print after template quality is proven.
 
+See also **`docs/PREMIUM_AND_MONETIZE.md`** for premium theme SKUs ($7 single / $12 packs), soft vs hard gates, and chargeable services (email/SMS, private invites, check-in, co-hosts, QR, affiliates).
+
 ---
 
 ## 6. GTM — First 100 Users

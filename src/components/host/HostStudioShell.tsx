@@ -1,9 +1,11 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { CheckInPanel } from "@/components/host/CheckInPanel";
 import EventCustomizer from "@/components/host/EventCustomizer";
 import GuestManager from "@/components/host/GuestManager";
 import HostActions from "@/components/host/HostActions";
+import { MealDashboard } from "@/components/host/MealDashboard";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -68,11 +70,17 @@ export default function HostStudioShell({
       </header>
       <EventCustomizer event={event} locale={locale} />
       <div className="mx-auto max-w-[1600px] space-y-10 px-4 pb-16 sm:px-6">
+        <MealDashboard
+          rsvps={rsvps}
+          questions={event.rsvpFields.customQuestions ?? []}
+        />
         <GuestManager
           slug={event.slug}
           locale={locale}
           initialRsvps={rsvps}
+          questions={event.rsvpFields.customQuestions ?? []}
         />
+        {event.checkInEnabled ? <CheckInPanel slug={event.slug} /> : null}
         <HostActions
           slug={event.slug}
           locale={locale}

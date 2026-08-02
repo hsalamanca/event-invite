@@ -25,6 +25,8 @@ export type EventTemplate = {
   headlineEs: string;
   tagline: string;
   taglineEs: string;
+  /** Locked on Free — unlock with Pro Event / Studio */
+  premium?: boolean;
 };
 
 /** Bright champagne cocktail — sunny celebration, not a nightclub */
@@ -317,6 +319,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Festive Gold Confetti",
     inspiredByEs: "Evite Festive Gold Confetti",
     categories: ["birthday", "party", "graduation"],
+    premium: true,
     theme: goldConfetti,
     heroImage:
       "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1920&q=80&auto=format&fit=crop",
@@ -385,6 +388,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Gold Frame Wedding / Ivory & Gold",
     inspiredByEs: "Evite Gold Frame Wedding / Ivory & Gold",
     categories: ["wedding", "dinner"],
+    premium: true,
     theme: champagneWedding,
     heroImage:
       "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1920&q=80&auto=format&fit=crop",
@@ -538,6 +542,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Evite Basic Watercolor + Canva floral",
     inspiredByEs: "Evite Basic Watercolor + floral Canva",
     categories: ["wedding", "baby", "brunch"],
+    premium: true,
     theme: watercolorRose,
     heroImage:
       "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=1920&q=80&auto=format&fit=crop",
@@ -608,6 +613,7 @@ export const TEMPLATES: EventTemplate[] = [
     inspiredBy: "Latin American celebration / Canva fiesta & quince",
     inspiredByEs: "Celebración latinoamericana / Canva fiesta y quince",
     categories: ["birthday", "wedding", "party", "baby"],
+    premium: true,
     theme: latinFiesta,
     heroImage:
       "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80&auto=format&fit=crop",
@@ -645,6 +651,15 @@ export function defaultRsvpFields(deadlineISO: string) {
     },
     deadline: deadlineISO,
     prompt: "Kindly respond so we can save you a seat.",
+    customQuestions: [
+      {
+        id: "meal",
+        type: "meal" as const,
+        label: "Meal preference",
+        options: ["Chicken", "Fish", "Vegetarian", "Vegan", "Kids meal"],
+        required: false,
+      },
+    ],
   };
 }
 

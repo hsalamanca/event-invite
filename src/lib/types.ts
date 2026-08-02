@@ -13,6 +13,14 @@ export type Theme = {
   };
 };
 
+export type CustomQuestion = {
+  id: string;
+  type: "short" | "multiple" | "checkbox" | "meal";
+  label: string;
+  options?: string[];
+  required?: boolean;
+};
+
 export type RsvpFields = {
   plusOnes: {
     enabled: boolean;
@@ -30,7 +38,24 @@ export type RsvpFields = {
   };
   deadline: string;
   prompt: string;
+  /** Host-defined questions (meal choice, song requests, etc.) */
+  customQuestions?: CustomQuestion[];
 };
+
+export type ScheduleItem = {
+  id: string;
+  time: string;
+  title: string;
+  description?: string;
+};
+
+export type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+export type EventTier = "free" | "pro" | "studio";
 
 export type EventRecord = {
   id: string;
@@ -50,14 +75,37 @@ export type EventRecord = {
   rsvpFields: RsvpFields;
   about: string;
   published: boolean;
-  /** public = anyone with link; unlisted = same but not on demo lists */
-  visibility: "public" | "unlisted";
+  /** public = anyone with link; unlisted = not listed; private = password */
+  visibility: "public" | "unlisted" | "private";
   capacity: number | null;
   registryUrl: string | null;
+  registryLabel?: string | null;
   templateId: string;
+  /** Celebration extras */
+  schedule?: ScheduleItem[];
+  faqs?: FaqItem[];
+  gallery?: string[];
+  parking?: string;
+  dressCode?: string;
+  whatToBring?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  hotelInfo?: string;
+  travelInfo?: string;
+  spotifyUrl?: string;
+  thankYouMessage?: string;
+  /** bcrypt hash when visibility=private */
+  invitePasswordHash?: string | null;
+  coHostEmails?: string[];
+  checkInEnabled?: boolean;
+  showOwnviteFooter?: boolean;
+  tier?: EventTier;
+  premiumTheme?: boolean;
   createdAt: string;
   updatedAt: string;
 };
+
+export type RsvpAnswers = Record<string, string | string[]>;
 
 export type RsvpSubmission = {
   id: string;
@@ -68,7 +116,14 @@ export type RsvpSubmission = {
   guestCount: number;
   dietary: string;
   note: string;
+  answers?: RsvpAnswers;
+  mealChoice?: string;
+  /** Token for guest to update/cancel their RSVP */
+  editToken?: string;
+  checkedIn?: boolean;
+  checkedInAt?: string | null;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type UserRecord = {
@@ -94,4 +149,16 @@ export type ManualGuest = {
   email: string;
   status: "invited" | "opened" | "going" | "maybe" | "declined";
   createdAt: string;
+};
+
+export type OutboundMessage = {
+  id: string;
+  eventId: string;
+  type: "invite" | "rsvp_reminder" | "event_reminder" | "custom";
+  to: string;
+  subject: string;
+  body: string;
+  status: "queued" | "sent" | "failed" | "preview";
+  createdAt: string;
+  error?: string;
 };
