@@ -1243,27 +1243,32 @@ export default function InvitePage({
           transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
+        :global(.btn-primary),
         .btn-primary {
           background: var(--invite-accent);
           color: var(--invite-bg);
         }
 
+        :global(.btn-primary:hover),
         .btn-primary:hover {
           background: var(--invite-accent-2);
           color: var(--invite-text);
         }
 
+        :global(.btn-primary:disabled),
         .btn-primary:disabled {
           opacity: 0.7;
           cursor: wait;
         }
 
+        :global(.btn-ghost),
         .btn-ghost {
           background: transparent;
           color: var(--invite-text);
           border-color: color-mix(in srgb, var(--invite-text) 35%, transparent);
         }
 
+        :global(.btn-ghost:hover),
         .btn-ghost:hover {
           border-color: var(--invite-accent);
           color: var(--invite-accent);
