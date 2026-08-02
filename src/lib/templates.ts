@@ -258,6 +258,22 @@ const modernArch: Theme = {
   fonts: { display: "Outfit", body: "DM Sans" },
 };
 
+/**
+ * Latin celebration — marigold gold + turquoise on deep espresso.
+ * For quinceañeras, bodas, bautizos, fiestas familiares.
+ */
+const latinFiesta: Theme = {
+  colors: {
+    background: "#1A120E",
+    surface: "#2C1E16",
+    accentPrimary: "#E8A820",
+    accentSecondary: "#2A9B8F",
+    textPrimary: "#FFF6E8",
+    textMuted: "#C4A890",
+  },
+  fonts: { display: "Playfair Display", body: "Source Sans 3" },
+};
+
 export const TEMPLATE_CATEGORIES: {
   id: TemplateCategory | "all";
   label: string;
@@ -579,6 +595,27 @@ export const TEMPLATES: EventTemplate[] = [
     headlineEs: "Estás en la lista",
     tagline: "Clean lines, warm light, and a night made for photos.",
     taglineEs: "Líneas limpias, luz cálida y una noche hecha para fotos.",
+  },
+  {
+    id: "latin-fiesta",
+    name: "Latin fiesta",
+    nameEs: "Fiesta latina",
+    description:
+      "Marigold gold + turquoise — quinceañeras, bodas, bautizos, and family celebrations.",
+    descriptionEs:
+      "Oro cempasúchil + turquesa — quinceañeras, bodas, bautizos y fiestas familiares.",
+    inspiredBy: "Latin American celebration / Canva fiesta & quince",
+    inspiredByEs: "Celebración latinoamericana / Canva fiesta y quince",
+    categories: ["birthday", "wedding", "party", "baby"],
+    theme: latinFiesta,
+    heroImage:
+      "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80&auto=format&fit=crop",
+    headline: "Una Noche para Celebrar",
+    headlineEs: "Una Noche para Celebrar",
+    tagline:
+      "Música, familia, y el sabor de estar juntos — you're invited.",
+    taglineEs:
+      "Música, familia y el sabor de estar juntos — estás invitado.",
   },
 ];
 

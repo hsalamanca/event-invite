@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { canManageEvent } from "@/lib/access";
 import { getEventBySlug } from "@/lib/events";
 import {
   addManualGuest,
@@ -12,19 +12,19 @@ import type { ManualGuest } from "@/lib/types";
 export const runtime = "nodejs";
 
 async function assertOwner(slug: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return {
-      error: NextResponse.json({ error: "Sign in required." }, { status: 401 }),
-    };
-  }
   const event = await getEventBySlug(slug);
   if (!event) {
     return {
       error: NextResponse.json({ error: "Event not found." }, { status: 404 }),
     };
   }
-  if (event.ownerId && event.ownerId !== session.user.id) {
+  const { allowed, session } = await canManageEvent(event);
+  if (!session?.user?.id) {
+    return {
+      error: NextResponse.json({ error: "Sign in required." }, { status: 401 }),
+    };
+  }
+  if (!allowed) {
     return {
       error: NextResponse.json({ error: "Forbidden." }, { status: 403 }),
     };

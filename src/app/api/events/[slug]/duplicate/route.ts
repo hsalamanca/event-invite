@@ -18,7 +18,9 @@ export async function POST(
   if (!source) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (source.ownerId && source.ownerId !== session.user.id) {
+  const { canManageEvent } = await import("@/lib/access");
+  const access = await canManageEvent(source);
+  if (!access.allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 

@@ -180,6 +180,16 @@ export async function deleteEvent(slug: string, ownerId: string): Promise<boolea
   return true;
 }
 
+/** Admin / support: delete any event regardless of owner. */
+export async function adminDeleteEvent(slug: string): Promise<boolean> {
+  const registry = await load();
+  const before = registry.events.length;
+  registry.events = registry.events.filter((e) => e.slug !== slug);
+  if (registry.events.length === before) return false;
+  await save(registry);
+  return true;
+}
+
 /** Sync helpers for gradual migration — prefer async APIs above. */
 export {
   getEventBySlug as getEventBySlugAsync,

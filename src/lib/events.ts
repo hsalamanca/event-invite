@@ -11,4 +11,5 @@ export {
   createEvent,
   updateEvent,
   deleteEvent,
+  adminDeleteEvent,
 } from "./event-store";

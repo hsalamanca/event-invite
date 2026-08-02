@@ -65,7 +65,9 @@ export async function DELETE(request: Request) {
   if (!event) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (event.ownerId && event.ownerId !== session.user.id) {
+  const { canManageEvent } = await import("@/lib/access");
+  const access = await canManageEvent(event);
+  if (!access.allowed) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
   return NextResponse.json({ ok: true });

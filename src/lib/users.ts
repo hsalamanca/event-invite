@@ -29,6 +29,15 @@ export async function findUserById(
   return registry.users.find((u) => u.id === id);
 }
 
+export async function listUsers(): Promise<
+  Omit<UserRecord, "passwordHash">[]
+> {
+  const registry = await load();
+  return registry.users
+    .map(({ passwordHash: _pw, ...safe }) => safe)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 export async function createUser(input: {
   email: string;
   name: string;

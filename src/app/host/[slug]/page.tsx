@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import HostStudioShell from "@/components/host/HostStudioShell";
+import { isAdminEmail } from "@/lib/admin";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
@@ -24,11 +25,16 @@ export default async function HostEditorPage({ params }: PageProps) {
   if (!event) notFound();
 
   const session = await auth();
+  const isAdmin = isAdminEmail(session?.user?.email);
+  const isOwner = Boolean(
+    session?.user?.id && event.ownerId === session.user.id,
+  );
+
   if (event.ownerId) {
     if (!session?.user?.id) {
       redirect(`/login?callbackUrl=/host/${slug}`);
     }
-    if (session.user.id !== event.ownerId) {
+    if (!isOwner && !isAdmin) {
       redirect("/dashboard");
     }
   }
@@ -41,7 +47,7 @@ export default async function HostEditorPage({ params }: PageProps) {
       event={event}
       rsvps={rsvps}
       locale={locale}
-      canDelete={Boolean(event.ownerId && session?.user?.id === event.ownerId)}
+      canDelete={isOwner || isAdmin}
       showDashboard={Boolean(session?.user?.id)}
     />
   );

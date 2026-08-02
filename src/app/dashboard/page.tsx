@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { isAdminEmail } from "@/lib/admin";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { listEventsByOwner } from "@/lib/events";
@@ -18,6 +19,7 @@ export default async function DashboardPage() {
   const locale = await getRequestLocale();
   const t = getDictionary(locale).dashboard;
   const events = await listEventsByOwner(session.user.id);
+  const isAdmin = isAdminEmail(session.user.email);
 
   return (
     <main className="min-h-screen bg-[var(--ink)] text-[var(--ivory)]">
@@ -31,6 +33,14 @@ export default async function DashboardPage() {
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <LanguageSwitcher locale={locale} path="/dashboard" />
+            {isAdmin ? (
+              <Link
+                href="/admin"
+                className="rounded-md border border-[var(--champagne)]/40 px-3 py-1.5 text-[var(--champagne)] hover:bg-[var(--champagne)]/10"
+              >
+                Admin
+              </Link>
+            ) : null}
             <span className="hidden text-[var(--mist)] sm:inline">
               {session.user.name || session.user.email}
             </span>

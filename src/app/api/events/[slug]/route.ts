@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { deleteEvent, getEventBySlug, updateEvent } from "@/lib/events";
+import { canManageEvent } from "@/lib/access";
+import {
+  adminDeleteEvent,
+  deleteEvent,
+  getEventBySlug,
+  updateEvent,
+} from "@/lib/events";
 import type { EventRecord } from "@/lib/types";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -21,8 +26,8 @@ export async function PATCH(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  const session = await auth();
-  if (existing.ownerId && existing.ownerId !== session?.user?.id) {
+  const { allowed } = await canManageEvent(existing);
+  if (!allowed) {
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
@@ -44,11 +49,17 @@ export async function PATCH(request: Request, { params }: Params) {
 
 export async function DELETE(_request: Request, { params }: Params) {
   const { slug } = await params;
-  const session = await auth();
-  if (!session?.user?.id) {
+  const existing = await getEventBySlug(slug);
+  if (!existing) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+  const { allowed, isAdmin, session } = await canManageEvent(existing);
+  if (!allowed || !session?.user?.id) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
-  const ok = await deleteEvent(slug, session.user.id);
+  const ok = isAdmin
+    ? await adminDeleteEvent(slug)
+    : await deleteEvent(slug, session.user.id);
   if (!ok) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }

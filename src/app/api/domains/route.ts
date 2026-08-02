@@ -76,8 +76,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
-  const session = await auth();
-  if (event.ownerId && event.ownerId !== session?.user?.id) {
+  const { canManageEvent } = await import("@/lib/access");
+  const access = await canManageEvent(event);
+  if (!access.allowed) {
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   }
 
