@@ -11,12 +11,12 @@
   "address": "428 Westlake Avenue, Seattle, WA 98109",
   "theme": {
     "colors": {
-      "background": "#0F1A2E",
-      "surface": "#1A2744",
-      "accentPrimary": "#C9A962",
-      "accentSecondary": "#E07A5F",
-      "textPrimary": "#F4F0E8",
-      "textMuted": "#9BA8BC"
+      "background": "#FFF9F0",
+      "surface": "#FFF1DE",
+      "accentPrimary": "#E8A317",
+      "accentSecondary": "#FF6B4A",
+      "textPrimary": "#2C2118",
+      "textMuted": "#7A6554"
     },
     "fonts": {
       "display": "Cormorant Garamond",

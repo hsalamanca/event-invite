@@ -92,6 +92,7 @@ export type Dictionary = {
     venue: string;
     address: string;
     about: string;
+    aboutHtmlHint: string;
     colors: string;
     fonts: string;
     display: string;
@@ -407,6 +408,8 @@ const en: Dictionary = {
     venue: "Venue",
     address: "Address",
     about: "About",
+    aboutHtmlHint:
+      "HTML allowed: <h1>–<h6>, <b>, <strong>, <br>, <i>, <em>, <p>. Example: <h3>Dress code</h3>Cocktail attire<br /><b>No gifts</b>",
     colors: "Colors",
     fonts: "Fonts",
     display: "Display",
@@ -732,6 +735,8 @@ const es: Dictionary = {
     venue: "Lugar",
     address: "Dirección",
     about: "Acerca de",
+    aboutHtmlHint:
+      "HTML permitido: <h1>–<h6>, <b>, <strong>, <br>, <i>, <em>, <p>. Ejemplo: <h3>Código de vestimenta</h3>Cocktail<br /><b>Sin regalos</b>",
     colors: "Colores",
     fonts: "Fuentes",
     display: "Display",

@@ -1,4 +1,5 @@
 import { getEventBySlug } from "@/lib/events";
+import { stripAboutHtml } from "@/lib/sanitize-about";
 
 export const runtime = "nodejs";
 
@@ -70,7 +71,7 @@ export async function GET(
     `DTSTART:${start}`,
     `DTEND:${end}`,
     `SUMMARY:${icsEscape(event.title)}`,
-    `DESCRIPTION:${icsEscape(event.about || event.tagline)}`,
+    `DESCRIPTION:${icsEscape(stripAboutHtml(event.about || event.tagline))}`,
     `LOCATION:${icsEscape(location)}`,
     "END:VEVENT",
     "END:VCALENDAR",

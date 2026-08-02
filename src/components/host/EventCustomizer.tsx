@@ -280,10 +280,12 @@ export default function EventCustomizer({
             <label>
               <span>{t.about}</span>
               <textarea
-                rows={4}
+                rows={5}
                 value={draft.about}
                 onChange={(e) => updateField("about", e.target.value)}
+                placeholder={t.aboutHtmlHint}
               />
+              <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
             <ImageUpload
               slug={event.slug}

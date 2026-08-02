@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
@@ -28,9 +29,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
       />
 
       <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <span className="font-[family-name:var(--font-cormorant)] text-2xl tracking-wide text-[var(--champagne)]">
-          Ownvite
-        </span>
+        <BrandLogo tone="champagne" height={30} />
         <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--mist)] sm:gap-4">
           <LanguageSwitcher locale={locale} path="/" />
           <Link

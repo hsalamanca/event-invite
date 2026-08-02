@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import type { EventRecord } from "@/lib/types";
 
 type InvitePageProps = {
@@ -275,7 +276,12 @@ export default function InvitePage({
           <h3 className="invite-section-title invite-section-title--sm">
             {ui.about}
           </h3>
-          <p>{event.about}</p>
+          <div
+            className="invite-about-body"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeAboutHtml(event.about),
+            }}
+          />
         </div>
         {event.registryUrl ? (
           <p className="invite-registry">
@@ -689,11 +695,41 @@ export default function InvitePage({
           border-top: 1px solid color-mix(in srgb, var(--invite-accent) 35%, transparent);
         }
 
-        .invite-about p {
+        .invite-about-body {
           margin: 0;
           font-size: 1rem;
           line-height: 1.65;
           color: color-mix(in srgb, var(--invite-text) 90%, var(--invite-muted));
+        }
+
+        .invite-about-body :global(h1),
+        .invite-about-body :global(h2),
+        .invite-about-body :global(h3),
+        .invite-about-body :global(h4),
+        .invite-about-body :global(h5),
+        .invite-about-body :global(h6) {
+          margin: 1.1rem 0 0.4rem;
+          font-family: var(--font-display);
+          font-weight: 600;
+          color: var(--invite-text);
+          line-height: 1.25;
+        }
+
+        .invite-about-body :global(h1) { font-size: 1.75rem; }
+        .invite-about-body :global(h2) { font-size: 1.45rem; }
+        .invite-about-body :global(h3) { font-size: 1.25rem; }
+        .invite-about-body :global(h4),
+        .invite-about-body :global(h5),
+        .invite-about-body :global(h6) { font-size: 1.1rem; }
+
+        .invite-about-body :global(p) {
+          margin: 0.55rem 0 0;
+        }
+
+        .invite-about-body :global(b),
+        .invite-about-body :global(strong) {
+          font-weight: 700;
+          color: var(--invite-text);
         }
 
         .invite-prompt {

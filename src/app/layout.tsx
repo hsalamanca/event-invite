@@ -78,6 +78,10 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s · Ownvite",
     },
     description: meta.description,
+    icons: {
+      icon: [{ url: "/ownvite-mark.svg", type: "image/svg+xml" }],
+      apple: [{ url: "/ownvite-logo.png" }],
+    },
   };
 }
 
