@@ -1,8 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  detectLocaleFromAcceptLanguage,
+  isLocale,
+  LOCALE_COOKIE,
+  type Locale,
+} from "@/lib/i18n/config";
 
 /**
- * Host-based routing for custom domains + {slug}.ownvite.app
- * Domain map is loaded from the domains API (Blob-backed registry).
+ * - Cookie / Accept-Language locale (no /es URL prefix)
+ * - Legacy /es/* → same path without prefix + set Spanish cookie
+ * - Custom domain + {slug}.ownvite.app host rewrites
  */
 
 const PLATFORM_HOSTS = new Set([
@@ -18,7 +25,18 @@ type DomainMapResponse = {
   map?: Record<string, string>;
 };
 
-async function loadDomainMap(request: NextRequest): Promise<Record<string, string>> {
+function withLocaleCookie(res: NextResponse, locale: Locale) {
+  res.cookies.set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+  return res;
+}
+
+async function loadDomainMap(
+  request: NextRequest
+): Promise<Record<string, string>> {
   try {
     const url = new URL("/api/domains/map", request.url);
     const res = await fetch(url.toString(), {
@@ -46,46 +64,71 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Platform apex: marketing + path invites — no rewrite
-  if (!hostname || PLATFORM_HOSTS.has(hostname)) {
-    return NextResponse.next();
+  // Legacy /es and /es/... → cookie locale, clean URL
+  if (pathname === "/es" || pathname.startsWith("/es/")) {
+    const stripped =
+      pathname === "/es" ? "/" : pathname.replace(/^\/es/, "") || "/";
+    const url = request.nextUrl.clone();
+    url.pathname = stripped;
+    return withLocaleCookie(NextResponse.redirect(url), "es");
   }
 
-  // {slug}.ownvite.app → /e/{slug}
-  if (hostname.endsWith(".ownvite.app") || hostname.endsWith(".ownvite.com")) {
-    const suffix = hostname.endsWith(".ownvite.app")
-      ? ".ownvite.app"
-      : ".ownvite.com";
-    const slug = hostname.slice(0, -suffix.length);
-    if (slug && !slug.includes(".") && slug !== "www") {
-      if (pathname === "/" || pathname === "") {
+  // Ensure a locale cookie exists (first visit: prefer Accept-Language)
+  const existing = request.cookies.get(LOCALE_COOKIE)?.value;
+  let response: NextResponse | null = null;
+
+  // Host-based invite routing (custom domains / platform subdomains)
+  if (hostname && !PLATFORM_HOSTS.has(hostname)) {
+    if (hostname.endsWith(".ownvite.app") || hostname.endsWith(".ownvite.com")) {
+      const suffix = hostname.endsWith(".ownvite.app")
+        ? ".ownvite.app"
+        : ".ownvite.com";
+      const slug = hostname.slice(0, -suffix.length);
+      if (slug && !slug.includes(".") && slug !== "www") {
+        if (pathname === "/" || pathname === "") {
+          const url = request.nextUrl.clone();
+          url.pathname = `/e/${slug}`;
+          response = NextResponse.rewrite(url);
+        }
+      }
+    }
+
+    if (
+      !response &&
+      hostname.endsWith(".localhost") &&
+      (pathname === "/" || pathname === "")
+    ) {
+      const slug = hostname.replace(/\.localhost$/, "");
+      if (slug && !slug.includes(".")) {
         const url = request.nextUrl.clone();
         url.pathname = `/e/${slug}`;
-        return NextResponse.rewrite(url);
+        response = NextResponse.rewrite(url);
+      }
+    }
+
+    if (!response && (pathname === "/" || pathname === "")) {
+      const map = await loadDomainMap(request);
+      const slug = map[hostname];
+      if (slug) {
+        const url = request.nextUrl.clone();
+        url.pathname = `/e/${slug}`;
+        response = NextResponse.rewrite(url);
       }
     }
   }
 
-  // Local convenience: {slug}.localhost
-  if (hostname.endsWith(".localhost") && (pathname === "/" || pathname === "")) {
-    const slug = hostname.replace(/\.localhost$/, "");
-    if (slug && !slug.includes(".")) {
-      const url = request.nextUrl.clone();
-      url.pathname = `/e/${slug}`;
-      return NextResponse.rewrite(url);
-    }
+  if (!response) {
+    response = NextResponse.next();
   }
 
-  // BYO custom domain → /e/{slug}
-  const map = await loadDomainMap(request);
-  const slug = map[hostname];
-  if (slug && (pathname === "/" || pathname === "")) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/e/${slug}`;
-    return NextResponse.rewrite(url);
+  if (!isLocale(existing)) {
+    const detected =
+      detectLocaleFromAcceptLanguage(request.headers.get("accept-language")) ??
+      "en";
+    withLocaleCookie(response, detected);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

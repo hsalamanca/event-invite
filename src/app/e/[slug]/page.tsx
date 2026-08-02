@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InvitePage from "@/components/invite/InvitePage";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
 
 type PageProps = {
@@ -29,13 +30,14 @@ export default async function EventInvitePage({ params }: PageProps) {
   const { slug } = await params;
   const event = getEventBySlug(slug);
   if (!event || !event.published) notFound();
+  const locale = await getRequestLocale();
 
   return (
     <div className="relative">
       <div className="absolute right-4 top-4 z-30">
-        <LanguageSwitcher locale="en" path={`/e/${slug}`} />
+        <LanguageSwitcher locale={locale} />
       </div>
-      <InvitePage event={event} locale="en" />
+      <InvitePage event={event} locale={locale} />
     </div>
   );
 }

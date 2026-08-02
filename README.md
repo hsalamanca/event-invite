@@ -4,8 +4,10 @@
 
 Ownvite is a digital invitation platform — Evite-class RSVPs with designer-grade customization and **custom domains** for every event.
 
-**Live:** [ownvite.com](https://ownvite.com) · [Español](https://ownvite.com/es) · [ownvite.app](https://ownvite.app)  
-**Birthday invite:** [/e/h-birthday-2026](https://ownvite.com/e/h-birthday-2026) · [/es/e/…](https://ownvite.com/es/e/h-birthday-2026)
+**Live:** [ownvite.com](https://ownvite.com) · [ownvite.app](https://ownvite.app)  
+**Birthday invite:** [/e/h-birthday-2026](https://ownvite.com/e/h-birthday-2026)
+
+Language is cookie-based (EN/ES switcher) — same URLs, no `/es` prefix. Legacy `/es/*` redirects and sets Spanish.
 
 ### Hero images
 Hosts upload photos in Host studio (device file → Vercel Blob → `/api/media` public URL). Pasting a URL remains as a fallback.

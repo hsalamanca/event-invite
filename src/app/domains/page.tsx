@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import DomainsGuide from "@/components/marketing/DomainsGuide";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { getRequestLocale } from "@/lib/i18n/locale";
 
-export const metadata: Metadata = {
-  title: getDictionary("en").domains.title,
-  description: getDictionary("en").domains.support,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).domains;
+  return { title: t.title, description: t.support };
+}
 
-export default function DomainsGuidePage() {
-  return <DomainsGuide locale="en" />;
+export default async function DomainsGuidePage() {
+  const locale = await getRequestLocale();
+  return <DomainsGuide locale={locale} />;
 }

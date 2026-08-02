@@ -5,6 +5,8 @@ import {
   Fraunces,
   DM_Sans,
 } from "next/font/google";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { getRequestLocale } from "@/lib/i18n/locale";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -35,22 +37,27 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Ownvite — Host on your own domain",
-    template: "%s · Ownvite",
-  },
-  description:
-    "Designer-grade digital invitations with deep customization and custom domains. Start with your birthday — grow into every celebration.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const meta = getDictionary(locale).meta;
+  return {
+    title: {
+      default: meta.title,
+      template: "%s · Ownvite",
+    },
+    description: meta.description,
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getRequestLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} antialiased`}
       >
