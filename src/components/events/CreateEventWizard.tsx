@@ -197,7 +197,10 @@ export default function CreateEventWizard({
                                           : tpl.theme.fonts.display ===
                                               "Space Grotesk"
                                             ? "space-grotesk"
-                                            : "cormorant"
+                                            : tpl.theme.fonts.display ===
+                                                "Press Start 2P"
+                                              ? "press-start"
+                                              : "cormorant"
                         })`,
                       }}
                     >

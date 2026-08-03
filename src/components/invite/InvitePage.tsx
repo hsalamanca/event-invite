@@ -80,6 +80,8 @@ const FONT_STACK: Record<string, string> = {
   Fredoka: "var(--font-fredoka), system-ui, sans-serif",
   "Baloo 2": "var(--font-baloo-2), system-ui, sans-serif",
   "Space Grotesk": "var(--font-space-grotesk), system-ui, sans-serif",
+  "Press Start 2P":
+    "var(--font-press-start), 'Courier New', monospace",
 };
 
 function fontStack(name: string, fallback: string): string {
@@ -286,6 +288,7 @@ export default function InvitePage({
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
         modernCelebrate={ui.modernCelebrate}
+        arcadePlayer={ui.arcadePlayer}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -1904,6 +1907,232 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="arcade"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 20%,
+              color-mix(in srgb, #ff3d9a 45%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 18%,
+              color-mix(in srgb, #39ff14 35%, transparent),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at 50% 70%,
+              color-mix(in srgb, #00e5ff 30%, transparent),
+              transparent 45%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #1a0a3c 50%, transparent) 0%,
+              color-mix(in srgb, #1a0a3c 88%, transparent) 72%,
+              #1a0a3c 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-scanlines) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.18;
+          background: repeating-linear-gradient(
+            to bottom,
+            transparent 0 3px,
+            color-mix(in srgb, #39ff14 35%, transparent) 3px 4px
+          );
+          animation: arcadeFlicker 4.5s steps(2) infinite;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card) {
+          position: relative;
+          overflow: visible;
+          border: 4px solid #1a0a3c;
+          border-radius: 0.85rem;
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, #ff3d9a 12%, var(--invite-surface)),
+              var(--invite-surface) 40%,
+              color-mix(in srgb, #00e5ff 10%, var(--invite-surface))
+            );
+          box-shadow:
+            0 0 0 4px var(--invite-accent-2),
+            0 0 0 8px #00e5ff,
+            0 0 0 12px var(--invite-accent),
+            0 22px 48px color-mix(in srgb, #1a0a3c 40%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-badge) {
+          position: absolute;
+          z-index: 3;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.4rem 0.55rem;
+          border: 3px solid #1a0a3c;
+          border-radius: 0.35rem;
+          font-family: var(--font-display);
+          font-size: 0.55rem;
+          letter-spacing: 0.04em;
+          line-height: 1;
+          box-shadow: 3px 3px 0 #1a0a3c;
+          animation: arcadeBounce 2.8s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-badge--1up) {
+          top: -0.65rem;
+          left: 0.7rem;
+          background: var(--invite-accent-2);
+          color: #1a0a3c;
+          --arcade-rot: -8deg;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-badge--start) {
+          top: 0.85rem;
+          right: -0.35rem;
+          background: #00e5ff;
+          color: #1a0a3c;
+          animation-delay: 0.4s;
+          --arcade-rot: 10deg;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-sticker--pad) {
+          position: absolute;
+          z-index: 3;
+          width: 3.6rem;
+          height: auto;
+          bottom: 6.2rem;
+          left: -0.7rem;
+          filter: drop-shadow(3px 3px 0 #1a0a3c);
+          animation: arcadeBounce 3.2s ease-in-out infinite;
+          animation-delay: 0.7s;
+          --arcade-rot: -12deg;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-photo) {
+          margin: 1.35rem 1rem 0;
+          border: 4px solid #1a0a3c;
+          border-radius: 0.65rem;
+          aspect-ratio: 16 / 10;
+          box-shadow: 5px 5px 0 var(--invite-accent);
+          image-rendering: auto;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-ornament--arcade) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.35rem;
+          width: auto;
+          margin-bottom: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .arcade-pixel) {
+          width: 0.55rem;
+          height: 0.55rem;
+          border: 1.5px solid #1a0a3c;
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-size: 0.62rem;
+          letter-spacing: 0.04em;
+          line-height: 1.5;
+          color: var(--invite-accent);
+          text-shadow: 2px 2px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-invite-line) {
+          font-style: normal;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.72rem;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 400;
+          font-size: clamp(1.35rem, 5.5vw, 2rem);
+          line-height: 1.35;
+          letter-spacing: 0.02em;
+          color: var(--invite-accent);
+          text-shadow:
+            3px 3px 0 #1a0a3c,
+            5px 5px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-when) {
+          margin-top: 0.95rem;
+          padding: 0.95rem 1rem;
+          border-radius: 0.55rem;
+          background: #1a0a3c;
+          color: #fff8ff;
+          border: 3px solid var(--invite-accent-2);
+          box-shadow: 4px 4px 0 var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-size: 0.72rem;
+          line-height: 1.55;
+          letter-spacing: 0.02em;
+          color: var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .invite-card-time),
+        :global(.invite-cover[data-layout="arcade"] .invite-card-venue),
+        :global(.invite-cover[data-layout="arcade"] .invite-card-address) {
+          color: color-mix(in srgb, #fff8ff 88%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .btn-primary) {
+          border-radius: 0.45rem;
+          border: 3px solid #1a0a3c;
+          background: var(--invite-accent);
+          color: #fff8ff;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          box-shadow: 4px 4px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="arcade"] .btn-ghost) {
+          border-radius: 0.45rem;
+          border: 3px solid #1a0a3c;
+          background: #00e5ff;
+          color: #1a0a3c;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          box-shadow: 4px 4px 0 #1a0a3c;
+        }
+
+        @keyframes arcadeBounce {
+          0%,
+          100% {
+            transform: rotate(var(--arcade-rot, -6deg)) translateY(0);
+          }
+          50% {
+            transform: rotate(calc(var(--arcade-rot, -6deg) + 5deg))
+              translateY(-3px);
+          }
+        }
+
+        @keyframes arcadeFlicker {
+          0%,
+          100% {
+            opacity: 0.14;
+          }
+          50% {
+            opacity: 0.22;
+          }
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(
@@ -2418,6 +2647,9 @@ export default function InvitePage({
           :global(.toy-sticker),
           :global(.azure-glow),
           :global(.azure-ring),
+          :global(.arcade-scanlines),
+          :global(.arcade-badge),
+          :global(.arcade-sticker--pad),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;
