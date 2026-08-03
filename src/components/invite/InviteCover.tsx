@@ -16,6 +16,7 @@ type InviteCoverProps = {
   heroImage: string;
   invitesYou: string;
   comicPresents?: string;
+  festiveParty?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -26,11 +27,79 @@ type InviteCoverProps = {
   parallaxY?: number;
 };
 
+function BalloonGarland() {
+  const balloons = [
+    { c: "#FF4D8D", x: 8, y: 18, s: 1 },
+    { c: "#FFD23F", x: 22, y: 10, s: 1.1 },
+    { c: "#4D96FF", x: 36, y: 16, s: 0.95 },
+    { c: "#7CFFB2", x: 50, y: 8, s: 1.05 },
+    { c: "#C77DFF", x: 64, y: 15, s: 1 },
+    { c: "#FF8A3D", x: 78, y: 9, s: 1.08 },
+    { c: "#FF6B9D", x: 92, y: 17, s: 0.92 },
+  ];
+  return (
+    <svg
+      className="festive-garland"
+      viewBox="0 0 100 40"
+      aria-hidden
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <path
+        d="M4 22 C 20 8, 40 30, 50 14 S 80 6, 96 20"
+        fill="none"
+        stroke="#2A1848"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        opacity="0.35"
+      />
+      {balloons.map((b, i) => (
+        <g key={i} transform={`translate(${b.x} ${b.y}) scale(${b.s})`}>
+          <g className={`festive-balloon festive-balloon--${i}`}>
+            <ellipse cx="0" cy="0" rx="5.2" ry="6.4" fill={b.c} />
+            <ellipse
+              cx="-1.6"
+              cy="-2"
+              rx="1.4"
+              ry="2"
+              fill="white"
+              opacity="0.35"
+            />
+            <path
+              d="M0 6.2 L0 12"
+              stroke="#2A1848"
+              strokeWidth="0.55"
+              opacity="0.4"
+            />
+            <path
+              d="M-1.2 6.4 Q0 7.6 1.2 6.4"
+              fill="none"
+              stroke="#2A1848"
+              strokeWidth="0.55"
+              opacity="0.35"
+            />
+          </g>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
       <div className="invite-ornament invite-ornament--comic" aria-hidden>
         <span className="comic-burst">POW!</span>
+      </div>
+    );
+  }
+  if (layout === "festive") {
+    return (
+      <div className="invite-ornament invite-ornament--festive" aria-hidden>
+        <span className="festive-dot" style={{ background: "#FF4D8D" }} />
+        <span className="festive-dot" style={{ background: "#FFD23F" }} />
+        <span className="festive-dot" style={{ background: "#4D96FF" }} />
+        <span className="festive-dot" style={{ background: "#7CFFB2" }} />
+        <span className="festive-dot" style={{ background: "#C77DFF" }} />
       </div>
     );
   }
@@ -114,6 +183,7 @@ export default function InviteCover({
   heroImage,
   invitesYou,
   comicPresents,
+  festiveParty,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -127,8 +197,16 @@ export default function InviteCover({
     layout === "arch" ||
     layout === "party" ||
     layout === "glam" ||
-    layout === "comic";
+    layout === "comic" ||
+    layout === "festive";
   const isComic = layout === "comic";
+  const isFestive = layout === "festive";
+
+  const inviteLine = isComic
+    ? comicPresents || invitesYou
+    : isFestive
+      ? festiveParty || invitesYou
+      : invitesYou;
 
   return (
     <section
@@ -147,9 +225,8 @@ export default function InviteCover({
         <div className="invite-cover-atmosphere-veil" aria-hidden />
       </div>
 
-      {isComic ? (
-        <div className="comic-halftone" aria-hidden />
-      ) : null}
+      {isComic ? <div className="comic-halftone" aria-hidden /> : null}
+      {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
         <article className="invite-card fade-up fade-up-1">
@@ -164,6 +241,12 @@ export default function InviteCover({
             </>
           ) : null}
 
+          {isFestive ? (
+            <div className="festive-garland-wrap" aria-hidden>
+              <BalloonGarland />
+            </div>
+          ) : null}
+
           {photoTop ? (
             <div className="invite-card-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -175,9 +258,7 @@ export default function InviteCover({
             <Ornament layout={layout} />
 
             <p className="invite-card-host">{hostName || title}</p>
-            <p className="invite-card-invite-line">
-              {isComic ? comicPresents || invitesYou : invitesYou}
-            </p>
+            <p className="invite-card-invite-line">{inviteLine}</p>
 
             <h1 className="invite-card-headline">{headline}</h1>
 

@@ -22,7 +22,8 @@ export type InviteLayout =
   | "coastal"
   | "kraft"
   | "glam"
-  | "comic";
+  | "comic"
+  | "festive";
 
 export type EventTemplate = {
   id: string;
@@ -211,6 +212,19 @@ const funkyComic: Theme = {
     textMuted: "#4A3A2A",
   },
   fonts: { display: "Bangers", body: "Outfit" },
+};
+
+/** Canva Multicolored Festive Birthday — rainbow balloons & confetti */
+const festiveRainbow: Theme = {
+  colors: {
+    background: "#FFF4EC",
+    surface: "#FFFFFF",
+    accentPrimary: "#FF4D8D",
+    accentSecondary: "#FFD23F",
+    textPrimary: "#2A1848",
+    textMuted: "#6E5A7A",
+  },
+  fonts: { display: "Fredoka", body: "Outfit" },
 };
 
 /** Evite Lovely Linen — airy natural neutrals */
@@ -692,6 +706,26 @@ export const TEMPLATES: EventTemplate[] = [
     headlineEs: "¡Estás invitado!",
     tagline: "Cake, games, and comic-book levels of fun — suit up and show up!",
     taglineEs: "Pastel, juegos y diversión de cómic — ¡ponte el traje y llega!",
+  },
+  {
+    id: "festive-rainbow",
+    name: "Festive rainbow",
+    nameEs: "Arcoíris festivo",
+    description:
+      "Multicolor balloons and confetti — bright kids’ birthdays and feel-good party invites.",
+    descriptionEs:
+      "Globos multicolor y confeti — cumpleaños infantiles y fiestas alegres.",
+    inspiredBy: "Canva Multicolored Festive Birthday Party Invitation",
+    inspiredByEs: "Canva invitación de cumpleaños festiva multicolor",
+    categories: ["birthday", "party", "baby"],
+    layout: "festive",
+    theme: festiveRainbow,
+    heroImage:
+      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=1920&q=80&auto=format&fit=crop",
+    headline: "Let's Party!",
+    headlineEs: "¡A celebrar!",
+    tagline: "Balloons, cake, and all the colors — come celebrate with us!",
+    taglineEs: "Globos, pastel y todos los colores — ¡ven a celebrar con nosotros!",
   },
 ];
 
