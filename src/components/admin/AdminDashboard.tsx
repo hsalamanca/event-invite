@@ -184,7 +184,7 @@ export default function AdminDashboard() {
   }
 
   if (!data && !error) {
-    return <p className="text-[var(--mist)]">Loading admin data…</p>;
+    return <p className="text-[var(--landing-muted)]">Loading admin data…</p>;
   }
 
   if (error && !data) {
@@ -211,12 +211,12 @@ export default function AdminDashboard() {
         ).map(([label, value]) => (
           <div
             key={label}
-            className="border border-white/10 bg-white/[0.03] px-4 py-3"
+            className="border border-[var(--landing-line)] bg-white px-4 py-3"
           >
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--mist)]">
+            <p className="text-xs uppercase tracking-[0.2em] text-[var(--landing-muted)]">
               {label}
             </p>
-            <p className="mt-1 font-[family-name:var(--font-cormorant)] text-3xl text-[var(--champagne)]">
+            <p className="mt-1 font-[family-name:var(--font-fraunces)] text-3xl text-[var(--landing-cedar)]">
               {value}
             </p>
           </div>
@@ -226,21 +226,21 @@ export default function AdminDashboard() {
       <div
         className={`rounded-md border px-4 py-3 text-sm ${
           data.googleAuthEnabled
-            ? "border-[var(--champagne)]/35 bg-[var(--champagne)]/10 text-[var(--champagne)]"
-            : "border-white/15 bg-white/[0.03] text-[var(--mist)]"
+            ? "border-[var(--landing-cedar)]/35 bg-[var(--landing-cedar)]/10 text-[var(--landing-cedar)]"
+            : "border-[var(--landing-line)] bg-white text-[var(--landing-muted)]"
         }`}
       >
-        <p className="font-medium text-[var(--ivory)]">
+        <p className="font-medium text-[var(--landing-ink)]">
           Google sign-in:{" "}
           {data.googleAuthEnabled ? "Enabled" : "Not configured"}
         </p>
         {!data.googleAuthEnabled ? (
           <p className="mt-1">
-            Set <code className="text-[var(--champagne)]">AUTH_GOOGLE_ID</code>{" "}
+            Set <code className="text-[var(--landing-cedar)]">AUTH_GOOGLE_ID</code>{" "}
             and{" "}
-            <code className="text-[var(--champagne)]">AUTH_GOOGLE_SECRET</code>{" "}
+            <code className="text-[var(--landing-cedar)]">AUTH_GOOGLE_SECRET</code>{" "}
             in Vercel, then redeploy. Setup guide:{" "}
-            <code className="text-[var(--champagne)]">docs/GOOGLE_AUTH.md</code>
+            <code className="text-[var(--landing-cedar)]">docs/GOOGLE_AUTH.md</code>
           </p>
         ) : (
           <p className="mt-1">
@@ -250,20 +250,20 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
-        <label className="block flex-1 text-sm text-[var(--mist)]">
+        <label className="block flex-1 text-sm text-[var(--landing-muted)]">
           Search users & events
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="email, slug, title, domain…"
-            className="mt-1.5 w-full max-w-xl rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+            className="mt-1.5 w-full max-w-xl rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
           />
         </label>
         <button
           type="button"
           disabled={busy === "__ssl__"}
           onClick={() => void ensureAllSsl()}
-          className="rounded-md border border-[var(--champagne)]/40 px-3 py-2 text-sm text-[var(--champagne)] hover:bg-[var(--champagne)]/10 disabled:opacity-50"
+          className="rounded-md border border-[var(--landing-cedar)]/40 px-3 py-2 text-sm text-[var(--landing-cedar)] hover:bg-[var(--landing-cedar)]/10 disabled:opacity-50"
         >
           {busy === "__ssl__" ? "Provisioning…" : "Fix subdomain SSL"}
         </button>
@@ -273,16 +273,16 @@ export default function AdminDashboard() {
       ) : null}
 
       <section>
-        <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+        <h2 className="font-[family-name:var(--font-fraunces)] text-2xl">
           Registered users
         </h2>
-        <p className="mt-1 text-sm text-[var(--mist)]">
+        <p className="mt-1 text-sm text-[var(--landing-muted)]">
           Accounts that can create and manage invitations.
         </p>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[560px] text-left text-sm">
-            <thead className="text-[var(--mist)]">
-              <tr className="border-b border-white/10">
+            <thead className="text-[var(--landing-muted)]">
+              <tr className="border-b border-[var(--landing-line)]">
                 <th className="py-2 pr-3 font-medium">Name</th>
                 <th className="py-2 pr-3 font-medium">Email</th>
                 <th className="py-2 pr-3 font-medium">Events</th>
@@ -295,11 +295,11 @@ export default function AdminDashboard() {
                   (e) => e.ownerId === u.id,
                 ).length;
                 return (
-                  <tr key={u.id} className="border-b border-white/5">
+                  <tr key={u.id} className="border-b border-[var(--landing-line)]">
                     <td className="py-2.5 pr-3">{u.name}</td>
-                    <td className="py-2.5 pr-3 text-[var(--mist)]">{u.email}</td>
+                    <td className="py-2.5 pr-3 text-[var(--landing-muted)]">{u.email}</td>
                     <td className="py-2.5 pr-3">{count}</td>
-                    <td className="py-2.5 text-[var(--mist)]">
+                    <td className="py-2.5 text-[var(--landing-muted)]">
                       {u.createdAt.slice(0, 10)}
                     </td>
                   </tr>
@@ -307,7 +307,7 @@ export default function AdminDashboard() {
               })}
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-6 text-[var(--mist)]">
+                  <td colSpan={4} className="py-6 text-[var(--landing-muted)]">
                     No users match.
                   </td>
                 </tr>
@@ -318,24 +318,24 @@ export default function AdminDashboard() {
       </section>
 
       <section>
-        <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+        <h2 className="font-[family-name:var(--font-fraunces)] text-2xl">
           All events
         </h2>
-        <p className="mt-1 text-sm text-[var(--mist)]">
+        <p className="mt-1 text-sm text-[var(--landing-muted)]">
           Open host studio to assist a customer — you can edit any event as
           admin.
         </p>
-        <ul className="mt-4 divide-y divide-white/10 border-t border-white/10">
+        <ul className="mt-4 divide-y divide-[var(--landing-line)] border-t border-[var(--landing-line)]">
           {filteredEvents.map((event) => (
             <li
               key={event.id}
               className="flex flex-col gap-3 py-5 lg:flex-row lg:items-center lg:justify-between"
             >
               <div className="min-w-0">
-                <p className="font-[family-name:var(--font-cormorant)] text-xl">
+                <p className="font-[family-name:var(--font-fraunces)] text-xl">
                   {event.title}
                 </p>
-                <p className="mt-1 text-sm text-[var(--mist)]">
+                <p className="mt-1 text-sm text-[var(--landing-muted)]">
                   /{event.slug}
                   {event.customDomain ? ` · ${event.customDomain}` : ""}
                   {" · "}
@@ -353,13 +353,13 @@ export default function AdminDashboard() {
               <div className="flex flex-wrap gap-2 text-sm">
                 <Link
                   href={`/host/${event.slug}`}
-                  className="rounded-md bg-[var(--champagne)] px-3 py-1.5 font-semibold text-[var(--ink)]"
+                  className="rounded-md bg-[var(--landing-cedar)] px-3 py-1.5 font-semibold text-[var(--ink)]"
                 >
                   Assist in studio
                 </Link>
                 <Link
                   href={`/e/${event.slug}`}
-                  className="rounded-md border border-white/15 px-3 py-1.5"
+                  className="rounded-md border border-[var(--landing-line)] px-3 py-1.5"
                 >
                   View invite
                 </Link>
@@ -372,7 +372,7 @@ export default function AdminDashboard() {
                       e.target.value as "free" | "pro" | "studio",
                     )
                   }
-                  className="rounded-md border border-white/15 bg-[var(--ink)] px-2 py-1.5"
+                  className="rounded-md border border-[var(--landing-line)] bg-[var(--ink)] px-2 py-1.5"
                 >
                   <option value="free">tier: free</option>
                   <option value="pro">tier: pro</option>
@@ -382,7 +382,7 @@ export default function AdminDashboard() {
                   type="button"
                   disabled={busy === event.slug}
                   onClick={() => void togglePublished(event)}
-                  className="rounded-md border border-white/15 px-3 py-1.5 disabled:opacity-50"
+                  className="rounded-md border border-[var(--landing-line)] px-3 py-1.5 disabled:opacity-50"
                 >
                   {event.published ? "Unpublish" : "Publish"}
                 </button>
@@ -398,16 +398,16 @@ export default function AdminDashboard() {
             </li>
           ))}
           {filteredEvents.length === 0 ? (
-            <li className="py-8 text-[var(--mist)]">No events match.</li>
+            <li className="py-8 text-[var(--landing-muted)]">No events match.</li>
           ) : null}
         </ul>
       </section>
 
       <section>
-        <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+        <h2 className="font-[family-name:var(--font-fraunces)] text-2xl">
           Domain bindings
         </h2>
-        <ul className="mt-4 divide-y divide-white/10 border-t border-white/10 text-sm">
+        <ul className="mt-4 divide-y divide-[var(--landing-line)] border-t border-[var(--landing-line)] text-sm">
           {(data.domains ?? []).map((d) => (
             <li
               key={d.domain}
@@ -416,11 +416,11 @@ export default function AdminDashboard() {
               <span>
                 {d.domain} → /e/{d.slug}
               </span>
-              <span className="text-[var(--mist)]">{d.status ?? "bound"}</span>
+              <span className="text-[var(--landing-muted)]">{d.status ?? "bound"}</span>
             </li>
           ))}
           {(data.domains ?? []).length === 0 ? (
-            <li className="py-6 text-[var(--mist)]">No custom domains yet.</li>
+            <li className="py-6 text-[var(--landing-muted)]">No custom domains yet.</li>
           ) : null}
         </ul>
       </section>

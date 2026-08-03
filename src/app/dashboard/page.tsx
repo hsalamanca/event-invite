@@ -13,6 +13,11 @@ import {
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
 import { summarizeViews, listViewsByEventId } from "@/lib/view-store";
 import type { EventRecord } from "@/lib/types";
+import {
+  displayFont,
+  paperGrainStyle,
+  paperThemeVars,
+} from "@/lib/marketing-theme";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard · Ownvite" };
@@ -58,21 +63,33 @@ export default async function DashboardPage() {
   const isAdmin = isAdminEmail(session.user.email);
 
   return (
-    <main className="min-h-screen bg-[var(--ink)] text-[var(--ivory)]">
-      <header className="border-b border-white/10">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-5">
-          <BrandLogo tone="champagne" height={28} />
+    <main className="relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0"
+        style={paperGrainStyle}
+      />
+      <header className="relative z-20 border-b border-[var(--landing-line)]">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
+          <BrandLogo tone="ink" height={28} />
           <div className="flex items-center gap-3 text-sm">
-            <LanguageSwitcher locale={locale} path="/dashboard" />
+            <LanguageSwitcher locale={locale} path="/dashboard" variant="paper" />
             {isAdmin ? (
               <Link
                 href="/admin"
-                className="rounded-md border border-[var(--champagne)]/40 px-3 py-1.5 text-[var(--champagne)] hover:bg-[var(--champagne)]/10"
+                className="rounded-md border px-3 py-1.5"
+                style={{
+                  borderColor: "var(--landing-cedar)",
+                  color: "var(--landing-cedar)",
+                }}
               >
                 Admin
               </Link>
             ) : null}
-            <span className="hidden text-[var(--mist)] sm:inline">
+            <span
+              className="hidden sm:inline"
+              style={{ color: "var(--landing-muted)" }}
+            >
               {session.user.name || session.user.email}
             </span>
             <form
@@ -83,7 +100,11 @@ export default async function DashboardPage() {
             >
               <button
                 type="submit"
-                className="rounded-md border border-white/15 px-3 py-1.5 text-[var(--mist)] hover:border-[var(--champagne)]/40 hover:text-[var(--ivory)]"
+                className="rounded-md border px-3 py-1.5"
+                style={{
+                  borderColor: "var(--landing-line)",
+                  color: "var(--landing-muted)",
+                }}
               >
                 {t.signOut}
               </button>
@@ -92,36 +113,63 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-6 py-10">
+      <div className="relative z-10 mx-auto max-w-5xl px-5 py-10 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-[var(--champagne)]">
+            <p
+              className="text-xs uppercase tracking-[0.28em]"
+              style={{ color: "var(--landing-cedar)" }}
+            >
               {t.eyebrow}
             </p>
-            <h1 className="mt-2 font-[family-name:var(--font-cormorant)] text-4xl tracking-tight">
+            <h1
+              className="mt-2"
+              style={{
+                ...displayFont,
+                fontSize: "clamp(2rem, 4vw, 2.75rem)",
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
+              }}
+            >
               {t.title}
             </h1>
-            <p className="mt-2 max-w-lg text-[var(--mist)]">{t.support}</p>
+            <p className="mt-2 max-w-lg" style={{ color: "var(--landing-muted)" }}>
+              {t.support}
+            </p>
           </div>
           <Link
             href="/events/new"
-            className="rounded-md bg-[var(--champagne)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition hover:brightness-110"
+            className="rounded-md px-4 py-2.5 text-sm font-semibold text-white"
+            style={{ background: "var(--landing-cedar)" }}
           >
             {t.create}
           </Link>
         </div>
 
         {ownedStats.length === 0 && coHostStats.length === 0 ? (
-          <div className="mt-14 border border-dashed border-white/15 px-6 py-14 text-center">
-            <p className="font-[family-name:var(--font-cormorant)] text-2xl">
+          <div
+            className="mt-14 border border-dashed px-6 py-14 text-center"
+            style={{ borderColor: "var(--landing-line)" }}
+          >
+            <p
+              style={{
+                ...displayFont,
+                fontSize: "1.5rem",
+                fontWeight: 600,
+              }}
+            >
               {t.emptyTitle}
             </p>
-            <p className="mx-auto mt-2 max-w-md text-[var(--mist)]">
+            <p
+              className="mx-auto mt-2 max-w-md"
+              style={{ color: "var(--landing-muted)" }}
+            >
               {t.emptyBody}
             </p>
             <Link
               href="/events/new"
-              className="mt-6 inline-block rounded-md bg-[var(--champagne)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)]"
+              className="mt-6 inline-block rounded-md px-4 py-2.5 text-sm font-semibold text-white"
+              style={{ background: "var(--landing-cedar)" }}
             >
               {t.create}
             </Link>
@@ -163,10 +211,16 @@ function EventList({
   if (rows.length === 0) return null;
   return (
     <section className="mt-10">
-      <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+      <h2
+        style={{
+          ...displayFont,
+          fontSize: "1.5rem",
+          fontWeight: 600,
+        }}
+      >
         {title}
       </h2>
-      <ul className="mt-4 divide-y divide-white/10 border-t border-white/10">
+      <ul className="mt-4 border-t" style={{ borderColor: "var(--landing-line)" }}>
         {rows.map(({ event, rsvpCount, yes, seats, opens }) => {
           const tier = event.tier ?? "free";
           const past =
@@ -175,58 +229,92 @@ function EventList({
           return (
             <li
               key={event.id}
-              className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-4 border-b py-6 sm:flex-row sm:items-center sm:justify-between"
+              style={{ borderColor: "var(--landing-line)" }}
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-[family-name:var(--font-cormorant)] text-2xl">
+                  <p
+                    style={{
+                      ...displayFont,
+                      fontSize: "1.35rem",
+                      fontWeight: 600,
+                    }}
+                  >
                     {event.title}
                   </p>
                   {tier !== "free" ? (
-                    <span className="rounded border border-[var(--champagne)]/40 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[var(--champagne)]">
+                    <span
+                      className="rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider"
+                      style={{
+                        borderColor: "var(--landing-cedar)",
+                        color: "var(--landing-cedar)",
+                      }}
+                    >
                       {tier}
                     </span>
                   ) : null}
                   {!event.published ? (
-                    <span className="rounded border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[var(--mist)]">
+                    <span
+                      className="rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider"
+                      style={{
+                        borderColor: "var(--landing-line)",
+                        color: "var(--landing-muted)",
+                      }}
+                    >
                       {t.draft}
                     </span>
                   ) : null}
                   {past ? (
-                    <span className="rounded border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[var(--mist)]">
+                    <span
+                      className="rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider"
+                      style={{
+                        borderColor: "var(--landing-line)",
+                        color: "var(--landing-muted)",
+                      }}
+                    >
                       past
                     </span>
                   ) : null}
                   {showRole ? (
-                    <span className="rounded border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[var(--mist)]">
+                    <span
+                      className="rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider"
+                      style={{
+                        borderColor: "var(--landing-line)",
+                        color: "var(--landing-muted)",
+                      }}
+                    >
                       co-host
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1 text-sm text-[var(--mist)]">
+                <p className="mt-1 text-sm" style={{ color: "var(--landing-muted)" }}>
                   {event.dateISO} · {event.venue}
                   {event.customDomain ? ` · ${event.customDomain}` : ""}
                 </p>
-                <p className="mt-1 text-sm text-[var(--mist)]">
+                <p className="mt-1 text-sm" style={{ color: "var(--landing-muted)" }}>
                   {rsvpCount} RSVPs · {yes} yes · {seats} seats · {opens} opens
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 text-sm">
                 <Link
                   href={`/host/${event.slug}`}
-                  className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/50"
+                  className="rounded-md border px-3 py-1.5"
+                  style={{ borderColor: "var(--landing-line)" }}
                 >
                   {t.edit}
                 </Link>
                 <Link
                   href={`/e/${event.slug}`}
-                  className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/50"
+                  className="rounded-md border px-3 py-1.5"
+                  style={{ borderColor: "var(--landing-line)" }}
                 >
                   {t.view}
                 </Link>
                 <Link
                   href={`/host/${event.slug}#guests`}
-                  className="rounded-md bg-white/10 px-3 py-1.5 hover:bg-white/15"
+                  className="rounded-md px-3 py-1.5 text-white"
+                  style={{ background: "var(--landing-cedar)" }}
                 >
                   {t.guests}
                 </Link>

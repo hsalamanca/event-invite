@@ -44,12 +44,12 @@ export default function VerifyEmailClient({ token }: { token: string }) {
   return (
     <div className="space-y-4 text-sm">
       {status === "loading" ? (
-        <p className="text-[var(--mist)]">Verifying your email…</p>
+        <p className="text-[var(--landing-muted)]">Verifying your email…</p>
       ) : null}
       {status === "ok" ? (
         <>
-          <p className="text-[var(--ivory)]">Email verified. You’re all set.</p>
-          <Link href="/login" className="text-[var(--champagne)] underline">
+          <p className="text-[var(--landing-ink)]">Email verified. You’re all set.</p>
+          <Link href="/login" className="text-[var(--landing-cedar)] underline">
             Sign in
           </Link>
         </>
@@ -57,7 +57,7 @@ export default function VerifyEmailClient({ token }: { token: string }) {
       {status === "err" ? (
         <>
           <p className="text-[var(--coral)]">{message}</p>
-          <Link href="/login" className="text-[var(--champagne)] underline">
+          <Link href="/login" className="text-[var(--landing-cedar)] underline">
             Back to sign in
           </Link>
         </>

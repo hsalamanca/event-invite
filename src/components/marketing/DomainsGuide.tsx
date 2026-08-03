@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import MarketingShell from "@/components/marketing/MarketingShell";
 import {
   OWNVITE_APEX_IPS,
   OWNVITE_CNAME_TARGET,
@@ -7,74 +7,116 @@ import {
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { displayFont } from "@/lib/marketing-theme";
 
 export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
   const t = getDictionary(locale).domains;
 
   return (
-    <main className="min-h-screen bg-[var(--ink)] text-[var(--ivory)]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[360px]"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(201,169,98,0.18), transparent 60%)",
-        }}
-      />
-
-      <header className="relative mx-auto flex max-w-3xl items-center justify-between px-6 py-6">
+    <MarketingShell
+      locale={locale}
+      path="/domains"
+      maxWidthClass="max-w-3xl"
+      headerExtra={
         <Link
-          href={localePath(locale, "/")}
-          className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]"
+          href={localePath(locale, "/host/h-birthday-2026")}
+          className="hidden text-sm transition hover:text-[var(--landing-ink)] sm:inline"
+          style={{ color: "var(--landing-muted)" }}
         >
-          Ownvite
+          {t.openStudio}
         </Link>
-        <div className="flex items-center gap-4">
-          <LanguageSwitcher locale={locale} path="/domains" />
-          <Link
-            href={localePath(locale, "/host/h-birthday-2026")}
-            className="text-sm text-[var(--mist)] hover:text-[var(--ivory)]"
-          >
-            {t.openStudio}
-          </Link>
-        </div>
-      </header>
-
-      <article className="relative mx-auto max-w-3xl px-6 pb-24 pt-8">
-        <p className="text-xs uppercase tracking-[0.28em] text-[var(--champagne)]">
+      }
+    >
+      <article className="mx-auto max-w-3xl px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
+        <p
+          className="text-xs uppercase tracking-[0.28em]"
+          style={{ color: "var(--landing-cedar)" }}
+        >
           {t.eyebrow}
         </p>
-        <h1 className="mt-3 font-[family-name:var(--font-cormorant)] text-4xl leading-tight sm:text-5xl">
+        <h1
+          className="mt-3"
+          style={{
+            ...displayFont,
+            fontSize: "clamp(2.25rem, 5vw, 3.25rem)",
+            fontWeight: 600,
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "var(--landing-ink)",
+          }}
+        >
           {t.headline}
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-[var(--mist)]">{t.support}</p>
+        <p
+          className="mt-5 max-w-2xl text-lg leading-relaxed"
+          style={{ color: "var(--landing-muted)" }}
+        >
+          {t.support}
+        </p>
 
-        <section className="mt-12 space-y-8">
+        <section className="mt-14 space-y-10">
           {t.steps.map((step) => (
             <div key={step.title}>
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]">
+              <h2
+                style={{
+                  ...displayFont,
+                  fontSize: "1.5rem",
+                  fontWeight: 600,
+                  color: "var(--landing-ink)",
+                }}
+              >
                 {step.title}
               </h2>
-              <p className="mt-2 leading-relaxed text-[var(--mist)]">
+              <p
+                className="mt-2 leading-relaxed"
+                style={{ color: "var(--landing-muted)" }}
+              >
                 {step.body}
               </p>
             </div>
           ))}
         </section>
 
-        <section className="mt-14 rounded-2xl border border-white/10 bg-[var(--slate)]/50 p-6">
-          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+        <section
+          className="mt-14 rounded-md border p-6"
+          style={{
+            borderColor: "var(--landing-line)",
+            background: "var(--landing-surface)",
+            boxShadow: "0 1px 2px rgba(26,23,20,0.04)",
+          }}
+        >
+          <h2
+            style={{
+              ...displayFont,
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "var(--landing-ink)",
+            }}
+          >
             {t.cheatSheet}
           </h2>
-          <p className="mt-2 text-sm text-[var(--mist)]">{t.cheatIntro}</p>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--landing-muted)" }}
+          >
+            {t.cheatIntro}
+          </p>
 
-          <h3 className="mt-6 text-sm uppercase tracking-[0.18em] text-[var(--champagne)]">
+          <h3
+            className="mt-6 text-sm uppercase tracking-[0.18em]"
+            style={{ color: "var(--landing-cedar)" }}
+          >
             {t.subdomainTitle}
           </h3>
-          <p className="mt-2 text-sm text-[var(--mist)]">{t.subdomainExample}</p>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--landing-muted)" }}
+          >
+            {t.subdomainExample}
+          </p>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="text-[var(--mist)]">
+              <thead style={{ color: "var(--landing-muted)" }}>
                 <tr>
                   <th className="py-2 pr-3 font-medium">Type</th>
                   <th className="py-2 pr-3 font-medium">Host</th>
@@ -82,7 +124,7 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t border-white/10">
+                <tr className="border-t" style={{ borderColor: "var(--landing-line)" }}>
                   <td className="py-2 pr-3">
                     <code>CNAME</code>
                   </td>
@@ -97,13 +139,21 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
             </table>
           </div>
 
-          <h3 className="mt-8 text-sm uppercase tracking-[0.18em] text-[var(--champagne)]">
+          <h3
+            className="mt-8 text-sm uppercase tracking-[0.18em]"
+            style={{ color: "var(--landing-cedar)" }}
+          >
             {t.apexTitle}
           </h3>
-          <p className="mt-2 text-sm text-[var(--mist)]">{t.apexExample}</p>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--landing-muted)" }}
+          >
+            {t.apexExample}
+          </p>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="text-[var(--mist)]">
+              <thead style={{ color: "var(--landing-muted)" }}>
                 <tr>
                   <th className="py-2 pr-3 font-medium">Type</th>
                   <th className="py-2 pr-3 font-medium">Host</th>
@@ -112,7 +162,11 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
               </thead>
               <tbody>
                 {OWNVITE_APEX_IPS.map((ip) => (
-                  <tr key={ip} className="border-t border-white/10">
+                  <tr
+                    key={ip}
+                    className="border-t"
+                    style={{ borderColor: "var(--landing-line)" }}
+                  >
                     <td className="py-2 pr-3">
                       <code>A</code>
                     </td>
@@ -124,7 +178,10 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t border-white/10">
+                <tr
+                  className="border-t"
+                  style={{ borderColor: "var(--landing-line)" }}
+                >
                   <td className="py-2 pr-3">
                     <code>CNAME</code>
                   </td>
@@ -141,10 +198,20 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
         </section>
 
         <section className="mt-14">
-          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]">
+          <h2
+            style={{
+              ...displayFont,
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "var(--landing-ink)",
+            }}
+          >
             {t.registrarTitle}
           </h2>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-[var(--mist)]">
+          <ul
+            className="mt-4 list-disc space-y-2 pl-5"
+            style={{ color: "var(--landing-muted)" }}
+          >
             {t.registrarTips.map((tip) => (
               <li key={tip}>{tip}</li>
             ))}
@@ -152,33 +219,62 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
         </section>
 
         <section className="mt-14">
-          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--champagne)]">
+          <h2
+            style={{
+              ...displayFont,
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "var(--landing-ink)",
+            }}
+          >
             {t.freeTitle}
           </h2>
-          <p className="mt-3 text-[var(--mist)]">{t.freeIntro}</p>
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-[var(--mist)]">
+          <p className="mt-3" style={{ color: "var(--landing-muted)" }}>
+            {t.freeIntro}
+          </p>
+          <ul
+            className="mt-3 list-disc space-y-2 pl-5"
+            style={{ color: "var(--landing-muted)" }}
+          >
             <li>
-              <code className="text-[var(--ivory)]">{t.freePath}</code>
+              <code style={{ color: "var(--landing-ink)" }}>{t.freePath}</code>
             </li>
             <li>
-              <code className="text-[var(--ivory)]">{t.freeSub}</code>
+              <code style={{ color: "var(--landing-ink)" }}>{t.freeSub}</code>
             </li>
           </ul>
         </section>
 
-        <section className="mt-14 rounded-2xl border border-[var(--champagne)]/30 bg-[var(--slate)]/40 p-6">
-          <h2 className="font-[family-name:var(--font-cormorant)] text-2xl">
+        <section
+          className="mt-14 rounded-md border p-6"
+          style={{
+            borderColor: "var(--landing-line)",
+            background:
+              "linear-gradient(180deg, rgba(107,83,56,0.05) 0%, var(--landing-surface) 50%)",
+          }}
+        >
+          <h2
+            style={{
+              ...displayFont,
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "var(--landing-ink)",
+            }}
+          >
             {t.tryTitle}
           </h2>
-          <p className="mt-2 text-[var(--mist)]">{t.tryBody}</p>
+          <p className="mt-2" style={{ color: "var(--landing-muted)" }}>
+            {t.tryBody}
+          </p>
           <Link
             href={localePath(locale, "/host/h-birthday-2026")}
-            className="mt-5 inline-block rounded-md bg-[var(--champagne)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)]"
+            className="mt-5 inline-block rounded-md px-4 py-2.5 text-sm font-semibold text-white"
+            style={{ background: "var(--landing-cedar)" }}
           >
             {t.tryCta}
           </Link>
         </section>
       </article>
-    </main>
+    </MarketingShell>
   );
 }

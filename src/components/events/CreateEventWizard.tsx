@@ -87,22 +87,22 @@ export default function CreateEventWizard({
 
   return (
     <form onSubmit={onSubmit} className="mx-auto max-w-5xl">
-      <div className="mb-8 flex gap-2 text-xs uppercase tracking-[0.2em] text-[var(--mist)]">
-        <span className={step === 1 ? "text-[var(--champagne)]" : ""}>
+      <div className="mb-8 flex gap-2 text-xs uppercase tracking-[0.2em] text-[var(--landing-muted)]">
+        <span className={step === 1 ? "text-[var(--landing-cedar)]" : ""}>
           1 · {t.stepTemplate}
         </span>
         <span>·</span>
-        <span className={step === 2 ? "text-[var(--champagne)]" : ""}>
+        <span className={step === 2 ? "text-[var(--landing-cedar)]" : ""}>
           2 · {t.stepDetails}
         </span>
       </div>
 
       {step === 1 ? (
         <div>
-          <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-tight">
+          <h1 className="font-[family-name:var(--font-fraunces)] text-4xl tracking-tight">
             {t.pickTemplate}
           </h1>
-          <p className="mt-2 max-w-2xl text-[var(--mist)]">{t.pickSupport}</p>
+          <p className="mt-2 max-w-2xl text-[var(--landing-muted)]">{t.pickSupport}</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {TEMPLATE_CATEGORIES.map((cat) => {
@@ -114,8 +114,8 @@ export default function CreateEventWizard({
                   onClick={() => setCategory(cat.id)}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium tracking-wide transition ${
                     active
-                      ? "bg-[var(--champagne)] text-[var(--ink)]"
-                      : "border border-white/15 text-[var(--mist)] hover:border-white/30 hover:text-[var(--ivory)]"
+                      ? "bg-[var(--landing-cedar)] text-white"
+                      : "border border-[var(--landing-line)] text-[var(--landing-muted)] hover:border-white/30 hover:text-[var(--landing-ink)]"
                   }`}
                 >
                   {locale === "es" ? cat.labelEs : cat.label}
@@ -134,7 +134,7 @@ export default function CreateEventWizard({
                   onClick={() => setTemplateId(tpl.id)}
                   className={`group overflow-hidden text-left transition ${
                     selected
-                      ? "ring-2 ring-[var(--champagne)]"
+                      ? "ring-2 ring-[var(--landing-cedar)]"
                       : "ring-1 ring-white/10 hover:ring-white/25"
                   }`}
                 >
@@ -153,7 +153,7 @@ export default function CreateEventWizard({
                     />
                     <div className="absolute bottom-2 left-2 right-2 flex flex-wrap gap-1">
                       {tpl.premium ? (
-                        <span className="rounded bg-[var(--champagne)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--ink)]">
+                        <span className="rounded bg-[var(--landing-cedar)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
                           Premium
                         </span>
                       ) : null}
@@ -225,95 +225,95 @@ export default function CreateEventWizard({
           </div>
 
           {visibleTemplates.length === 0 ? (
-            <p className="mt-8 text-[var(--mist)]">No templates in this category.</p>
+            <p className="mt-8 text-[var(--landing-muted)]">No templates in this category.</p>
           ) : null}
 
           <button
             type="button"
             onClick={() => setStep(2)}
             disabled={!templateId}
-            className="mt-8 rounded-md bg-[var(--champagne)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] disabled:opacity-50"
+            className="mt-8 rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
           >
             {t.continue}
           </button>
         </div>
       ) : (
         <div>
-          <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-tight">
+          <h1 className="font-[family-name:var(--font-fraunces)] text-4xl tracking-tight">
             {t.detailsTitle}
           </h1>
-          <p className="mt-2 text-[var(--mist)]">{t.detailsSupport}</p>
+          <p className="mt-2 text-[var(--landing-muted)]">{t.detailsSupport}</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <label className="block text-sm sm:col-span-2">
-              <span className="text-[var(--mist)]">{t.title}</span>
+              <span className="text-[var(--landing-muted)]">{t.title}</span>
               <input
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.host}</span>
+              <span className="text-[var(--landing-muted)]">{t.host}</span>
               <input
                 required
                 value={hostName}
                 onChange={(e) => setHostName(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.slug}</span>
+              <span className="text-[var(--landing-muted)]">{t.slug}</span>
               <input
                 value={slug}
                 placeholder={suggestedSlug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.date}</span>
+              <span className="text-[var(--landing-muted)]">{t.date}</span>
               <input
                 type="date"
                 required
                 value={dateISO}
                 onChange={(e) => setDateISO(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.time}</span>
+              <span className="text-[var(--landing-muted)]">{t.time}</span>
               <input
                 required
                 value={timeLabel}
                 onChange={(e) => setTimeLabel(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.venue}</span>
+              <span className="text-[var(--landing-muted)]">{t.venue}</span>
               <input
                 required
                 value={venue}
                 onChange={(e) => setVenue(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm">
-              <span className="text-[var(--mist)]">{t.address}</span>
+              <span className="text-[var(--landing-muted)]">{t.address}</span>
               <input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
             <label className="block text-sm sm:col-span-2">
-              <span className="text-[var(--mist)]">{t.about}</span>
+              <span className="text-[var(--landing-muted)]">{t.about}</span>
               <textarea
                 rows={3}
                 value={about}
                 onChange={(e) => setAbout(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 outline-none focus:border-[var(--champagne)]"
+                className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 outline-none focus:border-[var(--landing-cedar)]"
               />
             </label>
           </div>
@@ -326,14 +326,14 @@ export default function CreateEventWizard({
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="rounded-md border border-white/15 px-5 py-2.5 text-sm"
+              className="rounded-md border border-[var(--landing-line)] px-5 py-2.5 text-sm"
             >
               {t.back}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="rounded-md bg-[var(--champagne)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] disabled:opacity-60"
+              className="rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             >
               {loading ? t.creating : t.create}
             </button>

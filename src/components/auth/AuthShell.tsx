@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
 import BrandLogo from "@/components/BrandLogo";
+import {
+  displayFont,
+  paperGrainStyle,
+  paperThemeVars,
+} from "@/lib/marketing-theme";
 
 export default function AuthShell({
   title,
@@ -13,62 +18,46 @@ export default function AuthShell({
   footer?: ReactNode;
 }) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--ink)] text-[var(--ivory)]">
+    <main
+      className="auth-paper relative min-h-screen overflow-hidden"
+      style={paperThemeVars}
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
+        style={paperGrainStyle}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px]"
         style={{
           background:
-            "radial-gradient(ellipse 80% 55% at 85% 0%, rgba(255,200,87,0.16) 0%, transparent 50%), radial-gradient(ellipse 55% 40% at 8% 90%, rgba(224,122,95,0.14) 0%, transparent 45%), linear-gradient(180deg, #0f1a2e 0%, #121f38 50%, #0f1a2e 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-[8%] top-[16%] h-64 w-64 rounded-full blur-3xl"
-        style={{
-          background: "rgba(255,200,87,0.28)",
-          animation: "ownvite-glow-pulse 7s ease-in-out infinite",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-[12%] right-[4%] h-72 w-72 rounded-full blur-3xl"
-        style={{
-          background: "rgba(224,122,95,0.22)",
-          animation: "ownvite-glow-pulse 9s ease-in-out 1s infinite",
+            "radial-gradient(ellipse 70% 55% at 50% -10%, rgba(107,83,56,0.08), transparent 60%)",
         }}
       />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
-        <div
-          className="mb-10"
-          style={{ animation: "ownvite-fade-in 0.7s ease both" }}
-        >
-          <BrandLogo tone="champagne" height={32} />
+        <div className="mb-10">
+          <BrandLogo tone="ink" height={32} />
         </div>
         <h1
-          className="font-[family-name:var(--font-cormorant)] text-4xl leading-tight tracking-tight"
-          style={{ animation: "ownvite-fade-up 0.8s ease 0.06s both" }}
+          style={{
+            ...displayFont,
+            fontSize: "clamp(2rem, 5vw, 2.75rem)",
+            fontWeight: 600,
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            color: "var(--landing-ink)",
+          }}
         >
           {title}
         </h1>
-        <p
-          className="mt-3 text-[var(--mist)]"
-          style={{ animation: "ownvite-fade-up 0.8s ease 0.12s both" }}
-        >
+        <p className="mt-3" style={{ color: "var(--landing-muted)" }}>
           {subtitle}
         </p>
-        <div
-          className="mt-8"
-          style={{ animation: "ownvite-fade-up 0.85s ease 0.18s both" }}
-        >
-          {children}
-        </div>
+        <div className="mt-8">{children}</div>
         {footer ? (
-          <p
-            className="mt-8 text-sm text-[var(--mist)]"
-            style={{ animation: "ownvite-fade-up 0.8s ease 0.24s both" }}
-          >
+          <p className="mt-8 text-sm" style={{ color: "var(--landing-muted)" }}>
             {footer}
           </p>
         ) : null}

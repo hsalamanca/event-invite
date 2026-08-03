@@ -9,7 +9,7 @@ type LanguageSwitcherProps = {
   /** Kept for call-site compatibility; URLs no longer change with language. */
   path?: string;
   /** Stronger contrast for invite pages over photography. */
-  variant?: "default" | "invite" | "marketing";
+  variant?: "default" | "invite" | "marketing" | "paper";
 };
 
 const LOCALES: { code: Locale; label: string }[] = [
@@ -43,25 +43,32 @@ export default function LanguageSwitcher({
   }
 
   const shellClass =
-    variant === "marketing"
+    variant === "marketing" || variant === "paper"
       ? "inline-flex items-center gap-1 text-sm tracking-wide"
       : variant === "invite"
         ? "inline-flex items-center rounded-full border border-black/10 bg-white/95 p-1 shadow-md backdrop-blur-sm"
         : "inline-flex items-center rounded-full border border-white/25 bg-black/35 p-0.5 shadow-sm backdrop-blur-sm";
 
   const activeClass =
-    variant === "marketing"
-      ? "text-white underline decoration-white/80 underline-offset-[5px]"
-      : variant === "invite"
-        ? "bg-[var(--ink)] text-white shadow-sm"
-        : "bg-[var(--champagne)] text-[var(--ink)] shadow-sm";
+    variant === "paper"
+      ? "text-[var(--landing-ink,#1A1714)] underline decoration-[var(--landing-cedar,#6B5338)] underline-offset-[5px]"
+      : variant === "marketing"
+        ? "text-white underline decoration-white/80 underline-offset-[5px]"
+        : variant === "invite"
+          ? "bg-[var(--ink)] text-white shadow-sm"
+          : "bg-[var(--champagne)] text-[var(--ink)] shadow-sm";
 
   const idleClass =
-    variant === "marketing"
-      ? "text-white/55 hover:text-white/85"
-      : variant === "invite"
-        ? "text-black/55 hover:text-black/80"
-        : "text-white/70 hover:text-white";
+    variant === "paper"
+      ? "text-[var(--landing-muted,#5C564E)] hover:text-[var(--landing-ink,#1A1714)]"
+      : variant === "marketing"
+        ? "text-white/55 hover:text-white/85"
+        : variant === "invite"
+          ? "text-black/55 hover:text-black/80"
+          : "text-white/70 hover:text-white";
+
+  const dividerClass =
+    variant === "paper" ? "text-[var(--landing-line,#D9D0C4)]" : "text-white/35";
 
   return (
     <div
@@ -73,8 +80,8 @@ export default function LanguageSwitcher({
         const active = locale === code;
         return (
           <span key={code} className="inline-flex items-center">
-            {variant === "marketing" && i > 0 ? (
-              <span className="mx-1.5 text-white/35" aria-hidden>
+            {(variant === "marketing" || variant === "paper") && i > 0 ? (
+              <span className={`mx-1.5 ${dividerClass}`} aria-hidden>
                 /
               </span>
             ) : null}
@@ -85,7 +92,7 @@ export default function LanguageSwitcher({
               aria-pressed={active}
               aria-label={code === "en" ? "English" : "Español"}
               className={
-                variant === "marketing"
+                variant === "marketing" || variant === "paper"
                   ? `bg-transparent p-0 font-medium transition disabled:opacity-60 ${
                       active ? activeClass : idleClass
                     }`

@@ -59,7 +59,7 @@ export default function RegisterForm({
             callbackUrl="/events/new"
             label="Sign up with Google"
           />
-          <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--mist)]">
+          <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--landing-muted)]">
             or email
           </p>
         </>
@@ -67,29 +67,29 @@ export default function RegisterForm({
 
       <form onSubmit={onSubmit} className="space-y-4">
         <label className="block text-sm">
-          <span className="text-[var(--mist)]">Your name</span>
+          <span className="text-[var(--landing-muted)]">Your name</span>
           <input
             type="text"
             required
             autoComplete="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-[var(--ivory)] outline-none focus:border-[var(--champagne)]"
+            className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 text-[var(--landing-ink)] outline-none focus:border-[var(--landing-cedar)]"
           />
         </label>
         <label className="block text-sm">
-          <span className="text-[var(--mist)]">Email</span>
+          <span className="text-[var(--landing-muted)]">Email</span>
           <input
             type="email"
             required
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-[var(--ivory)] outline-none focus:border-[var(--champagne)]"
+            className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 text-[var(--landing-ink)] outline-none focus:border-[var(--landing-cedar)]"
           />
         </label>
         <label className="block text-sm">
-          <span className="text-[var(--mist)]">Password (8+ characters)</span>
+          <span className="text-[var(--landing-muted)]">Password (8+ characters)</span>
           <input
             type="password"
             required
@@ -97,7 +97,7 @@ export default function RegisterForm({
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1.5 w-full rounded-md border border-white/15 bg-white/5 px-3 py-2.5 text-[var(--ivory)] outline-none focus:border-[var(--champagne)]"
+            className="mt-1.5 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 text-[var(--landing-ink)] outline-none focus:border-[var(--landing-cedar)]"
           />
         </label>
         {error ? (
@@ -108,16 +108,16 @@ export default function RegisterForm({
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-[var(--champagne)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition hover:brightness-110 disabled:opacity-60"
+          className="w-full rounded-md bg-[var(--landing-cedar)] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-60"
         >
           {loading ? "Creating…" : "Create account"}
         </button>
-        <p className="text-center text-sm text-[var(--mist)]">
+        <p className="text-center text-sm text-[var(--landing-muted)]">
           We’ll email a verification link. You can start creating right away.
         </p>
-        <p className="text-center text-sm text-[var(--mist)]">
+        <p className="text-center text-sm text-[var(--landing-muted)]">
           Already have an account?{" "}
-          <Link href="/login" className="text-[var(--champagne)] underline">
+          <Link href="/login" className="text-[var(--landing-cedar)] underline">
             Sign in
           </Link>
         </p>
