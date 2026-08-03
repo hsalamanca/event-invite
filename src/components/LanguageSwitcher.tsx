@@ -9,7 +9,7 @@ type LanguageSwitcherProps = {
   /** Kept for call-site compatibility; URLs no longer change with language. */
   path?: string;
   /** Stronger contrast for invite pages over photography. */
-  variant?: "default" | "invite";
+  variant?: "default" | "invite" | "marketing";
 };
 
 const LOCALES: { code: Locale; label: string }[] = [
@@ -43,19 +43,25 @@ export default function LanguageSwitcher({
   }
 
   const shellClass =
-    variant === "invite"
-      ? "inline-flex items-center rounded-full border border-black/10 bg-white/95 p-1 shadow-md backdrop-blur-sm"
-      : "inline-flex items-center rounded-full border border-white/25 bg-black/35 p-0.5 shadow-sm backdrop-blur-sm";
+    variant === "marketing"
+      ? "inline-flex items-center gap-1 text-sm tracking-wide"
+      : variant === "invite"
+        ? "inline-flex items-center rounded-full border border-black/10 bg-white/95 p-1 shadow-md backdrop-blur-sm"
+        : "inline-flex items-center rounded-full border border-white/25 bg-black/35 p-0.5 shadow-sm backdrop-blur-sm";
 
   const activeClass =
-    variant === "invite"
-      ? "bg-[var(--ink)] text-white shadow-sm"
-      : "bg-[var(--champagne)] text-[var(--ink)] shadow-sm";
+    variant === "marketing"
+      ? "text-white underline decoration-white/80 underline-offset-[5px]"
+      : variant === "invite"
+        ? "bg-[var(--ink)] text-white shadow-sm"
+        : "bg-[var(--champagne)] text-[var(--ink)] shadow-sm";
 
   const idleClass =
-    variant === "invite"
-      ? "text-black/55 hover:text-black/80"
-      : "text-white/70 hover:text-white";
+    variant === "marketing"
+      ? "text-white/55 hover:text-white/85"
+      : variant === "invite"
+        ? "text-black/55 hover:text-black/80"
+        : "text-white/70 hover:text-white";
 
   return (
     <div
@@ -63,22 +69,34 @@ export default function LanguageSwitcher({
       role="group"
       aria-label={locale === "en" ? "Language" : "Idioma"}
     >
-      {LOCALES.map(({ code, label }) => {
+      {LOCALES.map(({ code, label }, i) => {
         const active = locale === code;
         return (
-          <button
-            key={code}
-            type="button"
-            onClick={() => void switchLocale(code)}
-            disabled={busy || pending}
-            aria-pressed={active}
-            aria-label={code === "en" ? "English" : "Español"}
-            className={`min-w-[2.75rem] rounded-full px-3 py-1.5 text-sm font-semibold tracking-wide transition disabled:opacity-60 ${
-              active ? activeClass : idleClass
-            }`}
-          >
-            {label}
-          </button>
+          <span key={code} className="inline-flex items-center">
+            {variant === "marketing" && i > 0 ? (
+              <span className="mx-1.5 text-white/35" aria-hidden>
+                /
+              </span>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => void switchLocale(code)}
+              disabled={busy || pending}
+              aria-pressed={active}
+              aria-label={code === "en" ? "English" : "Español"}
+              className={
+                variant === "marketing"
+                  ? `bg-transparent p-0 font-medium transition disabled:opacity-60 ${
+                      active ? activeClass : idleClass
+                    }`
+                  : `min-w-[2.75rem] rounded-full px-3 py-1.5 text-sm font-semibold tracking-wide transition disabled:opacity-60 ${
+                      active ? activeClass : idleClass
+                    }`
+              }
+            >
+              {label}
+            </button>
+          </span>
         );
       })}
     </div>
