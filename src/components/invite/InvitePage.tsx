@@ -6,6 +6,11 @@ import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import {
+  resolveLocalizedAbout,
+  resolveLocalizedFaqs,
+  resolveLocalizedSchedule,
+} from "@/lib/i18n/event-content";
+import {
   resolveInviteLayout,
   resolveLocalizedInviteCopy,
   resolveLocalizedRsvpFields,
@@ -273,10 +278,15 @@ export default function InvitePage({
   }
 
   const layout = resolveInviteLayout(event.templateId);
-  const { headline, tagline, about } = resolveLocalizedInviteCopy(
+  const { headline, tagline, about: aboutFallback } = resolveLocalizedInviteCopy(
     event,
     locale,
   );
+  const about = resolveLocalizedAbout(event.about, event.aboutEs, locale);
+  const schedule = resolveLocalizedSchedule(event.schedule, locale);
+  const faqs = resolveLocalizedFaqs(event.faqs, locale);
+  // Prefer bilingual aboutEs / maps; fall back to stock about resolver
+  const aboutHtml = about.trim() ? about : aboutFallback;
   const cssVars = {
     "--invite-bg": theme.colors.background,
     "--invite-surface": theme.colors.surface,
@@ -356,7 +366,7 @@ export default function InvitePage({
           <div
             className="invite-about-body"
             dangerouslySetInnerHTML={{
-              __html: sanitizeAboutHtml(about),
+              __html: sanitizeAboutHtml(aboutHtml),
             }}
           />
         </div>
@@ -400,7 +410,7 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      {(event.schedule?.length ||
+      {(schedule.length ||
         event.dressCode ||
         event.parking ||
         event.whatToBring ||
@@ -410,13 +420,13 @@ export default function InvitePage({
         event.contactPhone) && (
         <section id="info" className="invite-section">
           <h2 className="invite-section-title">{ui.guestInfo}</h2>
-          {event.schedule && event.schedule.length > 0 ? (
+          {schedule.length > 0 ? (
             <div className="invite-extra-block">
               <h3 className="invite-section-title invite-section-title--sm">
                 {ui.schedule}
               </h3>
               <ul className="invite-schedule">
-                {event.schedule.map((item) => (
+                {schedule.map((item) => (
                   <li key={item.id}>
                     <strong>{item.time}</strong>
                     <span>{item.title}</span>
@@ -474,11 +484,11 @@ export default function InvitePage({
         </section>
       )}
 
-      {event.faqs && event.faqs.length > 0 ? (
+      {faqs.length > 0 ? (
         <section id="faq" className="invite-section invite-section--surface">
           <h2 className="invite-section-title">{ui.faq}</h2>
           <dl className="invite-faq">
-            {event.faqs.map((f) => (
+            {faqs.map((f) => (
               <div key={f.id}>
                 <dt>{f.question}</dt>
                 <dd>{f.answer}</dd>
