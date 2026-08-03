@@ -7,6 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
+import { stripAboutHtml } from "@/lib/sanitize-about";
 import { resolveLocalizedInviteCopy } from "@/lib/templates";
 import { shouldShowOwnviteFooter } from "@/lib/tier";
 import { fetchEventWeather } from "@/lib/weather";
@@ -32,12 +33,13 @@ export async function generateMetadata({
   if (!event) return { title: "Invitation not found" };
   const locale = await getRequestLocale();
   const { headline, tagline } = resolveLocalizedInviteCopy(event, locale);
+  const plainTagline = stripAboutHtml(tagline);
   return {
     title: event.title,
-    description: tagline,
+    description: plainTagline,
     openGraph: {
       title: headline,
-      description: tagline,
+      description: plainTagline,
       images: [{ url: event.heroImage }],
     },
   };

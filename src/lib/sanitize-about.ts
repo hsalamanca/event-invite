@@ -1,5 +1,5 @@
 /**
- * Allow organizers to use a small set of HTML tags in the About section.
+ * Allow organizers to use a small set of HTML tags in About and tagline.
  * Allowed: h1–h6, b, strong, br, i, em, p
  * Everything else is escaped. Attributes are stripped.
  */

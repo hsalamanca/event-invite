@@ -1,5 +1,6 @@
 "use client";
 
+import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import type { EventRecord } from "@/lib/types";
 
 export default function PrintCard({
@@ -44,7 +45,12 @@ export default function PrintCard({
           >
             {event.headline || event.title}
           </h1>
-          <p className="mt-3 text-base text-black/70">{event.tagline}</p>
+          <div
+            className="mt-3 text-base text-black/70"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeAboutHtml(event.tagline),
+            }}
+          />
           <dl className="mt-6 space-y-2 text-sm">
             <div>
               <dt className="uppercase tracking-wider text-black/45">When</dt>

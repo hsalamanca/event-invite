@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import type { InviteLayout } from "@/lib/templates";
 
 type InviteCoverProps = {
@@ -541,7 +542,12 @@ export default function InviteCover({
               </div>
             ) : null}
 
-            <p className="invite-card-tagline">{tagline}</p>
+            <div
+              className="invite-card-tagline"
+              dangerouslySetInnerHTML={{
+                __html: sanitizeAboutHtml(tagline),
+              }}
+            />
 
             <div className="invite-card-actions">
               {isPast ? (

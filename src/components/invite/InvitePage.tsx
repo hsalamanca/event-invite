@@ -1166,6 +1166,36 @@ export default function InvitePage({
           color: var(--invite-muted);
         }
 
+        :global(.invite-card-tagline h1),
+        :global(.invite-card-tagline h2),
+        :global(.invite-card-tagline h3),
+        :global(.invite-card-tagline h4),
+        :global(.invite-card-tagline h5),
+        :global(.invite-card-tagline h6) {
+          margin: 0.55rem 0 0.2rem;
+          font-family: var(--font-display);
+          font-weight: 600;
+          color: var(--invite-text);
+          line-height: 1.25;
+        }
+
+        :global(.invite-card-tagline h1) { font-size: 1.35rem; }
+        :global(.invite-card-tagline h2) { font-size: 1.2rem; }
+        :global(.invite-card-tagline h3) { font-size: 1.1rem; }
+        :global(.invite-card-tagline h4),
+        :global(.invite-card-tagline h5),
+        :global(.invite-card-tagline h6) { font-size: 1.05rem; }
+
+        :global(.invite-card-tagline p) {
+          margin: 0.35rem 0 0;
+        }
+
+        :global(.invite-card-tagline b),
+        :global(.invite-card-tagline strong) {
+          font-weight: 700;
+          color: var(--invite-text);
+        }
+
         :global(.invite-card-actions) {
           display: flex;
           flex-wrap: wrap;

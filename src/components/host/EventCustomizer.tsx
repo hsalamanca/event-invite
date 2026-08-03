@@ -543,7 +543,9 @@ export default function EventCustomizer({
                 rows={2}
                 value={draft.tagline}
                 onChange={(e) => updateField("tagline", e.target.value)}
+                placeholder={t.aboutHtmlHint}
               />
+              <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
             <label>
               <span>{t.date}</span>
