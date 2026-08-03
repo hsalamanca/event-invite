@@ -18,19 +18,27 @@ export type Dictionary = {
   };
   landing: {
     brand: string;
-    headline1: string;
-    headline2: string;
+    headline: string;
     support: string;
-    ctaInvite: string;
-    ctaCustomize: string;
     ctaStart: string;
     ctaDemo: string;
-    previewEyebrow: string;
-    previewHeadline: string;
-    previewMeta: string;
-    features: { title: string; body: string }[];
-    compareTitle: string;
-    compareBody: string;
+    ctaHow: string;
+    domainTitle: string;
+    domainBody: string;
+    domainLink: string;
+    domainUrl: string;
+    craftTitle: string;
+    craftBody: string;
+    craftCaptions: string[];
+    guestTitle: string;
+    guestBody: string;
+    guestSteps: string[];
+    occasionsTitle: string;
+    occasionsBody: string;
+    occasions: string[];
+    closeTitle: string;
+    closeBody: string;
+    closeNote: string;
     seePricing: string;
     footer: string;
   };
@@ -307,35 +315,37 @@ const en: Dictionary = {
   },
   landing: {
     brand: "Ownvite",
-    headline1: "Invites that feel like the party.",
-    headline2: "On your domain.",
+    headline: "Your invitation. Your domain.",
     support:
-      "Beautiful celebration pages with meal RSVPs, check-in, and custom domains — joyful for guests, effortless for hosts.",
-    ctaInvite: "View the birthday invite",
-    ctaCustomize: "Customize it",
-    ctaStart: "Start celebrating free",
+      "Beautiful digital invites that live on the address you already own.",
+    ctaStart: "Create an invitation",
     ctaDemo: "Peek a live invite",
-    previewEyebrow: "H Salamanca · Birthday",
-    previewHeadline: "A Night to Celebrate",
-    previewMeta: "Saturday, September 12 · Open invite →",
-    features: [
-      {
-        title: "Your domain",
-        body: "Share party.yourname.com — guests land on your celebration, not a generic path under someone else's brand.",
-      },
-      {
-        title: "Everything for the night",
-        body: "Meals, schedule, FAQ, gallery, QR check-in, co-hosts, and reminders — one happy studio.",
-      },
-      {
-        title: "Clear pricing",
-        body: "Free to start. Pro Event $29 once for any guest list — no coins, no per-head surprises.",
-      },
+    ctaHow: "See how it works",
+    domainTitle: "Hosted on your name, not ours.",
+    domainBody:
+      "Guests open your domain. RSVPs, updates, and memories stay under your brand — not a disposable link.",
+    domainLink: "Connect your domain",
+    domainUrl: "mayraandhugo.com",
+    craftTitle: "Designed like print. Delivered like the web.",
+    craftBody:
+      "Typography, paper texture, and layout that feel intentional — then open instantly on any phone.",
+    craftCaptions: ["Dinner", "Garden", "Milestone"],
+    guestTitle: "Guests arrive, respond, and you’re done.",
+    guestBody:
+      "A clear page. A simple RSVP. Reminders when you want them — none of the noise you don’t.",
+    guestSteps: ["Open your link", "RSVP in seconds", "You’re notified"],
+    occasionsTitle: "For occasions that deserve your name on them.",
+    occasionsBody:
+      "Weddings, private dinners, product launches, and gatherings where a generic invite link feels wrong.",
+    occasions: [
+      "Weddings & celebrations",
+      "Intimate dinners & weekends",
+      "Brand & product moments",
     ],
-    compareTitle: "Ready when the champagne is",
-    compareBody:
-      "Skip the ads, the coin packs, and the guest-count math. Ownvite is a branded celebration site you can send with confidence.",
-    seePricing: "See pricing →",
+    closeTitle: "Put your next invitation on your domain.",
+    closeBody: "Start free. Connect a domain when you’re ready.",
+    closeNote: "No credit card to explore templates.",
+    seePricing: "See pricing",
     footer: "Ownvite · Your event, your domain, your design",
   },
   pricing: {
@@ -686,35 +696,41 @@ const es: Dictionary = {
   },
   landing: {
     brand: "Ownvite",
-    headline1: "Invitaciones que se sienten como la fiesta.",
-    headline2: "En tu dominio.",
+    headline: "Tu invitación. Tu dominio.",
     support:
-      "Páginas hermosas con menú RSVP, check-in y dominio propio — alegres para tus invitados, fáciles para ti.",
-    ctaInvite: "Ver la invitación de cumpleaños",
-    ctaCustomize: "Personalizarla",
-    ctaStart: "Empieza a celebrar gratis",
+      "Invitaciones digitales hermosas que viven en la dirección que ya es tuya.",
+    ctaStart: "Crear una invitación",
     ctaDemo: "Ver una invitación en vivo",
-    previewEyebrow: "H Salamanca · Cumpleaños",
-    previewHeadline: "Una noche para celebrar",
-    previewMeta: "Sábado 12 de septiembre · Abrir invitación →",
-    features: [
-      {
-        title: "Tu dominio",
-        body: "Comparte fiesta.tunombre.com — tus invitados llegan a tu celebración, no a una ruta genérica.",
-      },
-      {
-        title: "Todo para la noche",
-        body: "Menú, agenda, FAQ, galería, check-in QR, co-anfitriones y recordatorios — un estudio alegre.",
-      },
-      {
-        title: "Precio claro",
-        body: "Empieza gratis. Pro Evento $29 una vez para cualquier lista — sin monedas ni sorpresas por persona.",
-      },
+    ctaHow: "Cómo funciona",
+    domainTitle: "En tu nombre, no en el nuestro.",
+    domainBody:
+      "Tus invitados abren tu dominio. Confirmaciones, novedades y recuerdos quedan bajo tu marca — no en un enlace genérico.",
+    domainLink: "Conecta tu dominio",
+    domainUrl: "mayraandhugo.com",
+    craftTitle: "Diseñada como impresión. Entregada como la web.",
+    craftBody:
+      "Tipografía, textura de papel y composición intencional — y se abre al instante en cualquier teléfono.",
+    craftCaptions: ["Cena", "Jardín", "Hito"],
+    guestTitle: "Llegan, confirman, y listo.",
+    guestBody:
+      "Una página clara. Un RSVP simple. Recordatorios cuando quieras — sin el ruido que no necesitas.",
+    guestSteps: [
+      "Abren tu enlace",
+      "Confirman en segundos",
+      "Tú recibes aviso",
     ],
-    compareTitle: "Lista cuando el brindis lo esté",
-    compareBody:
-      "Olvida anuncios, monedas y cobros por cabeza. Ownvite es un sitio de celebración con tu marca, listo para compartir.",
-    seePricing: "Ver precios →",
+    occasionsTitle: "Para ocasiones que merecen tu nombre.",
+    occasionsBody:
+      "Bodas, cenas privadas, lanzamientos y encuentros donde un enlace genérico se siente mal.",
+    occasions: [
+      "Bodas y celebraciones",
+      "Cenas íntimas y fines de semana",
+      "Momentos de marca y producto",
+    ],
+    closeTitle: "Pon tu próxima invitación en tu dominio.",
+    closeBody: "Empieza gratis. Conecta un dominio cuando quieras.",
+    closeNote: "Sin tarjeta para explorar plantillas.",
+    seePricing: "Ver precios",
     footer: "Ownvite · Tu evento, tu dominio, tu diseño",
   },
   pricing: {

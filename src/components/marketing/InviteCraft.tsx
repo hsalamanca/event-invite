@@ -55,7 +55,7 @@ export default function InviteCraft({ captions, images }: InviteCraftProps) {
       }}
     >
       <div
-        className="relative w-full overflow-hidden rounded-sm bg-[var(--slate)]"
+        className="relative w-full overflow-hidden rounded-md bg-[var(--landing-paper-2,#EDE6DC)]"
         style={{ aspectRatio: "16 / 10" }}
       >
         {images.slice(0, count).map((image, i) => {
@@ -97,8 +97,8 @@ export default function InviteCraft({ captions, images }: InviteCraftProps) {
                 "bg-transparent p-0 text-left text-sm tracking-wide transition-colors",
                 "underline-offset-[6px]",
                 active
-                  ? "text-[var(--ivory)] underline decoration-[var(--champagne)] decoration-1"
-                  : "text-[var(--mist)] no-underline hover:text-[var(--ivory)]/80",
+                  ? "text-[var(--landing-fg,#1A1714)] underline decoration-[var(--landing-accent,#6B5338)] decoration-1"
+                  : "text-[var(--landing-soft,#5C564E)] no-underline hover:text-[var(--landing-fg,#1A1714)]/80",
               ].join(" ")}
             >
               {caption}
