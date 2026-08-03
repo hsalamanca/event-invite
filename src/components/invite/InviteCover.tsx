@@ -278,16 +278,16 @@ function Ornament({ layout }: { layout: InviteLayout }) {
         viewBox="0 0 160 28"
         aria-hidden
       >
-        <path d="M8 14h40M112 14h40" stroke="#D4AF37" strokeWidth="1.4" />
+        <path d="M8 14h40M112 14h40" stroke="#E8A317" strokeWidth="1.4" />
         <path
           d="M58 14h10M92 14h10"
-          stroke="#F3E3A1"
+          stroke="#FF7A59"
           strokeWidth="1.2"
-          opacity="0.8"
+          opacity="0.85"
         />
         <path
           d="M80 3l1.8 5.2H87l-4.2 3.1 1.6 5.1L80 13.4l-4.4 2.9 1.6-5.1-4.2-3.1h5.2z"
-          fill="#D4AF37"
+          fill="#E8A317"
         />
       </svg>
     );

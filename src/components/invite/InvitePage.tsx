@@ -2083,20 +2083,25 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="fifty"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
-              circle at 20% 18%,
-              color-mix(in srgb, #d4af37 34%, transparent),
+              circle at 18% 16%,
+              color-mix(in srgb, #ff7a59 38%, transparent),
               transparent 42%
             ),
             radial-gradient(
-              circle at 80% 22%,
-              color-mix(in srgb, #f3e3a1 18%, transparent),
+              circle at 82% 20%,
+              color-mix(in srgb, #e8a317 42%, transparent),
+              transparent 44%
+            ),
+            radial-gradient(
+              circle at 50% 8%,
+              color-mix(in srgb, #ffe08a 36%, transparent),
               transparent 40%
             ),
             linear-gradient(
               165deg,
-              color-mix(in srgb, #0a0a0a 40%, transparent) 0%,
-              color-mix(in srgb, #0a0a0a 90%, transparent) 68%,
-              #0a0a0a 100%
+              color-mix(in srgb, var(--invite-bg) 45%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 70%,
+              var(--invite-bg) 100%
             );
         }
 
@@ -2105,32 +2110,38 @@ export default function InvitePage({
           position: absolute;
           inset: 0;
           z-index: 0;
-          opacity: 0.55;
+          opacity: 0.7;
           background-image:
-            radial-gradient(circle at 14% 24%, #d4af37 0 1.5px, transparent 2.5px),
-            radial-gradient(circle at 72% 18%, #f3e3a1 0 1.2px, transparent 2.2px),
-            radial-gradient(circle at 38% 70%, #d4af37 0 1.3px, transparent 2.3px),
-            radial-gradient(circle at 86% 62%, #f3e3a1 0 1.1px, transparent 2.1px),
-            radial-gradient(circle at 52% 40%, #d4af37 0 1px, transparent 2px);
+            radial-gradient(circle at 14% 24%, #e8a317 0 2.5px, transparent 3.5px),
+            radial-gradient(circle at 72% 18%, #ff7a59 0 2px, transparent 3px),
+            radial-gradient(circle at 38% 70%, #ffb4a2 0 2.2px, transparent 3.2px),
+            radial-gradient(circle at 86% 62%, #ffe08a 0 2px, transparent 3px),
+            radial-gradient(circle at 52% 40%, #e8a317 0 1.6px, transparent 2.6px),
+            radial-gradient(circle at 24% 82%, #ff7a59 0 1.8px, transparent 2.8px);
           animation: fiftyTwinkle 5.5s ease-in-out infinite alternate;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card) {
           position: relative;
           overflow: hidden;
-          border: 1px solid color-mix(in srgb, #d4af37 55%, transparent);
-          border-radius: 0.85rem;
+          border: 2px solid color-mix(in srgb, #e8a317 55%, transparent);
+          border-radius: 1.35rem;
           background:
-            linear-gradient(
-              165deg,
-              color-mix(in srgb, #d4af37 10%, #1a1a1a) 0%,
-              #121212 42%,
-              #0e0e0e 100%
-            );
+            radial-gradient(
+              circle at 12% 10%,
+              color-mix(in srgb, #ffe08a 35%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 90% 8%,
+              color-mix(in srgb, #ff7a59 18%, transparent),
+              transparent 40%
+            ),
+            var(--invite-surface);
           color: var(--invite-text);
           box-shadow:
-            0 0 0 1px color-mix(in srgb, #f3e3a1 12%, transparent) inset,
-            0 28px 60px color-mix(in srgb, #000 55%, transparent);
+            0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+            0 22px 50px color-mix(in srgb, #3a2a14 12%, transparent);
         }
 
         :global(.invite-cover[data-layout="fifty"] .fifty-corner) {
@@ -2138,7 +2149,7 @@ export default function InvitePage({
           z-index: 2;
           width: 1.85rem;
           height: 1.85rem;
-          border-color: #d4af37;
+          border-color: #e8a317;
           border-style: solid;
           pointer-events: none;
         }
@@ -2146,25 +2157,27 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="fifty"] .fifty-corner--tl) {
           top: 0.65rem;
           left: 0.65rem;
-          border-width: 2px 0 0 2px;
+          border-width: 2.5px 0 0 2.5px;
         }
 
         :global(.invite-cover[data-layout="fifty"] .fifty-corner--tr) {
           top: 0.65rem;
           right: 0.65rem;
-          border-width: 2px 2px 0 0;
+          border-width: 2.5px 2.5px 0 0;
+          border-color: #ff7a59;
         }
 
         :global(.invite-cover[data-layout="fifty"] .fifty-corner--bl) {
           bottom: 0.65rem;
           left: 0.65rem;
-          border-width: 0 0 2px 2px;
+          border-width: 0 0 2.5px 2.5px;
+          border-color: #ff7a59;
         }
 
         :global(.invite-cover[data-layout="fifty"] .fifty-corner--br) {
           bottom: 0.65rem;
           right: 0.65rem;
-          border-width: 0 2px 2px 0;
+          border-width: 0 2.5px 2.5px 0;
         }
 
         :global(.invite-cover[data-layout="fifty"] .fifty-badge) {
@@ -2175,20 +2188,20 @@ export default function InvitePage({
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-width: 3.4rem;
-          height: 3.4rem;
+          min-width: 3.5rem;
+          height: 3.5rem;
           padding: 0 0.45rem;
           border-radius: 999px;
-          background: linear-gradient(145deg, #f3e3a1, #d4af37 45%, #a8841f);
-          color: #141414;
+          background: linear-gradient(145deg, #ffe08a, #e8a317 50%, #ff7a59);
+          color: #3a2a14;
           font-family: var(--font-display);
           font-weight: 700;
           font-size: 1.35rem;
           letter-spacing: -0.02em;
-          border: 1px solid #f3e3a1;
+          border: 2px solid #fff;
           box-shadow:
-            0 0 0 3px color-mix(in srgb, #d4af37 25%, transparent),
-            0 10px 22px color-mix(in srgb, #000 45%, transparent);
+            0 0 0 3px color-mix(in srgb, #e8a317 35%, transparent),
+            0 10px 22px color-mix(in srgb, #e8a317 28%, transparent);
           animation: fiftyGlow 3.2s ease-in-out infinite alternate;
         }
 
@@ -2196,11 +2209,11 @@ export default function InvitePage({
           margin: 1.6rem auto 0;
           width: min(78%, 18rem);
           aspect-ratio: 4 / 3;
-          border-radius: 0.35rem;
-          border: 1.5px solid #d4af37;
+          border-radius: 1.1rem;
+          border: 3px solid #e8a317;
           box-shadow:
-            0 0 0 4px color-mix(in srgb, #d4af37 18%, transparent),
-            0 16px 36px color-mix(in srgb, #000 45%, transparent);
+            0 0 0 5px color-mix(in srgb, #ff7a59 22%, white),
+            0 14px 28px color-mix(in srgb, #3a2a14 12%, transparent);
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-body) {
@@ -2210,26 +2223,26 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="fifty"] .invite-ornament--fifty) {
           width: 10rem;
           margin-bottom: 0.9rem;
-          color: #d4af37;
+          color: #e8a317;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-host) {
           font-family: var(--font-display);
           font-weight: 600;
-          font-size: 0.92rem;
-          letter-spacing: 0.22em;
+          font-size: 0.95rem;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #d4af37;
+          color: #e8a317;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-invite-line) {
           font-family: var(--font-great-vibes), cursive;
           font-style: normal;
           font-weight: 400;
-          font-size: 1.45rem;
+          font-size: 1.5rem;
           letter-spacing: 0.01em;
           text-transform: none;
-          color: #f3e3a1;
+          color: #ff7a59;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-headline) {
@@ -2238,7 +2251,7 @@ export default function InvitePage({
           font-size: clamp(2.3rem, 8vw, 3.4rem);
           line-height: 1.05;
           letter-spacing: -0.02em;
-          background: linear-gradient(105deg, #f3e3a1 0%, #d4af37 48%, #f7f1e1 100%);
+          background: linear-gradient(105deg, #e8a317 0%, #ff7a59 55%, #f0b429 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -2247,16 +2260,21 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="fifty"] .invite-card-when) {
           margin-top: 1rem;
           padding: 1rem 1.15rem;
-          border-radius: 0.5rem;
-          background: color-mix(in srgb, #d4af37 8%, #1a1a1a);
-          border: 1px solid color-mix(in srgb, #d4af37 40%, transparent);
+          border-radius: 1rem;
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, #ffe08a 45%, white),
+              color-mix(in srgb, #ffb4a2 28%, white)
+            );
+          border: 1.5px dashed color-mix(in srgb, #e8a317 55%, transparent);
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-date) {
           font-family: var(--font-display);
           font-weight: 600;
           font-size: 1.2rem;
-          color: #f7f1e1;
+          color: var(--invite-text);
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-card-time),
@@ -2268,46 +2286,46 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="fifty"] .btn-primary) {
           border-radius: 999px;
-          background: linear-gradient(120deg, #f3e3a1, #d4af37 55%, #a8841f);
-          color: #141414;
+          background: linear-gradient(120deg, #e8a317, #ff7a59);
+          color: #fffef9;
           font-weight: 700;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          font-size: 0.85rem;
-          box-shadow: 0 10px 24px color-mix(in srgb, #d4af37 28%, transparent);
+          letter-spacing: 0.04em;
+          box-shadow: 0 10px 24px color-mix(in srgb, #ff7a59 28%, transparent);
         }
 
         :global(.invite-cover[data-layout="fifty"] .btn-ghost) {
           border-radius: 999px;
-          border: 1.5px solid color-mix(in srgb, #d4af37 55%, transparent);
-          background: transparent;
-          color: #f3e3a1;
+          border: 2px solid color-mix(in srgb, #e8a317 55%, transparent);
+          background: white;
+          color: #c4891a;
           font-weight: 600;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-text-link) {
-          color: #d4af37;
+          color: #c4891a;
         }
 
         @keyframes fiftyTwinkle {
           from {
-            opacity: 0.35;
+            opacity: 0.45;
           }
           to {
-            opacity: 0.7;
+            opacity: 0.85;
           }
         }
 
         @keyframes fiftyGlow {
           from {
+            transform: scale(1);
             box-shadow:
-              0 0 0 3px color-mix(in srgb, #d4af37 20%, transparent),
-              0 10px 22px color-mix(in srgb, #000 45%, transparent);
+              0 0 0 3px color-mix(in srgb, #e8a317 28%, transparent),
+              0 10px 22px color-mix(in srgb, #e8a317 22%, transparent);
           }
           to {
+            transform: scale(1.05);
             box-shadow:
-              0 0 0 5px color-mix(in srgb, #d4af37 35%, transparent),
-              0 12px 28px color-mix(in srgb, #d4af37 25%, transparent);
+              0 0 0 5px color-mix(in srgb, #ff7a59 30%, transparent),
+              0 12px 28px color-mix(in srgb, #ff7a59 22%, transparent);
           }
         }
 

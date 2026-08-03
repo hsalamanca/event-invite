@@ -432,16 +432,27 @@ export default function EventCustomizer({
                   const id = e.target.value;
                   if (!id) return;
                   const tpl = getTemplate(id);
-                  setDraft((prev) => ({
-                    ...prev,
-                    templateId: tpl.id,
-                    headline:
-                      locale === "es" ? tpl.headlineEs : tpl.headline,
-                    tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,
-                    heroImage: tpl.heroImage,
-                    colors: { ...tpl.theme.colors },
-                    fonts: { ...tpl.theme.fonts },
-                  }));
+                  const stockHeroes = new Set(
+                    TEMPLATES.map((t) => t.heroImage),
+                  );
+                  setDraft((prev) => {
+                    const keepCustomHero =
+                      Boolean(prev.heroImage) &&
+                      !stockHeroes.has(prev.heroImage);
+                    return {
+                      ...prev,
+                      templateId: tpl.id,
+                      headline:
+                        locale === "es" ? tpl.headlineEs : tpl.headline,
+                      tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,
+                      // Keep uploaded/custom photos when switching templates
+                      heroImage: keepCustomHero
+                        ? prev.heroImage
+                        : tpl.heroImage,
+                      colors: { ...tpl.theme.colors },
+                      fonts: { ...tpl.theme.fonts },
+                    };
+                  });
                   setSaveMessage(null);
                   e.target.value = "";
                 }}

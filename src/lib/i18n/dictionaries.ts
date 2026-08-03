@@ -436,7 +436,8 @@ const en: Dictionary = {
     registryUrl: "Gift registry / wishlist URL",
     published: "Published (visible to guests)",
     applyTemplate: "Apply template look",
-    applyTemplateHint: "Updates colors, fonts, hero, and headlines from a template.",
+    applyTemplateHint:
+      "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
   },
   dashboard: {
     eyebrow: "Your events",
@@ -772,7 +773,7 @@ const es: Dictionary = {
     published: "Publicado (visible para invitados)",
     applyTemplate: "Aplicar look de plantilla",
     applyTemplateHint:
-      "Actualiza colores, fuentes, imagen y titulares desde una plantilla.",
+      "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",
   },
   dashboard: {
     eyebrow: "Tus eventos",

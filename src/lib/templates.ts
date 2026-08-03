@@ -271,15 +271,15 @@ const quinceAzul: Theme = {
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
 
-/** Canva Black & Gold 50th — glamorous milestone celebration */
+/** Canva-inspired 50th — sunny champagne & coral (joyful milestone) */
 const goldenFifty: Theme = {
   colors: {
-    background: "#0A0A0A",
-    surface: "#141414",
-    accentPrimary: "#D4AF37",
-    accentSecondary: "#F3E3A1",
-    textPrimary: "#F7F1E1",
-    textMuted: "#A89B7E",
+    background: "#FFF6E8",
+    surface: "#FFFEF9",
+    accentPrimary: "#E8A317",
+    accentSecondary: "#FF7A59",
+    textPrimary: "#3A2A14",
+    textMuted: "#8A7355",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
@@ -890,23 +890,23 @@ export const TEMPLATES: EventTemplate[] = [
     name: "Golden fifty",
     nameEs: "Cincuenta dorado",
     description:
-      "Black & gold glam — 50th birthdays, milestone dinners, and black-tie celebrations.",
+      "Sunny champagne & coral — joyful 50th birthdays, milestone dinners, and warm celebrations.",
     descriptionEs:
-      "Glamour negro y dorado — cumpleaños 50, cenas especiales y celebraciones formales.",
-    inspiredBy: "Canva Black & Gold Elegant 50th Birthday Invitation",
-    inspiredByEs: "Canva invitación elegante 50 años negro y dorado",
+      "Champán soleado y coral — cumpleaños 50 alegres, cenas especiales y celebraciones cálidas.",
+    inspiredBy: "Canva 50th birthday invitations (bright champagne celebration)",
+    inspiredByEs: "Canva invitaciones 50 años (celebración champán luminosa)",
     categories: ["birthday", "party", "dinner"],
     layout: "fifty",
     premium: true,
     theme: goldenFifty,
     heroImage:
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1920&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1464349153735-7db819ff493e?w=1920&q=80&auto=format&fit=crop",
     headline: "Fifty & Fabulous",
     headlineEs: "Cincuenta y fabuloso",
     tagline:
-      "Half a century of stories — join us for champagne, dinner, and a night to toast.",
+      "Half a century of stories — join us for champagne, cake, and a night to toast!",
     taglineEs:
-      "Medio siglo de historias — acompáñanos a brindar con champán y una gran cena.",
+      "Medio siglo de historias — ¡acompáñanos a brindar con champán y pastel!",
   },
 ];
 
