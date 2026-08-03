@@ -167,6 +167,16 @@ export type GuestMessage = {
   createdAt: string;
 };
 
+export type WaitlistEntry = {
+  id: string;
+  eventId: string;
+  name: string;
+  email: string;
+  guestCount: number;
+  note: string;
+  createdAt: string;
+};
+
 export type ManualGuest = {
   id: string;
   eventId: string;

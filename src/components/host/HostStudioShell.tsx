@@ -5,9 +5,11 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { CheckInPanel } from "@/components/host/CheckInPanel";
 import EventCustomizer from "@/components/host/EventCustomizer";
 import GuestManager from "@/components/host/GuestManager";
+import { GuestbookModeration } from "@/components/host/GuestbookModeration";
 import HostActions from "@/components/host/HostActions";
 import { MealDashboard } from "@/components/host/MealDashboard";
 import { OpenTracking } from "@/components/host/OpenTracking";
+import { WaitlistPanel } from "@/components/host/WaitlistPanel";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -79,7 +81,10 @@ export default function HostStudioShell({
         <MealDashboard
           rsvps={rsvps}
           questions={event.rsvpFields.customQuestions ?? []}
+          dietaryEnabled={event.rsvpFields.dietary?.enabled !== false}
         />
+        <WaitlistPanel slug={event.slug} capacity={event.capacity} />
+        <GuestbookModeration slug={event.slug} />
         <OpenTracking slug={event.slug} />
         <GuestManager
           slug={event.slug}

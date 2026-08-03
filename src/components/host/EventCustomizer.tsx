@@ -61,6 +61,12 @@ type Draft = {
   fonts: Theme["fonts"];
   rsvpPrompt: string;
   rsvpDeadline: string;
+  plusOnesEnabled: boolean;
+  plusOnesLabel: string;
+  plusOnesMax: string;
+  dietaryEnabled: boolean;
+  dietaryLabel: string;
+  dietaryPlaceholder: string;
   customQuestions: CustomQuestion[];
   schedule: ScheduleItem[];
   faqs: FaqItem[];
@@ -141,6 +147,14 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     fonts: { ...event.theme.fonts },
     rsvpPrompt: event.rsvpFields.prompt ?? "",
     rsvpDeadline: event.rsvpFields.deadline ?? "",
+    plusOnesEnabled: event.rsvpFields.plusOnes?.enabled ?? true,
+    plusOnesLabel: event.rsvpFields.plusOnes?.label ?? "Guest count",
+    plusOnesMax: String(event.rsvpFields.plusOnes?.max ?? 2),
+    dietaryEnabled: event.rsvpFields.dietary?.enabled ?? true,
+    dietaryLabel:
+      event.rsvpFields.dietary?.label ?? "Dietary restrictions or allergies",
+    dietaryPlaceholder:
+      event.rsvpFields.dietary?.placeholder ?? "Vegetarian, gluten-free, etc.",
     customQuestions: [...(event.rsvpFields.customQuestions ?? [])],
     schedule,
     faqs,
@@ -284,6 +298,17 @@ function toPreviewEvent(
       ...base.rsvpFields,
       prompt: draft.rsvpPrompt,
       deadline: draft.rsvpDeadline,
+      plusOnes: {
+        enabled: draft.plusOnesEnabled,
+        label: draft.plusOnesLabel.trim() || "Guest count",
+        max: Math.max(0, Number(draft.plusOnesMax) || 0),
+      },
+      dietary: {
+        enabled: draft.dietaryEnabled,
+        label: draft.dietaryLabel.trim() || "Dietary restrictions",
+        placeholder:
+          draft.dietaryPlaceholder.trim() || "Vegetarian, gluten-free, etc.",
+      },
       customQuestions: draft.customQuestions,
     },
     schedule: localized.schedule,
@@ -384,6 +409,17 @@ export default function EventCustomizer({
         ...event.rsvpFields,
         prompt: draft.rsvpPrompt,
         deadline: draft.rsvpDeadline,
+        plusOnes: {
+          enabled: draft.plusOnesEnabled,
+          label: draft.plusOnesLabel.trim() || "Guest count",
+          max: Math.max(0, Number(draft.plusOnesMax) || 0),
+        },
+        dietary: {
+          enabled: draft.dietaryEnabled,
+          label: draft.dietaryLabel.trim() || "Dietary restrictions",
+          placeholder:
+            draft.dietaryPlaceholder.trim() || "Vegetarian, gluten-free, etc.",
+        },
         customQuestions: draft.customQuestions,
       },
       schedule: localized.schedule,
@@ -735,9 +771,77 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("rsvpDeadline", e.target.value)}
               />
             </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.plusOnesEnabled}
+                onChange={(e) =>
+                  updateField("plusOnesEnabled", e.target.checked)
+                }
+              />
+              <span>Allow plus-ones / guest count</span>
+            </label>
+            {draft.plusOnesEnabled ? (
+              <div className="nested-block">
+                <label>
+                  <span>Guest-count label</span>
+                  <input
+                    value={draft.plusOnesLabel}
+                    onChange={(e) =>
+                      updateField("plusOnesLabel", e.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Max guests per RSVP (including the guest)</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={20}
+                    value={draft.plusOnesMax}
+                    onChange={(e) =>
+                      updateField("plusOnesMax", e.target.value)
+                    }
+                  />
+                </label>
+              </div>
+            ) : null}
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.dietaryEnabled}
+                onChange={(e) =>
+                  updateField("dietaryEnabled", e.target.checked)
+                }
+              />
+              <span>Ask about dietary needs</span>
+            </label>
+            {draft.dietaryEnabled ? (
+              <div className="nested-block">
+                <label>
+                  <span>Dietary field label</span>
+                  <input
+                    value={draft.dietaryLabel}
+                    onChange={(e) =>
+                      updateField("dietaryLabel", e.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Placeholder</span>
+                  <input
+                    value={draft.dietaryPlaceholder}
+                    onChange={(e) =>
+                      updateField("dietaryPlaceholder", e.target.value)
+                    }
+                  />
+                </label>
+              </div>
+            ) : null}
             <p className="field-hint">
               Meal choice and custom questions appear on the invite form and in
-              the meal dashboard below.
+              the meal dashboard below. When capacity is full, guests can join
+              a waitlist.
             </p>
             {draft.customQuestions.map((q, idx) => (
               <div key={q.id} className="nested-block">

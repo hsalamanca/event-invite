@@ -274,6 +274,11 @@ export type Dictionary = {
     seatsOpen: string;
     eventFull: string;
     rsvpClosed: string;
+    waitlistPrompt: string;
+    waitlistSubmit: string;
+    waitlistThanks: string;
+    waitlistGuests: string;
+    waitlistError: string;
     updateRsvp: string;
     selectOption: string;
     leaveNote: string;
@@ -647,6 +652,12 @@ const en: Dictionary = {
     eventFull:
       "This event is full. Contact the host if you need to change an existing RSVP.",
     rsvpClosed: "This RSVP form is closed.",
+    waitlistPrompt:
+      "Join the waitlist and we’ll reach out if a seat opens.",
+    waitlistSubmit: "Join waitlist",
+    waitlistThanks: "You’re on the waitlist — we’ll be in touch if a seat opens.",
+    waitlistGuests: "Party size",
+    waitlistError: "Could not join the waitlist",
     updateRsvp: "Update or cancel your RSVP",
     selectOption: "Select…",
     leaveNote: "Leave a note",
@@ -1023,6 +1034,13 @@ const es: Dictionary = {
     eventFull:
       "Este evento está lleno. Contacta al anfitrión si necesitas cambiar tu RSVP.",
     rsvpClosed: "Este formulario de confirmación está cerrado.",
+    waitlistPrompt:
+      "Únete a la lista de espera y te avisaremos si se libera un lugar.",
+    waitlistSubmit: "Unirme a la lista de espera",
+    waitlistThanks:
+      "Estás en la lista de espera — te contactaremos si se libera un lugar.",
+    waitlistGuests: "Tamaño del grupo",
+    waitlistError: "No se pudo unir a la lista de espera",
     updateRsvp: "Actualizar o cancelar tu confirmación",
     selectOption: "Selecciona…",
     leaveNote: "Dejar una nota",

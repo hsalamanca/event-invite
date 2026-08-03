@@ -148,6 +148,22 @@ export default function InvitePage({
   const [messages, setMessages] = useState<
     { id: string; name: string; body: string; createdAt: string }[]
   >([]);
+  const [waitlistName, setWaitlistName] = useState("");
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistGuests, setWaitlistGuests] = useState(1);
+  const [waitlistNote, setWaitlistNote] = useState("");
+  const [waitlistBusy, setWaitlistBusy] = useState(false);
+  const [waitlistDone, setWaitlistDone] = useState(false);
+  const [waitlistError, setWaitlistError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const e = new URLSearchParams(window.location.search).get("e")?.trim();
+    if (e) {
+      setEmail(e);
+      setWaitlistEmail(e);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,10 +188,14 @@ export default function InvitePage({
 
   useEffect(() => {
     if (!trackViews) return;
+    const trackedEmail =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("e")?.trim().toLowerCase()
+        : null;
     void fetch(`/api/events/${encodeURIComponent(event.slug)}/views`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ email: trackedEmail || undefined }),
     }).catch(() => undefined);
   }, [event.slug, trackViews]);
 
@@ -187,6 +207,38 @@ export default function InvitePage({
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* ignore */
+    }
+  }
+
+  async function submitWaitlist(e: FormEvent) {
+    e.preventDefault();
+    setWaitlistBusy(true);
+    setWaitlistError(null);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: event.slug,
+          name: waitlistName.trim(),
+          email: waitlistEmail.trim(),
+          guestCount: waitlistGuests,
+          note: waitlistNote.trim(),
+        }),
+      });
+      const data = (await res.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      if (!res.ok) {
+        throw new Error(data?.error ?? ui.waitlistError);
+      }
+      setWaitlistDone(true);
+    } catch (err) {
+      setWaitlistError(
+        err instanceof Error ? err.message : ui.waitlistError,
+      );
+    } finally {
+      setWaitlistBusy(false);
     }
   }
 
@@ -582,10 +634,82 @@ export default function InvitePage({
               </p>
             ) : null}
           </div>
-        ) : deadlinePassed || atCapacity ? (
-          <p className="invite-prompt">
-            {atCapacity ? ui.eventFull : ui.rsvpClosed}
-          </p>
+        ) : deadlinePassed ? (
+          <p className="invite-prompt">{ui.rsvpClosed}</p>
+        ) : atCapacity ? (
+          <div className="rsvp-waitlist">
+            <p className="invite-prompt">{ui.eventFull}</p>
+            <p className="invite-prompt">{ui.waitlistPrompt}</p>
+            {waitlistDone ? (
+              <div className="rsvp-success" role="status">
+                <span className="rsvp-check" aria-hidden>
+                  ✓
+                </span>
+                <p className="rsvp-success-text">{ui.waitlistThanks}</p>
+              </div>
+            ) : (
+              <form
+                className="rsvp-form"
+                onSubmit={submitWaitlist}
+                noValidate
+              >
+                <label className="rsvp-field">
+                  <span>{ui.name}</span>
+                  <input
+                    type="text"
+                    required
+                    autoComplete="name"
+                    value={waitlistName}
+                    onChange={(e) => setWaitlistName(e.target.value)}
+                  />
+                </label>
+                <label className="rsvp-field">
+                  <span>{ui.email}</span>
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                  />
+                </label>
+                <label className="rsvp-field">
+                  <span>{ui.waitlistGuests}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={20}
+                    value={waitlistGuests}
+                    onChange={(e) =>
+                      setWaitlistGuests(
+                        Math.max(1, Number(e.target.value) || 1),
+                      )
+                    }
+                  />
+                </label>
+                <label className="rsvp-field">
+                  <span>{ui.note}</span>
+                  <textarea
+                    rows={2}
+                    value={waitlistNote}
+                    onChange={(e) => setWaitlistNote(e.target.value)}
+                  />
+                </label>
+                {waitlistError ? (
+                  <p className="rsvp-error" role="alert">
+                    {waitlistError}
+                  </p>
+                ) : null}
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={waitlistBusy}
+                >
+                  {waitlistBusy ? ui.submitting : ui.waitlistSubmit}
+                </button>
+              </form>
+            )}
+          </div>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
             <label className="rsvp-field">

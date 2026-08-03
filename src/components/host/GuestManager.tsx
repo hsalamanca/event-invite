@@ -427,7 +427,24 @@ export default function GuestManager({
                   </select>
                 </td>
                 <td className="py-2.5 pr-3">1</td>
-                <td className="py-2.5 text-[var(--mist)]">{t.manualTag}</td>
+                <td className="py-2.5 text-[var(--mist)]">
+                  <button
+                    type="button"
+                    className="text-[var(--champagne)] underline-offset-2 hover:underline"
+                    onClick={() => {
+                      const url = `${window.location.origin}/e/${slug}?e=${encodeURIComponent(g.email)}`;
+                      void navigator.clipboard.writeText(url).then(
+                        () => {
+                          setInfo(`Copied personal link for ${g.email}`);
+                          setTimeout(() => setInfo(null), 2500);
+                        },
+                        () => setError("Could not copy link"),
+                      );
+                    }}
+                  >
+                    Copy personal link
+                  </button>
+                </td>
               </tr>
             ))}
             {rsvps.length === 0 && guests.length === 0 ? (

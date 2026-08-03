@@ -36,6 +36,30 @@ export function mealCountsFromRsvps(
     .sort((a, b) => b.count - a.count);
 }
 
+export function dietaryCountsFromRsvps(
+  rsvps: RsvpSubmission[],
+): MealCount[] {
+  const tallies = new Map<string, number>();
+  for (const r of rsvps) {
+    if (!r.attendance.toLowerCase().includes("attend")) continue;
+    const raw = r.dietary?.trim();
+    if (!raw) continue;
+    // Split common separators so "vegetarian, nut allergy" tallies separately
+    const parts = raw
+      .split(/[,;/|]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const values = parts.length ? parts : [raw];
+    for (const v of values) {
+      const key = v.charAt(0).toUpperCase() + v.slice(1);
+      tallies.set(key, (tallies.get(key) ?? 0) + 1);
+    }
+  }
+  return [...tallies.entries()]
+    .map(([option, count]) => ({ option, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export function questionAnswerCounts(
   rsvps: RsvpSubmission[],
   question: CustomQuestion,
