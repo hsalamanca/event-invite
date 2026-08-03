@@ -6,12 +6,12 @@ import {
 } from "@/lib/vercel-domains";
 
 /**
- * Register {slug}.ownvite.app + {slug}.ownvite.com on the Vercel project so
- * Let's Encrypt can issue per-host certs via HTTP-01.
+ * Register {slug}.ownvite.app + {slug}.ownvite.com on the Vercel project.
  *
- * Needed because true wildcard SSL (*.ownvite.com) requires Vercel nameservers
- * (DNS-01). While DNS stays at the registrar with only a * CNAME, each slug
- * must be added individually or browsers show "Not secure".
+ * Platform apex domains already use Vercel nameservers with wildcard TLS
+ * (*.ownvite.com / *.ownvite.app). Per-slug registration is kept so each
+ * host appears on the project domain list and as a fallback if NS ever
+ * leave Vercel DNS.
  */
 export async function ensurePlatformSubdomains(slug: string): Promise<{
   ok: boolean;

@@ -40,7 +40,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Full walkthrough: [`/domains`](https://ownvite.com/domains) · [`docs/CUSTOM_DOMAIN_SETUP.md`](docs/CUSTOM_DOMAIN_SETUP.md)
 
-**Platform wildcard (operators):** add `CNAME * → cname.vercel-dns.com` on `ownvite.app` so `{slug}.ownvite.app` works.
+**Platform wildcard (operators):** `ownvite.com` and `ownvite.app` use Vercel nameservers (`ns1/ns2.vercel-dns.com`) with active `*.domain` TLS — `{slug}.ownvite.app` / `.com` work with HTTPS. See [`docs/PLATFORM_SUBDOMAIN_SSL.md`](docs/PLATFORM_SUBDOMAIN_SSL.md).
 
 ## Product wedge
 
