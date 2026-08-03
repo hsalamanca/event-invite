@@ -20,6 +20,7 @@ type InviteCoverProps = {
   toyPartyInvite?: string;
   modernCelebrate?: string;
   arcadePlayer?: string;
+  quinceInvite?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -241,6 +242,34 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </svg>
     );
   }
+  if (layout === "quince") {
+    return (
+      <svg
+        className="invite-ornament invite-ornament--quince"
+        viewBox="0 0 140 28"
+        aria-hidden
+      >
+        <path
+          d="M8 16c20-12 40-12 54 0"
+          fill="none"
+          stroke="#2B6FFF"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M78 16c14-12 34-12 54 0"
+          fill="none"
+          stroke="#D4AF37"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M70 4l1.6 4.8H76l-3.8 2.8 1.5 4.7L70 13.8l-3.7 2.7 1.5-4.7-3.8-2.8h4.4z"
+          fill="#D4AF37"
+        />
+      </svg>
+    );
+  }
   if (layout === "arcade") {
     return (
       <div className="invite-ornament invite-ornament--arcade" aria-hidden>
@@ -336,6 +365,7 @@ export default function InviteCover({
   toyPartyInvite,
   modernCelebrate,
   arcadePlayer,
+  quinceInvite,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -353,12 +383,14 @@ export default function InviteCover({
     layout === "festive" ||
     layout === "toybox" ||
     layout === "azure" ||
-    layout === "arcade";
+    layout === "arcade" ||
+    layout === "quince";
   const isComic = layout === "comic";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
   const isAzure = layout === "azure";
   const isArcade = layout === "arcade";
+  const isQuince = layout === "quince";
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
@@ -370,7 +402,9 @@ export default function InviteCover({
           ? modernCelebrate || invitesYou
           : isArcade
             ? arcadePlayer || invitesYou
-            : invitesYou;
+            : isQuince
+              ? quinceInvite || invitesYou
+              : invitesYou;
 
   return (
     <section
@@ -392,7 +426,7 @@ export default function InviteCover({
       {isComic ? <div className="comic-halftone" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
-      {isAzure ? <div className="azure-glow" aria-hidden /> : null}
+      {isAzure || isQuince ? <div className="azure-glow" aria-hidden /> : null}
       {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
@@ -415,6 +449,16 @@ export default function InviteCover({
             <>
               <span className="azure-ring azure-ring--tl" aria-hidden />
               <span className="azure-ring azure-ring--br" aria-hidden />
+            </>
+          ) : null}
+
+          {isQuince ? (
+            <>
+              <span className="quince-ring quince-ring--tl" aria-hidden />
+              <span className="quince-ring quince-ring--br" aria-hidden />
+              <span className="quince-xv" aria-hidden>
+                XV
+              </span>
             </>
           ) : null}
 

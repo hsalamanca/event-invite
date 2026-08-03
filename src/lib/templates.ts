@@ -26,7 +26,8 @@ export type InviteLayout =
   | "festive"
   | "toybox"
   | "azure"
-  | "arcade";
+  | "arcade"
+  | "quince";
 
 export type EventTemplate = {
   id: string;
@@ -254,6 +255,19 @@ const blueModern: Theme = {
     textMuted: "#5B6F8C",
   },
   fonts: { display: "Space Grotesk", body: "Outfit" },
+};
+
+/** Blue modern Canva look, tailored for quinceañera — cobalt + champagne */
+const quinceAzul: Theme = {
+  colors: {
+    background: "#0B1F3A",
+    surface: "#F7FAFF",
+    accentPrimary: "#2B6FFF",
+    accentSecondary: "#D4AF37",
+    textPrimary: "#0B1F3A",
+    textMuted: "#5B6F8C",
+  },
+  fonts: { display: "Playfair Display", body: "Outfit" },
 };
 
 /** Canva Colorful Kids Video Game Birthday — neon arcade party */
@@ -833,6 +847,30 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs:
       "Mandos listos, snacks cargados — ¡presiona start y únete a la fiesta!",
   },
+  {
+    id: "quince-azul",
+    name: "Quince azul",
+    nameEs: "Quinceañera azul",
+    description:
+      "Modern cobalt + champagne gold — quinceañeras with a sleek blue digital look.",
+    descriptionEs:
+      "Cobalto moderno + dorado champagne — quinceañeras con look azul elegante.",
+    inspiredBy: "Canva Blue Modern Birthday Party Invitation (quinceañera)",
+    inspiredByEs:
+      "Canva invitación azul moderna (adaptada para quinceañera)",
+    categories: ["birthday", "party"],
+    layout: "quince",
+    premium: true,
+    theme: quinceAzul,
+    heroImage:
+      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80&auto=format&fit=crop",
+    headline: "Mis XV Años",
+    headlineEs: "Mis XV Años",
+    tagline:
+      "An evening of family, music, and a night to remember — you’re invited to celebrate fifteen.",
+    taglineEs:
+      "Una noche de familia, música y recuerdos — estás invitado a celebrar mis quince.",
+  },
 ];
 
 
@@ -857,6 +895,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "watercolor-rose",
   "champagne-wedding",
   "toy-party",
+  "quince-azul",
 ]);
 
 export function defaultRsvpFields(
