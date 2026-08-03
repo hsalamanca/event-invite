@@ -78,6 +78,7 @@ const FONT_STACK: Record<string, string> = {
   "Great Vibes": "var(--font-great-vibes), cursive",
   Bangers: "var(--font-bangers), Impact, system-ui, sans-serif",
   Fredoka: "var(--font-fredoka), system-ui, sans-serif",
+  "Baloo 2": "var(--font-baloo-2), system-ui, sans-serif",
 };
 
 function fontStack(name: string, fallback: string): string {
@@ -282,6 +283,7 @@ export default function InvitePage({
         invitesYou={ui.invitesYou}
         comicPresents={ui.comicPresents}
         festiveParty={ui.festiveParty}
+        toyPartyInvite={ui.toyPartyInvite}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -1531,6 +1533,202 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="toybox"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 20%,
+              color-mix(in srgb, #ffd400 42%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 18%,
+              color-mix(in srgb, #2f6fe0 38%, transparent),
+              transparent 44%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, var(--invite-bg) 40%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 70%,
+              var(--invite-bg) 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toybox-dots) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.45;
+          background-image:
+            radial-gradient(#2f6fe0 0 2.5px, transparent 3px),
+            radial-gradient(#ffd400 0 2px, transparent 2.5px);
+          background-size: 28px 28px, 36px 36px;
+          background-position: 0 0, 14px 10px;
+          animation: toyboxFloat 8s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card) {
+          position: relative;
+          overflow: visible;
+          border: 4px solid var(--invite-accent);
+          border-radius: 1.75rem;
+          background:
+            radial-gradient(
+              circle at 10% 12%,
+              color-mix(in srgb, var(--invite-accent-2) 26%, transparent),
+              transparent 38%
+            ),
+            radial-gradient(
+              circle at 92% 8%,
+              color-mix(in srgb, var(--invite-accent) 14%, transparent),
+              transparent 36%
+            ),
+            var(--invite-surface);
+          box-shadow:
+            0 0 0 6px color-mix(in srgb, var(--invite-accent-2) 75%, white),
+            0 22px 48px color-mix(in srgb, #1c3a6e 16%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-sticker) {
+          position: absolute;
+          z-index: 3;
+          width: 3.1rem;
+          height: 3.1rem;
+          filter: drop-shadow(0 4px 0 color-mix(in srgb, #1c3a6e 18%, transparent));
+          animation: toyWiggle 3.6s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-sticker--block) {
+          top: -0.85rem;
+          left: 0.7rem;
+          --toy-rot: -10deg;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-sticker--star) {
+          top: -0.55rem;
+          right: 0.85rem;
+          width: 2.7rem;
+          height: 2.7rem;
+          animation-delay: 0.45s;
+          --toy-rot: 12deg;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-sticker--ball) {
+          bottom: 5.5rem;
+          right: -0.65rem;
+          width: 2.85rem;
+          height: 2.85rem;
+          animation-delay: 0.9s;
+          --toy-rot: 8deg;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-photo) {
+          margin: 1.35rem 1.1rem 0;
+          border-radius: 1.25rem;
+          border: 3px solid var(--invite-accent);
+          aspect-ratio: 4 / 3;
+          box-shadow: 0 8px 0 color-mix(in srgb, var(--invite-accent-2) 85%, white);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-ornament--toybox) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.4rem;
+          width: auto;
+          margin-bottom: 0.75rem;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-pip) {
+          width: 0.55rem;
+          height: 0.55rem;
+          border-radius: 999px;
+          border: 1.5px solid #1c3a6e;
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .toy-pip--square) {
+          border-radius: 0.2rem;
+          transform: rotate(12deg);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 1.15rem;
+          letter-spacing: 0.02em;
+          text-transform: none;
+          color: var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-invite-line) {
+          font-style: normal;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 800;
+          font-size: clamp(2.5rem, 9vw, 3.7rem);
+          line-height: 0.98;
+          letter-spacing: -0.01em;
+          color: var(--invite-accent);
+          text-shadow: 3px 3px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-when) {
+          margin-top: 0.9rem;
+          padding: 1rem 1.1rem;
+          border-radius: 1.15rem;
+          background: color-mix(in srgb, var(--invite-accent-2) 28%, white);
+          border: 2.5px dashed var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 1.3rem;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .btn-primary) {
+          border-radius: 999px;
+          background: var(--invite-accent);
+          color: #fffdf7;
+          font-weight: 700;
+          border: 2.5px solid #1c3a6e;
+          box-shadow: 0 5px 0 var(--invite-accent-2);
+        }
+
+        :global(.invite-cover[data-layout="toybox"] .btn-ghost) {
+          border-radius: 999px;
+          border: 2.5px solid var(--invite-accent);
+          background: white;
+          color: var(--invite-accent);
+          font-weight: 700;
+          box-shadow: 0 4px 0 color-mix(in srgb, var(--invite-accent-2) 70%, white);
+        }
+
+        @keyframes toyWiggle {
+          0%,
+          100% {
+            transform: rotate(var(--toy-rot, -8deg)) translateY(0);
+          }
+          50% {
+            transform: rotate(calc(var(--toy-rot, -8deg) + 6deg)) translateY(-3px);
+          }
+        }
+
+        @keyframes toyboxFloat {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 8px, 0);
+          }
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(
@@ -2041,6 +2239,8 @@ export default function InvitePage({
           :global(.comic-burst),
           :global(.festive-confetti),
           :global(.festive-balloon),
+          :global(.toybox-dots),
+          :global(.toy-sticker),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;

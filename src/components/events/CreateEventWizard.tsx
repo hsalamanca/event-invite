@@ -192,7 +192,9 @@ export default function CreateEventWizard({
                                       ? "bangers"
                                       : tpl.theme.fonts.display === "Fredoka"
                                         ? "fredoka"
-                                        : "cormorant"
+                                        : tpl.theme.fonts.display === "Baloo 2"
+                                          ? "baloo-2"
+                                          : "cormorant"
                         })`,
                       }}
                     >

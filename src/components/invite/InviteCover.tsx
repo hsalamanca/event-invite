@@ -17,6 +17,7 @@ type InviteCoverProps = {
   invitesYou: string;
   comicPresents?: string;
   festiveParty?: string;
+  toyPartyInvite?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -84,6 +85,67 @@ function BalloonGarland() {
   );
 }
 
+function ToyStickers() {
+  return (
+    <>
+      <svg
+        className="toy-sticker toy-sticker--block"
+        viewBox="0 0 48 48"
+        aria-hidden
+      >
+        <rect
+          x="6"
+          y="10"
+          width="36"
+          height="32"
+          rx="5"
+          fill="#FFD400"
+          stroke="#1C3A6E"
+          strokeWidth="2.2"
+        />
+        <rect x="12" y="16" width="10" height="10" rx="2" fill="#2F6FE0" />
+        <rect x="26" y="16" width="10" height="10" rx="2" fill="#FFFDF7" />
+        <rect x="12" y="28" width="10" height="10" rx="2" fill="#FFFDF7" />
+        <rect x="26" y="28" width="10" height="10" rx="2" fill="#2F6FE0" />
+      </svg>
+      <svg
+        className="toy-sticker toy-sticker--star"
+        viewBox="0 0 48 48"
+        aria-hidden
+      >
+        <path
+          d="M24 5l5.4 11 12.1 1.8-8.8 8.5 2.1 12.1L24 32.6 13.2 38.4l2.1-12.1-8.8-8.5 12.1-1.8z"
+          fill="#FFD400"
+          stroke="#1C3A6E"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <svg
+        className="toy-sticker toy-sticker--ball"
+        viewBox="0 0 48 48"
+        aria-hidden
+      >
+        <circle
+          cx="24"
+          cy="24"
+          r="16"
+          fill="#2F6FE0"
+          stroke="#1C3A6E"
+          strokeWidth="2.2"
+        />
+        <path
+          d="M10 20c5 2 8 2 14 0s9-2 14 0M10 28c5-2 8-2 14 0s9 2 14 0M24 8c-1 8-1 16 0 32"
+          fill="none"
+          stroke="#FFD400"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    </>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
@@ -100,6 +162,17 @@ function Ornament({ layout }: { layout: InviteLayout }) {
         <span className="festive-dot" style={{ background: "#4D96FF" }} />
         <span className="festive-dot" style={{ background: "#7CFFB2" }} />
         <span className="festive-dot" style={{ background: "#C77DFF" }} />
+      </div>
+    );
+  }
+  if (layout === "toybox") {
+    return (
+      <div className="invite-ornament invite-ornament--toybox" aria-hidden>
+        <span className="toy-pip" style={{ background: "#2F6FE0" }} />
+        <span className="toy-pip toy-pip--square" style={{ background: "#FFD400" }} />
+        <span className="toy-pip" style={{ background: "#2F6FE0" }} />
+        <span className="toy-pip toy-pip--square" style={{ background: "#FFD400" }} />
+        <span className="toy-pip" style={{ background: "#2F6FE0" }} />
       </div>
     );
   }
@@ -184,6 +257,7 @@ export default function InviteCover({
   invitesYou,
   comicPresents,
   festiveParty,
+  toyPartyInvite,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -198,15 +272,19 @@ export default function InviteCover({
     layout === "party" ||
     layout === "glam" ||
     layout === "comic" ||
-    layout === "festive";
+    layout === "festive" ||
+    layout === "toybox";
   const isComic = layout === "comic";
   const isFestive = layout === "festive";
+  const isToybox = layout === "toybox";
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
     : isFestive
       ? festiveParty || invitesYou
-      : invitesYou;
+      : isToybox
+        ? toyPartyInvite || invitesYou
+        : invitesYou;
 
   return (
     <section
@@ -227,6 +305,7 @@ export default function InviteCover({
 
       {isComic ? <div className="comic-halftone" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
+      {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
         <article className="invite-card fade-up fade-up-1">
@@ -240,6 +319,8 @@ export default function InviteCover({
               </span>
             </>
           ) : null}
+
+          {isToybox ? <ToyStickers /> : null}
 
           {isFestive ? (
             <div className="festive-garland-wrap" aria-hidden>
