@@ -47,12 +47,18 @@ export type ScheduleItem = {
   time: string;
   title: string;
   description?: string;
+  /** Optional Spanish title for locale switching */
+  titleEs?: string;
+  descriptionEs?: string;
 };
 
 export type FaqItem = {
   id: string;
   question: string;
   answer: string;
+  /** Optional Spanish copy for locale switching */
+  questionEs?: string;
+  answerEs?: string;
 };
 
 export type EventTier = "free" | "pro" | "studio";
@@ -74,6 +80,8 @@ export type EventRecord = {
   customDomain: string | null;
   rsvpFields: RsvpFields;
   about: string;
+  /** Optional Spanish about/HTML for locale switching */
+  aboutEs?: string | null;
   published: boolean;
   /** public = anyone with link; unlisted = not listed; private = password */
   visibility: "public" | "unlisted" | "private";
@@ -86,6 +94,8 @@ export type EventRecord = {
   faqs?: FaqItem[];
   gallery?: string[];
   parking?: string;
+  /** Optional Spanish parking note for locale switching */
+  parkingEs?: string | null;
   dressCode?: string;
   whatToBring?: string;
   contactEmail?: string;

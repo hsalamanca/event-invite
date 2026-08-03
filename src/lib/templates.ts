@@ -27,7 +27,8 @@ export type InviteLayout =
   | "toybox"
   | "azure"
   | "arcade"
-  | "quince";
+  | "quince"
+  | "fifty";
 
 export type EventTemplate = {
   id: string;
@@ -266,6 +267,19 @@ const quinceAzul: Theme = {
     accentSecondary: "#D4AF37",
     textPrimary: "#0B1F3A",
     textMuted: "#5B6F8C",
+  },
+  fonts: { display: "Playfair Display", body: "Outfit" },
+};
+
+/** Canva-inspired 50th — sunny champagne & coral (joyful milestone) */
+const goldenFifty: Theme = {
+  colors: {
+    background: "#FFF6E8",
+    surface: "#FFFEF9",
+    accentPrimary: "#E8A317",
+    accentSecondary: "#FF7A59",
+    textPrimary: "#3A2A14",
+    textMuted: "#8A7355",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
@@ -871,12 +885,82 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs:
       "Una noche de familia, música y recuerdos — estás invitado a celebrar mis quince.",
   },
+  {
+    id: "golden-fifty",
+    name: "Golden fifty",
+    nameEs: "Cincuenta dorado",
+    description:
+      "Sunny champagne & coral — joyful 50th birthdays, milestone dinners, and warm celebrations.",
+    descriptionEs:
+      "Champán soleado y coral — cumpleaños 50 alegres, cenas especiales y celebraciones cálidas.",
+    inspiredBy: "Canva 50th birthday invitations (bright champagne celebration)",
+    inspiredByEs: "Canva invitaciones 50 años (celebración champán luminosa)",
+    categories: ["birthday", "party", "dinner"],
+    layout: "fifty",
+    premium: true,
+    theme: goldenFifty,
+    heroImage:
+      "https://images.unsplash.com/photo-1464349153735-7db819ff493e?w=1920&q=80&auto=format&fit=crop",
+    headline: "Fifty & Fabulous",
+    headlineEs: "Cincuenta y fabuloso",
+    tagline:
+      "Half a century of stories — join us for champagne, cake, and a night to toast!",
+    taglineEs:
+      "Medio siglo de historias — ¡acompáñanos a brindar con champán y pastel!",
+  },
 ];
 
 
 export function resolveInviteLayout(templateId?: string | null): InviteLayout {
   if (!templateId) return "classic";
   return getTemplate(templateId).layout;
+}
+
+/**
+ * Localize stock template headline/tagline by visitor locale.
+ * Custom host-edited copy (not matching either stock language) is left as-is.
+ * Also recovers English when Spanish stock text was previously baked into the event.
+ */
+const STOCK_ABOUT = {
+  en: "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.",
+  es: "Otro año, otra razón para reunirnos. Me encantaría contar con tu compañía para una cena relajada — sin regalos, solo tu presencia.",
+} as const;
+
+export function resolveLocalizedInviteCopy(
+  event: {
+    headline: string;
+    tagline: string;
+    about?: string;
+    templateId?: string | null;
+  },
+  locale: "en" | "es",
+): { headline: string; tagline: string; about: string } {
+  const tpl = getTemplate(event.templateId || "evening");
+  const headlineIsStock =
+    event.headline === tpl.headline || event.headline === tpl.headlineEs;
+  const taglineIsStock =
+    event.tagline === tpl.tagline || event.tagline === tpl.taglineEs;
+  const aboutRaw = event.about ?? "";
+  const aboutIsStock =
+    aboutRaw === STOCK_ABOUT.en || aboutRaw === STOCK_ABOUT.es;
+
+  return {
+    headline: headlineIsStock
+      ? locale === "es"
+        ? tpl.headlineEs
+        : tpl.headline
+      : event.headline,
+    tagline: taglineIsStock
+      ? locale === "es"
+        ? tpl.taglineEs
+        : tpl.tagline
+      : event.tagline,
+    about: aboutIsStock
+      ? locale === "es"
+        ? STOCK_ABOUT.es
+        : STOCK_ABOUT.en
+      : aboutRaw,
+  };
 }
 
 export function getTemplate(id: string): EventTemplate {
@@ -963,6 +1047,93 @@ export function defaultRsvpFields(
   };
 }
 
+/** Localize stock RSVP field labels/options/prompt by visitor locale. */
+export function resolveLocalizedRsvpFields(
+  fields: EventRecord["rsvpFields"],
+  locale: "en" | "es",
+): EventRecord["rsvpFields"] {
+  const en = defaultRsvpFields(fields.deadline || "", { locale: "en" });
+  const es = defaultRsvpFields(fields.deadline || "", { locale: "es" });
+  const pick = locale === "es" ? es : en;
+
+  const plusLabel =
+    fields.plusOnes.label === en.plusOnes.label ||
+    fields.plusOnes.label === es.plusOnes.label
+      ? pick.plusOnes.label
+      : fields.plusOnes.label;
+
+  const dietaryLabel =
+    fields.dietary.label === en.dietary.label ||
+    fields.dietary.label === es.dietary.label
+      ? pick.dietary.label
+      : fields.dietary.label;
+
+  const dietaryPlaceholder =
+    fields.dietary.placeholder === en.dietary.placeholder ||
+    fields.dietary.placeholder === es.dietary.placeholder
+      ? pick.dietary.placeholder
+      : fields.dietary.placeholder;
+
+  const attendanceOptions = fields.attendance.options.map((opt) => {
+    const idxEn = en.attendance.options.indexOf(opt);
+    if (idxEn >= 0) return pick.attendance.options[idxEn] ?? opt;
+    const idxEs = es.attendance.options.indexOf(opt);
+    if (idxEs >= 0) return pick.attendance.options[idxEs] ?? opt;
+    return opt;
+  });
+
+  const stockPromptsEn = new Set([
+    en.prompt,
+    "Kindly respond by September 5 so we can save you a seat.",
+  ]);
+  const stockPromptsEs = new Set([
+    es.prompt,
+    "Por favor confirma para reservarte un lugar.",
+  ]);
+  const prompt =
+    stockPromptsEn.has(fields.prompt) || stockPromptsEs.has(fields.prompt)
+      ? pick.prompt
+      : fields.prompt;
+
+  const customQuestions = (fields.customQuestions ?? []).map((q) => {
+    const enMeal = en.customQuestions?.[0];
+    const esMeal = es.customQuestions?.[0];
+    if (
+      q.type === "meal" &&
+      enMeal &&
+      esMeal &&
+      (q.label === enMeal.label || q.label === esMeal.label)
+    ) {
+      const options = (q.options ?? []).map((opt) => {
+        const iEn = enMeal.options?.indexOf(opt) ?? -1;
+        if (iEn >= 0) return pick.customQuestions?.[0]?.options?.[iEn] ?? opt;
+        const iEs = esMeal.options?.indexOf(opt) ?? -1;
+        if (iEs >= 0) return pick.customQuestions?.[0]?.options?.[iEs] ?? opt;
+        return opt;
+      });
+      return {
+        ...q,
+        label: pick.customQuestions?.[0]?.label ?? q.label,
+        options,
+      };
+    }
+    return q;
+  });
+
+  return {
+    ...fields,
+    plusOnes: { ...fields.plusOnes, label: plusLabel },
+    dietary: {
+      ...fields.dietary,
+      label: dietaryLabel,
+      placeholder: dietaryPlaceholder,
+    },
+    attendance: { ...fields.attendance, options: attendanceOptions },
+    prompt,
+    customQuestions,
+  };
+}
+
 export function buildEventFromTemplate(input: {
   templateId: string;
   ownerId: string;
@@ -977,14 +1148,14 @@ export function buildEventFromTemplate(input: {
   locale?: "en" | "es";
 }): Omit<EventRecord, "id" | "createdAt" | "updatedAt"> {
   const tpl = getTemplate(input.templateId);
-  const es = input.locale === "es";
   return {
     slug: input.slug,
     ownerId: input.ownerId,
     hostName: input.hostName,
     title: input.title,
-    headline: es ? tpl.headlineEs : tpl.headline,
-    tagline: es ? tpl.taglineEs : tpl.tagline,
+    // Store English stock copy; guests see ES via resolveLocalizedInviteCopy
+    headline: tpl.headline,
+    tagline: tpl.tagline,
     dateISO: input.dateISO,
     timeLabel: input.timeLabel,
     venue: input.venue,

@@ -219,6 +219,7 @@ export type Dictionary = {
     modernCelebrate: string;
     arcadePlayer: string;
     quinceInvite: string;
+    fiftyCelebrate: string;
     date: string;
     time: string;
     venue: string;
@@ -247,6 +248,38 @@ export type Dictionary = {
     guestbookThanks: string;
     registry: string;
     registryCta: string;
+    registryPrompt: string;
+    guestInfo: string;
+    schedule: string;
+    dressCode: string;
+    parking: string;
+    whatToBring: string;
+    stay: string;
+    travel: string;
+    contactHost: string;
+    emailHost: string;
+    callText: string;
+    faq: string;
+    gallery: string;
+    playlist: string;
+    weather: string;
+    rainChance: string;
+    thankYou: string;
+    thankYouDefault: string;
+    pastEventPrompt: string;
+    deadlinePassed: string;
+    deadlineToday: string;
+    deadlineInDays: string;
+    atCapacity: string;
+    seatsOpen: string;
+    eventFull: string;
+    rsvpClosed: string;
+    updateRsvp: string;
+    selectOption: string;
+    leaveNote: string;
+    hostedBy: string;
+    submitError: string;
+    somethingWrong: string;
   };
 };
 
@@ -435,7 +468,8 @@ const en: Dictionary = {
     registryUrl: "Gift registry / wishlist URL",
     published: "Published (visible to guests)",
     applyTemplate: "Apply template look",
-    applyTemplateHint: "Updates colors, fonts, hero, and headlines from a template.",
+    applyTemplateHint:
+      "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
   },
   dashboard: {
     eyebrow: "Your events",
@@ -553,6 +587,7 @@ const en: Dictionary = {
     modernCelebrate: "is celebrating",
     arcadePlayer: "player one invites you",
     quinceInvite: "cordially invites you to her quinceañera",
+    fiftyCelebrate: "is celebrating fifty fabulous years",
     date: "Date",
     time: "Time",
     venue: "Venue",
@@ -581,6 +616,43 @@ const en: Dictionary = {
     guestbookThanks: "Thanks for writing!",
     registry: "Gift ideas",
     registryCta: "View registry",
+    registryPrompt:
+      "If you’d like to celebrate with a gift, here’s where we’re registered.",
+    guestInfo: "Guest info",
+    schedule: "Schedule",
+    dressCode: "Dress code",
+    parking: "Parking",
+    whatToBring: "What to bring",
+    stay: "Stay",
+    travel: "Travel",
+    contactHost: "Contact host",
+    emailHost: "Email {name}",
+    callText: "Call / text",
+    faq: "FAQ",
+    gallery: "Gallery",
+    playlist: "Playlist",
+    weather: "Weather",
+    rainChance: "rain chance",
+    thankYou: "Thank you",
+    thankYouDefault:
+      "Thank you for celebrating with us. Share a memory in the guestbook below.",
+    pastEventPrompt:
+      "This celebration has already happened. Thanks for being part of it — leave a guestbook note below.",
+    deadlinePassed: "RSVP deadline has passed.",
+    deadlineToday: "RSVP by today.",
+    deadlineInDays: "RSVP within {days} day(s) (by {date}).",
+    atCapacity:
+      "This celebration is at capacity — RSVPs are closed for new guests.",
+    seatsOpen: "{open} of {capacity} seats still open.",
+    eventFull:
+      "This event is full. Contact the host if you need to change an existing RSVP.",
+    rsvpClosed: "This RSVP form is closed.",
+    updateRsvp: "Update or cancel your RSVP",
+    selectOption: "Select…",
+    leaveNote: "Leave a note",
+    hostedBy: "Hosted by {name}",
+    submitError: "Unable to submit RSVP",
+    somethingWrong: "Something went wrong",
   },
 };
 
@@ -770,7 +842,7 @@ const es: Dictionary = {
     published: "Publicado (visible para invitados)",
     applyTemplate: "Aplicar look de plantilla",
     applyTemplateHint:
-      "Actualiza colores, fuentes, imagen y titulares desde una plantilla.",
+      "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",
   },
   dashboard: {
     eyebrow: "Tus eventos",
@@ -891,6 +963,7 @@ const es: Dictionary = {
     modernCelebrate: "está celebrando",
     arcadePlayer: "el jugador uno te invita",
     quinceInvite: "te invita cordialmente a su fiesta de quince años",
+    fiftyCelebrate: "celebra cincuenta años fabulosos",
     date: "Fecha",
     time: "Hora",
     venue: "Lugar",
@@ -919,6 +992,43 @@ const es: Dictionary = {
     guestbookThanks: "¡Gracias por escribir!",
     registry: "Ideas de regalo",
     registryCta: "Ver lista",
+    registryPrompt:
+      "Si quieres celebrar con un regalo, aquí está nuestra lista.",
+    guestInfo: "Info para invitados",
+    schedule: "Agenda",
+    dressCode: "Código de vestimenta",
+    parking: "Estacionamiento",
+    whatToBring: "Qué traer",
+    stay: "Alojamiento",
+    travel: "Cómo llegar",
+    contactHost: "Contactar al anfitrión",
+    emailHost: "Escribir a {name}",
+    callText: "Llamar / mensaje",
+    faq: "Preguntas frecuentes",
+    gallery: "Galería",
+    playlist: "Playlist",
+    weather: "Clima",
+    rainChance: "prob. de lluvia",
+    thankYou: "Gracias",
+    thankYouDefault:
+      "Gracias por celebrar con nosotros. Deja un recuerdo en el libro de visitas.",
+    pastEventPrompt:
+      "Esta celebración ya ocurrió. Gracias por ser parte — deja una nota abajo.",
+    deadlinePassed: "La fecha límite de confirmación ya pasó.",
+    deadlineToday: "Confirma hoy.",
+    deadlineInDays: "Confirma en {days} día(s) (antes del {date}).",
+    atCapacity:
+      "Este evento está lleno — ya no se aceptan nuevas confirmaciones.",
+    seatsOpen: "{open} de {capacity} lugares disponibles.",
+    eventFull:
+      "Este evento está lleno. Contacta al anfitrión si necesitas cambiar tu RSVP.",
+    rsvpClosed: "Este formulario de confirmación está cerrado.",
+    updateRsvp: "Actualizar o cancelar tu confirmación",
+    selectOption: "Selecciona…",
+    leaveNote: "Dejar una nota",
+    hostedBy: "Organizado por {name}",
+    submitError: "No se pudo enviar la confirmación",
+    somethingWrong: "Algo salió mal",
   },
 };
 

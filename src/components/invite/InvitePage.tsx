@@ -5,7 +5,17 @@ import InviteCover from "@/components/invite/InviteCover";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
-import { resolveInviteLayout } from "@/lib/templates";
+import {
+  resolveLocalizedAbout,
+  resolveLocalizedFaqs,
+  resolveLocalizedParking,
+  resolveLocalizedSchedule,
+} from "@/lib/i18n/event-content";
+import {
+  resolveInviteLayout,
+  resolveLocalizedInviteCopy,
+  resolveLocalizedRsvpFields,
+} from "@/lib/templates";
 import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 import type { WeatherSnapshot } from "@/lib/weather";
 
@@ -98,14 +108,24 @@ export default function InvitePage({
   trackViews = true,
   onRsvpSubmit,
 }: InvitePageProps) {
-  const { theme, rsvpFields } = event;
+  const { theme } = event;
   const ui = getDictionary(locale).invite;
+  const rsvpFields = resolveLocalizedRsvpFields(event.rsvpFields, locale);
   const attendanceOptions = rsvpFields.attendance.options;
-  const defaultAttendance = attendanceOptions[0] ?? "Joyfully attending";
+  const defaultAttendance = attendanceOptions[0] ?? "";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState(defaultAttendance);
+  const attendanceKey = attendanceOptions.join("\0");
+  useEffect(() => {
+    setAttendance((prev) => {
+      if (attendanceOptions.includes(prev)) return prev;
+      return attendanceOptions[0] ?? "";
+    });
+    // attendanceOptions identity changes each render; key tracks content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale, attendanceKey]);
   const [guestCount, setGuestCount] = useState<number | "">(1);
   const [dietary, setDietary] = useState("");
   const [note, setNote] = useState("");
@@ -246,19 +266,33 @@ export default function InvitePage({
           rsvp?: { editToken?: string };
         } | null;
         if (!res.ok) {
-          throw new Error(body?.error ?? "Unable to submit RSVP");
+          throw new Error(body?.error ?? ui.submitError);
         }
         if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : ui.somethingWrong);
     } finally {
       setSubmitting(false);
     }
   }
 
   const layout = resolveInviteLayout(event.templateId);
+  const { headline, tagline, about: aboutFallback } = resolveLocalizedInviteCopy(
+    event,
+    locale,
+  );
+  const about = resolveLocalizedAbout(event.about, event.aboutEs, locale);
+  const schedule = resolveLocalizedSchedule(event.schedule, locale);
+  const faqs = resolveLocalizedFaqs(event.faqs, locale);
+  const parking = resolveLocalizedParking(
+    event.parking,
+    event.parkingEs,
+    locale,
+  );
+  // Prefer bilingual aboutEs / maps; fall back to stock about resolver
+  const aboutHtml = about.trim() ? about : aboutFallback;
   const cssVars = {
     "--invite-bg": theme.colors.background,
     "--invite-surface": theme.colors.surface,
@@ -276,8 +310,8 @@ export default function InvitePage({
         layout={layout}
         hostName={event.hostName}
         title={event.title}
-        headline={event.headline}
-        tagline={event.tagline}
+        headline={headline}
+        tagline={tagline}
         dateLabel={formatDateLabel(event.dateISO, locale)}
         timeLabel={event.timeLabel}
         venue={event.venue}
@@ -290,8 +324,10 @@ export default function InvitePage({
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
+        fiftyCelebrate={ui.fiftyCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
+        leaveNoteLabel={ui.leaveNote}
         calendarLabel={ui.addToCalendar}
         calendarHref={`/api/events/${event.slug}/ics`}
         copyLabel={copied ? ui.copied : ui.copyLink}
@@ -336,17 +372,17 @@ export default function InvitePage({
           <div
             className="invite-about-body"
             dangerouslySetInnerHTML={{
-              __html: sanitizeAboutHtml(event.about),
+              __html: sanitizeAboutHtml(aboutHtml),
             }}
           />
         </div>
         {weather ? (
           <p className="invite-extra-line">
-            <strong>Weather</strong>
+            <strong>{ui.weather}</strong>
             {weather.summary}
             {weather.tempC != null ? ` · ~${Math.round(weather.tempC)}°C` : ""}
             {weather.precipChance != null
-              ? ` · ${weather.precipChance}% rain chance`
+              ? ` · ${weather.precipChance}% ${ui.rainChance}`
               : ""}
           </p>
         ) : null}
@@ -354,10 +390,9 @@ export default function InvitePage({
 
       {isPast ? (
         <section id="after" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">Thank you</h2>
+          <h2 className="invite-section-title">{ui.thankYou}</h2>
           <p className="invite-prompt">
-            {event.thankYouMessage?.trim() ||
-              "Thank you for celebrating with us. Share a memory in the guestbook below."}
+            {event.thankYouMessage?.trim() || ui.thankYouDefault}
           </p>
         </section>
       ) : null}
@@ -367,9 +402,7 @@ export default function InvitePage({
           <h2 className="invite-section-title">
             {event.registryLabel || ui.registry}
           </h2>
-          <p className="invite-prompt">
-            If you’d like to celebrate with a gift, here’s where we’re registered.
-          </p>
+          <p className="invite-prompt">{ui.registryPrompt}</p>
           <p className="invite-registry">
             <a
               href={event.registryUrl}
@@ -383,23 +416,23 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      {(event.schedule?.length ||
+      {(schedule.length ||
         event.dressCode ||
-        event.parking ||
+        parking ||
         event.whatToBring ||
         event.hotelInfo ||
         event.travelInfo ||
         event.contactEmail ||
         event.contactPhone) && (
         <section id="info" className="invite-section">
-          <h2 className="invite-section-title">Guest info</h2>
-          {event.schedule && event.schedule.length > 0 ? (
+          <h2 className="invite-section-title">{ui.guestInfo}</h2>
+          {schedule.length > 0 ? (
             <div className="invite-extra-block">
               <h3 className="invite-section-title invite-section-title--sm">
-                Schedule
+                {ui.schedule}
               </h3>
               <ul className="invite-schedule">
-                {event.schedule.map((item) => (
+                {schedule.map((item) => (
                   <li key={item.id}>
                     <strong>{item.time}</strong>
                     <span>{item.title}</span>
@@ -411,44 +444,44 @@ export default function InvitePage({
           ) : null}
           {event.dressCode ? (
             <p className="invite-extra-line">
-              <strong>Dress code</strong> {event.dressCode}
+              <strong>{ui.dressCode}</strong> {event.dressCode}
             </p>
           ) : null}
-          {event.parking ? (
+          {parking ? (
             <p className="invite-extra-line">
-              <strong>Parking</strong> {event.parking}
+              <strong>{ui.parking}</strong> {parking}
             </p>
           ) : null}
           {event.whatToBring ? (
             <p className="invite-extra-line">
-              <strong>What to bring</strong> {event.whatToBring}
+              <strong>{ui.whatToBring}</strong> {event.whatToBring}
             </p>
           ) : null}
           {event.hotelInfo ? (
             <p className="invite-extra-line">
-              <strong>Stay</strong> {event.hotelInfo}
+              <strong>{ui.stay}</strong> {event.hotelInfo}
             </p>
           ) : null}
           {event.travelInfo ? (
             <p className="invite-extra-line">
-              <strong>Travel</strong> {event.travelInfo}
+              <strong>{ui.travel}</strong> {event.travelInfo}
             </p>
           ) : null}
           {(event.contactEmail || event.contactPhone) && (
             <div className="invite-contact-cta">
-              <strong>Contact host</strong>
+              <strong>{ui.contactHost}</strong>
               <div className="invite-cta" style={{ marginTop: "0.75rem" }}>
                 {event.contactEmail ? (
                   <a
                     className="btn-primary"
                     href={`mailto:${event.contactEmail}?subject=${encodeURIComponent(`About ${event.title}`)}`}
                   >
-                    Email {event.hostName}
+                    {ui.emailHost.replace("{name}", event.hostName)}
                   </a>
                 ) : null}
                 {event.contactPhone ? (
                   <a className="btn-ghost" href={`tel:${event.contactPhone}`}>
-                    Call / text
+                    {ui.callText}
                   </a>
                 ) : null}
               </div>
@@ -457,11 +490,11 @@ export default function InvitePage({
         </section>
       )}
 
-      {event.faqs && event.faqs.length > 0 ? (
+      {faqs.length > 0 ? (
         <section id="faq" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">FAQ</h2>
+          <h2 className="invite-section-title">{ui.faq}</h2>
           <dl className="invite-faq">
-            {event.faqs.map((f) => (
+            {faqs.map((f) => (
               <div key={f.id}>
                 <dt>{f.question}</dt>
                 <dd>{f.answer}</dd>
@@ -473,7 +506,7 @@ export default function InvitePage({
 
       {event.gallery && event.gallery.length > 0 ? (
         <section id="gallery" className="invite-section">
-          <h2 className="invite-section-title">Gallery</h2>
+          <h2 className="invite-section-title">{ui.gallery}</h2>
           <div className="invite-gallery">
             {event.gallery.map((src) => (
               // eslint-disable-next-line @next/next/no-img-element
@@ -485,9 +518,9 @@ export default function InvitePage({
 
       {embed ? (
         <section id="playlist" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">Playlist</h2>
+          <h2 className="invite-section-title">{ui.playlist}</h2>
           <iframe
-            title="Spotify playlist"
+            title={ui.playlist}
             src={embed}
             width="100%"
             height="152"
@@ -501,27 +534,34 @@ export default function InvitePage({
       <section id="rsvp" className="invite-section invite-section--surface">
         <h2 className="invite-section-title">{ui.rsvp}</h2>
         {isPast ? (
-          <p className="invite-prompt">
-            This celebration has already happened. Thanks for being part of it —
-            leave a guestbook note below.
-          </p>
+          <p className="invite-prompt">{ui.pastEventPrompt}</p>
         ) : (
           <>
         <p className="invite-prompt">{rsvpFields.prompt}</p>
         {rsvpFields.deadline ? (
           <p className="invite-deadline">
             {deadlinePassed
-              ? "RSVP deadline has passed."
+              ? ui.deadlinePassed
               : deadlineDays === 0
-                ? "RSVP by today."
-                : `RSVP within ${deadlineDays} day${deadlineDays === 1 ? "" : "s"} (by ${rsvpFields.deadline}).`}
+                ? ui.deadlineToday
+                : ui.deadlineInDays
+                    .replace(
+                      "{days}",
+                      String(deadlineDays ?? 0),
+                    )
+                    .replace("{date}", rsvpFields.deadline)}
           </p>
         ) : null}
         {event.capacity ? (
           <p className="invite-deadline">
             {atCapacity
-              ? "This celebration is at capacity — RSVPs are closed for new guests."
-              : `${Math.max(0, event.capacity - seatsTaken)} of ${event.capacity} seats still open.`}
+              ? ui.atCapacity
+              : ui.seatsOpen
+                  .replace(
+                    "{open}",
+                    String(Math.max(0, event.capacity - seatsTaken)),
+                  )
+                  .replace("{capacity}", String(event.capacity))}
           </p>
         ) : null}
 
@@ -537,16 +577,14 @@ export default function InvitePage({
             {editToken ? (
               <p className="rsvp-success-sub">
                 <a href={`/rsvp/${editToken}`} className="invite-address">
-                  Update or cancel your RSVP
+                  {ui.updateRsvp}
                 </a>
               </p>
             ) : null}
           </div>
         ) : deadlinePassed || atCapacity ? (
           <p className="invite-prompt">
-            {atCapacity
-              ? "This event is full. Contact the host if you need to change an existing RSVP."
-              : "This RSVP form is closed."}
+            {atCapacity ? ui.eventFull : ui.rsvpClosed}
           </p>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
@@ -659,7 +697,7 @@ export default function InvitePage({
                         }
                       }}
                     >
-                      <option value="">Select…</option>
+                      <option value="">{ui.selectOption}</option>
                       {(q.options ?? []).map((opt) => (
                         <option key={opt} value={opt}>
                           {opt}
@@ -796,7 +834,7 @@ export default function InvitePage({
       </section>
 
       <footer className="invite-footer">
-        <p>Hosted by {event.hostName}</p>
+        <p>{ui.hostedBy.replace("{name}", event.hostName)}</p>
         {event.showOwnviteFooter !== false ? (
           <p className="invite-footer-attr">Ownvite</p>
         ) : null}
@@ -2079,6 +2117,255 @@ export default function InvitePage({
           font-weight: 600;
         }
 
+        :global(.invite-cover[data-layout="fifty"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 16%,
+              color-mix(in srgb, #ff7a59 38%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 20%,
+              color-mix(in srgb, #e8a317 42%, transparent),
+              transparent 44%
+            ),
+            radial-gradient(
+              circle at 50% 8%,
+              color-mix(in srgb, #ffe08a 36%, transparent),
+              transparent 40%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, var(--invite-bg) 45%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 70%,
+              var(--invite-bg) 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-sparkle) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.7;
+          background-image:
+            radial-gradient(circle at 14% 24%, #e8a317 0 2.5px, transparent 3.5px),
+            radial-gradient(circle at 72% 18%, #ff7a59 0 2px, transparent 3px),
+            radial-gradient(circle at 38% 70%, #ffb4a2 0 2.2px, transparent 3.2px),
+            radial-gradient(circle at 86% 62%, #ffe08a 0 2px, transparent 3px),
+            radial-gradient(circle at 52% 40%, #e8a317 0 1.6px, transparent 2.6px),
+            radial-gradient(circle at 24% 82%, #ff7a59 0 1.8px, transparent 2.8px);
+          animation: fiftyTwinkle 5.5s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 2px solid color-mix(in srgb, #e8a317 55%, transparent);
+          border-radius: 1.35rem;
+          background:
+            radial-gradient(
+              circle at 12% 10%,
+              color-mix(in srgb, #ffe08a 35%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 90% 8%,
+              color-mix(in srgb, #ff7a59 18%, transparent),
+              transparent 40%
+            ),
+            var(--invite-surface);
+          color: var(--invite-text);
+          box-shadow:
+            0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+            0 22px 50px color-mix(in srgb, #3a2a14 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner) {
+          position: absolute;
+          z-index: 2;
+          width: 1.85rem;
+          height: 1.85rem;
+          border-color: #e8a317;
+          border-style: solid;
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--tl) {
+          top: 0.65rem;
+          left: 0.65rem;
+          border-width: 2.5px 0 0 2.5px;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--tr) {
+          top: 0.65rem;
+          right: 0.65rem;
+          border-width: 2.5px 2.5px 0 0;
+          border-color: #ff7a59;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--bl) {
+          bottom: 0.65rem;
+          left: 0.65rem;
+          border-width: 0 0 2.5px 2.5px;
+          border-color: #ff7a59;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--br) {
+          bottom: 0.65rem;
+          right: 0.65rem;
+          border-width: 0 2.5px 2.5px 0;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-badge) {
+          position: absolute;
+          z-index: 3;
+          top: 0.75rem;
+          right: 0.85rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 3.5rem;
+          height: 3.5rem;
+          padding: 0 0.45rem;
+          border-radius: 999px;
+          background: linear-gradient(145deg, #ffe08a, #e8a317 50%, #ff7a59);
+          color: #3a2a14;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 1.35rem;
+          letter-spacing: -0.02em;
+          border: 2px solid #fff;
+          box-shadow:
+            0 0 0 3px color-mix(in srgb, #e8a317 35%, transparent),
+            0 10px 22px color-mix(in srgb, #e8a317 28%, transparent);
+          animation: fiftyGlow 3.2s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-photo) {
+          margin: 1.6rem auto 0;
+          width: min(78%, 18rem);
+          aspect-ratio: 4 / 3;
+          border-radius: 1.1rem;
+          border: 3px solid #e8a317;
+          box-shadow:
+            0 0 0 5px color-mix(in srgb, #ff7a59 22%, white),
+            0 14px 28px color-mix(in srgb, #3a2a14 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-body) {
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-ornament--fifty) {
+          width: 10rem;
+          margin-bottom: 0.9rem;
+          color: #e8a317;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 0.95rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #e8a317;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-invite-line) {
+          font-family: var(--font-great-vibes), cursive;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 1.5rem;
+          letter-spacing: 0.01em;
+          text-transform: none;
+          color: #ff7a59;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: clamp(2.3rem, 8vw, 3.4rem);
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          background: linear-gradient(105deg, #e8a317 0%, #ff7a59 55%, #f0b429 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-when) {
+          margin-top: 1rem;
+          padding: 1rem 1.15rem;
+          border-radius: 1rem;
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, #ffe08a 45%, white),
+              color-mix(in srgb, #ffb4a2 28%, white)
+            );
+          border: 1.5px dashed color-mix(in srgb, #e8a317 55%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.2rem;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-time),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-venue),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-address),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-tagline) {
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .btn-primary) {
+          border-radius: 999px;
+          background: linear-gradient(120deg, #e8a317, #ff7a59);
+          color: #fffef9;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          box-shadow: 0 10px 24px color-mix(in srgb, #ff7a59 28%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .btn-ghost) {
+          border-radius: 999px;
+          border: 2px solid color-mix(in srgb, #e8a317 55%, transparent);
+          background: white;
+          color: #c4891a;
+          font-weight: 600;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-text-link) {
+          color: #c4891a;
+        }
+
+        @keyframes fiftyTwinkle {
+          from {
+            opacity: 0.45;
+          }
+          to {
+            opacity: 0.85;
+          }
+        }
+
+        @keyframes fiftyGlow {
+          from {
+            transform: scale(1);
+            box-shadow:
+              0 0 0 3px color-mix(in srgb, #e8a317 28%, transparent),
+              0 10px 22px color-mix(in srgb, #e8a317 22%, transparent);
+          }
+          to {
+            transform: scale(1.05);
+            box-shadow:
+              0 0 0 5px color-mix(in srgb, #ff7a59 30%, transparent),
+              0 12px 28px color-mix(in srgb, #ff7a59 22%, transparent);
+          }
+        }
+
         :global(.invite-cover[data-layout="arcade"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
@@ -2820,6 +3107,8 @@ export default function InvitePage({
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),
+          :global(.fifty-sparkle),
+          :global(.fifty-badge),
           :global(.arcade-scanlines),
           :global(.arcade-badge),
           :global(.arcade-sticker--pad),

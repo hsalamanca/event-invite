@@ -7,6 +7,12 @@ import InvitePage from "@/components/invite/InvitePage";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { TEMPLATES, getTemplate } from "@/lib/templates";
+import {
+  suggestSpanishAbout,
+  suggestSpanishFaq,
+  suggestSpanishParking,
+  suggestSpanishScheduleTitle,
+} from "@/lib/i18n/event-content";
 import type {
   CustomQuestion,
   EventRecord,
@@ -41,6 +47,8 @@ type Draft = {
   venue: string;
   address: string;
   about: string;
+  aboutEs: string;
+  parkingEs: string;
   heroImage: string;
   customDomain: string;
   visibility: EventRecord["visibility"];
@@ -76,7 +84,34 @@ function newId(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function toDraft(event: EventRecord): Draft {
+function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
+  const schedule = (event.schedule ?? []).map((item) => ({
+    ...item,
+    title:
+      locale === "es"
+        ? item.titleEs ||
+          suggestSpanishScheduleTitle(item.title) ||
+          item.title
+        : item.title,
+    description:
+      locale === "es"
+        ? item.descriptionEs || item.description || ""
+        : item.description || "",
+  }));
+  const faqs = (event.faqs ?? []).map((item) => {
+    const suggested = suggestSpanishFaq(item.question, item.answer);
+    return {
+      ...item,
+      question:
+        locale === "es"
+          ? item.questionEs || suggested.question || item.question
+          : item.question,
+      answer:
+        locale === "es"
+          ? item.answerEs || suggested.answer || item.answer
+          : item.answer,
+    };
+  });
   return {
     hostName: event.hostName,
     title: event.title,
@@ -86,7 +121,14 @@ function toDraft(event: EventRecord): Draft {
     timeLabel: event.timeLabel,
     venue: event.venue,
     address: event.address,
-    about: event.about,
+    about:
+      locale === "es"
+        ? event.aboutEs ||
+          suggestSpanishAbout(event.about) ||
+          event.about
+        : event.about,
+    aboutEs: event.aboutEs || "",
+    parkingEs: event.parkingEs || "",
     heroImage: event.heroImage,
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -100,10 +142,16 @@ function toDraft(event: EventRecord): Draft {
     rsvpPrompt: event.rsvpFields.prompt ?? "",
     rsvpDeadline: event.rsvpFields.deadline ?? "",
     customQuestions: [...(event.rsvpFields.customQuestions ?? [])],
-    schedule: [...(event.schedule ?? [])],
-    faqs: [...(event.faqs ?? [])],
+    schedule,
+    faqs,
     galleryText: (event.gallery ?? []).join("\n"),
-    parking: event.parking ?? "",
+    parking:
+      locale === "es"
+        ? event.parkingEs ||
+          suggestSpanishParking(event.parking ?? "") ||
+          event.parking ||
+          ""
+        : event.parking ?? "",
     dressCode: event.dressCode ?? "",
     whatToBring: event.whatToBring ?? "",
     contactEmail: event.contactEmail ?? "",
@@ -119,10 +167,92 @@ function toDraft(event: EventRecord): Draft {
   };
 }
 
-function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
+function mergeLocalizedContent(
+  base: EventRecord,
+  draft: Draft,
+  locale: Locale,
+): Pick<
+  EventRecord,
+  "about" | "aboutEs" | "schedule" | "faqs" | "parking" | "parkingEs"
+> {
+  if (locale === "es") {
+    return {
+      about: base.about,
+      aboutEs: draft.about,
+      parking: base.parking ?? "",
+      parkingEs: draft.parking,
+      schedule: draft.schedule.map((d) => {
+        const prev = (base.schedule ?? []).find((s) => s.id === d.id);
+        return {
+          id: d.id,
+          time: d.time,
+          title: prev?.title || d.title,
+          titleEs: d.title,
+          description: prev?.description || "",
+          descriptionEs: d.description || "",
+        };
+      }),
+      faqs: draft.faqs.map((d) => {
+        const prev = (base.faqs ?? []).find((f) => f.id === d.id);
+        return {
+          id: d.id,
+          question: prev?.question || d.question,
+          answer: prev?.answer || d.answer,
+          questionEs: d.question,
+          answerEs: d.answer,
+        };
+      }),
+    };
+  }
+
+  return {
+    about: draft.about,
+    aboutEs:
+      draft.aboutEs ||
+      suggestSpanishAbout(draft.about) ||
+      base.aboutEs ||
+      null,
+    parking: draft.parking,
+    parkingEs:
+      draft.parkingEs ||
+      suggestSpanishParking(draft.parking) ||
+      base.parkingEs ||
+      null,
+    schedule: draft.schedule.map((d) => {
+      const prev = (base.schedule ?? []).find((s) => s.id === d.id);
+      return {
+        id: d.id,
+        time: d.time,
+        title: d.title,
+        titleEs:
+          prev?.titleEs || suggestSpanishScheduleTitle(d.title) || undefined,
+        description: d.description || "",
+        descriptionEs: prev?.descriptionEs || "",
+      };
+    }),
+    faqs: draft.faqs.map((d) => {
+      const prev = (base.faqs ?? []).find((f) => f.id === d.id);
+      const suggested = suggestSpanishFaq(d.question, d.answer);
+      return {
+        id: d.id,
+        question: d.question,
+        answer: d.answer,
+        questionEs: prev?.questionEs || suggested.question,
+        answerEs: prev?.answerEs || suggested.answer,
+      };
+    }),
+  };
+}
+
+function toPreviewEvent(
+  base: EventRecord,
+  draft: Draft,
+  locale: Locale = "en",
+): EventRecord {
   const capacityNum = draft.capacity.trim()
     ? Number(draft.capacity)
     : null;
+  const localized = mergeLocalizedContent(base, draft, locale);
   return {
     ...base,
     hostName: draft.hostName,
@@ -133,7 +263,8 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
     timeLabel: draft.timeLabel,
     venue: draft.venue,
     address: draft.address,
-    about: draft.about,
+    about: localized.about,
+    aboutEs: localized.aboutEs,
     heroImage: draft.heroImage,
     customDomain: draft.customDomain.trim() || null,
     visibility: draft.visibility,
@@ -155,13 +286,14 @@ function toPreviewEvent(base: EventRecord, draft: Draft): EventRecord {
       deadline: draft.rsvpDeadline,
       customQuestions: draft.customQuestions,
     },
-    schedule: draft.schedule,
-    faqs: draft.faqs,
+    schedule: localized.schedule,
+    faqs: localized.faqs,
     gallery: draft.galleryText
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean),
-    parking: draft.parking,
+    parking: localized.parking,
+    parkingEs: localized.parkingEs,
     dressCode: draft.dressCode,
     whatToBring: draft.whatToBring,
     contactEmail: draft.contactEmail,
@@ -186,15 +318,15 @@ export default function EventCustomizer({
 }: EventCustomizerProps) {
   const t = getDictionary(locale).host;
   const uploadLabels = getDictionary(locale).upload;
-  const [draft, setDraft] = useState<Draft>(() => toDraft(event));
+  const [draft, setDraft] = useState<Draft>(() => toDraft(event, locale));
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    setDraft(toDraft(event));
-  }, [event]);
+    setDraft(toDraft(event, locale));
+  }, [event, locale]);
 
   function updateField<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((prev) => ({ ...prev, [key]: value }));
@@ -223,7 +355,8 @@ export default function EventCustomizer({
     setSaveError(null);
     setSaveMessage(null);
 
-    const preview = toPreviewEvent(event, draft);
+    const preview = toPreviewEvent(event, draft, locale);
+    const localized = mergeLocalizedContent(event, draft, locale);
     const body: Record<string, unknown> = {
       hostName: draft.hostName,
       title: draft.title,
@@ -233,7 +366,8 @@ export default function EventCustomizer({
       timeLabel: draft.timeLabel,
       venue: draft.venue,
       address: draft.address,
-      about: draft.about,
+      about: localized.about,
+      aboutEs: localized.aboutEs,
       heroImage: draft.heroImage,
       customDomain: draft.customDomain.trim() || null,
       visibility: draft.visibility,
@@ -252,10 +386,11 @@ export default function EventCustomizer({
         deadline: draft.rsvpDeadline,
         customQuestions: draft.customQuestions,
       },
-      schedule: draft.schedule,
-      faqs: draft.faqs,
+      schedule: localized.schedule,
+      faqs: localized.faqs,
       gallery: preview.gallery,
-      parking: draft.parking,
+      parking: localized.parking,
+      parkingEs: localized.parkingEs,
       dressCode: draft.dressCode,
       whatToBring: draft.whatToBring,
       contactEmail: draft.contactEmail,
@@ -300,7 +435,7 @@ export default function EventCustomizer({
     }
   }
 
-  const previewEvent = toPreviewEvent(event, draft);
+  const previewEvent = toPreviewEvent(event, draft, locale);
 
   const shellVars = {
     "--host-bg": "#0F1A2E",
@@ -432,16 +567,27 @@ export default function EventCustomizer({
                   const id = e.target.value;
                   if (!id) return;
                   const tpl = getTemplate(id);
-                  setDraft((prev) => ({
-                    ...prev,
-                    templateId: tpl.id,
-                    headline:
-                      locale === "es" ? tpl.headlineEs : tpl.headline,
-                    tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,
-                    heroImage: tpl.heroImage,
-                    colors: { ...tpl.theme.colors },
-                    fonts: { ...tpl.theme.fonts },
-                  }));
+                  const stockHeroes = new Set(
+                    TEMPLATES.map((t) => t.heroImage),
+                  );
+                  setDraft((prev) => {
+                    const keepCustomHero =
+                      Boolean(prev.heroImage) &&
+                      !stockHeroes.has(prev.heroImage);
+                    return {
+                      ...prev,
+                      templateId: tpl.id,
+                      // Store English stock copy; invite preview localizes via locale
+                      headline: tpl.headline,
+                      tagline: tpl.tagline,
+                      // Keep uploaded/custom photos when switching templates
+                      heroImage: keepCustomHero
+                        ? prev.heroImage
+                        : tpl.heroImage,
+                      colors: { ...tpl.theme.colors },
+                      fonts: { ...tpl.theme.fonts },
+                    };
+                  });
                   setSaveMessage(null);
                   e.target.value = "";
                 }}
