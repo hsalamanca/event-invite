@@ -921,19 +921,28 @@ export function resolveInviteLayout(templateId?: string | null): InviteLayout {
  * Custom host-edited copy (not matching either stock language) is left as-is.
  * Also recovers English when Spanish stock text was previously baked into the event.
  */
+const STOCK_ABOUT = {
+  en: "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.",
+  es: "Otro año, otra razón para reunirnos. Me encantaría contar con tu compañía para una cena relajada — sin regalos, solo tu presencia.",
+} as const;
+
 export function resolveLocalizedInviteCopy(
   event: {
     headline: string;
     tagline: string;
+    about?: string;
     templateId?: string | null;
   },
   locale: "en" | "es",
-): { headline: string; tagline: string } {
+): { headline: string; tagline: string; about: string } {
   const tpl = getTemplate(event.templateId || "evening");
   const headlineIsStock =
     event.headline === tpl.headline || event.headline === tpl.headlineEs;
   const taglineIsStock =
     event.tagline === tpl.tagline || event.tagline === tpl.taglineEs;
+  const aboutRaw = event.about ?? "";
+  const aboutIsStock =
+    aboutRaw === STOCK_ABOUT.en || aboutRaw === STOCK_ABOUT.es;
 
   return {
     headline: headlineIsStock
@@ -946,6 +955,11 @@ export function resolveLocalizedInviteCopy(
         ? tpl.taglineEs
         : tpl.tagline
       : event.tagline,
+    about: aboutIsStock
+      ? locale === "es"
+        ? STOCK_ABOUT.es
+        : STOCK_ABOUT.en
+      : aboutRaw,
   };
 }
 
@@ -1030,6 +1044,93 @@ export function defaultRsvpFields(
         required: false,
       },
     ],
+  };
+}
+
+/** Localize stock RSVP field labels/options/prompt by visitor locale. */
+export function resolveLocalizedRsvpFields(
+  fields: EventRecord["rsvpFields"],
+  locale: "en" | "es",
+): EventRecord["rsvpFields"] {
+  const en = defaultRsvpFields(fields.deadline || "", { locale: "en" });
+  const es = defaultRsvpFields(fields.deadline || "", { locale: "es" });
+  const pick = locale === "es" ? es : en;
+
+  const plusLabel =
+    fields.plusOnes.label === en.plusOnes.label ||
+    fields.plusOnes.label === es.plusOnes.label
+      ? pick.plusOnes.label
+      : fields.plusOnes.label;
+
+  const dietaryLabel =
+    fields.dietary.label === en.dietary.label ||
+    fields.dietary.label === es.dietary.label
+      ? pick.dietary.label
+      : fields.dietary.label;
+
+  const dietaryPlaceholder =
+    fields.dietary.placeholder === en.dietary.placeholder ||
+    fields.dietary.placeholder === es.dietary.placeholder
+      ? pick.dietary.placeholder
+      : fields.dietary.placeholder;
+
+  const attendanceOptions = fields.attendance.options.map((opt) => {
+    const idxEn = en.attendance.options.indexOf(opt);
+    if (idxEn >= 0) return pick.attendance.options[idxEn] ?? opt;
+    const idxEs = es.attendance.options.indexOf(opt);
+    if (idxEs >= 0) return pick.attendance.options[idxEs] ?? opt;
+    return opt;
+  });
+
+  const stockPromptsEn = new Set([
+    en.prompt,
+    "Kindly respond by September 5 so we can save you a seat.",
+  ]);
+  const stockPromptsEs = new Set([
+    es.prompt,
+    "Por favor confirma para reservarte un lugar.",
+  ]);
+  const prompt =
+    stockPromptsEn.has(fields.prompt) || stockPromptsEs.has(fields.prompt)
+      ? pick.prompt
+      : fields.prompt;
+
+  const customQuestions = (fields.customQuestions ?? []).map((q) => {
+    const enMeal = en.customQuestions?.[0];
+    const esMeal = es.customQuestions?.[0];
+    if (
+      q.type === "meal" &&
+      enMeal &&
+      esMeal &&
+      (q.label === enMeal.label || q.label === esMeal.label)
+    ) {
+      const options = (q.options ?? []).map((opt) => {
+        const iEn = enMeal.options?.indexOf(opt) ?? -1;
+        if (iEn >= 0) return pick.customQuestions?.[0]?.options?.[iEn] ?? opt;
+        const iEs = esMeal.options?.indexOf(opt) ?? -1;
+        if (iEs >= 0) return pick.customQuestions?.[0]?.options?.[iEs] ?? opt;
+        return opt;
+      });
+      return {
+        ...q,
+        label: pick.customQuestions?.[0]?.label ?? q.label,
+        options,
+      };
+    }
+    return q;
+  });
+
+  return {
+    ...fields,
+    plusOnes: { ...fields.plusOnes, label: plusLabel },
+    dietary: {
+      ...fields.dietary,
+      label: dietaryLabel,
+      placeholder: dietaryPlaceholder,
+    },
+    attendance: { ...fields.attendance, options: attendanceOptions },
+    prompt,
+    customQuestions,
   };
 }
 

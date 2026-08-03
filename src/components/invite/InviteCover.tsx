@@ -24,6 +24,7 @@ type InviteCoverProps = {
   fiftyCelebrate?: string;
   rsvpLabel: string;
   detailsLabel: string;
+  leaveNoteLabel?: string;
   calendarLabel: string;
   calendarHref: string;
   copyLabel: string;
@@ -391,6 +392,7 @@ export default function InviteCover({
   fiftyCelebrate,
   rsvpLabel,
   detailsLabel,
+  leaveNoteLabel = "Leave a note",
   calendarLabel,
   calendarHref,
   copyLabel,
@@ -544,7 +546,7 @@ export default function InviteCover({
             <div className="invite-card-actions">
               {isPast ? (
                 <a className="btn-primary" href="#guestbook">
-                  Leave a note
+                  {leaveNoteLabel}
                 </a>
               ) : (
                 <a className="btn-primary" href="#rsvp">

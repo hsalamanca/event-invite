@@ -8,6 +8,7 @@ import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import {
   resolveInviteLayout,
   resolveLocalizedInviteCopy,
+  resolveLocalizedRsvpFields,
 } from "@/lib/templates";
 import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 import type { WeatherSnapshot } from "@/lib/weather";
@@ -101,14 +102,24 @@ export default function InvitePage({
   trackViews = true,
   onRsvpSubmit,
 }: InvitePageProps) {
-  const { theme, rsvpFields } = event;
+  const { theme } = event;
   const ui = getDictionary(locale).invite;
+  const rsvpFields = resolveLocalizedRsvpFields(event.rsvpFields, locale);
   const attendanceOptions = rsvpFields.attendance.options;
-  const defaultAttendance = attendanceOptions[0] ?? "Joyfully attending";
+  const defaultAttendance = attendanceOptions[0] ?? "";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [attendance, setAttendance] = useState(defaultAttendance);
+  const attendanceKey = attendanceOptions.join("\0");
+  useEffect(() => {
+    setAttendance((prev) => {
+      if (attendanceOptions.includes(prev)) return prev;
+      return attendanceOptions[0] ?? "";
+    });
+    // attendanceOptions identity changes each render; key tracks content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale, attendanceKey]);
   const [guestCount, setGuestCount] = useState<number | "">(1);
   const [dietary, setDietary] = useState("");
   const [note, setNote] = useState("");
@@ -249,20 +260,23 @@ export default function InvitePage({
           rsvp?: { editToken?: string };
         } | null;
         if (!res.ok) {
-          throw new Error(body?.error ?? "Unable to submit RSVP");
+          throw new Error(body?.error ?? ui.submitError);
         }
         if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : ui.somethingWrong);
     } finally {
       setSubmitting(false);
     }
   }
 
   const layout = resolveInviteLayout(event.templateId);
-  const { headline, tagline } = resolveLocalizedInviteCopy(event, locale);
+  const { headline, tagline, about } = resolveLocalizedInviteCopy(
+    event,
+    locale,
+  );
   const cssVars = {
     "--invite-bg": theme.colors.background,
     "--invite-surface": theme.colors.surface,
@@ -297,6 +311,7 @@ export default function InvitePage({
         fiftyCelebrate={ui.fiftyCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
+        leaveNoteLabel={ui.leaveNote}
         calendarLabel={ui.addToCalendar}
         calendarHref={`/api/events/${event.slug}/ics`}
         copyLabel={copied ? ui.copied : ui.copyLink}
@@ -341,17 +356,17 @@ export default function InvitePage({
           <div
             className="invite-about-body"
             dangerouslySetInnerHTML={{
-              __html: sanitizeAboutHtml(event.about),
+              __html: sanitizeAboutHtml(about),
             }}
           />
         </div>
         {weather ? (
           <p className="invite-extra-line">
-            <strong>Weather</strong>
+            <strong>{ui.weather}</strong>
             {weather.summary}
             {weather.tempC != null ? ` · ~${Math.round(weather.tempC)}°C` : ""}
             {weather.precipChance != null
-              ? ` · ${weather.precipChance}% rain chance`
+              ? ` · ${weather.precipChance}% ${ui.rainChance}`
               : ""}
           </p>
         ) : null}
@@ -359,10 +374,9 @@ export default function InvitePage({
 
       {isPast ? (
         <section id="after" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">Thank you</h2>
+          <h2 className="invite-section-title">{ui.thankYou}</h2>
           <p className="invite-prompt">
-            {event.thankYouMessage?.trim() ||
-              "Thank you for celebrating with us. Share a memory in the guestbook below."}
+            {event.thankYouMessage?.trim() || ui.thankYouDefault}
           </p>
         </section>
       ) : null}
@@ -372,9 +386,7 @@ export default function InvitePage({
           <h2 className="invite-section-title">
             {event.registryLabel || ui.registry}
           </h2>
-          <p className="invite-prompt">
-            If you’d like to celebrate with a gift, here’s where we’re registered.
-          </p>
+          <p className="invite-prompt">{ui.registryPrompt}</p>
           <p className="invite-registry">
             <a
               href={event.registryUrl}
@@ -397,11 +409,11 @@ export default function InvitePage({
         event.contactEmail ||
         event.contactPhone) && (
         <section id="info" className="invite-section">
-          <h2 className="invite-section-title">Guest info</h2>
+          <h2 className="invite-section-title">{ui.guestInfo}</h2>
           {event.schedule && event.schedule.length > 0 ? (
             <div className="invite-extra-block">
               <h3 className="invite-section-title invite-section-title--sm">
-                Schedule
+                {ui.schedule}
               </h3>
               <ul className="invite-schedule">
                 {event.schedule.map((item) => (
@@ -416,44 +428,44 @@ export default function InvitePage({
           ) : null}
           {event.dressCode ? (
             <p className="invite-extra-line">
-              <strong>Dress code</strong> {event.dressCode}
+              <strong>{ui.dressCode}</strong> {event.dressCode}
             </p>
           ) : null}
           {event.parking ? (
             <p className="invite-extra-line">
-              <strong>Parking</strong> {event.parking}
+              <strong>{ui.parking}</strong> {event.parking}
             </p>
           ) : null}
           {event.whatToBring ? (
             <p className="invite-extra-line">
-              <strong>What to bring</strong> {event.whatToBring}
+              <strong>{ui.whatToBring}</strong> {event.whatToBring}
             </p>
           ) : null}
           {event.hotelInfo ? (
             <p className="invite-extra-line">
-              <strong>Stay</strong> {event.hotelInfo}
+              <strong>{ui.stay}</strong> {event.hotelInfo}
             </p>
           ) : null}
           {event.travelInfo ? (
             <p className="invite-extra-line">
-              <strong>Travel</strong> {event.travelInfo}
+              <strong>{ui.travel}</strong> {event.travelInfo}
             </p>
           ) : null}
           {(event.contactEmail || event.contactPhone) && (
             <div className="invite-contact-cta">
-              <strong>Contact host</strong>
+              <strong>{ui.contactHost}</strong>
               <div className="invite-cta" style={{ marginTop: "0.75rem" }}>
                 {event.contactEmail ? (
                   <a
                     className="btn-primary"
                     href={`mailto:${event.contactEmail}?subject=${encodeURIComponent(`About ${event.title}`)}`}
                   >
-                    Email {event.hostName}
+                    {ui.emailHost.replace("{name}", event.hostName)}
                   </a>
                 ) : null}
                 {event.contactPhone ? (
                   <a className="btn-ghost" href={`tel:${event.contactPhone}`}>
-                    Call / text
+                    {ui.callText}
                   </a>
                 ) : null}
               </div>
@@ -464,7 +476,7 @@ export default function InvitePage({
 
       {event.faqs && event.faqs.length > 0 ? (
         <section id="faq" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">FAQ</h2>
+          <h2 className="invite-section-title">{ui.faq}</h2>
           <dl className="invite-faq">
             {event.faqs.map((f) => (
               <div key={f.id}>
@@ -478,7 +490,7 @@ export default function InvitePage({
 
       {event.gallery && event.gallery.length > 0 ? (
         <section id="gallery" className="invite-section">
-          <h2 className="invite-section-title">Gallery</h2>
+          <h2 className="invite-section-title">{ui.gallery}</h2>
           <div className="invite-gallery">
             {event.gallery.map((src) => (
               // eslint-disable-next-line @next/next/no-img-element
@@ -490,9 +502,9 @@ export default function InvitePage({
 
       {embed ? (
         <section id="playlist" className="invite-section invite-section--surface">
-          <h2 className="invite-section-title">Playlist</h2>
+          <h2 className="invite-section-title">{ui.playlist}</h2>
           <iframe
-            title="Spotify playlist"
+            title={ui.playlist}
             src={embed}
             width="100%"
             height="152"
@@ -506,27 +518,34 @@ export default function InvitePage({
       <section id="rsvp" className="invite-section invite-section--surface">
         <h2 className="invite-section-title">{ui.rsvp}</h2>
         {isPast ? (
-          <p className="invite-prompt">
-            This celebration has already happened. Thanks for being part of it —
-            leave a guestbook note below.
-          </p>
+          <p className="invite-prompt">{ui.pastEventPrompt}</p>
         ) : (
           <>
         <p className="invite-prompt">{rsvpFields.prompt}</p>
         {rsvpFields.deadline ? (
           <p className="invite-deadline">
             {deadlinePassed
-              ? "RSVP deadline has passed."
+              ? ui.deadlinePassed
               : deadlineDays === 0
-                ? "RSVP by today."
-                : `RSVP within ${deadlineDays} day${deadlineDays === 1 ? "" : "s"} (by ${rsvpFields.deadline}).`}
+                ? ui.deadlineToday
+                : ui.deadlineInDays
+                    .replace(
+                      "{days}",
+                      String(deadlineDays ?? 0),
+                    )
+                    .replace("{date}", rsvpFields.deadline)}
           </p>
         ) : null}
         {event.capacity ? (
           <p className="invite-deadline">
             {atCapacity
-              ? "This celebration is at capacity — RSVPs are closed for new guests."
-              : `${Math.max(0, event.capacity - seatsTaken)} of ${event.capacity} seats still open.`}
+              ? ui.atCapacity
+              : ui.seatsOpen
+                  .replace(
+                    "{open}",
+                    String(Math.max(0, event.capacity - seatsTaken)),
+                  )
+                  .replace("{capacity}", String(event.capacity))}
           </p>
         ) : null}
 
@@ -542,16 +561,14 @@ export default function InvitePage({
             {editToken ? (
               <p className="rsvp-success-sub">
                 <a href={`/rsvp/${editToken}`} className="invite-address">
-                  Update or cancel your RSVP
+                  {ui.updateRsvp}
                 </a>
               </p>
             ) : null}
           </div>
         ) : deadlinePassed || atCapacity ? (
           <p className="invite-prompt">
-            {atCapacity
-              ? "This event is full. Contact the host if you need to change an existing RSVP."
-              : "This RSVP form is closed."}
+            {atCapacity ? ui.eventFull : ui.rsvpClosed}
           </p>
         ) : (
           <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
@@ -664,7 +681,7 @@ export default function InvitePage({
                         }
                       }}
                     >
-                      <option value="">Select…</option>
+                      <option value="">{ui.selectOption}</option>
                       {(q.options ?? []).map((opt) => (
                         <option key={opt} value={opt}>
                           {opt}
@@ -801,7 +818,7 @@ export default function InvitePage({
       </section>
 
       <footer className="invite-footer">
-        <p>Hosted by {event.hostName}</p>
+        <p>{ui.hostedBy.replace("{name}", event.hostName)}</p>
         {event.showOwnviteFooter !== false ? (
           <p className="invite-footer-attr">Ownvite</p>
         ) : null}
