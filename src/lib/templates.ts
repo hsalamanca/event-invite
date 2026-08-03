@@ -1,4 +1,9 @@
 import type { EventRecord, Theme } from "./types";
+import {
+  resolveLocalizedAbout,
+  resolveLocalizedHeadline,
+  resolveLocalizedTagline,
+} from "@/lib/i18n/event-content";
 
 export type TemplateCategory =
   | "birthday"
@@ -918,8 +923,8 @@ export function resolveInviteLayout(templateId?: string | null): InviteLayout {
 
 /**
  * Localize stock template headline/tagline by visitor locale.
- * Custom host-edited copy (not matching either stock language) is left as-is.
- * Also recovers English when Spanish stock text was previously baked into the event.
+ * Prefer event.headlineEs / taglineEs, then phrase maps, then template stock pairs.
+ * Custom host-edited copy without a Spanish field/map is left as-is.
  */
 const STOCK_ABOUT = {
   en: "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.",
@@ -930,7 +935,10 @@ export function resolveLocalizedInviteCopy(
   event: {
     headline: string;
     tagline: string;
+    headlineEs?: string | null;
+    taglineEs?: string | null;
     about?: string;
+    aboutEs?: string | null;
     templateId?: string | null;
   },
   locale: "en" | "es",
@@ -944,23 +952,25 @@ export function resolveLocalizedInviteCopy(
   const aboutIsStock =
     aboutRaw === STOCK_ABOUT.en || aboutRaw === STOCK_ABOUT.es;
 
-  return {
-    headline: headlineIsStock
-      ? locale === "es"
-        ? tpl.headlineEs
-        : tpl.headline
-      : event.headline,
-    tagline: taglineIsStock
-      ? locale === "es"
-        ? tpl.taglineEs
-        : tpl.tagline
-      : event.tagline,
-    about: aboutIsStock
-      ? locale === "es"
-        ? STOCK_ABOUT.es
-        : STOCK_ABOUT.en
-      : aboutRaw,
-  };
+  const headline = headlineIsStock
+    ? locale === "es"
+      ? tpl.headlineEs
+      : tpl.headline
+    : resolveLocalizedHeadline(event.headline, event.headlineEs, locale);
+
+  const tagline = taglineIsStock
+    ? locale === "es"
+      ? tpl.taglineEs
+      : tpl.tagline
+    : resolveLocalizedTagline(event.tagline, event.taglineEs, locale);
+
+  const about = aboutIsStock
+    ? locale === "es"
+      ? STOCK_ABOUT.es
+      : STOCK_ABOUT.en
+    : resolveLocalizedAbout(aboutRaw, event.aboutEs, locale);
+
+  return { headline, tagline, about };
 }
 
 export function getTemplate(id: string): EventTemplate {

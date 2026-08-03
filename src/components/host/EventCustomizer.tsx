@@ -10,8 +10,10 @@ import { TEMPLATES, getTemplate } from "@/lib/templates";
 import {
   suggestSpanishAbout,
   suggestSpanishFaq,
+  suggestSpanishHeadline,
   suggestSpanishParking,
   suggestSpanishScheduleTitle,
+  suggestSpanishTagline,
 } from "@/lib/i18n/event-content";
 import type {
   CustomQuestion,
@@ -42,6 +44,8 @@ type Draft = {
   title: string;
   headline: string;
   tagline: string;
+  headlineEs: string;
+  taglineEs: string;
   dateISO: string;
   timeLabel: string;
   venue: string;
@@ -121,8 +125,20 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
   return {
     hostName: event.hostName,
     title: event.title,
-    headline: event.headline,
-    tagline: event.tagline,
+    headline:
+      locale === "es"
+        ? event.headlineEs ||
+          suggestSpanishHeadline(event.headline) ||
+          event.headline
+        : event.headline,
+    tagline:
+      locale === "es"
+        ? event.taglineEs ||
+          suggestSpanishTagline(event.tagline) ||
+          event.tagline
+        : event.tagline,
+    headlineEs: event.headlineEs || "",
+    taglineEs: event.taglineEs || "",
     dateISO: event.dateISO,
     timeLabel: event.timeLabel,
     venue: event.venue,
@@ -187,10 +203,23 @@ function mergeLocalizedContent(
   locale: Locale,
 ): Pick<
   EventRecord,
-  "about" | "aboutEs" | "schedule" | "faqs" | "parking" | "parkingEs"
+  | "headline"
+  | "headlineEs"
+  | "tagline"
+  | "taglineEs"
+  | "about"
+  | "aboutEs"
+  | "schedule"
+  | "faqs"
+  | "parking"
+  | "parkingEs"
 > {
   if (locale === "es") {
     return {
+      headline: base.headline,
+      headlineEs: draft.headline,
+      tagline: base.tagline,
+      taglineEs: draft.tagline,
       about: base.about,
       aboutEs: draft.about,
       parking: base.parking ?? "",
@@ -220,6 +249,18 @@ function mergeLocalizedContent(
   }
 
   return {
+    headline: draft.headline,
+    headlineEs:
+      draft.headlineEs ||
+      suggestSpanishHeadline(draft.headline) ||
+      base.headlineEs ||
+      null,
+    tagline: draft.tagline,
+    taglineEs:
+      draft.taglineEs ||
+      suggestSpanishTagline(draft.tagline) ||
+      base.taglineEs ||
+      null,
     about: draft.about,
     aboutEs:
       draft.aboutEs ||
@@ -271,8 +312,10 @@ function toPreviewEvent(
     ...base,
     hostName: draft.hostName,
     title: draft.title,
-    headline: draft.headline,
-    tagline: draft.tagline,
+    headline: localized.headline,
+    tagline: localized.tagline,
+    headlineEs: localized.headlineEs,
+    taglineEs: localized.taglineEs,
     dateISO: draft.dateISO,
     timeLabel: draft.timeLabel,
     venue: draft.venue,
@@ -385,8 +428,10 @@ export default function EventCustomizer({
     const body: Record<string, unknown> = {
       hostName: draft.hostName,
       title: draft.title,
-      headline: draft.headline,
-      tagline: draft.tagline,
+      headline: localized.headline,
+      tagline: localized.tagline,
+      headlineEs: localized.headlineEs,
+      taglineEs: localized.taglineEs,
       dateISO: draft.dateISO,
       timeLabel: draft.timeLabel,
       venue: draft.venue,

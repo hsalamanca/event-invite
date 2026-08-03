@@ -71,6 +71,10 @@ export type EventRecord = {
   title: string;
   headline: string;
   tagline: string;
+  /** Optional Spanish headline for locale switching */
+  headlineEs?: string | null;
+  /** Optional Spanish tagline (HTML allowed) for locale switching */
+  taglineEs?: string | null;
   dateISO: string;
   timeLabel: string;
   venue: string;
