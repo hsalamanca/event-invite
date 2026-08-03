@@ -79,6 +79,7 @@ const FONT_STACK: Record<string, string> = {
   Bangers: "var(--font-bangers), Impact, system-ui, sans-serif",
   Fredoka: "var(--font-fredoka), system-ui, sans-serif",
   "Baloo 2": "var(--font-baloo-2), system-ui, sans-serif",
+  "Space Grotesk": "var(--font-space-grotesk), system-ui, sans-serif",
 };
 
 function fontStack(name: string, fallback: string): string {
@@ -284,6 +285,7 @@ export default function InvitePage({
         comicPresents={ui.comicPresents}
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
+        modernCelebrate={ui.modernCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -1729,6 +1731,179 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="azure"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 20% 15%,
+              color-mix(in srgb, #2b6fff 55%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 80% 25%,
+              color-mix(in srgb, #7ec8ff 40%, transparent),
+              transparent 45%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #0b1f3a 55%, transparent) 0%,
+              color-mix(in srgb, #0b1f3a 88%, transparent) 70%,
+              #0b1f3a 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="azure"] .azure-glow) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          background:
+            radial-gradient(
+              circle at 50% 0%,
+              color-mix(in srgb, #7ec8ff 28%, transparent),
+              transparent 55%
+            );
+          animation: azurePulse 7s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 0;
+          border-radius: 1.5rem;
+          background:
+            linear-gradient(
+              160deg,
+              color-mix(in srgb, #7ec8ff 14%, var(--invite-surface)) 0%,
+              var(--invite-surface) 38%,
+              #ffffff 100%
+            );
+          box-shadow:
+            0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+            0 28px 60px color-mix(in srgb, #041226 45%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .azure-ring) {
+          position: absolute;
+          z-index: 1;
+          border-radius: 999px;
+          border: 2px solid color-mix(in srgb, var(--invite-accent) 45%, transparent);
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-layout="azure"] .azure-ring--tl) {
+          width: 7.5rem;
+          height: 7.5rem;
+          top: -2.8rem;
+          left: -2.6rem;
+          border-color: color-mix(in srgb, var(--invite-accent-2) 70%, transparent);
+          animation: azureSpin 18s linear infinite;
+        }
+
+        :global(.invite-cover[data-layout="azure"] .azure-ring--br) {
+          width: 9rem;
+          height: 9rem;
+          right: -3.2rem;
+          bottom: -3.4rem;
+          border-style: dashed;
+          border-color: color-mix(in srgb, var(--invite-accent) 40%, transparent);
+          animation: azureSpin 24s linear infinite reverse;
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-photo) {
+          margin: 1.35rem auto 0;
+          width: min(72%, 16rem);
+          aspect-ratio: 1;
+          border-radius: 999px;
+          border: 3px solid var(--invite-accent);
+          box-shadow:
+            0 0 0 6px color-mix(in srgb, var(--invite-accent-2) 35%, white),
+            0 16px 32px color-mix(in srgb, #0b1f3a 18%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-ornament--azure) {
+          width: 8.5rem;
+          margin-bottom: 0.85rem;
+          color: var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 0.95rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-invite-line) {
+          font-style: normal;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          font-size: 0.78rem;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: clamp(2.2rem, 8vw, 3.25rem);
+          line-height: 1.05;
+          letter-spacing: -0.03em;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-when) {
+          margin-top: 1rem;
+          padding: 1rem 1.15rem;
+          border-radius: 1rem;
+          background: color-mix(in srgb, var(--invite-accent) 8%, white);
+          border-left: 4px solid var(--invite-accent);
+          box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--invite-accent) 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.15rem;
+          letter-spacing: -0.01em;
+        }
+
+        :global(.invite-cover[data-layout="azure"] .btn-primary) {
+          border-radius: 999px;
+          background: linear-gradient(120deg, #2b6fff, #1a4fd6);
+          color: #f4f8ff;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          box-shadow: 0 10px 24px color-mix(in srgb, #2b6fff 35%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="azure"] .btn-ghost) {
+          border-radius: 999px;
+          border: 1.5px solid color-mix(in srgb, var(--invite-accent) 45%, transparent);
+          background: transparent;
+          color: var(--invite-accent);
+          font-weight: 600;
+        }
+
+        @keyframes azurePulse {
+          from {
+            opacity: 0.55;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes azureSpin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(
@@ -2241,6 +2416,8 @@ export default function InvitePage({
           :global(.festive-balloon),
           :global(.toybox-dots),
           :global(.toy-sticker),
+          :global(.azure-glow),
+          :global(.azure-ring),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;

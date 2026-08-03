@@ -18,6 +18,7 @@ type InviteCoverProps = {
   comicPresents?: string;
   festiveParty?: string;
   toyPartyInvite?: string;
+  modernCelebrate?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -176,6 +177,31 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </div>
     );
   }
+  if (layout === "azure") {
+    return (
+      <svg
+        className="invite-ornament invite-ornament--azure"
+        viewBox="0 0 140 28"
+        aria-hidden
+      >
+        <path
+          d="M10 18c18-14 42-14 60 0"
+          fill="none"
+          stroke="#2B6FFF"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M70 18c18-14 42-14 60 0"
+          fill="none"
+          stroke="#7EC8FF"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+        <circle cx="70" cy="10" r="3.2" fill="#2B6FFF" />
+      </svg>
+    );
+  }
   if (layout === "script" || layout === "botanical") {
     return (
       <svg className="invite-ornament" viewBox="0 0 120 24" aria-hidden>
@@ -258,6 +284,7 @@ export default function InviteCover({
   comicPresents,
   festiveParty,
   toyPartyInvite,
+  modernCelebrate,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -273,10 +300,12 @@ export default function InviteCover({
     layout === "glam" ||
     layout === "comic" ||
     layout === "festive" ||
-    layout === "toybox";
+    layout === "toybox" ||
+    layout === "azure";
   const isComic = layout === "comic";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
+  const isAzure = layout === "azure";
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
@@ -284,7 +313,9 @@ export default function InviteCover({
       ? festiveParty || invitesYou
       : isToybox
         ? toyPartyInvite || invitesYou
-        : invitesYou;
+        : isAzure
+          ? modernCelebrate || invitesYou
+          : invitesYou;
 
   return (
     <section
@@ -306,6 +337,7 @@ export default function InviteCover({
       {isComic ? <div className="comic-halftone" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
+      {isAzure ? <div className="azure-glow" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
         <article className="invite-card fade-up fade-up-1">
@@ -321,6 +353,13 @@ export default function InviteCover({
           ) : null}
 
           {isToybox ? <ToyStickers /> : null}
+
+          {isAzure ? (
+            <>
+              <span className="azure-ring azure-ring--tl" aria-hidden />
+              <span className="azure-ring azure-ring--br" aria-hidden />
+            </>
+          ) : null}
 
           {isFestive ? (
             <div className="festive-garland-wrap" aria-hidden>

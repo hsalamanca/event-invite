@@ -11,6 +11,7 @@ import {
   Bangers,
   Fredoka,
   Baloo_2,
+  Space_Grotesk,
 } from "next/font/google";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
@@ -93,6 +94,13 @@ const baloo2 = Baloo_2({
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const meta = getDictionary(locale).meta;
@@ -119,7 +127,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} ${fredoka.variable} ${baloo2.variable} antialiased`}
+        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} ${fredoka.variable} ${baloo2.variable} ${spaceGrotesk.variable} antialiased`}
       >
         {children}
       </body>
