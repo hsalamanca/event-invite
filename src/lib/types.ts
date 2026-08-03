@@ -94,6 +94,8 @@ export type EventRecord = {
   faqs?: FaqItem[];
   gallery?: string[];
   parking?: string;
+  /** Optional Spanish parking note for locale switching */
+  parkingEs?: string | null;
   dressCode?: string;
   whatToBring?: string;
   contactEmail?: string;

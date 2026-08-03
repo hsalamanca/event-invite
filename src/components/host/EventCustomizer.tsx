@@ -10,6 +10,7 @@ import { TEMPLATES, getTemplate } from "@/lib/templates";
 import {
   suggestSpanishAbout,
   suggestSpanishFaq,
+  suggestSpanishParking,
   suggestSpanishScheduleTitle,
 } from "@/lib/i18n/event-content";
 import type {
@@ -47,6 +48,7 @@ type Draft = {
   address: string;
   about: string;
   aboutEs: string;
+  parkingEs: string;
   heroImage: string;
   customDomain: string;
   visibility: EventRecord["visibility"];
@@ -126,6 +128,7 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
           event.about
         : event.about,
     aboutEs: event.aboutEs || "",
+    parkingEs: event.parkingEs || "",
     heroImage: event.heroImage,
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -142,7 +145,13 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     schedule,
     faqs,
     galleryText: (event.gallery ?? []).join("\n"),
-    parking: event.parking ?? "",
+    parking:
+      locale === "es"
+        ? event.parkingEs ||
+          suggestSpanishParking(event.parking ?? "") ||
+          event.parking ||
+          ""
+        : event.parking ?? "",
     dressCode: event.dressCode ?? "",
     whatToBring: event.whatToBring ?? "",
     contactEmail: event.contactEmail ?? "",
@@ -162,11 +171,16 @@ function mergeLocalizedContent(
   base: EventRecord,
   draft: Draft,
   locale: Locale,
-): Pick<EventRecord, "about" | "aboutEs" | "schedule" | "faqs"> {
+): Pick<
+  EventRecord,
+  "about" | "aboutEs" | "schedule" | "faqs" | "parking" | "parkingEs"
+> {
   if (locale === "es") {
     return {
       about: base.about,
       aboutEs: draft.about,
+      parking: base.parking ?? "",
+      parkingEs: draft.parking,
       schedule: draft.schedule.map((d) => {
         const prev = (base.schedule ?? []).find((s) => s.id === d.id);
         return {
@@ -197,6 +211,12 @@ function mergeLocalizedContent(
       draft.aboutEs ||
       suggestSpanishAbout(draft.about) ||
       base.aboutEs ||
+      null,
+    parking: draft.parking,
+    parkingEs:
+      draft.parkingEs ||
+      suggestSpanishParking(draft.parking) ||
+      base.parkingEs ||
       null,
     schedule: draft.schedule.map((d) => {
       const prev = (base.schedule ?? []).find((s) => s.id === d.id);
@@ -272,7 +292,8 @@ function toPreviewEvent(
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean),
-    parking: draft.parking,
+    parking: localized.parking,
+    parkingEs: localized.parkingEs,
     dressCode: draft.dressCode,
     whatToBring: draft.whatToBring,
     contactEmail: draft.contactEmail,
@@ -368,7 +389,8 @@ export default function EventCustomizer({
       schedule: localized.schedule,
       faqs: localized.faqs,
       gallery: preview.gallery,
-      parking: draft.parking,
+      parking: localized.parking,
+      parkingEs: localized.parkingEs,
       dressCode: draft.dressCode,
       whatToBring: draft.whatToBring,
       contactEmail: draft.contactEmail,

@@ -8,6 +8,7 @@ import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import {
   resolveLocalizedAbout,
   resolveLocalizedFaqs,
+  resolveLocalizedParking,
   resolveLocalizedSchedule,
 } from "@/lib/i18n/event-content";
 import {
@@ -285,6 +286,11 @@ export default function InvitePage({
   const about = resolveLocalizedAbout(event.about, event.aboutEs, locale);
   const schedule = resolveLocalizedSchedule(event.schedule, locale);
   const faqs = resolveLocalizedFaqs(event.faqs, locale);
+  const parking = resolveLocalizedParking(
+    event.parking,
+    event.parkingEs,
+    locale,
+  );
   // Prefer bilingual aboutEs / maps; fall back to stock about resolver
   const aboutHtml = about.trim() ? about : aboutFallback;
   const cssVars = {
@@ -412,7 +418,7 @@ export default function InvitePage({
 
       {(schedule.length ||
         event.dressCode ||
-        event.parking ||
+        parking ||
         event.whatToBring ||
         event.hotelInfo ||
         event.travelInfo ||
@@ -441,9 +447,9 @@ export default function InvitePage({
               <strong>{ui.dressCode}</strong> {event.dressCode}
             </p>
           ) : null}
-          {event.parking ? (
+          {parking ? (
             <p className="invite-extra-line">
-              <strong>{ui.parking}</strong> {event.parking}
+              <strong>{ui.parking}</strong> {parking}
             </p>
           ) : null}
           {event.whatToBring ? (

@@ -56,6 +56,16 @@ const FAQ_ANSWER_ES: Record<string, string> = {
     "¡Comida, refrescos de fuente y margaritas!",
 };
 
+const PARKING_ES: Record<string, string> = {
+  "Plenty of parking available": "Hay mucho estacionamiento disponible",
+  "Plenty of parking available.": "Hay mucho estacionamiento disponible.",
+  "Free parking on site": "Estacionamiento gratis en el lugar",
+  "Free parking on-site": "Estacionamiento gratis en el lugar",
+  "Street parking available": "Hay estacionamiento en la calle",
+  "Valet parking available": "Hay valet parking disponible",
+  "Parking garage nearby": "Hay un estacionamiento cercano",
+};
+
 const ABOUT_ES: Record<string, string> = {
   "Another year, another reason to gather. I'd love your company for a relaxed dinner and drinks — no gifts, just your presence.":
     "Otro año, otra razón para reunirnos. Me encantaría contar con tu compañía para una cena relajada — sin regalos, solo tu presencia.",
@@ -173,6 +183,28 @@ export function resolveLocalizedFaqs(
   });
 }
 
+function lookupParkingEs(parking: string): string | undefined {
+  const raw = normalizeForLookup(parking);
+  if (PARKING_ES[raw]) return PARKING_ES[raw];
+  for (const [en, es] of Object.entries(PARKING_ES)) {
+    if (normalizeForLookup(en) === raw) return es;
+  }
+  return undefined;
+}
+
+export function resolveLocalizedParking(
+  parking: string | null | undefined,
+  parkingEs: string | null | undefined,
+  locale: Locale,
+): string {
+  const en = parking?.trim() || "";
+  if (locale === "es") {
+    if (parkingEs?.trim()) return parkingEs;
+    return lookupParkingEs(en) ?? en;
+  }
+  return en || parkingEs?.trim() || "";
+}
+
 /** Suggest Spanish copy for host content (used when seeding Es fields). */
 export function suggestSpanishAbout(about: string): string | undefined {
   return lookupAboutEs(about);
@@ -180,6 +212,10 @@ export function suggestSpanishAbout(about: string): string | undefined {
 
 export function suggestSpanishScheduleTitle(title: string): string | undefined {
   return lookupScheduleTitleEs(title);
+}
+
+export function suggestSpanishParking(parking: string): string | undefined {
+  return lookupParkingEs(parking);
 }
 
 export function suggestSpanishFaq(
