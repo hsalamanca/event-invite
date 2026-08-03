@@ -188,7 +188,11 @@ export default function CreateEventWizard({
                                   ? "fraunces"
                                   : tpl.theme.fonts.display === "Outfit"
                                     ? "outfit"
-                                    : "cormorant"
+                                    : tpl.theme.fonts.display === "Bangers"
+                                      ? "bangers"
+                                      : tpl.theme.fonts.display === "Fredoka"
+                                        ? "fredoka"
+                                        : "cormorant"
                         })`,
                       }}
                     >

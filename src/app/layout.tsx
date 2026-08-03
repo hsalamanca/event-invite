@@ -9,6 +9,7 @@ import {
   Lora,
   Great_Vibes,
   Bangers,
+  Fredoka,
 } from "next/font/google";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
@@ -77,6 +78,13 @@ const bangers = Bangers({
   display: "swap",
 });
 
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-fredoka",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const meta = getDictionary(locale).meta;
@@ -103,7 +111,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} antialiased`}
+        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} ${fredoka.variable} antialiased`}
       >
         {children}
       </body>

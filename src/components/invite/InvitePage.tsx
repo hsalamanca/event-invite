@@ -77,6 +77,7 @@ const FONT_STACK: Record<string, string> = {
   Lora: "var(--font-lora), Georgia, serif",
   "Great Vibes": "var(--font-great-vibes), cursive",
   Bangers: "var(--font-bangers), Impact, system-ui, sans-serif",
+  Fredoka: "var(--font-fredoka), system-ui, sans-serif",
 };
 
 function fontStack(name: string, fallback: string): string {
@@ -280,6 +281,7 @@ export default function InvitePage({
         heroImage={event.heroImage}
         invitesYou={ui.invitesYou}
         comicPresents={ui.comicPresents}
+        festiveParty={ui.festiveParty}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -1302,6 +1304,233 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="festive"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 15% 18%,
+              color-mix(in srgb, #ff4d8d 34%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 22%,
+              color-mix(in srgb, #4d96ff 30%, transparent),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at 55% 8%,
+              color-mix(in srgb, #ffd23f 36%, transparent),
+              transparent 38%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, var(--invite-bg) 45%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 86%, transparent) 68%,
+              var(--invite-bg) 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-confetti) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.55;
+          background-image:
+            radial-gradient(circle at 12% 22%, #ff4d8d 0 3px, transparent 4px),
+            radial-gradient(circle at 28% 68%, #ffd23f 0 2.5px, transparent 3.5px),
+            radial-gradient(circle at 46% 18%, #4d96ff 0 3px, transparent 4px),
+            radial-gradient(circle at 62% 74%, #c77dff 0 2.5px, transparent 3.5px),
+            radial-gradient(circle at 78% 30%, #7cffb2 0 3px, transparent 4px),
+            radial-gradient(circle at 88% 62%, #ff8a3d 0 2.5px, transparent 3.5px),
+            radial-gradient(circle at 18% 88%, #ff6b9d 0 2px, transparent 3px),
+            radial-gradient(circle at 70% 48%, #4d96ff 0 2px, transparent 3px);
+          animation: festiveDrift 9s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card) {
+          position: relative;
+          overflow: visible;
+          border: 0;
+          border-radius: 1.6rem;
+          background:
+            linear-gradient(var(--invite-surface), var(--invite-surface))
+              padding-box,
+            linear-gradient(
+              135deg,
+              #ff4d8d,
+              #ffd23f,
+              #7cffb2,
+              #4d96ff,
+              #c77dff,
+              #ff4d8d
+            )
+              border-box;
+          border: 3px solid transparent;
+          box-shadow:
+            0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+            0 22px 50px color-mix(in srgb, #2a1848 14%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-garland-wrap) {
+          position: relative;
+          z-index: 2;
+          margin: -0.35rem 0.35rem -0.6rem;
+          padding: 0.15rem 0.4rem 0;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-garland) {
+          display: block;
+          width: 100%;
+          height: auto;
+          overflow: visible;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-balloon) {
+          transform-box: fill-box;
+          transform-origin: center bottom;
+          animation: festiveBob 3.2s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--1),
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--4) {
+          animation-delay: 0.35s;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--2),
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--5) {
+          animation-delay: 0.7s;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--3),
+        :global(.invite-cover[data-layout="festive"] .festive-balloon--6) {
+          animation-delay: 1.05s;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-photo) {
+          margin: 0.35rem 1rem 0;
+          border-radius: 1.15rem;
+          aspect-ratio: 16 / 10;
+          box-shadow:
+            0 0 0 3px #fff,
+            0 0 0 6px color-mix(in srgb, var(--invite-accent) 55%, #ffd23f),
+            0 10px 24px color-mix(in srgb, #2a1848 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-body) {
+          padding-top: 1.1rem;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-ornament--festive) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.45rem;
+          width: auto;
+          margin-bottom: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .festive-dot) {
+          width: 0.55rem;
+          height: 0.55rem;
+          border-radius: 999px;
+          box-shadow: 0 1px 0 color-mix(in srgb, #2a1848 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.05rem;
+          letter-spacing: 0.04em;
+          text-transform: none;
+          color: var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-invite-line) {
+          font-style: normal;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: clamp(2.4rem, 9vw, 3.6rem);
+          line-height: 1.02;
+          letter-spacing: -0.01em;
+          background: linear-gradient(
+            105deg,
+            #ff4d8d 0%,
+            #ff8a3d 28%,
+            #ffd23f 52%,
+            #4d96ff 78%,
+            #c77dff 100%
+          );
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-when) {
+          margin-top: 0.9rem;
+          padding: 0.95rem 1.05rem;
+          border-radius: 1rem;
+          background:
+            radial-gradient(
+              circle at 12% 20%,
+              color-mix(in srgb, #ffd23f 28%, transparent),
+              transparent 48%
+            ),
+            radial-gradient(
+              circle at 90% 80%,
+              color-mix(in srgb, #4d96ff 18%, transparent),
+              transparent 50%
+            ),
+            color-mix(in srgb, var(--invite-bg) 88%, white);
+          border: 1.5px dashed color-mix(in srgb, var(--invite-accent) 45%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.25rem;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .btn-primary) {
+          border-radius: 999px;
+          background: linear-gradient(120deg, #ff4d8d, #ff8a3d 55%, #ffd23f);
+          color: #2a1848;
+          font-weight: 700;
+          box-shadow: 0 8px 18px color-mix(in srgb, #ff4d8d 28%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="festive"] .btn-ghost) {
+          border-radius: 999px;
+          border: 2px solid color-mix(in srgb, var(--invite-accent) 45%, transparent);
+          background: white;
+          font-weight: 600;
+        }
+
+        @keyframes festiveBob {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-2.5px);
+          }
+        }
+
+        @keyframes festiveDrift {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 10px, 0);
+          }
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(
@@ -1810,6 +2039,8 @@ export default function InvitePage({
           .fade-up,
           :global(.invite-cover-atmosphere-img),
           :global(.comic-burst),
+          :global(.festive-confetti),
+          :global(.festive-balloon),
           .rsvp-check,
           .rsvp-success-text::after {
             animation: none !important;
