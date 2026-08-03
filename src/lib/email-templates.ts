@@ -42,6 +42,60 @@ export function inviteEmailHtml(input: {
 </body></html>`;
 }
 
+export function rsvpHostNotificationHtml(input: {
+  eventTitle: string;
+  guestName: string;
+  guestEmail: string;
+  attendance: string;
+  guestCount: number;
+  dietary?: string;
+  note?: string;
+  mealChoice?: string;
+  updated: boolean;
+  manageUrl: string;
+}): string {
+  const lead = input.updated
+    ? `<strong>${escapeHtml(input.guestName)}</strong> updated their RSVP for <strong>${escapeHtml(input.eventTitle)}</strong>.`
+    : `<strong>${escapeHtml(input.guestName)}</strong> RSVP’d to <strong>${escapeHtml(input.eventTitle)}</strong>.`;
+
+  const extras = [
+    input.mealChoice
+      ? `<tr><td style="padding-top:8px;font-size:14px;color:#C9D0DB;">Meal: ${escapeHtml(input.mealChoice)}</td></tr>`
+      : "",
+    input.dietary?.trim()
+      ? `<tr><td style="padding-top:8px;font-size:14px;color:#C9D0DB;">Dietary: ${escapeHtml(input.dietary.trim())}</td></tr>`
+      : "",
+    input.note?.trim()
+      ? `<tr><td style="padding-top:8px;font-size:14px;color:#C9D0DB;">Note: ${escapeHtml(input.note.trim())}</td></tr>`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("");
+
+  return `<!doctype html>
+<html><body style="margin:0;background:#0F1A2E;color:#F4F0E8;font-family:Georgia,serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F1A2E;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" style="max-width:520px;background:#1A2744;border:1px solid rgba(201,169,98,0.35);padding:28px;">
+        <tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>
+        <tr><td style="padding-top:12px;font-size:24px;line-height:1.25;">New RSVP</td></tr>
+        <tr><td style="padding-top:14px;font-size:16px;line-height:1.5;color:#C9D0DB;">${lead}</td></tr>
+        <tr><td style="padding-top:18px;font-size:15px;line-height:1.6;color:#C9D0DB;">
+          ${escapeHtml(input.attendance)} · ${input.guestCount} guest${input.guestCount === 1 ? "" : "s"}<br/>
+          ${escapeHtml(input.guestEmail)}
+        </td></tr>
+        ${extras}
+        <tr><td style="padding-top:24px;">
+          <a href="${escapeAttr(input.manageUrl)}" style="display:inline-block;background:#C9A962;color:#0F1A2E;text-decoration:none;padding:12px 18px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
+            View guests
+          </a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

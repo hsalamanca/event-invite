@@ -193,7 +193,12 @@ export type ManualGuest = {
 export type OutboundMessage = {
   id: string;
   eventId: string;
-  type: "invite" | "rsvp_reminder" | "event_reminder" | "custom";
+  type:
+    | "invite"
+    | "rsvp_reminder"
+    | "event_reminder"
+    | "rsvp_notification"
+    | "custom";
   to: string;
   subject: string;
   body: string;

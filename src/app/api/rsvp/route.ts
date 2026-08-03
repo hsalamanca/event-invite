@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import { getEventById, getEventBySlug } from "@/lib/events";
+import { notifyHostsOfRsvp } from "@/lib/rsvp-notify";
 import {
   appendRsvp,
   getRsvpByToken,
@@ -8,6 +9,8 @@ import {
   updateRsvpByToken,
 } from "@/lib/rsvp-store";
 import type { RsvpAnswers } from "@/lib/types";
+
+export const runtime = "nodejs";
 
 function parseAnswers(raw: unknown): RsvpAnswers {
   if (!raw || typeof raw !== "object") return {};
@@ -110,6 +113,10 @@ export async function POST(request: Request) {
         answers,
         mealChoice,
       });
+      if (!record) {
+        return NextResponse.json({ error: "RSVP not found" }, { status: 404 });
+      }
+      await notifyHostsOfRsvp({ event, rsvp: record, updated: true });
       return NextResponse.json({ ok: true, rsvp: record, updated: true });
     }
 
@@ -125,6 +132,7 @@ export async function POST(request: Request) {
       mealChoice,
     });
 
+    await notifyHostsOfRsvp({ event, rsvp: record, updated: false });
     return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
   } catch (err) {
     console.error("RSVP append failed", err);
@@ -193,6 +201,10 @@ export async function PATCH(request: Request) {
     mealChoice:
       data.mealChoice != null ? String(data.mealChoice).trim() : undefined,
   });
+
+  if (updated) {
+    await notifyHostsOfRsvp({ event, rsvp: updated, updated: true });
+  }
 
   return NextResponse.json({ ok: true, rsvp: updated });
 }
