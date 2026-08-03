@@ -23,7 +23,8 @@ export type InviteLayout =
   | "kraft"
   | "glam"
   | "comic"
-  | "festive";
+  | "festive"
+  | "toybox";
 
 export type EventTemplate = {
   id: string;
@@ -225,6 +226,19 @@ const festiveRainbow: Theme = {
     textMuted: "#6E5A7A",
   },
   fonts: { display: "Fredoka", body: "Outfit" },
+};
+
+/** Canva blue & yellow illustrated kids toy party invitation */
+const toyParty: Theme = {
+  colors: {
+    background: "#DFF1FF",
+    surface: "#FFFDF7",
+    accentPrimary: "#2F6FE0",
+    accentSecondary: "#FFD400",
+    textPrimary: "#1C3A6E",
+    textMuted: "#5A7399",
+  },
+  fonts: { display: "Baloo 2", body: "Outfit" },
 };
 
 /** Evite Lovely Linen — airy natural neutrals */
@@ -727,6 +741,28 @@ export const TEMPLATES: EventTemplate[] = [
     tagline: "Balloons, cake, and all the colors — come celebrate with us!",
     taglineEs: "Globos, pastel y todos los colores — ¡ven a celebrar con nosotros!",
   },
+  {
+    id: "toy-party",
+    name: "Toy party",
+    nameEs: "Fiesta de juguetes",
+    description:
+      "Blue + yellow illustrated toybox — kids’ birthdays, playdates, and classroom parties.",
+    descriptionEs:
+      "Caja de juguetes ilustrada azul + amarillo — cumpleaños infantiles y fiestas de juegos.",
+    inspiredBy:
+      "Canva Invitación vertical fiesta infantil juguete azul amarillo ilustrado",
+    inspiredByEs:
+      "Canva invitación vertical fiesta infantil juguete azul amarillo ilustrado",
+    categories: ["birthday", "party", "baby"],
+    layout: "toybox",
+    theme: toyParty,
+    heroImage:
+      "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1920&q=80&auto=format&fit=crop",
+    headline: "Come Play!",
+    headlineEs: "¡Ven a jugar!",
+    tagline: "Blocks, toys, cake, and giggles — join our little celebration!",
+    taglineEs: "Bloques, juguetes, pastel y risas — ¡únete a nuestra fiesta!",
+  },
 ];
 
 
@@ -750,6 +786,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "latin-fiesta",
   "watercolor-rose",
   "champagne-wedding",
+  "toy-party",
 ]);
 
 export function defaultRsvpFields(
