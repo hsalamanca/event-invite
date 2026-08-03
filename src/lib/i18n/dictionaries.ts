@@ -217,6 +217,7 @@ export type Dictionary = {
     festiveParty: string;
     toyPartyInvite: string;
     modernCelebrate: string;
+    arcadePlayer: string;
     date: string;
     time: string;
     venue: string;
@@ -549,6 +550,7 @@ const en: Dictionary = {
     festiveParty: "is throwing a birthday party",
     toyPartyInvite: "invites you to a toy party",
     modernCelebrate: "is celebrating",
+    arcadePlayer: "player one invites you",
     date: "Date",
     time: "Time",
     venue: "Venue",
@@ -885,6 +887,7 @@ const es: Dictionary = {
     festiveParty: "te invita a una fiesta de cumpleaños",
     toyPartyInvite: "te invita a una fiesta de juguetes",
     modernCelebrate: "está celebrando",
+    arcadePlayer: "el jugador uno te invita",
     date: "Fecha",
     time: "Hora",
     venue: "Lugar",

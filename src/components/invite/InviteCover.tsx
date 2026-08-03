@@ -19,6 +19,7 @@ type InviteCoverProps = {
   festiveParty?: string;
   toyPartyInvite?: string;
   modernCelebrate?: string;
+  arcadePlayer?: string;
   rsvpLabel: string;
   detailsLabel: string;
   calendarLabel: string;
@@ -83,6 +84,44 @@ function BalloonGarland() {
         </g>
       ))}
     </svg>
+  );
+}
+
+function ArcadeStickers() {
+  return (
+    <>
+      <span className="arcade-badge arcade-badge--1up" aria-hidden>
+        1UP
+      </span>
+      <svg
+        className="arcade-sticker arcade-sticker--pad"
+        viewBox="0 0 64 48"
+        aria-hidden
+      >
+        <rect
+          x="4"
+          y="10"
+          width="56"
+          height="28"
+          rx="10"
+          fill="#FF3D9A"
+          stroke="#1A0A3C"
+          strokeWidth="2.5"
+        />
+        <circle cx="20" cy="24" r="7" fill="#FFF8FF" stroke="#1A0A3C" strokeWidth="2" />
+        <path
+          d="M20 19.5v9M15.5 24h9"
+          stroke="#1A0A3C"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <circle cx="42" cy="20" r="3.2" fill="#39FF14" stroke="#1A0A3C" strokeWidth="1.5" />
+        <circle cx="50" cy="26" r="3.2" fill="#00E5FF" stroke="#1A0A3C" strokeWidth="1.5" />
+      </svg>
+      <span className="arcade-badge arcade-badge--start" aria-hidden>
+        START
+      </span>
+    </>
   );
 }
 
@@ -202,6 +241,17 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </svg>
     );
   }
+  if (layout === "arcade") {
+    return (
+      <div className="invite-ornament invite-ornament--arcade" aria-hidden>
+        <span className="arcade-pixel" style={{ background: "#FF3D9A" }} />
+        <span className="arcade-pixel" style={{ background: "#39FF14" }} />
+        <span className="arcade-pixel" style={{ background: "#00E5FF" }} />
+        <span className="arcade-pixel" style={{ background: "#FFE600" }} />
+        <span className="arcade-pixel" style={{ background: "#FF3D9A" }} />
+      </div>
+    );
+  }
   if (layout === "script" || layout === "botanical") {
     return (
       <svg className="invite-ornament" viewBox="0 0 120 24" aria-hidden>
@@ -285,6 +335,7 @@ export default function InviteCover({
   festiveParty,
   toyPartyInvite,
   modernCelebrate,
+  arcadePlayer,
   rsvpLabel,
   detailsLabel,
   calendarLabel,
@@ -301,11 +352,13 @@ export default function InviteCover({
     layout === "comic" ||
     layout === "festive" ||
     layout === "toybox" ||
-    layout === "azure";
+    layout === "azure" ||
+    layout === "arcade";
   const isComic = layout === "comic";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
   const isAzure = layout === "azure";
+  const isArcade = layout === "arcade";
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
@@ -315,7 +368,9 @@ export default function InviteCover({
         ? toyPartyInvite || invitesYou
         : isAzure
           ? modernCelebrate || invitesYou
-          : invitesYou;
+          : isArcade
+            ? arcadePlayer || invitesYou
+            : invitesYou;
 
   return (
     <section
@@ -338,6 +393,7 @@ export default function InviteCover({
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isAzure ? <div className="azure-glow" aria-hidden /> : null}
+      {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
         <article className="invite-card fade-up fade-up-1">
@@ -353,6 +409,7 @@ export default function InviteCover({
           ) : null}
 
           {isToybox ? <ToyStickers /> : null}
+          {isArcade ? <ArcadeStickers /> : null}
 
           {isAzure ? (
             <>

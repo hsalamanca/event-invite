@@ -25,7 +25,8 @@ export type InviteLayout =
   | "comic"
   | "festive"
   | "toybox"
-  | "azure";
+  | "azure"
+  | "arcade";
 
 export type EventTemplate = {
   id: string;
@@ -253,6 +254,19 @@ const blueModern: Theme = {
     textMuted: "#5B6F8C",
   },
   fonts: { display: "Space Grotesk", body: "Outfit" },
+};
+
+/** Canva Colorful Kids Video Game Birthday — neon arcade party */
+const gameOn: Theme = {
+  colors: {
+    background: "#1A0A3C",
+    surface: "#FFF8FF",
+    accentPrimary: "#FF3D9A",
+    accentSecondary: "#39FF14",
+    textPrimary: "#1A0A3C",
+    textMuted: "#6B5A8A",
+  },
+  fonts: { display: "Press Start 2P", body: "Outfit" },
 };
 
 /** Evite Lovely Linen — airy natural neutrals */
@@ -796,6 +810,28 @@ export const TEMPLATES: EventTemplate[] = [
     headlineEs: "Únete a la celebración",
     tagline: "A modern night of friends, music, and cake — you’re invited.",
     taglineEs: "Una noche moderna de amigos, música y pastel — estás invitado.",
+  },
+  {
+    id: "game-on",
+    name: "Game on",
+    nameEs: "Nivel gamer",
+    description:
+      "Neon arcade video-game party — kids’ birthdays, controller cake, pixel fun.",
+    descriptionEs:
+      "Fiesta arcade neón — cumpleaños infantiles, pastel gamer y diversión pixel.",
+    inspiredBy: "Canva Colorful Kids Video Game Birthday Party Invitation",
+    inspiredByEs:
+      "Canva invitación de cumpleaños infantil videojuego colorida",
+    categories: ["birthday", "party", "baby"],
+    layout: "arcade",
+    theme: gameOn,
+    heroImage:
+      "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=1920&q=80&auto=format&fit=crop",
+    headline: "LEVEL UP!",
+    headlineEs: "¡LEVEL UP!",
+    tagline: "Controllers ready, snacks loaded — press start and join the party!",
+    taglineEs:
+      "Mandos listos, snacks cargados — ¡presiona start y únete a la fiesta!",
   },
 ];
 
