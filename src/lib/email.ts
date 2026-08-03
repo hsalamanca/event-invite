@@ -33,8 +33,11 @@ export async function sendEventEmail(input: {
     createdAt: new Date().toISOString(),
   };
 
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "Ownvite <invites@ownvite.app>";
+  const key = process.env.RESEND_API_KEY || process.env.RESEND_API_Key;
+  const from =
+    process.env.EMAIL_FROM ||
+    process.env.EMAIL_FROM_ADDRESS ||
+    "Ownvite <invites@ownvite.app>";
 
   if (!key) {
     const preview: OutboundMessage = { ...base, status: "preview" };

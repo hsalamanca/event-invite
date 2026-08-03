@@ -7,8 +7,11 @@ export async function sendTransactionalEmail(input: {
   subject: string;
   body: string;
 }): Promise<{ status: "sent" | "preview" | "failed"; error?: string }> {
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "Ownvite <invites@ownvite.app>";
+  const key = process.env.RESEND_API_KEY || process.env.RESEND_API_Key;
+  const from =
+    process.env.EMAIL_FROM ||
+    process.env.EMAIL_FROM_ADDRESS ||
+    "Ownvite <invites@ownvite.app>";
 
   if (!key) {
     console.info("[mail:preview]", input.to, input.subject, input.body);
