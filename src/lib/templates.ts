@@ -24,7 +24,8 @@ export type InviteLayout =
   | "glam"
   | "comic"
   | "festive"
-  | "toybox";
+  | "toybox"
+  | "azure";
 
 export type EventTemplate = {
   id: string;
@@ -239,6 +240,19 @@ const toyParty: Theme = {
     textMuted: "#5A7399",
   },
   fonts: { display: "Baloo 2", body: "Outfit" },
+};
+
+/** Canva Blue Modern Birthday — sleek cobalt celebration */
+const blueModern: Theme = {
+  colors: {
+    background: "#0B1F3A",
+    surface: "#F4F8FF",
+    accentPrimary: "#2B6FFF",
+    accentSecondary: "#7EC8FF",
+    textPrimary: "#0B1F3A",
+    textMuted: "#5B6F8C",
+  },
+  fonts: { display: "Space Grotesk", body: "Outfit" },
 };
 
 /** Evite Lovely Linen — airy natural neutrals */
@@ -762,6 +776,26 @@ export const TEMPLATES: EventTemplate[] = [
     headlineEs: "¡Ven a jugar!",
     tagline: "Blocks, toys, cake, and giggles — join our little celebration!",
     taglineEs: "Bloques, juguetes, pastel y risas — ¡únete a nuestra fiesta!",
+  },
+  {
+    id: "blue-modern",
+    name: "Blue modern",
+    nameEs: "Azul moderno",
+    description:
+      "Sleek cobalt + ice blue — modern adult birthdays, milestone nights, clean digital invites.",
+    descriptionEs:
+      "Cobalto elegante + azul hielo — cumpleaños adultos, hitos y invites digitales limpios.",
+    inspiredBy: "Canva Blue Modern Birthday Party Invitation",
+    inspiredByEs: "Canva invitación de cumpleaños azul moderna",
+    categories: ["birthday", "party", "dinner"],
+    layout: "azure",
+    theme: blueModern,
+    heroImage:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1920&q=80&auto=format&fit=crop",
+    headline: "Join the Celebration",
+    headlineEs: "Únete a la celebración",
+    tagline: "A modern night of friends, music, and cake — you’re invited.",
+    taglineEs: "Una noche moderna de amigos, música y pastel — estás invitado.",
   },
 ];
 

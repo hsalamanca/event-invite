@@ -216,6 +216,7 @@ export type Dictionary = {
     comicPresents: string;
     festiveParty: string;
     toyPartyInvite: string;
+    modernCelebrate: string;
     date: string;
     time: string;
     venue: string;
@@ -547,6 +548,7 @@ const en: Dictionary = {
     comicPresents: "presents a birthday bash",
     festiveParty: "is throwing a birthday party",
     toyPartyInvite: "invites you to a toy party",
+    modernCelebrate: "is celebrating",
     date: "Date",
     time: "Time",
     venue: "Venue",
@@ -882,6 +884,7 @@ const es: Dictionary = {
     comicPresents: "presenta una fiesta de cumpleaños",
     festiveParty: "te invita a una fiesta de cumpleaños",
     toyPartyInvite: "te invita a una fiesta de juguetes",
+    modernCelebrate: "está celebrando",
     date: "Fecha",
     time: "Hora",
     venue: "Lugar",
