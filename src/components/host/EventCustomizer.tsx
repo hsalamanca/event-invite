@@ -442,9 +442,9 @@ export default function EventCustomizer({
                     return {
                       ...prev,
                       templateId: tpl.id,
-                      headline:
-                        locale === "es" ? tpl.headlineEs : tpl.headline,
-                      tagline: locale === "es" ? tpl.taglineEs : tpl.tagline,
+                      // Store English stock copy; invite preview localizes via locale
+                      headline: tpl.headline,
+                      tagline: tpl.tagline,
                       // Keep uploaded/custom photos when switching templates
                       heroImage: keepCustomHero
                         ? prev.heroImage

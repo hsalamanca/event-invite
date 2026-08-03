@@ -5,7 +5,10 @@ import InviteCover from "@/components/invite/InviteCover";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
-import { resolveInviteLayout } from "@/lib/templates";
+import {
+  resolveInviteLayout,
+  resolveLocalizedInviteCopy,
+} from "@/lib/templates";
 import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
 import type { WeatherSnapshot } from "@/lib/weather";
 
@@ -259,6 +262,7 @@ export default function InvitePage({
   }
 
   const layout = resolveInviteLayout(event.templateId);
+  const { headline, tagline } = resolveLocalizedInviteCopy(event, locale);
   const cssVars = {
     "--invite-bg": theme.colors.background,
     "--invite-surface": theme.colors.surface,
@@ -276,8 +280,8 @@ export default function InvitePage({
         layout={layout}
         hostName={event.hostName}
         title={event.title}
-        headline={event.headline}
-        tagline={event.tagline}
+        headline={headline}
+        tagline={tagline}
         dateLabel={formatDateLabel(event.dateISO, locale)}
         timeLabel={event.timeLabel}
         venue={event.venue}

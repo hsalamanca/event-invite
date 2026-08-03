@@ -916,6 +916,39 @@ export function resolveInviteLayout(templateId?: string | null): InviteLayout {
   return getTemplate(templateId).layout;
 }
 
+/**
+ * Localize stock template headline/tagline by visitor locale.
+ * Custom host-edited copy (not matching either stock language) is left as-is.
+ * Also recovers English when Spanish stock text was previously baked into the event.
+ */
+export function resolveLocalizedInviteCopy(
+  event: {
+    headline: string;
+    tagline: string;
+    templateId?: string | null;
+  },
+  locale: "en" | "es",
+): { headline: string; tagline: string } {
+  const tpl = getTemplate(event.templateId || "evening");
+  const headlineIsStock =
+    event.headline === tpl.headline || event.headline === tpl.headlineEs;
+  const taglineIsStock =
+    event.tagline === tpl.tagline || event.tagline === tpl.taglineEs;
+
+  return {
+    headline: headlineIsStock
+      ? locale === "es"
+        ? tpl.headlineEs
+        : tpl.headline
+      : event.headline,
+    tagline: taglineIsStock
+      ? locale === "es"
+        ? tpl.taglineEs
+        : tpl.tagline
+      : event.tagline,
+  };
+}
+
 export function getTemplate(id: string): EventTemplate {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0]!;
 }
@@ -1014,14 +1047,14 @@ export function buildEventFromTemplate(input: {
   locale?: "en" | "es";
 }): Omit<EventRecord, "id" | "createdAt" | "updatedAt"> {
   const tpl = getTemplate(input.templateId);
-  const es = input.locale === "es";
   return {
     slug: input.slug,
     ownerId: input.ownerId,
     hostName: input.hostName,
     title: input.title,
-    headline: es ? tpl.headlineEs : tpl.headline,
-    tagline: es ? tpl.taglineEs : tpl.tagline,
+    // Store English stock copy; guests see ES via resolveLocalizedInviteCopy
+    headline: tpl.headline,
+    tagline: tpl.tagline,
     dateISO: input.dateISO,
     timeLabel: input.timeLabel,
     venue: input.venue,
