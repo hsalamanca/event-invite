@@ -290,6 +290,7 @@ export default function InvitePage({
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
+        fiftyCelebrate={ui.fiftyCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         calendarLabel={ui.addToCalendar}
@@ -2079,6 +2080,237 @@ export default function InvitePage({
           font-weight: 600;
         }
 
+        :global(.invite-cover[data-layout="fifty"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 20% 18%,
+              color-mix(in srgb, #d4af37 34%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 80% 22%,
+              color-mix(in srgb, #f3e3a1 18%, transparent),
+              transparent 40%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #0a0a0a 40%, transparent) 0%,
+              color-mix(in srgb, #0a0a0a 90%, transparent) 68%,
+              #0a0a0a 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-sparkle) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.55;
+          background-image:
+            radial-gradient(circle at 14% 24%, #d4af37 0 1.5px, transparent 2.5px),
+            radial-gradient(circle at 72% 18%, #f3e3a1 0 1.2px, transparent 2.2px),
+            radial-gradient(circle at 38% 70%, #d4af37 0 1.3px, transparent 2.3px),
+            radial-gradient(circle at 86% 62%, #f3e3a1 0 1.1px, transparent 2.1px),
+            radial-gradient(circle at 52% 40%, #d4af37 0 1px, transparent 2px);
+          animation: fiftyTwinkle 5.5s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid color-mix(in srgb, #d4af37 55%, transparent);
+          border-radius: 0.85rem;
+          background:
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #d4af37 10%, #1a1a1a) 0%,
+              #121212 42%,
+              #0e0e0e 100%
+            );
+          color: var(--invite-text);
+          box-shadow:
+            0 0 0 1px color-mix(in srgb, #f3e3a1 12%, transparent) inset,
+            0 28px 60px color-mix(in srgb, #000 55%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner) {
+          position: absolute;
+          z-index: 2;
+          width: 1.85rem;
+          height: 1.85rem;
+          border-color: #d4af37;
+          border-style: solid;
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--tl) {
+          top: 0.65rem;
+          left: 0.65rem;
+          border-width: 2px 0 0 2px;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--tr) {
+          top: 0.65rem;
+          right: 0.65rem;
+          border-width: 2px 2px 0 0;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--bl) {
+          bottom: 0.65rem;
+          left: 0.65rem;
+          border-width: 0 0 2px 2px;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-corner--br) {
+          bottom: 0.65rem;
+          right: 0.65rem;
+          border-width: 0 2px 2px 0;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .fifty-badge) {
+          position: absolute;
+          z-index: 3;
+          top: 0.75rem;
+          right: 0.85rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 3.4rem;
+          height: 3.4rem;
+          padding: 0 0.45rem;
+          border-radius: 999px;
+          background: linear-gradient(145deg, #f3e3a1, #d4af37 45%, #a8841f);
+          color: #141414;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 1.35rem;
+          letter-spacing: -0.02em;
+          border: 1px solid #f3e3a1;
+          box-shadow:
+            0 0 0 3px color-mix(in srgb, #d4af37 25%, transparent),
+            0 10px 22px color-mix(in srgb, #000 45%, transparent);
+          animation: fiftyGlow 3.2s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-photo) {
+          margin: 1.6rem auto 0;
+          width: min(78%, 18rem);
+          aspect-ratio: 4 / 3;
+          border-radius: 0.35rem;
+          border: 1.5px solid #d4af37;
+          box-shadow:
+            0 0 0 4px color-mix(in srgb, #d4af37 18%, transparent),
+            0 16px 36px color-mix(in srgb, #000 45%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-body) {
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-ornament--fifty) {
+          width: 10rem;
+          margin-bottom: 0.9rem;
+          color: #d4af37;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 0.92rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #d4af37;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-invite-line) {
+          font-family: var(--font-great-vibes), cursive;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 1.45rem;
+          letter-spacing: 0.01em;
+          text-transform: none;
+          color: #f3e3a1;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: clamp(2.3rem, 8vw, 3.4rem);
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          background: linear-gradient(105deg, #f3e3a1 0%, #d4af37 48%, #f7f1e1 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-when) {
+          margin-top: 1rem;
+          padding: 1rem 1.15rem;
+          border-radius: 0.5rem;
+          background: color-mix(in srgb, #d4af37 8%, #1a1a1a);
+          border: 1px solid color-mix(in srgb, #d4af37 40%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.2rem;
+          color: #f7f1e1;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-card-time),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-venue),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-address),
+        :global(.invite-cover[data-layout="fifty"] .invite-card-tagline) {
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .btn-primary) {
+          border-radius: 999px;
+          background: linear-gradient(120deg, #f3e3a1, #d4af37 55%, #a8841f);
+          color: #141414;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          box-shadow: 0 10px 24px color-mix(in srgb, #d4af37 28%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .btn-ghost) {
+          border-radius: 999px;
+          border: 1.5px solid color-mix(in srgb, #d4af37 55%, transparent);
+          background: transparent;
+          color: #f3e3a1;
+          font-weight: 600;
+        }
+
+        :global(.invite-cover[data-layout="fifty"] .invite-text-link) {
+          color: #d4af37;
+        }
+
+        @keyframes fiftyTwinkle {
+          from {
+            opacity: 0.35;
+          }
+          to {
+            opacity: 0.7;
+          }
+        }
+
+        @keyframes fiftyGlow {
+          from {
+            box-shadow:
+              0 0 0 3px color-mix(in srgb, #d4af37 20%, transparent),
+              0 10px 22px color-mix(in srgb, #000 45%, transparent);
+          }
+          to {
+            box-shadow:
+              0 0 0 5px color-mix(in srgb, #d4af37 35%, transparent),
+              0 12px 28px color-mix(in srgb, #d4af37 25%, transparent);
+          }
+        }
+
         :global(.invite-cover[data-layout="arcade"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
@@ -2820,6 +3052,8 @@ export default function InvitePage({
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),
+          :global(.fifty-sparkle),
+          :global(.fifty-badge),
           :global(.arcade-scanlines),
           :global(.arcade-badge),
           :global(.arcade-sticker--pad),

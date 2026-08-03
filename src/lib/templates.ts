@@ -27,7 +27,8 @@ export type InviteLayout =
   | "toybox"
   | "azure"
   | "arcade"
-  | "quince";
+  | "quince"
+  | "fifty";
 
 export type EventTemplate = {
   id: string;
@@ -266,6 +267,19 @@ const quinceAzul: Theme = {
     accentSecondary: "#D4AF37",
     textPrimary: "#0B1F3A",
     textMuted: "#5B6F8C",
+  },
+  fonts: { display: "Playfair Display", body: "Outfit" },
+};
+
+/** Canva Black & Gold 50th — glamorous milestone celebration */
+const goldenFifty: Theme = {
+  colors: {
+    background: "#0A0A0A",
+    surface: "#141414",
+    accentPrimary: "#D4AF37",
+    accentSecondary: "#F3E3A1",
+    textPrimary: "#F7F1E1",
+    textMuted: "#A89B7E",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
 };
@@ -870,6 +884,29 @@ export const TEMPLATES: EventTemplate[] = [
       "An evening of family, music, and a night to remember — you’re invited to celebrate fifteen.",
     taglineEs:
       "Una noche de familia, música y recuerdos — estás invitado a celebrar mis quince.",
+  },
+  {
+    id: "golden-fifty",
+    name: "Golden fifty",
+    nameEs: "Cincuenta dorado",
+    description:
+      "Black & gold glam — 50th birthdays, milestone dinners, and black-tie celebrations.",
+    descriptionEs:
+      "Glamour negro y dorado — cumpleaños 50, cenas especiales y celebraciones formales.",
+    inspiredBy: "Canva Black & Gold Elegant 50th Birthday Invitation",
+    inspiredByEs: "Canva invitación elegante 50 años negro y dorado",
+    categories: ["birthday", "party", "dinner"],
+    layout: "fifty",
+    premium: true,
+    theme: goldenFifty,
+    heroImage:
+      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1920&q=80&auto=format&fit=crop",
+    headline: "Fifty & Fabulous",
+    headlineEs: "Cincuenta y fabuloso",
+    tagline:
+      "Half a century of stories — join us for champagne, dinner, and a night to toast.",
+    taglineEs:
+      "Medio siglo de historias — acompáñanos a brindar con champán y una gran cena.",
   },
 ];
 
