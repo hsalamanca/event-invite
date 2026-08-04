@@ -5,11 +5,17 @@ import {
   LOCALE_COOKIE,
   type Locale,
 } from "@/lib/i18n/config";
+import {
+  clientIp,
+  matchApiRateLimit,
+  rateLimit,
+} from "@/lib/rate-limit";
 
 /**
  * - Cookie / Accept-Language locale (no /es URL prefix)
  * - Legacy /es/* → same path without prefix + set Spanish cookie
  * - Custom domain + {slug}.ownvite.app host rewrites
+ * - Rate limits on sensitive API routes
  */
 
 const PLATFORM_HOSTS = new Set([
@@ -50,10 +56,45 @@ async function loadDomainMap(
   }
 }
 
+function enforceApiRateLimit(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl;
+  if (!pathname.startsWith("/api")) return null;
+
+  const rule = matchApiRateLimit(pathname, request.method);
+  if (!rule) return null;
+
+  const ip = clientIp(request);
+  const result = rateLimit({
+    key: `${rule.name}:${ip}`,
+    limit: rule.limit,
+    windowMs: rule.windowMs,
+  });
+
+  if (result.ok) return null;
+
+  return NextResponse.json(
+    {
+      error: "Too many requests. Please try again later.",
+      retryAfterSec: result.retryAfterSec,
+    },
+    {
+      status: 429,
+      headers: {
+        "Retry-After": String(result.retryAfterSec),
+        "X-RateLimit-Limit": String(result.limit),
+        "X-RateLimit-Remaining": "0",
+      },
+    },
+  );
+}
+
 export async function middleware(request: NextRequest) {
   const hostHeader = request.headers.get("host") ?? "";
   const hostname = hostHeader.split(":")[0]?.toLowerCase() ?? "";
   const { pathname } = request.nextUrl;
+
+  const limited = enforceApiRateLimit(request);
+  if (limited) return limited;
 
   if (
     pathname.startsWith("/_next") ||
