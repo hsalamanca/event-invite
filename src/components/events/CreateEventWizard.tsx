@@ -154,7 +154,7 @@ export default function CreateEventWizard({
                     <div className="absolute bottom-2 left-2 right-2 flex flex-wrap gap-1">
                       {tpl.premium ? (
                         <span className="rounded bg-[var(--landing-cedar)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
-                          Premium
+                          Premium · $7 / Pro
                         </span>
                       ) : null}
                       {tpl.categories.slice(0, 2).map((c) => (
