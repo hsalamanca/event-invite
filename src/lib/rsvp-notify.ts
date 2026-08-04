@@ -86,18 +86,18 @@ export async function notifyHostsOfRsvp(input: {
       manageUrl,
     });
 
-    await Promise.all(
-      recipients.map((to) =>
-        sendEventEmail({
-          eventId: event.id,
-          type: "rsvp_notification",
-          to,
-          subject,
-          body,
-          html,
-        }),
-      ),
-    );
+    // Send sequentially — sendEventEmail read/modify/writes a shared blob
+    // registry, so parallel sends can drop records under race.
+    for (const to of recipients) {
+      await sendEventEmail({
+        eventId: event.id,
+        type: "rsvp_notification",
+        to,
+        subject,
+        body,
+        html,
+      });
+    }
   } catch (err) {
     console.error("[rsvp-notify] failed", err);
   }
