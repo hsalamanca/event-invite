@@ -9,7 +9,7 @@ Practical hardening for `ownvite.app` / `ownvite.com` on Vercel. DNSSEC helps a 
 | Control | Where |
 |--------|--------|
 | HTTPS / TLS | Vercel (apex + `*.ownvite.app` + custom domains) |
-| Security headers (HSTS, CSP, frame deny, nosniff, Referrer-Policy, Permissions-Policy) | `next.config.ts` |
+| Security headers (HSTS, CSP, frame deny, nosniff, Referrer-Policy, Permissions-Policy; Spotify embeds allowed in `frame-src`) | `next.config.ts` |
 | Rate limits on RSVP, waitlist, messages, register, password reset, unlock, remind, upload, create-event | `src/middleware.ts` + `src/lib/rate-limit.ts` |
 | Password hashing (bcrypt) | Auth + private invite unlock |
 | Private password invites | Event `visibility` + unlock cookie |
