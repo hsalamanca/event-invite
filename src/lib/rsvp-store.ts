@@ -174,6 +174,21 @@ export async function updateRsvpByToken(
   return next;
 }
 
+export async function deleteRsvpById(
+  rsvpId: string,
+  eventId?: string,
+): Promise<boolean> {
+  const rsvps = await readAll();
+  const before = rsvps.length;
+  const next = rsvps.filter(
+    (r) =>
+      !(r.id === rsvpId && (eventId == null || r.eventId === eventId)),
+  );
+  if (next.length === before) return false;
+  await writeAll(next);
+  return true;
+}
+
 export async function setCheckedIn(
   rsvpId: string,
   checkedIn: boolean

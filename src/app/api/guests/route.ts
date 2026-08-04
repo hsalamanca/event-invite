@@ -3,10 +3,11 @@ import { canManageEvent } from "@/lib/access";
 import { getEventBySlug } from "@/lib/events";
 import {
   addManualGuest,
+  deleteManualGuest,
   listManualGuests,
   updateManualGuestStatus,
 } from "@/lib/guest-extras";
-import { listRsvpsByEventId } from "@/lib/rsvp-store";
+import { deleteRsvpById, listRsvpsByEventId } from "@/lib/rsvp-store";
 import type { ManualGuest } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -101,4 +102,37 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Guest not found." }, { status: 404 });
   }
   return NextResponse.json({ guest });
+}
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const slug = searchParams.get("slug")?.trim();
+  const id = searchParams.get("id")?.trim();
+  const kind = (searchParams.get("kind")?.trim() || "rsvp") as
+    | "rsvp"
+    | "manual";
+
+  if (!slug || !id) {
+    return NextResponse.json(
+      { error: "slug and id required" },
+      { status: 400 },
+    );
+  }
+
+  const gate = await assertOwner(slug);
+  if ("error" in gate && gate.error) return gate.error;
+
+  if (kind === "manual") {
+    const ok = await deleteManualGuest(gate.event.id, id);
+    if (!ok) {
+      return NextResponse.json({ error: "Guest not found." }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
+  const ok = await deleteRsvpById(id, gate.event.id);
+  if (!ok) {
+    return NextResponse.json({ error: "RSVP not found." }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true });
 }

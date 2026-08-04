@@ -102,6 +102,23 @@ export async function updateManualGuestStatus(
   return reg.guests[idx];
 }
 
+export async function deleteManualGuest(
+  eventId: string,
+  guestId: string,
+): Promise<boolean> {
+  const reg = await readJsonBlob<GuestRegistry>(GUESTS_PATH, {
+    version: 1,
+    guests: [],
+  });
+  const before = reg.guests.length;
+  reg.guests = reg.guests.filter(
+    (g) => !(g.eventId === eventId && g.id === guestId),
+  );
+  if (reg.guests.length === before) return false;
+  await writeJsonBlob(GUESTS_PATH, reg);
+  return true;
+}
+
 export async function listWaitlist(eventId: string): Promise<WaitlistEntry[]> {
   const reg = await readJsonBlob<WaitlistRegistry>(WAITLIST_PATH, {
     version: 1,

@@ -47,6 +47,7 @@ export default function GuestManager({
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -79,6 +80,32 @@ export default function GuestManager({
       .reduce((n, r) => n + (r.guestCount || 1), 0);
     return { yes, no, heads, total: rsvps.length };
   }, [rsvps]);
+
+  async function removeEntry(kind: "rsvp" | "manual", id: string, label: string) {
+    if (!window.confirm(`Remove ${label}? This cannot be undone.`)) return;
+    setError(null);
+    setRemovingId(id);
+    try {
+      const res = await fetch(
+        `/api/guests?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(id)}&kind=${kind}`,
+        { method: "DELETE" },
+      );
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) {
+        setError(data.error || t.error);
+        return;
+      }
+      if (kind === "rsvp") {
+        setRsvps((list) => list.filter((r) => r.id !== id));
+      } else {
+        setGuests((list) => list.filter((g) => g.id !== id));
+      }
+    } catch {
+      setError(t.error);
+    } finally {
+      setRemovingId(null);
+    }
+  }
 
   async function addGuest(e: FormEvent) {
     e.preventDefault();
@@ -375,7 +402,8 @@ export default function GuestManager({
               <th className="py-2 pr-3 font-medium">{t.colEmail}</th>
               <th className="py-2 pr-3 font-medium">{t.colStatus}</th>
               <th className="py-2 pr-3 font-medium">{t.colGuests}</th>
-              <th className="py-2 font-medium">{t.colNote}</th>
+              <th className="py-2 pr-3 font-medium">{t.colNote}</th>
+              <th className="py-2 font-medium"> </th>
             </tr>
           </thead>
           <tbody>
@@ -400,6 +428,16 @@ export default function GuestManager({
                         </a>
                       </>
                     ) : null}
+                  </td>
+                  <td className="py-2.5 text-right">
+                    <button
+                      type="button"
+                      className="rounded border border-white/15 px-2.5 py-1 text-xs text-[var(--mist)] hover:border-red-400/40 hover:text-red-200 disabled:opacity-60"
+                      disabled={removingId === r.id}
+                      onClick={() => void removeEntry("rsvp", r.id, r.name)}
+                    >
+                      {removingId === r.id ? "…" : "Remove"}
+                    </button>
                   </td>
                 </tr>
               );
@@ -445,11 +483,21 @@ export default function GuestManager({
                     Copy personal link
                   </button>
                 </td>
+                <td className="py-2.5 text-right">
+                  <button
+                    type="button"
+                    className="rounded border border-white/15 px-2.5 py-1 text-xs text-[var(--mist)] hover:border-red-400/40 hover:text-red-200 disabled:opacity-60"
+                    disabled={removingId === g.id}
+                    onClick={() => void removeEntry("manual", g.id, g.name)}
+                  >
+                    {removingId === g.id ? "…" : "Remove"}
+                  </button>
+                </td>
               </tr>
             ))}
             {rsvps.length === 0 && guests.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-[var(--mist)]">
+                <td colSpan={6} className="py-8 text-[var(--mist)]">
                   {t.empty}
                 </td>
               </tr>
