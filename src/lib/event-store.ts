@@ -1,5 +1,9 @@
 import birthdayDemo from "../../data/birthday-demo.json";
 import { readJsonBlob, writeJsonBlob } from "./blob-json";
+import {
+  normalizeGallery,
+  normalizeGalleryLayout,
+} from "./gallery";
 import type { EventRecord } from "./types";
 
 const PATH = "ownvite/events.json";
@@ -54,7 +58,8 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     },
     schedule: raw.schedule ?? [],
     faqs: raw.faqs ?? [],
-    gallery: raw.gallery ?? [],
+    gallery: normalizeGallery(raw.gallery),
+    galleryLayout: normalizeGalleryLayout(raw.galleryLayout),
     parking: raw.parking ?? "",
     dressCode: raw.dressCode ?? "",
     whatToBring: raw.whatToBring ?? "",
@@ -203,6 +208,12 @@ export async function updateEvent(
       : existing.rsvpFields,
     updatedAt: new Date().toISOString(),
   };
+  if (partial.gallery !== undefined) {
+    updated.gallery = normalizeGallery(partial.gallery);
+  }
+  if (partial.galleryLayout !== undefined) {
+    updated.galleryLayout = normalizeGalleryLayout(partial.galleryLayout);
+  }
   registry.events[idx] = updated;
   await save(registry);
   return updated;

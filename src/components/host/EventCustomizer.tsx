@@ -2,10 +2,16 @@
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import DomainConnect from "@/components/host/DomainConnect";
+import GalleryEditor from "@/components/host/GalleryEditor";
 import ImageUpload from "@/components/host/ImageUpload";
 import InvitePage from "@/components/invite/InvitePage";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import {
+  normalizeGallery,
+  normalizeGalleryLayout,
+  type GalleryLayout,
+} from "@/lib/gallery";
 import { TEMPLATES, getTemplate } from "@/lib/templates";
 import {
   suggestSpanishAbout,
@@ -74,7 +80,8 @@ type Draft = {
   customQuestions: CustomQuestion[];
   schedule: ScheduleItem[];
   faqs: FaqItem[];
-  galleryText: string;
+  gallery: string[];
+  galleryLayout: GalleryLayout;
   parking: string;
   dressCode: string;
   whatToBring: string;
@@ -174,7 +181,8 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     customQuestions: [...(event.rsvpFields.customQuestions ?? [])],
     schedule,
     faqs,
-    galleryText: (event.gallery ?? []).join("\n"),
+    gallery: normalizeGallery(event.gallery),
+    galleryLayout: normalizeGalleryLayout(event.galleryLayout),
     parking:
       locale === "es"
         ? event.parkingEs ||
@@ -356,10 +364,8 @@ function toPreviewEvent(
     },
     schedule: localized.schedule,
     faqs: localized.faqs,
-    gallery: draft.galleryText
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean),
+    gallery: normalizeGallery(draft.gallery),
+    galleryLayout: draft.galleryLayout,
     parking: localized.parking,
     parkingEs: localized.parkingEs,
     dressCode: draft.dressCode,
@@ -470,6 +476,7 @@ export default function EventCustomizer({
       schedule: localized.schedule,
       faqs: localized.faqs,
       gallery: preview.gallery,
+      galleryLayout: draft.galleryLayout,
       parking: localized.parking,
       parkingEs: localized.parkingEs,
       dressCode: draft.dressCode,
@@ -1099,14 +1106,15 @@ export default function EventCustomizer({
               </button>
             </div>
 
-            <label>
-              <span>Gallery image URLs (one per line)</span>
-              <textarea
-                rows={3}
-                value={draft.galleryText}
-                onChange={(e) => updateField("galleryText", e.target.value)}
-              />
-            </label>
+            <GalleryEditor
+              slug={event.slug}
+              images={draft.gallery}
+              layout={draft.galleryLayout}
+              onImagesChange={(images) => updateField("gallery", images)}
+              onLayoutChange={(galleryLayout) =>
+                updateField("galleryLayout", galleryLayout)
+              }
+            />
             <label>
               <span>Parking</span>
               <textarea

@@ -61,6 +61,8 @@ export type FaqItem = {
   answerEs?: string;
 };
 
+import type { GalleryLayout } from "./gallery";
+
 export type EventTier = "free" | "pro" | "studio";
 
 export type EventRecord = {
@@ -97,6 +99,8 @@ export type EventRecord = {
   schedule?: ScheduleItem[];
   faqs?: FaqItem[];
   gallery?: string[];
+  /** How gallery photos are shaped/arranged on the invite */
+  galleryLayout?: GalleryLayout;
   parking?: string;
   /** Optional Spanish parking note for locale switching */
   parkingEs?: string | null;

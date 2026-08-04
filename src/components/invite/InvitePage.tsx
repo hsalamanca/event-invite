@@ -588,10 +588,23 @@ export default function InvitePage({
       {event.gallery && event.gallery.length > 0 ? (
         <section id="gallery" className="invite-section">
           <h2 className="invite-section-title">{ui.gallery}</h2>
-          <div className="invite-gallery">
-            {event.gallery.map((src) => (
+          <div
+            className={`invite-gallery invite-gallery--${event.galleryLayout ?? "square"}`}
+          >
+            {event.gallery.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={src} src={src} alt="" />
+              <img
+                key={`${src}-${i}`}
+                src={src}
+                alt=""
+                style={
+                  (event.galleryLayout ?? "square") === "scatter"
+                    ? {
+                        transform: `rotate(${[-8, 5, -3, 7, -6, 4, -2, 6][i % 8]}deg)`,
+                      }
+                    : undefined
+                }
+              />
             ))}
           </div>
         </section>
@@ -2854,7 +2867,8 @@ export default function InvitePage({
         .invite-gallery {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: 0.65rem;
+          gap: 0.75rem;
+          justify-items: center;
         }
 
         .invite-gallery img {
@@ -2862,6 +2876,82 @@ export default function InvitePage({
           aspect-ratio: 1;
           object-fit: cover;
           display: block;
+          background: var(--invite-surface);
+        }
+
+        .invite-gallery--square img {
+          border-radius: 0.35rem;
+          aspect-ratio: 1;
+        }
+
+        .invite-gallery--rectangle {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+
+        .invite-gallery--rectangle img {
+          aspect-ratio: 4 / 3;
+          border-radius: 0.45rem;
+        }
+
+        .invite-gallery--circle img {
+          aspect-ratio: 1;
+          border-radius: 50%;
+        }
+
+        .invite-gallery--heart {
+          gap: 1rem 0.5rem;
+        }
+
+        .invite-gallery--heart img {
+          aspect-ratio: 1;
+          clip-path: polygon(
+            50% 88%,
+            10% 52%,
+            4% 28%,
+            18% 8%,
+            38% 10%,
+            50% 28%,
+            62% 10%,
+            82% 8%,
+            96% 28%,
+            90% 52%
+          );
+        }
+
+        .invite-gallery--diamond {
+          gap: 1.1rem;
+        }
+
+        .invite-gallery--diamond img {
+          aspect-ratio: 1;
+          clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .invite-gallery--hex {
+          gap: 0.85rem;
+        }
+
+        .invite-gallery--hex img {
+          aspect-ratio: 1;
+          clip-path: polygon(
+            25% 6%,
+            75% 6%,
+            100% 50%,
+            75% 94%,
+            25% 94%,
+            0% 50%
+          );
+        }
+
+        .invite-gallery--scatter {
+          gap: 1rem 0.85rem;
+          padding: 0.5rem 0.25rem 1rem;
+        }
+
+        .invite-gallery--scatter img {
+          aspect-ratio: 1;
+          border-radius: 0.55rem;
+          box-shadow: 0 10px 28px color-mix(in srgb, var(--invite-text) 14%, transparent);
         }
 
         .invite-deadline {
