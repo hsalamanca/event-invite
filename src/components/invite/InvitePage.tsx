@@ -625,8 +625,13 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      <section id="rsvp" className="invite-section invite-section--surface">
-        <h2 className="invite-section-title">{ui.rsvp}</h2>
+      <section
+        id="rsvp"
+        className="invite-section invite-section--surface invite-section--rsvp"
+      >
+        <div className="rsvp-panel">
+          <div className="rsvp-ornament" aria-hidden="true" />
+          <h2 className="invite-section-title rsvp-title">{ui.rsvp}</h2>
         {isPast ? (
           <p className="invite-prompt">{ui.pastEventPrompt}</p>
         ) : (
@@ -950,6 +955,7 @@ export default function InvitePage({
         )}
           </>
         )}
+        </div>
       </section>
 
       <section id="guestbook" className="invite-section">
@@ -3058,6 +3064,101 @@ export default function InvitePage({
           max-width: none;
           padding-left: max(clamp(1.5rem, 5vw, 2rem), calc(50% - 18rem));
           padding-right: max(clamp(1.5rem, 5vw, 2rem), calc(50% - 18rem));
+        }
+
+        .invite-section--rsvp {
+          background:
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, var(--invite-accent) 14%, var(--invite-surface)),
+              var(--invite-surface) 42%,
+              color-mix(in srgb, var(--invite-accent-2) 10%, var(--invite-bg))
+            );
+          padding-top: clamp(3.5rem, 9vw, 5.5rem);
+          padding-bottom: clamp(3.5rem, 9vw, 5.5rem);
+          border-block: 1px solid
+            color-mix(in srgb, var(--invite-accent) 28%, transparent);
+          box-shadow:
+            inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent),
+            inset 0 -40px 80px color-mix(in srgb, var(--invite-accent) 6%, transparent);
+        }
+
+        .rsvp-panel {
+          max-width: 36rem;
+          margin: 0 auto;
+          padding: clamp(1.35rem, 4vw, 2rem);
+          border-radius: 1.15rem;
+          border: 1px solid
+            color-mix(in srgb, var(--invite-accent) 38%, transparent);
+          background:
+            linear-gradient(
+              180deg,
+              color-mix(in srgb, var(--invite-bg) 88%, #fff),
+              color-mix(in srgb, var(--invite-surface) 70%, var(--invite-bg))
+            );
+          box-shadow:
+            0 18px 40px color-mix(in srgb, var(--invite-text) 10%, transparent),
+            0 0 0 1px color-mix(in srgb, var(--invite-accent) 12%, transparent);
+        }
+
+        .rsvp-ornament {
+          width: 3.25rem;
+          height: 3px;
+          margin: 0 0 1rem;
+          border-radius: 999px;
+          background: linear-gradient(
+            90deg,
+            var(--invite-accent),
+            var(--invite-accent-2)
+          );
+        }
+
+        .rsvp-title {
+          margin-bottom: 1rem;
+          font-size: clamp(1.85rem, 4.5vw, 2.35rem);
+          letter-spacing: -0.02em;
+          line-height: 1.15;
+        }
+
+        .invite-section--rsvp .invite-prompt {
+          margin-top: 0;
+          color: color-mix(in srgb, var(--invite-text) 78%, var(--invite-muted));
+          font-size: 1.05rem;
+        }
+
+        .invite-section--rsvp .invite-deadline {
+          display: inline-block;
+          margin: 0 0.5rem 1rem 0;
+          padding: 0.35rem 0.7rem;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--invite-accent) 14%, transparent);
+          color: var(--invite-text);
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+
+        .invite-section--rsvp .btn-submit {
+          min-height: 3.1rem;
+          font-size: 1.02rem;
+          letter-spacing: 0.02em;
+          box-shadow: 0 10px 24px
+            color-mix(in srgb, var(--invite-accent) 28%, transparent);
+        }
+
+        .invite-section--rsvp .rsvp-field input,
+        .invite-section--rsvp .rsvp-field textarea,
+        .invite-section--rsvp .rsvp-field select {
+          border-color: color-mix(in srgb, var(--invite-accent) 28%, transparent);
+          background: color-mix(in srgb, var(--invite-bg) 92%, #fff);
+        }
+
+        .invite-section--rsvp .rsvp-field input:focus,
+        .invite-section--rsvp .rsvp-field textarea:focus,
+        .invite-section--rsvp .rsvp-field select:focus {
+          outline: 2px solid
+            color-mix(in srgb, var(--invite-accent) 55%, transparent);
+          outline-offset: 1px;
+          border-color: var(--invite-accent);
         }
 
         .invite-section-title {
