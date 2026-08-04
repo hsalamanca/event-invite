@@ -63,6 +63,18 @@ function daysUntil(deadline: string): number | null {
   return Math.ceil(ms / (1000 * 60 * 60 * 24));
 }
 
+/** Display dates as DD/MM/YYYY (day-month-year). */
+function formatDateDdmmyyyy(dateISO: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateISO.trim());
+  if (m) return `${m[3]}/${m[2]}/${m[1]}`;
+  const d = new Date(`${dateISO}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return dateISO;
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+  return `${dd}/${mm}/${yyyy}`;
+}
+
 function formatDateLabel(dateISO: string, locale: Locale): string {
   const d = new Date(`${dateISO}T12:00:00`);
   if (Number.isNaN(d.getTime())) return dateISO;
@@ -601,7 +613,7 @@ export default function InvitePage({
                       "{days}",
                       String(deadlineDays ?? 0),
                     )
-                    .replace("{date}", rsvpFields.deadline)}
+                    .replace("{date}", formatDateDdmmyyyy(rsvpFields.deadline))}
           </p>
         ) : null}
         {event.capacity ? (
