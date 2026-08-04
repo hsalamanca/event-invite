@@ -14,6 +14,10 @@ function normalizeUser(raw: UserRecord): UserRecord {
     resetToken: raw.resetToken ?? null,
     resetTokenExpires: raw.resetTokenExpires ?? null,
     passwordHash: raw.passwordHash ?? "",
+    studioStatus: raw.studioStatus ?? null,
+    studioStripeCustomerId: raw.studioStripeCustomerId ?? null,
+    studioStripeSubscriptionId: raw.studioStripeSubscriptionId ?? null,
+    studioActiveUntil: raw.studioActiveUntil ?? null,
   };
 }
 

@@ -84,7 +84,18 @@ Lower priority / later:
 
 ### Stripe checkout (implemented)
 
-Host studio → **Upgrade to Pro · $29** calls `POST /api/billing/checkout` (Stripe Checkout one-time payment). Webhook `POST /api/billing/webhook` sets `tier=pro`, `showOwnviteFooter=false`.
+`POST /api/billing/checkout` accepts `product`:
+
+| product | Price | Effect |
+|---------|-------|--------|
+| `pro_event` (default) | **$29** one-time | `tier=pro`, footer off, premium themes, check-in, seating, **500** emails/blast |
+| `theme_unlock` | **$7** one-time | Adds `templateId` to `unlockedTemplateIds`, applies theme |
+| `reminder_pack` | **$9** one-time | **+100** `emailCredits` on the event |
+| `studio` | **$12/mo** subscription | Account `studioStatus=active`, owned events → Studio, max **5** active published events |
+
+Webhook `POST /api/billing/webhook` handles `checkout.session.completed` + Studio subscription updates.
+
+**Hard gates (Free):** custom domain, footer off, premium template apply, private invites, check-in enable, seating save. Free blasts = 15 included; Reminder Pack credits extend Free sends.
 
 Env vars:
 - `STRIPE_SECRET_KEY`

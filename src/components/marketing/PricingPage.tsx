@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MarketingShell from "@/components/marketing/MarketingShell";
+import StudioCheckoutButton from "@/components/marketing/StudioCheckoutButton";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -11,7 +12,7 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
   const hrefs = [
     "/register",
     "/register?next=/dashboard",
-    "mailto:hello@ownvite.com?subject=Ownvite%20Studio",
+    "/register?next=/pricing",
   ];
 
   return (
@@ -116,24 +117,36 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
                   </li>
                 ))}
               </ul>
-              <Link
-                href={hrefs[i]!}
-                className="mt-8 block rounded-md px-4 py-2.5 text-center text-sm font-semibold transition"
-                style={
-                  i === 1
-                    ? {
-                        background: "var(--landing-cedar)",
-                        color: "#fff",
-                      }
-                    : {
-                        border: "1px solid var(--landing-line)",
-                        color: "var(--landing-ink)",
-                        background: "transparent",
-                      }
-                }
-              >
-                {tier.cta}
-              </Link>
+              {i === 2 ? (
+                <StudioCheckoutButton
+                  label={tier.cta}
+                  className="mt-8 block w-full rounded-md px-4 py-2.5 text-center text-sm font-semibold transition"
+                  style={{
+                    border: "1px solid var(--landing-line)",
+                    color: "var(--landing-ink)",
+                    background: "transparent",
+                  }}
+                />
+              ) : (
+                <Link
+                  href={hrefs[i]!}
+                  className="mt-8 block rounded-md px-4 py-2.5 text-center text-sm font-semibold transition"
+                  style={
+                    i === 1
+                      ? {
+                          background: "var(--landing-cedar)",
+                          color: "#fff",
+                        }
+                      : {
+                          border: "1px solid var(--landing-line)",
+                          color: "var(--landing-ink)",
+                          background: "transparent",
+                        }
+                  }
+                >
+                  {tier.cta}
+                </Link>
+              )}
             </article>
           ))}
         </div>
@@ -155,8 +168,8 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
           <ul className="mt-4 space-y-2">
             <li>
               {locale === "es"
-                ? "Desbloqueo de un tema premium: $7 · packs de temporada: $12"
-                : "Single premium theme unlock: $7 · seasonal packs: $12"}
+                ? "Desbloqueo de un tema premium: $7 · pack de recordatorios (+100 emails): $9 · seating + check-in en Pro"
+                : "Single premium theme unlock: $7 · Reminder Pack (+100 emails): $9 · seating + check-in in Pro"}
             </li>
             <li>
               {locale === "es"

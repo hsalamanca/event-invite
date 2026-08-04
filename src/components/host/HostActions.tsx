@@ -11,11 +11,13 @@ export default function HostActions({
   locale = "en",
   canDelete,
   tier = "free",
+  emailCredits = 0,
 }: {
   slug: string;
   locale?: Locale;
   canDelete: boolean;
   tier?: EventTier;
+  emailCredits?: number;
 }) {
   const t = getDictionary(locale).hostActions;
   const router = useRouter();
@@ -27,7 +29,15 @@ export default function HostActions({
 
   useEffect(() => {
     if (search.get("upgraded") === "1") {
-      setInfo("Pro Event unlocked — footer removed, premium themes included.");
+      setInfo(
+        "Pro Event unlocked — domain, premium themes, check-in, seating, 500-email blasts.",
+      );
+    }
+    if (search.get("theme") === "1") {
+      setInfo("Premium theme unlocked — apply it from the template list.");
+    }
+    if (search.get("credits") === "1") {
+      setInfo("Reminder Pack added — +100 email credits for this event.");
     }
   }, [search]);
 
@@ -126,7 +136,9 @@ export default function HostActions({
     }
   }
 
-  async function upgradePro() {
+  async function checkout(
+    product: "pro_event" | "reminder_pack" | "studio",
+  ) {
     setBusy(true);
     setError(null);
     setInfo(null);
@@ -134,17 +146,22 @@ export default function HostActions({
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({ slug, product }),
       });
       const data = (await res.json()) as {
         error?: string;
         url?: string;
         alreadyPro?: boolean;
+        alreadyStudio?: boolean;
         mailto?: string;
         note?: string;
       };
-      if (data.alreadyPro) {
-        setInfo("This event is already Pro.");
+      if (data.alreadyPro || data.alreadyStudio) {
+        setInfo(
+          data.alreadyStudio
+            ? "Studio is already active on your account."
+            : "This event is already Pro.",
+        );
         router.refresh();
         return;
       }
@@ -153,7 +170,10 @@ export default function HostActions({
         return;
       }
       if (data.mailto) {
-        setInfo(data.note || "Stripe not configured — email hello@ownvite.com to upgrade.");
+        setInfo(
+          data.note ||
+            "Stripe not configured — email hello@ownvite.com to upgrade.",
+        );
         window.location.href = data.mailto;
         return;
       }
@@ -179,16 +199,39 @@ export default function HostActions({
           <button
             type="button"
             disabled={busy}
-            onClick={() => void upgradePro()}
+            onClick={() => void checkout("pro_event")}
             className="rounded-md bg-[var(--champagne)] px-3 py-1.5 font-semibold text-[var(--ink)] disabled:opacity-60"
           >
             Upgrade to Pro · $29
           </button>
         ) : (
           <span className="rounded-md border border-[var(--champagne)]/40 px-3 py-1.5 text-[var(--champagne)]">
-            Pro Event
+            {tier === "studio" ? "Studio" : "Pro Event"}
           </span>
         )}
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void checkout("reminder_pack")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          Reminder Pack · $9 (+100)
+        </button>
+        {tier !== "studio" ? (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void checkout("studio")}
+            className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+          >
+            Studio · $12/mo
+          </button>
+        ) : null}
+        {!isPro ? (
+          <span className="rounded-md border border-white/10 px-3 py-1.5 text-[var(--mist)]">
+            Credits: {emailCredits}
+          </span>
+        ) : null}
         <button
           type="button"
           onClick={() => void copyLink()}

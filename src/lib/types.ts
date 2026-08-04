@@ -65,6 +65,19 @@ import type { GalleryLayout } from "./gallery";
 
 export type EventTier = "free" | "pro" | "studio";
 
+export type SeatingAssignment = {
+  rsvpId: string;
+  guestName?: string;
+  seatLabel?: string;
+};
+
+export type SeatingTable = {
+  id: string;
+  name: string;
+  seats: number;
+  assignments: SeatingAssignment[];
+};
+
 export type EventRecord = {
   id: string;
   slug: string;
@@ -119,6 +132,12 @@ export type EventRecord = {
   showOwnviteFooter?: boolean;
   tier?: EventTier;
   premiumTheme?: boolean;
+  /** Template ids unlocked via $7 theme purchase (Free) */
+  unlockedTemplateIds?: string[];
+  /** Purchased reminder email credits (Free overage / packs) */
+  emailCredits?: number;
+  /** Pro seating chart tables */
+  seatingTables?: SeatingTable[];
   createdAt: string;
   updatedAt: string;
 };
@@ -155,6 +174,11 @@ export type UserRecord = {
   verifyTokenExpires?: string | null;
   resetToken?: string | null;
   resetTokenExpires?: string | null;
+  /** Studio subscription */
+  studioStatus?: "active" | "canceled" | null;
+  studioStripeCustomerId?: string | null;
+  studioStripeSubscriptionId?: string | null;
+  studioActiveUntil?: string | null;
   createdAt: string;
 };
 

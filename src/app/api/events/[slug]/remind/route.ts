@@ -2,10 +2,15 @@ import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import { sendEventEmail } from "@/lib/email";
 import { inviteEmailHtml } from "@/lib/email-templates";
-import { getEventBySlug } from "@/lib/events";
+import { getEventBySlug, updateEvent } from "@/lib/events";
 import { listManualGuests } from "@/lib/guest-extras";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
-import { eventIsPro, FREE_EMAIL_BLAST_CAP } from "@/lib/tier";
+import {
+  emailBlastAllowance,
+  eventIsPro,
+  FREE_EMAIL_BLAST_CAP,
+  PRO_EMAIL_BLAST_CAP,
+} from "@/lib/tier";
 
 export const runtime = "nodejs";
 
@@ -26,10 +31,9 @@ export async function POST(
     emails?: string[];
   };
   const type = body.type ?? "rsvp_reminder";
-  const base =
-    process.env.NEXT_PUBLIC_PLATFORM_DOMAIN
-      ? `https://${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN}`
-      : "https://ownvite.com";
+  const base = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN
+    ? `https://${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN}`
+    : "https://ownvite.com";
   const inviteUrl = `${base}/e/${event.slug}`;
 
   const [rsvps, manual] = await Promise.all([
@@ -60,8 +64,11 @@ export async function POST(
     });
   }
 
-  const cap = eventIsPro(event) ? 100 : FREE_EMAIL_BLAST_CAP;
-  const capped = targets.slice(0, cap);
+  const { allowance, useCredits, cap } = emailBlastAllowance(
+    event,
+    targets.length,
+  );
+  const capped = targets.slice(0, allowance);
   const truncated = targets.length > capped.length;
 
   const subject =
@@ -111,6 +118,12 @@ export async function POST(
     );
   }
 
+  if (useCredits > 0) {
+    await updateEvent(slug, {
+      emailCredits: Math.max(0, (event.emailCredits ?? 0) - useCredits),
+    });
+  }
+
   return NextResponse.json({
     ok: true,
     sent: results.filter((r) => r.status === "sent").length,
@@ -118,13 +131,21 @@ export async function POST(
     failed: results.filter((r) => r.status === "failed").length,
     results,
     truncated,
+    creditsUsed: useCredits,
+    creditsRemaining: Math.max(
+      0,
+      (event.emailCredits ?? 0) - useCredits,
+    ),
     note: [
       !process.env.RESEND_API_KEY
         ? "RESEND_API_KEY not set — messages saved as preview (copy/paste)."
         : null,
       truncated
-        ? `Free tier sends up to ${FREE_EMAIL_BLAST_CAP} emails per blast — upgrade to Pro for larger lists.`
+        ? eventIsPro(event)
+          ? `Pro sends up to ${PRO_EMAIL_BLAST_CAP} emails per blast.`
+          : `Free includes ${FREE_EMAIL_BLAST_CAP} emails per blast (cap ${cap}). Buy a Reminder Pack for +100 credits, or upgrade to Pro for ${PRO_EMAIL_BLAST_CAP}/blast.`
         : null,
+      useCredits > 0 ? `Used ${useCredits} reminder credit(s).` : null,
     ]
       .filter(Boolean)
       .join(" "),

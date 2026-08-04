@@ -12,6 +12,7 @@ import {
   normalizeGalleryLayout,
   type GalleryLayout,
 } from "@/lib/gallery";
+import { canUsePremiumTemplate } from "@/lib/tier";
 import { TEMPLATES, getTemplate } from "@/lib/templates";
 import {
   suggestSpanishAbout,
@@ -657,6 +658,52 @@ export default function EventCustomizer({
                   const id = e.target.value;
                   if (!id) return;
                   const tpl = getTemplate(id);
+                  if (
+                    tpl.premium &&
+                    !canUsePremiumTemplate(event, tpl.id, true)
+                  ) {
+                    e.target.value = "";
+                    setSaveError(null);
+                    void (async () => {
+                      const unlock = window.confirm(
+                        `“${locale === "es" ? tpl.nameEs : tpl.name}” is a premium theme. Unlock for $7, or cancel and upgrade to Pro later.`,
+                      );
+                      if (!unlock) return;
+                      try {
+                        const res = await fetch("/api/billing/checkout", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            slug: event.slug,
+                            product: "theme_unlock",
+                            templateId: tpl.id,
+                          }),
+                        });
+                        const data = (await res.json()) as {
+                          url?: string;
+                          mailto?: string;
+                          error?: string;
+                          alreadyUnlocked?: boolean;
+                        };
+                        if (data.alreadyUnlocked) {
+                          setSaveMessage("Theme already unlocked — apply again.");
+                          return;
+                        }
+                        if (data.url) {
+                          window.location.href = data.url;
+                          return;
+                        }
+                        if (data.mailto) {
+                          window.location.href = data.mailto;
+                          return;
+                        }
+                        setSaveError(data.error || "Checkout unavailable");
+                      } catch {
+                        setSaveError("Checkout unavailable");
+                      }
+                    })();
+                    return;
+                  }
                   const stockHeroes = new Set(
                     TEMPLATES.map((t) => t.heroImage),
                   );
@@ -708,7 +755,9 @@ export default function EventCustomizer({
               >
                 <option value="public">{t.visibilityPublic}</option>
                 <option value="unlisted">{t.visibilityUnlisted}</option>
-                <option value="private">Private (password)</option>
+                <option value="private">
+                  Private (password) · Pro
+                </option>
               </select>
             </label>
             {draft.visibility === "private" ? (
@@ -767,11 +816,22 @@ export default function EventCustomizer({
               <input
                 type="checkbox"
                 checked={draft.checkInEnabled}
+                disabled={
+                  !(
+                    event.tier === "pro" ||
+                    event.tier === "studio"
+                  ) && !draft.checkInEnabled
+                }
                 onChange={(e) =>
                   updateField("checkInEnabled", e.target.checked)
                 }
               />
-              <span>Enable door check-in</span>
+              <span>
+                Enable door check-in
+                {event.tier === "pro" || event.tier === "studio"
+                  ? ""
+                  : " · Pro"}
+              </span>
             </label>
             <label className="checkbox-row">
               <input

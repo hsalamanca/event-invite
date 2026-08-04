@@ -9,6 +9,7 @@ import { GuestbookModeration } from "@/components/host/GuestbookModeration";
 import HostActions from "@/components/host/HostActions";
 import { MealDashboard } from "@/components/host/MealDashboard";
 import { OpenTracking } from "@/components/host/OpenTracking";
+import { SeatingChart } from "@/components/host/SeatingChart";
 import { WaitlistPanel } from "@/components/host/WaitlistPanel";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
@@ -92,6 +93,7 @@ export default function HostStudioShell({
           initialRsvps={rsvps}
           questions={event.rsvpFields.customQuestions ?? []}
         />
+        <SeatingChart event={event} rsvps={rsvps} />
         {event.checkInEnabled ? <CheckInPanel slug={event.slug} /> : null}
         <Suspense fallback={null}>
           <HostActions
@@ -99,6 +101,7 @@ export default function HostStudioShell({
             locale={locale}
             canDelete={canDelete}
             tier={event.tier ?? "free"}
+            emailCredits={event.emailCredits ?? 0}
           />
         </Suspense>
       </div>

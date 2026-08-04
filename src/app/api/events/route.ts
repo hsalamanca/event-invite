@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { createEvent, listEventsByOwner } from "@/lib/events";
-import { buildEventFromTemplate } from "@/lib/templates";
 import { getRequestLocale } from "@/lib/i18n/locale";
+import { buildEventFromTemplate, getTemplate } from "@/lib/templates";
+import { STUDIO_ACTIVE_EVENT_LIMIT } from "@/lib/tier";
+import { findUserById } from "@/lib/users";
 
 function slugify(input: string): string {
   return input
@@ -58,8 +60,29 @@ export async function POST(request: Request) {
   }
 
   const locale = await getRequestLocale();
+  const user = await findUserById(session.user.id);
+  const studioActive = user?.studioStatus === "active";
+  if (studioActive) {
+    const owned = await listEventsByOwner(session.user.id);
+    const active = owned.filter((e) => e.published).length;
+    if (active >= STUDIO_ACTIVE_EVENT_LIMIT) {
+      return NextResponse.json(
+        {
+          error: `Studio includes up to ${STUDIO_ACTIVE_EVENT_LIMIT} active events. Unpublish or delete one to create another.`,
+          limit: STUDIO_ACTIVE_EVENT_LIMIT,
+        },
+        { status: 402 },
+      );
+    }
+  }
+
+  const tpl = getTemplate(templateId);
+  // Free accounts start on non-premium themes; premium requires unlock/Pro/Studio.
+  const safeTemplateId =
+    tpl.premium && !studioActive ? "evening" : templateId;
+
   const base = buildEventFromTemplate({
-    templateId,
+    templateId: safeTemplateId,
     ownerId: session.user.id,
     hostName: hostName || session.user.name || "Host",
     title,
@@ -75,6 +98,12 @@ export async function POST(request: Request) {
         : "I'd love your company — no gifts, just your presence."),
     locale,
   });
+
+  if (studioActive) {
+    base.tier = "studio";
+    base.showOwnviteFooter = false;
+    base.premiumTheme = true;
+  }
 
   try {
     const event = await createEvent(base);

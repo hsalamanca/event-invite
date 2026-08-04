@@ -7,7 +7,8 @@ import {
   getEventBySlug,
   updateEvent,
 } from "@/lib/events";
-import { eventIsPro } from "@/lib/tier";
+import { eventIsPro, canUseCheckIn, canUsePremiumTemplate, canUsePrivateInvite } from "@/lib/tier";
+import { getTemplate } from "@/lib/templates";
 import type { EventRecord } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -69,6 +70,56 @@ export async function PATCH(request: Request, { params }: Params) {
       .filter(Boolean);
   }
 
+  if (typeof partial.templateId === "string" && partial.templateId) {
+    const tpl = getTemplate(partial.templateId);
+    if (
+      tpl.premium &&
+      !canUsePremiumTemplate(existing, tpl.id, true) &&
+      !access.isAdmin
+    ) {
+      return NextResponse.json(
+        {
+          error: "Unlock this premium theme ($7) or upgrade to Pro Event.",
+          upgradeRequired: true,
+          product: "theme_unlock",
+          templateId: tpl.id,
+        },
+        { status: 402 },
+      );
+    }
+    if (tpl.premium) partial.premiumTheme = true;
+  }
+
+  if (
+    partial.visibility === "private" &&
+    !canUsePrivateInvite(existing) &&
+    !access.isAdmin
+  ) {
+    return NextResponse.json(
+      {
+        error: "Private password invites are included with Pro Event.",
+        upgradeRequired: true,
+        product: "pro_event",
+      },
+      { status: 402 },
+    );
+  }
+
+  if (
+    partial.checkInEnabled === true &&
+    !canUseCheckIn(existing) &&
+    !access.isAdmin
+  ) {
+    return NextResponse.json(
+      {
+        error: "Door check-in is included with Pro Event.",
+        upgradeRequired: true,
+        product: "pro_event",
+      },
+      { status: 402 },
+    );
+  }
+
   // Free tier always shows Ownvite footer (Pro removes it via Stripe webhook)
   if (!eventIsPro(existing) && !access.isAdmin) {
     if (partial.showOwnviteFooter === false) {
@@ -76,6 +127,7 @@ export async function PATCH(request: Request, { params }: Params) {
         {
           error: "Upgrade to Pro Event to remove the Ownvite footer.",
           upgradeRequired: true,
+          product: "pro_event",
         },
         { status: 402 },
       );
@@ -83,9 +135,11 @@ export async function PATCH(request: Request, { params }: Params) {
     partial.showOwnviteFooter = true;
   }
 
-  // Clients cannot self-assign paid tiers
+  // Clients cannot self-assign paid tiers / credits
   if (!access.isAdmin) {
     delete partial.tier;
+    delete partial.emailCredits;
+    delete partial.unlockedTemplateIds;
   }
 
   try {

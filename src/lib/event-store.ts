@@ -75,6 +75,14 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     showOwnviteFooter: raw.showOwnviteFooter ?? true,
     tier: raw.tier ?? "free",
     premiumTheme: raw.premiumTheme ?? false,
+    unlockedTemplateIds: Array.isArray(raw.unlockedTemplateIds)
+      ? raw.unlockedTemplateIds.filter((id): id is string => typeof id === "string")
+      : [],
+    emailCredits:
+      typeof raw.emailCredits === "number" && Number.isFinite(raw.emailCredits)
+        ? Math.max(0, Math.floor(raw.emailCredits))
+        : 0,
+    seatingTables: Array.isArray(raw.seatingTables) ? raw.seatingTables : [],
     createdAt: raw.createdAt ?? now,
     updatedAt: raw.updatedAt ?? now,
   };
