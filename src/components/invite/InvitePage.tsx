@@ -513,6 +513,7 @@ export default function InvitePage({
         toyPartyInvite={ui.toyPartyInvite}
         splashInvite={ui.splashInvite}
         collageInvite={ui.collageInvite}
+        balloonDigits={event.balloonDigits}
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}

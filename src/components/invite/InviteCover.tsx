@@ -28,6 +28,7 @@ type InviteCoverProps = {
   fiftyCelebrate?: string;
   splashInvite?: string;
   collageInvite?: string;
+  balloonDigits?: string | null;
   rsvpLabel: string;
   detailsLabel: string;
   leaveNoteLabel?: string;
@@ -480,11 +481,30 @@ function CollageDiscoBall() {
   );
 }
 
-function CollageNumberBalloons() {
+function normalizeBalloonDigits(raw?: string | null): string {
+  const digits = String(raw ?? "")
+    .replace(/\D/g, "")
+    .slice(0, 2);
+  return digits || "20";
+}
+
+function CollageNumberBalloons({ digits }: { digits?: string | null }) {
+  const value = normalizeBalloonDigits(digits);
+  const chars = value.split("");
+  const dual = chars.length > 1;
+  const width = dual ? 90 : 52;
+  const stringPaths = dual
+    ? [
+        "M28 58 C 28 72, 22 80, 18 86",
+        "M58 58 C 58 72, 64 80, 70 86",
+      ]
+    : ["M26 58 C 26 72, 24 80, 22 86"];
+  const offsets = dual ? [8, 40] : [6];
+
   return (
     <svg
       className="collage-sticker collage-sticker--balloons"
-      viewBox="0 0 90 88"
+      viewBox={`0 0 ${width} 88`}
       aria-hidden
     >
       <defs>
@@ -494,80 +514,48 @@ function CollageNumberBalloons() {
           <stop offset="100%" stopColor="#71717A" />
         </linearGradient>
       </defs>
-      <path
-        d="M28 58 C 28 72, 22 80, 18 86"
-        fill="none"
-        stroke="#1A1A1A"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M58 58 C 58 72, 64 80, 70 86"
-        fill="none"
-        stroke="#1A1A1A"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <g transform="translate(8 4)">
-        <rect
-          x="4"
-          y="6"
-          width="34"
-          height="50"
-          rx="17"
-          fill="url(#collageBalloonMetal)"
-          stroke="#1A1A1A"
-          strokeWidth="2"
-        />
-        <text
-          x="21"
-          y="42"
-          textAnchor="middle"
-          fontSize="34"
-          fontWeight="700"
-          fontFamily="Impact, Arial Black, sans-serif"
-          fill="#1A1A1A"
-        >
-          2
-        </text>
-        <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+      {stringPaths.map((d, i) => (
         <path
-          d="M21 56 l-3 4 h6z"
-          fill="#A1A1AA"
+          key={`string-${i}`}
+          d={d}
+          fill="none"
           stroke="#1A1A1A"
-          strokeWidth="1.2"
+          strokeWidth="1.4"
+          strokeLinecap="round"
         />
-      </g>
-      <g transform="translate(40 8)">
-        <rect
-          x="4"
-          y="6"
-          width="34"
-          height="50"
-          rx="17"
-          fill="url(#collageBalloonMetal)"
-          stroke="#1A1A1A"
-          strokeWidth="2"
-        />
-        <text
-          x="21"
-          y="42"
-          textAnchor="middle"
-          fontSize="34"
-          fontWeight="700"
-          fontFamily="Impact, Arial Black, sans-serif"
-          fill="#1A1A1A"
-        >
-          0
-        </text>
-        <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
-        <path
-          d="M21 56 l-3 4 h6z"
-          fill="#A1A1AA"
-          stroke="#1A1A1A"
-          strokeWidth="1.2"
-        />
-      </g>
+      ))}
+      {chars.map((digit, i) => (
+        <g key={`${digit}-${i}`} transform={`translate(${offsets[i] ?? 8} 4)`}>
+          <rect
+            x="4"
+            y="6"
+            width="34"
+            height="50"
+            rx="17"
+            fill="url(#collageBalloonMetal)"
+            stroke="#1A1A1A"
+            strokeWidth="2"
+          />
+          <text
+            x="21"
+            y="42"
+            textAnchor="middle"
+            fontSize="34"
+            fontWeight="700"
+            fontFamily="Impact, Arial Black, sans-serif"
+            fill="#1A1A1A"
+          >
+            {digit}
+          </text>
+          <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+          <path
+            d="M21 56 l-3 4 h6z"
+            fill="#A1A1AA"
+            stroke="#1A1A1A"
+            strokeWidth="1.2"
+          />
+        </g>
+      ))}
     </svg>
   );
 }
@@ -796,6 +784,7 @@ export default function InviteCover({
   fiftyCelebrate,
   splashInvite,
   collageInvite,
+  balloonDigits,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -976,7 +965,7 @@ export default function InviteCover({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={heroImage} alt="" />
                   </div>
-                  <CollageNumberBalloons />
+                  <CollageNumberBalloons digits={balloonDigits} />
                 </div>
               ) : (
                 <div className="invite-card-photo invite-card-photo--inset">

@@ -1336,6 +1336,7 @@ export function buildEventFromTemplate(input: {
     address: input.address,
     theme: tpl.theme,
     heroImage: tpl.heroImage,
+    balloonDigits: tpl.layout === "collage" ? "20" : null,
     customDomain: null,
     rsvpFields: defaultRsvpFields(input.dateISO, {
       locale: input.locale,

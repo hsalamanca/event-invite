@@ -95,6 +95,8 @@ export type Dictionary = {
     title: string;
     headline: string;
     tagline: string;
+    balloonDigits: string;
+    balloonDigitsHint: string;
     date: string;
     time: string;
     venue: string;
@@ -460,6 +462,8 @@ const en: Dictionary = {
     title: "Title",
     headline: "Headline",
     tagline: "Tagline",
+    balloonDigits: "Balloon digits",
+    balloonDigitsHint: "1–2 digits for the silver number balloons (e.g. 20, 30, 5).",
     date: "Date",
     time: "Time",
     venue: "Venue",
@@ -847,6 +851,9 @@ const es: Dictionary = {
     title: "Título",
     headline: "Titular",
     tagline: "Frase de apoyo",
+    balloonDigits: "Dígitos de globos",
+    balloonDigitsHint:
+      "1–2 dígitos para los globos plateados de números (ej. 20, 30, 5).",
     date: "Fecha",
     time: "Hora",
     venue: "Lugar",

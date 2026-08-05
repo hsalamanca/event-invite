@@ -96,6 +96,8 @@ export type EventRecord = {
   address: string;
   theme: Theme;
   heroImage: string;
+  /** Collage templates: 1–2 digit age/milestone for number balloons */
+  balloonDigits?: string | null;
   customDomain: string | null;
   rsvpFields: RsvpFields;
   about: string;

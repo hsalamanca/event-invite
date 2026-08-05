@@ -48,6 +48,7 @@ export async function POST(
     address: source.address,
     theme: source.theme,
     heroImage: source.heroImage,
+    balloonDigits: source.balloonDigits ?? null,
     customDomain: null,
     rsvpFields: source.rsvpFields,
     about: source.about,

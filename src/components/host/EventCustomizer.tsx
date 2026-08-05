@@ -13,7 +13,11 @@ import {
   type GalleryLayout,
 } from "@/lib/gallery";
 import { canUsePremiumTemplate } from "@/lib/tier";
-import { TEMPLATES, getTemplate } from "@/lib/templates";
+import {
+  TEMPLATES,
+  getTemplate,
+  resolveInviteLayout,
+} from "@/lib/templates";
 import {
   suggestSpanishAbout,
   suggestSpanishFaq,
@@ -61,6 +65,7 @@ type Draft = {
   aboutEs: string;
   parkingEs: string;
   heroImage: string;
+  balloonDigits: string;
   customDomain: string;
   visibility: EventRecord["visibility"];
   capacity: string;
@@ -164,6 +169,12 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     aboutEs: event.aboutEs || "",
     parkingEs: event.parkingEs || "",
     heroImage: event.heroImage,
+    balloonDigits: (() => {
+      const digits = String(event.balloonDigits ?? "")
+        .replace(/\D/g, "")
+        .slice(0, 2);
+      return digits || (resolveInviteLayout(event.templateId) === "collage" ? "20" : "");
+    })(),
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
     capacity: event.capacity != null ? String(event.capacity) : "",
@@ -340,6 +351,10 @@ function toPreviewEvent(
     about: localized.about,
     aboutEs: localized.aboutEs,
     heroImage: draft.heroImage,
+    balloonDigits: (() => {
+      const digits = draft.balloonDigits.replace(/\D/g, "").slice(0, 2);
+      return digits || null;
+    })(),
     customDomain: draft.customDomain.trim() || null,
     visibility: draft.visibility,
     capacity:
@@ -458,6 +473,10 @@ export default function EventCustomizer({
       about: localized.about,
       aboutEs: localized.aboutEs,
       heroImage: draft.heroImage,
+      balloonDigits: (() => {
+        const digits = draft.balloonDigits.replace(/\D/g, "").slice(0, 2);
+        return digits || null;
+      })(),
       customDomain: draft.customDomain.trim() || null,
       visibility: draft.visibility,
       capacity: preview.capacity,
@@ -616,6 +635,25 @@ export default function EventCustomizer({
               />
               <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
+            {resolveInviteLayout(draft.templateId) === "collage" ? (
+              <label>
+                <span>{t.balloonDigits}</span>
+                <input
+                  inputMode="numeric"
+                  maxLength={2}
+                  pattern="[0-9]{1,2}"
+                  value={draft.balloonDigits}
+                  onChange={(e) =>
+                    updateField(
+                      "balloonDigits",
+                      e.target.value.replace(/\D/g, "").slice(0, 2),
+                    )
+                  }
+                  placeholder="20"
+                />
+                <span className="field-hint">{t.balloonDigitsHint}</span>
+              </label>
+            ) : null}
             <label>
               <span>{t.date}</span>
               <input
@@ -737,6 +775,10 @@ export default function EventCustomizer({
                       heroImage: keepCustomHero
                         ? prev.heroImage
                         : tpl.heroImage,
+                      balloonDigits:
+                        tpl.layout === "collage"
+                          ? prev.balloonDigits || "20"
+                          : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
                     };

@@ -54,6 +54,12 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     registryLabel: raw.registryLabel ?? null,
     templateId: raw.templateId ?? "evening",
     heroImage: remapBrokenHeroImage(raw.heroImage),
+    balloonDigits: (() => {
+      const digits = String(raw.balloonDigits ?? "")
+        .replace(/\D/g, "")
+        .slice(0, 2);
+      return digits || null;
+    })(),
     rsvpFields: {
       ...raw.rsvpFields,
       customQuestions: raw.rsvpFields?.customQuestions ?? [],
