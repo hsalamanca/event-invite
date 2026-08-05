@@ -2519,7 +2519,7 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--disco) {
-          bottom: 7.2rem;
+          bottom: 10.5rem;
           left: -0.55rem;
           width: clamp(4.2rem, 18vw, 5.2rem);
           transform: rotate(-12deg);
@@ -2528,7 +2528,7 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--balloons) {
-          bottom: 6.6rem;
+          bottom: 9.8rem;
           right: -0.85rem;
           width: clamp(5.4rem, 24vw, 6.8rem);
           transform: rotate(8deg);
@@ -2853,13 +2853,13 @@ export default function InvitePage({
         @media (max-width: 420px) {
           :global(.invite-cover[data-layout="collage"] .collage-sticker--disco) {
             left: -0.15rem;
-            bottom: 8rem;
+            bottom: 11.2rem;
             width: 3.8rem;
           }
 
           :global(.invite-cover[data-layout="collage"] .collage-sticker--balloons) {
             right: -0.35rem;
-            bottom: 7.5rem;
+            bottom: 10.6rem;
             width: 4.8rem;
           }
 
