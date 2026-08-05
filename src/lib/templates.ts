@@ -250,11 +250,11 @@ const toyParty: Theme = {
   fonts: { display: "Baloo 2", body: "Outfit" },
 };
 
-/** Canva Blue Modern Birthday — sleek cobalt celebration */
+/** Canva Blue Modern Birthday — sleek cobalt celebration (dark cover, light body) */
 const blueModern: Theme = {
   colors: {
     background: "#0B1F3A",
-    surface: "#F4F8FF",
+    surface: "#FFFFFF",
     accentPrimary: "#2B6FFF",
     accentSecondary: "#7EC8FF",
     textPrimary: "#0B1F3A",
@@ -267,7 +267,7 @@ const blueModern: Theme = {
 const quinceAzul: Theme = {
   colors: {
     background: "#0B1F3A",
-    surface: "#F7FAFF",
+    surface: "#FFFFFF",
     accentPrimary: "#2B6FFF",
     accentSecondary: "#D4AF37",
     textPrimary: "#0B1F3A",
