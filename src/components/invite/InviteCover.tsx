@@ -386,6 +386,27 @@ function CollageStickers() {
         />
       </svg>
 
+      <svg
+        className="collage-sticker collage-sticker--lips"
+        viewBox="0 0 48 32"
+        aria-hidden
+      >
+        <path
+          d="M6 16c4-8 12-10 18-4 6-6 14-4 18 4-3 8-10 12-18 12S9 24 6 16z"
+          fill="#F472B6"
+          stroke="#1A1A1A"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10 16c3.5 2 8 3 14 3s10.5-1 14-3"
+          fill="none"
+          stroke="#1A1A1A"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-a" aria-hidden />
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-b" aria-hidden />
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-c" aria-hidden />

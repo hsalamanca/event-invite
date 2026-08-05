@@ -2502,20 +2502,28 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--cake) {
-          top: 0.2rem;
-          right: 0.35rem;
-          width: clamp(4.4rem, 18vw, 5.4rem);
+          top: -0.1rem;
+          right: 0.1rem;
+          width: clamp(5rem, 20vw, 6.1rem);
           transform: rotate(8deg);
           animation: collageBob 3.6s ease-in-out infinite;
           filter: drop-shadow(0 3px 4px color-mix(in srgb, #111 12%, transparent));
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--banner) {
-          top: 0.75rem;
-          left: 0.45rem;
-          width: clamp(7.2rem, 32vw, 9rem);
-          transform: rotate(-10deg);
+          top: 0.55rem;
+          left: 0.2rem;
+          width: clamp(8rem, 36vw, 10rem);
+          transform: rotate(-11deg);
           filter: drop-shadow(0 2px 0 color-mix(in srgb, #111 8%, transparent));
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--lips) {
+          top: 46%;
+          left: 0.55rem;
+          width: 2.6rem;
+          transform: rotate(-18deg);
+          filter: drop-shadow(0 2px 2px color-mix(in srgb, #111 12%, transparent));
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-photo-stage) {
@@ -2526,8 +2534,9 @@ export default function InvitePage({
           align-items: end;
           justify-items: center;
           gap: 0;
-          margin: 1.35rem -0.35rem 0.1rem;
-          min-height: 9.5rem;
+          margin: 1.1rem -0.65rem 0.05rem;
+          min-height: 10.5rem;
+          overflow: visible;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-photo-stage .collage-sticker--disco) {
@@ -2537,12 +2546,13 @@ export default function InvitePage({
           right: auto;
           top: auto;
           justify-self: end;
-          width: clamp(4.6rem, 20vw, 5.8rem);
-          margin-right: -0.85rem;
-          margin-bottom: 0.35rem;
+          width: clamp(5.4rem, 24vw, 6.8rem);
+          margin-right: -1.35rem;
+          margin-bottom: 0.2rem;
           transform: rotate(-14deg);
           animation: collageBob 4.8s ease-in-out infinite;
           filter: drop-shadow(0 8px 14px color-mix(in srgb, #111 20%, transparent));
+          z-index: 1;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-photo-stage .collage-sticker--balloons) {
@@ -2552,40 +2562,41 @@ export default function InvitePage({
           right: auto;
           top: auto;
           justify-self: start;
-          width: clamp(5.8rem, 26vw, 7.4rem);
-          margin-left: -1rem;
-          margin-bottom: 0.15rem;
+          width: clamp(6.8rem, 30vw, 8.6rem);
+          margin-left: -1.5rem;
+          margin-bottom: 0;
           transform: rotate(10deg);
           animation: collageBob 4.2s ease-in-out infinite;
           animation-delay: -1.2s;
           filter: drop-shadow(0 10px 16px color-mix(in srgb, #111 18%, transparent));
+          z-index: 1;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-photo-stage .invite-card-photo--inset) {
           margin: 0;
-          width: clamp(8.6rem, 38vw, 10.5rem);
+          width: clamp(9.2rem, 40vw, 11.2rem);
           max-width: none;
           z-index: 2;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--star-a) {
-          top: 38%;
-          right: 0.85rem;
-          width: 1.55rem;
+          top: 37%;
+          right: 0.55rem;
+          width: 2.1rem;
           transform: rotate(14deg);
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--star-b) {
-          top: 22%;
-          left: 1.1rem;
-          width: 1.1rem;
+          top: 20%;
+          left: 0.85rem;
+          width: 1.55rem;
           transform: rotate(-18deg);
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--star-c) {
-          bottom: 31%;
-          left: 2.2rem;
-          width: 0.9rem;
+          bottom: 28%;
+          left: 1.6rem;
+          width: 1.25rem;
           transform: rotate(8deg);
         }
 
@@ -2667,7 +2678,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="collage"] .invite-card-body) {
           position: relative;
           z-index: 2;
-          padding: clamp(3.1rem, 8vw, 3.7rem) 1.35rem 1.85rem;
+          padding: clamp(3.3rem, 8vw, 3.9rem) 1.15rem 1.7rem;
           text-align: center;
         }
 
@@ -2681,85 +2692,87 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="collage"] .invite-card-invite-line) {
           font-family: var(--font-great-vibes), cursive;
-          font-size: clamp(1.55rem, 4.6vw, 2rem);
+          font-size: clamp(1.7rem, 5vw, 2.2rem);
           letter-spacing: 0.01em;
           text-transform: none;
           font-weight: 400;
-          color: color-mix(in srgb, var(--invite-text) 72%, var(--invite-muted));
-          margin: 0 0 0.05rem;
-          line-height: 1.1;
+          color: color-mix(in srgb, var(--invite-text) 78%, var(--invite-muted));
+          margin: 0 0 0.02rem;
+          line-height: 1.05;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-headline) {
           font-family: var(--font-display);
           font-weight: 400;
-          font-size: clamp(3.6rem, 15vw, 5.4rem);
-          line-height: 0.88;
-          letter-spacing: -0.01em;
+          font-size: clamp(3.9rem, 16vw, 5.8rem);
+          line-height: 0.86;
+          letter-spacing: -0.015em;
           text-transform: uppercase;
           color: var(--invite-text);
-          margin: 0.05rem 0 1.15rem;
-          text-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent);
+          margin: 0 0 0.95rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-when--collage) {
           margin: 0 auto;
-          max-width: 19.5rem;
+          max-width: 20rem;
           padding: 0;
-          border: 0;
+          border: 0 !important;
           background: transparent;
           display: grid;
-          gap: 0.55rem;
+          gap: 0.45rem;
+          box-shadow: none;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-when-row) {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+          grid-template-columns: minmax(3.2rem, 1fr) auto minmax(3.2rem, 1fr);
           align-items: center;
-          gap: 0.45rem;
+          gap: 0.4rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-when-day),
         :global(.invite-cover[data-layout="collage"] .collage-when-time) {
           font-family: var(--font-body);
-          font-size: 0.68rem;
+          font-size: 0.7rem;
           font-weight: 700;
-          letter-spacing: 0.14em;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
           color: var(--invite-text);
-          line-height: 1.2;
+          line-height: 1.15;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-when-day) {
           text-align: right;
+          padding-right: 0.1rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-when-time) {
           text-align: left;
+          padding-left: 0.1rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-when-date) {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-width: 8.5rem;
-          padding: 0.55rem 0.7rem;
-          border: 1.5px solid var(--invite-text);
-          border-radius: 0.12rem;
+          min-width: 9rem;
+          padding: 0.58rem 0.75rem;
+          border: 1.6px solid var(--invite-text);
+          border-radius: 0;
           font-family: var(--font-body);
           font-weight: 700;
-          font-size: 0.72rem;
+          font-size: 0.74rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: var(--invite-text);
-          background: color-mix(in srgb, #fff 70%, transparent);
+          background: #fff;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-when--collage .invite-card-venue),
         :global(.invite-cover[data-layout="collage"] .invite-card-when--collage .invite-card-address) {
           font-family: var(--font-body);
-          font-size: 0.72rem;
-          letter-spacing: 0.12em;
+          font-size: 0.7rem;
+          letter-spacing: 0.13em;
           text-transform: uppercase;
           color: var(--invite-text);
           margin: 0;
@@ -2776,9 +2789,8 @@ export default function InvitePage({
           border-radius: 999px;
           border: 2.5px solid #111;
           box-shadow:
-            0 0 0 3px color-mix(in srgb, var(--invite-accent) 35%, #fff),
-            8px 10px 0 color-mix(in srgb, var(--invite-accent) 82%, #fff),
-            0 16px 30px color-mix(in srgb, #111 16%, transparent);
+            9px 11px 0 color-mix(in srgb, var(--invite-accent) 88%, #fff),
+            0 14px 26px color-mix(in srgb, #111 14%, transparent);
           overflow: hidden;
           transform: rotate(-5deg);
           background: #ddd;
@@ -2874,22 +2886,22 @@ export default function InvitePage({
 
         @media (max-width: 420px) {
           :global(.invite-cover[data-layout="collage"] .collage-photo-stage) {
-            margin-inline: -0.55rem;
-            min-height: 8.4rem;
+            margin-inline: -0.75rem;
+            min-height: 9.2rem;
           }
 
           :global(.invite-cover[data-layout="collage"] .collage-photo-stage .collage-sticker--disco) {
-            width: 4rem;
-            margin-right: -0.55rem;
+            width: 4.6rem;
+            margin-right: -0.95rem;
           }
 
           :global(.invite-cover[data-layout="collage"] .collage-photo-stage .collage-sticker--balloons) {
-            width: 5.1rem;
-            margin-left: -0.65rem;
+            width: 5.8rem;
+            margin-left: -1.05rem;
           }
 
           :global(.invite-cover[data-layout="collage"] .collage-photo-stage .invite-card-photo--inset) {
-            width: 7.6rem;
+            width: 8.2rem;
           }
 
           :global(.invite-cover[data-layout="collage"] .collage-when-row) {
