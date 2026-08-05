@@ -2997,6 +2997,160 @@ export default function InvitePage({
           }
         }
 
+        /* Game On body sections: light cabinets on the dark arcade page */
+        .invite-root[data-layout="arcade"] .invite-section {
+          --invite-text: #1a0a3c;
+          --invite-muted: #5c4e78;
+          --invite-bg: #f7f2ff;
+          --invite-surface: #ffffff;
+          color: #1a0a3c;
+          max-width: 36rem;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 1.25rem;
+          margin-bottom: 1.25rem;
+          padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 4vw, 1.85rem);
+          border: 3px solid #1a0a3c;
+          border-radius: 0.85rem;
+          background:
+            linear-gradient(
+              160deg,
+              #ffffff 0%,
+              color-mix(in srgb, #ff3d9a 6%, #ffffff) 48%,
+              color-mix(in srgb, #00e5ff 7%, #ffffff) 100%
+            );
+          box-shadow:
+            4px 4px 0 #ff3d9a,
+            8px 8px 0 #00e5ff;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-section--paper,
+        .invite-root[data-layout="arcade"] .invite-section--surface,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp {
+          max-width: 36rem;
+          padding-left: clamp(1.25rem, 4vw, 1.85rem);
+          padding-right: clamp(1.25rem, 4vw, 1.85rem);
+          background:
+            linear-gradient(
+              160deg,
+              #ffffff 0%,
+              color-mix(in srgb, #ff3d9a 6%, #ffffff) 48%,
+              color-mix(in srgb, #00e5ff 7%, #ffffff) 100%
+            );
+          border-block: none;
+          box-shadow:
+            4px 4px 0 #ff3d9a,
+            8px 8px 0 #00e5ff;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-section-title {
+          font-family: var(--font-body);
+          font-weight: 700;
+          font-size: clamp(1.35rem, 3vw, 1.65rem);
+          letter-spacing: 0.01em;
+          color: #1a0a3c;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-section-title::before {
+          content: "▶ ";
+          color: #ff3d9a;
+          font-size: 0.75em;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-meta dt {
+          color: #ff3d9a;
+          font-weight: 600;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-meta dd,
+        .invite-root[data-layout="arcade"] .invite-about-body,
+        .invite-root[data-layout="arcade"] .invite-extra-line {
+          color: #1a0a3c;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-prompt {
+          color: #5c4e78;
+        }
+
+        .invite-root[data-layout="arcade"] .rsvp-panel {
+          background: #f7f2ff;
+          border: 3px solid #1a0a3c;
+          border-radius: 0.75rem;
+          box-shadow: 4px 4px 0 #00e5ff;
+          padding: clamp(1.1rem, 3vw, 1.5rem);
+        }
+
+        .invite-root[data-layout="arcade"] .rsvp-ornament {
+          height: 4px;
+          border-radius: 0;
+          background: repeating-linear-gradient(
+            90deg,
+            #ff3d9a 0 8px,
+            #00e5ff 8px 16px,
+            #ffe600 16px 24px,
+            #39ff14 24px 32px
+          );
+        }
+
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .invite-deadline {
+          background: #1a0a3c;
+          color: #ffe600;
+          border-radius: 0.35rem;
+          font-family: var(--font-body);
+          letter-spacing: 0.04em;
+        }
+
+        .invite-root[data-layout="arcade"] .rsvp-field span {
+          color: #5c4e78;
+        }
+
+        .invite-root[data-layout="arcade"] .rsvp-field input,
+        .invite-root[data-layout="arcade"] .rsvp-field textarea,
+        .invite-root[data-layout="arcade"] .rsvp-field select,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field input,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field textarea,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field select {
+          background: #ffffff;
+          color: #1a0a3c;
+          border: 2px solid color-mix(in srgb, #1a0a3c 28%, transparent);
+          border-radius: 0.45rem;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field input:focus,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field textarea:focus,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .rsvp-field select:focus,
+        .invite-root[data-layout="arcade"] .rsvp-field input:focus,
+        .invite-root[data-layout="arcade"] .rsvp-field textarea:focus,
+        .invite-root[data-layout="arcade"] .rsvp-field select:focus {
+          border-color: #ff3d9a;
+          outline: 2px solid color-mix(in srgb, #00e5ff 55%, transparent);
+          outline-offset: 1px;
+        }
+
+        .invite-root[data-layout="arcade"] .btn-primary,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .btn-submit {
+          background: #ff3d9a;
+          color: #ffffff;
+          border: 3px solid #1a0a3c;
+          border-radius: 0.45rem;
+          box-shadow: 3px 3px 0 #00e5ff;
+          font-weight: 700;
+        }
+
+        .invite-root[data-layout="arcade"] .btn-primary:hover,
+        .invite-root[data-layout="arcade"] .invite-section--rsvp .btn-submit:hover {
+          background: #00e5ff;
+          color: #1a0a3c;
+        }
+
+        .invite-root[data-layout="arcade"] .invite-footer {
+          color: color-mix(in srgb, #fff8ff 75%, transparent);
+        }
+
+        .invite-root[data-layout="arcade"] .invite-footer-attr {
+          color: #00e5ff;
+        }
+
         .invite-section--paper {
           background:
             linear-gradient(

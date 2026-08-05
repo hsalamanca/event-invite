@@ -292,12 +292,12 @@ const goldenFifty: Theme = {
 /** Canva Colorful Kids Video Game Birthday — neon arcade party */
 const gameOn: Theme = {
   colors: {
-    background: "#1A0A3C",
-    surface: "#FFF8FF",
+    background: "#16082F",
+    surface: "#FFFFFF",
     accentPrimary: "#FF3D9A",
-    accentSecondary: "#39FF14",
+    accentSecondary: "#00E5FF",
     textPrimary: "#1A0A3C",
-    textMuted: "#6B5A8A",
+    textMuted: "#5C4E78",
   },
   fonts: { display: "Press Start 2P", body: "Outfit" },
 };
