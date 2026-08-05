@@ -168,18 +168,18 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
           <ul className="mt-4 space-y-2">
             <li>
               {locale === "es"
-                ? "Desbloqueo de un tema premium: $7 · pack de recordatorios (+100 emails): $9 · seating + check-in en Pro"
-                : "Single premium theme unlock: $7 · Reminder Pack (+100 emails): $9 · seating + check-in in Pro"}
+                ? "Desbloqueo de un tema premium: $7 · packs de temporada: $12 · pack de recordatorios (+100 emails): $9 · SMS/WhatsApp (+50): $15"
+                : "Single premium theme: $7 · seasonal theme packs: $12 · Reminder Pack (+100 emails): $9 · SMS/WhatsApp Pack (+50): $15"}
             </li>
             <li>
               {locale === "es"
-                ? "Dominio propio à la carte en Free: $9 · incluido en Pro"
-                : "Custom domain à la carte on Free: $9 · included in Pro"}
+                ? "Álbum de fotos de invitados · registro/fondo · check-in QR por invitado · exportar analítica CSV · suite de impresión"
+                : "Guest photo album · gift registry & cash-fund tracking · per-guest QR check-in · analytics CSV export · print suite"}
             </li>
             <li>
               {locale === "es"
-                ? "Emails/SMS extras · invitaciones con contraseña · check-in en puerta"
-                : "Email/SMS overage · password invites · door check-in"}
+                ? "Dominio propio à la carte en Free: $9 · incluido en Pro · Agency white-label $199/mo"
+                : "Custom domain à la carte on Free: $9 · included in Pro · Agency white-label $199/mo"}
             </li>
           </ul>
         </div>

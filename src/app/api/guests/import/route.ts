@@ -5,7 +5,7 @@ import { addManualGuest, listManualGuests } from "@/lib/guest-extras";
 
 export const runtime = "nodejs";
 
-/** CSV body: name,email per line (header optional) */
+/** CSV body: name,email,phone per line (header optional) */
 export async function POST(request: Request) {
   const body = (await request.json()) as { slug?: string; csv?: string };
   const slug = body.slug?.trim();
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const parts = line.split(",").map((p) => p.replace(/^"|"$/g, "").trim());
     const name = parts[0] ?? "";
     const email = (parts[1] ?? "").toLowerCase();
+    const phone = parts[2] ?? "";
     if (!name) {
       skipped += 1;
       continue;
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
       skipped += 1;
       continue;
     }
-    await addManualGuest({ eventId: event.id, name, email });
+    await addManualGuest({ eventId: event.id, name, email, phone });
     if (email) existingEmails.add(email);
     added += 1;
     if (added >= 500) break;

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { THEME_PACKS } from "@/lib/theme-packs";
 import type { EventTier } from "@/lib/types";
 
 export default function HostActions({
@@ -12,12 +13,20 @@ export default function HostActions({
   canDelete,
   tier = "free",
   emailCredits = 0,
+  smsCredits = 0,
+  unlockedPackIds = [],
+  registryClicks = 0,
+  cashFundClicks = 0,
 }: {
   slug: string;
   locale?: Locale;
   canDelete: boolean;
   tier?: EventTier;
   emailCredits?: number;
+  smsCredits?: number;
+  unlockedPackIds?: string[];
+  registryClicks?: number;
+  cashFundClicks?: number;
 }) {
   const t = getDictionary(locale).hostActions;
   const router = useRouter();
@@ -34,10 +43,13 @@ export default function HostActions({
       );
     }
     if (search.get("theme") === "1") {
-      setInfo("Premium theme unlocked — apply it from the template list.");
+      setInfo("Theme unlocked — apply it from the template list.");
     }
     if (search.get("credits") === "1") {
       setInfo("Reminder Pack added — +100 email credits for this event.");
+    }
+    if (search.get("sms") === "1") {
+      setInfo("SMS / WhatsApp Pack added — +50 message credits.");
     }
   }, [search]);
 
@@ -104,7 +116,10 @@ export default function HostActions({
     }
   }
 
-  async function remind(type: "invite" | "rsvp_reminder" | "event_reminder") {
+  async function remind(
+    type: "invite" | "rsvp_reminder" | "event_reminder",
+    channel: "email" | "sms" | "whatsapp" = "email",
+  ) {
     setBusy(true);
     setError(null);
     setInfo(null);
@@ -112,23 +127,27 @@ export default function HostActions({
       const res = await fetch(`/api/events/${slug}/remind`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type }),
+        body: JSON.stringify({ type, channel }),
       });
       const data = (await res.json()) as {
         error?: string;
         sent?: number;
         preview?: number;
         note?: string;
+        message?: string;
       };
       if (!res.ok) {
         setError(data.error || t.error);
         return;
       }
+      const label =
+        channel === "email" ? "Emails" : channel === "sms" ? "SMS" : "WhatsApp";
       setInfo(
-        `Emails: ${data.sent ?? 0} sent, ${data.preview ?? 0} preview.${
-          data.note ? ` ${data.note}` : ""
-        }`,
+        `${label}: ${data.sent ?? 0} sent, ${data.preview ?? 0} preview.${
+          data.message ? ` ${data.message}` : ""
+        }${data.note ? ` ${data.note}` : ""}`,
       );
+      if (channel !== "email") router.refresh();
     } catch {
       setError(t.error);
     } finally {
@@ -137,7 +156,14 @@ export default function HostActions({
   }
 
   async function checkout(
-    product: "pro_event" | "reminder_pack" | "studio",
+    product:
+      | "pro_event"
+      | "reminder_pack"
+      | "sms_pack"
+      | "studio"
+      | "agency"
+      | "theme_pack",
+    packId?: string,
   ) {
     setBusy(true);
     setError(null);
@@ -146,22 +172,31 @@ export default function HostActions({
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, product }),
+        body: JSON.stringify({ slug, product, packId }),
       });
       const data = (await res.json()) as {
         error?: string;
         url?: string;
         alreadyPro?: boolean;
         alreadyStudio?: boolean;
+        alreadyAgency?: boolean;
+        alreadyUnlocked?: boolean;
         mailto?: string;
         note?: string;
       };
-      if (data.alreadyPro || data.alreadyStudio) {
+      if (data.alreadyPro || data.alreadyStudio || data.alreadyAgency) {
         setInfo(
-          data.alreadyStudio
-            ? "Studio is already active on your account."
-            : "This event is already Pro.",
+          data.alreadyAgency
+            ? "Agency is already active."
+            : data.alreadyStudio
+              ? "Studio is already active on your account."
+              : "This event is already Pro.",
         );
+        router.refresh();
+        return;
+      }
+      if (data.alreadyUnlocked) {
+        setInfo("Already unlocked.");
         router.refresh();
         return;
       }
@@ -194,6 +229,11 @@ export default function HostActions({
         {t.title}
       </h2>
       <p className="mt-1 text-sm text-[var(--mist)]">{t.support}</p>
+      <p className="mt-2 text-xs text-[var(--mist)]">
+        Registry clicks: {registryClicks} · Cash fund clicks: {cashFundClicks} ·
+        SMS credits: {smsCredits}
+        {!isPro ? ` · Email credits: ${emailCredits}` : ""}
+      </p>
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
         {!isPro ? (
           <button
@@ -215,7 +255,15 @@ export default function HostActions({
           onClick={() => void checkout("reminder_pack")}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
         >
-          Reminder Pack · $9 (+100)
+          Reminder Pack · $9 (+100 email)
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void checkout("sms_pack")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          SMS / WhatsApp Pack · $15 (+50)
         </button>
         {tier !== "studio" ? (
           <button
@@ -227,11 +275,14 @@ export default function HostActions({
             Studio · $12/mo
           </button>
         ) : null}
-        {!isPro ? (
-          <span className="rounded-md border border-white/10 px-3 py-1.5 text-[var(--mist)]">
-            Credits: {emailCredits}
-          </span>
-        ) : null}
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void checkout("agency")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          Agency white-label · $199/mo
+        </button>
         <button
           type="button"
           onClick={() => void copyLink()}
@@ -245,7 +296,7 @@ export default function HostActions({
           rel="noreferrer"
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >
-          WhatsApp
+          WhatsApp share
         </a>
         <a
           href={mail}
@@ -257,14 +308,32 @@ export default function HostActions({
           href={`/e/${slug}/card`}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >
-          Print / save-the-date
+          Print save-the-date
+        </a>
+        <a
+          href={`/e/${slug}/print/menu`}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
+        >
+          Print menu
+        </a>
+        <a
+          href={`/e/${slug}/print/place-cards`}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
+        >
+          Print place cards
         </a>
         <a
           href={`/api/events/${slug}/qr?format=png`}
           download={`${slug}-qr.png`}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >
-          Download QR
+          Download invite QR
+        </a>
+        <a
+          href={`/api/events/${slug}/export`}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
+        >
+          Export analytics CSV
         </a>
         <a
           href={`/api/events/${slug}/ics`}
@@ -275,10 +344,26 @@ export default function HostActions({
         <button
           type="button"
           disabled={busy}
-          onClick={() => void remind("rsvp_reminder")}
+          onClick={() => void remind("rsvp_reminder", "email")}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
         >
-          Send RSVP reminders
+          Email RSVP reminders
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void remind("rsvp_reminder", "sms")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          SMS RSVP reminders
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void remind("event_reminder", "whatsapp")}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+        >
+          WhatsApp event reminders
         </button>
         <button
           type="button"
@@ -299,6 +384,30 @@ export default function HostActions({
           </button>
         ) : null}
       </div>
+
+      <div className="mt-6">
+        <h3 className="text-sm font-medium text-[var(--ivory)]">
+          Seasonal theme packs · $12
+        </h3>
+        <div className="mt-2 flex flex-wrap gap-2 text-sm">
+          {THEME_PACKS.map((pack) => {
+            const owned = unlockedPackIds.includes(pack.id);
+            return (
+              <button
+                key={pack.id}
+                type="button"
+                disabled={busy || owned}
+                onClick={() => void checkout("theme_pack", pack.id)}
+                className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40 disabled:opacity-60"
+                title={pack.description}
+              >
+                {owned ? `✓ ${pack.name}` : `${pack.name} · $12`}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {info ? (
         <p className="mt-2 text-sm text-[var(--champagne)]">{info}</p>
       ) : null}

@@ -136,8 +136,22 @@ export type EventRecord = {
   unlockedTemplateIds?: string[];
   /** Purchased reminder email credits (Free overage / packs) */
   emailCredits?: number;
+  /** Purchased SMS / WhatsApp reminder credits */
+  smsCredits?: number;
   /** Pro seating chart tables */
   seatingTables?: SeatingTable[];
+  /** Guest photo album enabled on invite */
+  albumEnabled?: boolean;
+  /** Cash fund / Venmo / Zelle style link */
+  cashFundUrl?: string | null;
+  cashFundLabel?: string | null;
+  /** Registry / cash-fund click counts */
+  registryClicks?: number;
+  cashFundClicks?: number;
+  /** Hide Ownvite branding on invite + guest emails (Agency / white-label) */
+  whiteLabel?: boolean;
+  /** Unlocked seasonal pack ids */
+  unlockedPackIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -149,6 +163,8 @@ export type RsvpSubmission = {
   eventId: string;
   name: string;
   email: string;
+  /** Optional mobile for SMS / WhatsApp reminders */
+  phone?: string;
   attendance: string;
   guestCount: number;
   dietary: string;
@@ -179,6 +195,9 @@ export type UserRecord = {
   studioStripeCustomerId?: string | null;
   studioStripeSubscriptionId?: string | null;
   studioActiveUntil?: string | null;
+  /** Agency / white-label subscription */
+  agencyStatus?: "active" | "canceled" | null;
+  agencyStripeSubscriptionId?: string | null;
   createdAt: string;
 };
 
@@ -214,7 +233,20 @@ export type ManualGuest = {
   eventId: string;
   name: string;
   email: string;
+  /** E.164 preferred for SMS / WhatsApp */
+  phone?: string;
   status: "invited" | "opened" | "going" | "maybe" | "declined";
+  createdAt: string;
+};
+
+export type GuestPhoto = {
+  id: string;
+  eventId: string;
+  name: string;
+  caption: string;
+  url: string;
+  /** pending until host approves */
+  status: "pending" | "approved" | "rejected";
   createdAt: string;
 };
 
@@ -227,6 +259,8 @@ export type OutboundMessage = {
     | "event_reminder"
     | "rsvp_notification"
     | "rsvp_confirmation"
+    | "sms_reminder"
+    | "whatsapp_reminder"
     | "custom";
   to: string;
   subject: string;

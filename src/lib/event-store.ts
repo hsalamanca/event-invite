@@ -82,7 +82,22 @@ function normalizeEvent(raw: EventRecord): EventRecord {
       typeof raw.emailCredits === "number" && Number.isFinite(raw.emailCredits)
         ? Math.max(0, Math.floor(raw.emailCredits))
         : 0,
+    smsCredits:
+      typeof raw.smsCredits === "number" && Number.isFinite(raw.smsCredits)
+        ? Math.max(0, Math.floor(raw.smsCredits))
+        : 0,
     seatingTables: Array.isArray(raw.seatingTables) ? raw.seatingTables : [],
+    albumEnabled: raw.albumEnabled ?? false,
+    cashFundUrl: raw.cashFundUrl ?? "",
+    cashFundLabel: raw.cashFundLabel ?? "",
+    registryClicks:
+      typeof raw.registryClicks === "number" ? raw.registryClicks : 0,
+    cashFundClicks:
+      typeof raw.cashFundClicks === "number" ? raw.cashFundClicks : 0,
+    whiteLabel: raw.whiteLabel ?? false,
+    unlockedPackIds: Array.isArray(raw.unlockedPackIds)
+      ? raw.unlockedPackIds.filter((id): id is string => typeof id === "string")
+      : [],
     createdAt: raw.createdAt ?? now,
     updatedAt: raw.updatedAt ?? now,
   };

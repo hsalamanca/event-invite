@@ -14,12 +14,19 @@ export const FREE_EMAIL_BLAST_CAP = 15;
 export const PRO_EMAIL_BLAST_CAP = 500;
 /** Emails granted by one Reminder Pack purchase. */
 export const REMINDER_PACK_CREDITS = 100;
+/** SMS/WhatsApp credits granted by one SMS Pack purchase. */
+export const SMS_PACK_CREDITS = 50;
 /** Active published events allowed on Studio. */
 export const STUDIO_ACTIVE_EVENT_LIMIT = 5;
 
 export function shouldShowOwnviteFooter(event: EventRecord): boolean {
+  if (event.whiteLabel) return false;
   if (eventIsPro(event)) return false;
   return event.showOwnviteFooter !== false;
+}
+
+export function isWhiteLabel(event: EventRecord): boolean {
+  return Boolean(event.whiteLabel);
 }
 
 export function emailBlastCap(event: EventRecord): number {

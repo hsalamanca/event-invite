@@ -38,6 +38,7 @@ export async function POST(request: Request) {
   const guestCount = Number(data.guestCount ?? 1);
   const dietary = String(data.dietary ?? "").trim();
   const note = String(data.note ?? "").trim();
+  const phone = String(data.phone ?? "").trim();
   const answers = parseAnswers(data.answers);
   const mealChoice = String(data.mealChoice ?? "").trim() || undefined;
 
@@ -106,6 +107,7 @@ export async function POST(request: Request) {
       const record = await updateRsvpByToken(prior.editToken, {
         name,
         email,
+        phone: phone || undefined,
         attendance: attendance || "Joyfully attending",
         guestCount: Number.isFinite(guestCount) ? Math.max(1, guestCount) : 1,
         dietary,
@@ -125,6 +127,7 @@ export async function POST(request: Request) {
       eventId,
       name,
       email,
+      phone: phone || undefined,
       attendance: attendance || "Joyfully attending",
       guestCount: Number.isFinite(guestCount) ? Math.max(1, guestCount) : 1,
       dietary,

@@ -7,6 +7,7 @@ export function inviteEmailHtml(input: {
   address: string;
   inviteUrl: string;
   kind: "invite" | "rsvp_reminder" | "event_reminder";
+  whiteLabel?: boolean;
 }): string {
   const lead =
     input.kind === "event_reminder"
@@ -15,12 +16,16 @@ export function inviteEmailHtml(input: {
         ? `You're invited to <strong>${escapeHtml(input.title)}</strong>.`
         : `Please RSVP for <strong>${escapeHtml(input.title)}</strong>.`;
 
+  const brand = input.whiteLabel
+    ? ""
+    : `<tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>`;
+
   return `<!doctype html>
 <html><body style="margin:0;background:#0F1A2E;color:#F4F0E8;font-family:Georgia,serif;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F1A2E;padding:32px 16px;">
     <tr><td align="center">
       <table role="presentation" width="100%" style="max-width:520px;background:#1A2744;border:1px solid rgba(201,169,98,0.35);padding:28px;">
-        <tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>
+        ${brand}
         <tr><td style="padding-top:12px;font-size:28px;line-height:1.2;">${escapeHtml(input.title)}</td></tr>
         <tr><td style="padding-top:14px;font-size:16px;line-height:1.5;color:#C9D0DB;">${lead}</td></tr>
         <tr><td style="padding-top:18px;font-size:15px;line-height:1.6;color:#C9D0DB;">
@@ -110,6 +115,7 @@ export function rsvpGuestConfirmationHtml(input: {
   inviteUrl: string;
   editUrl?: string;
   updated: boolean;
+  whiteLabel?: boolean;
 }): string {
   const lead = input.updated
     ? `Your RSVP for <strong>${escapeHtml(input.eventTitle)}</strong> was updated.`
@@ -127,12 +133,16 @@ export function rsvpGuestConfirmationHtml(input: {
         </td></tr>`
     : "";
 
+  const brand = input.whiteLabel
+    ? ""
+    : `<tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>`;
+
   return `<!doctype html>
 <html><body style="margin:0;background:#0F1A2E;color:#F4F0E8;font-family:Georgia,serif;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F1A2E;padding:32px 16px;">
     <tr><td align="center">
       <table role="presentation" width="100%" style="max-width:520px;background:#1A2744;border:1px solid rgba(201,169,98,0.35);padding:28px;">
-        <tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>
+        ${brand}
         <tr><td style="padding-top:12px;font-size:24px;line-height:1.25;">RSVP confirmed</td></tr>
         <tr><td style="padding-top:14px;font-size:16px;line-height:1.5;color:#C9D0DB;">${lead}</td></tr>
         ${thanks}

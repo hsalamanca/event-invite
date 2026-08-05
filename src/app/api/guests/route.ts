@@ -56,6 +56,7 @@ export async function POST(request: Request) {
     slug?: string;
     name?: string;
     email?: string;
+    phone?: string;
   };
   const slug = body.slug?.trim();
   if (!slug) {
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
     eventId: gate.event.id,
     name,
     email: body.email?.trim() || "",
+    phone: body.phone?.trim() || "",
   });
 
   return NextResponse.json({ guest }, { status: 201 });
@@ -86,6 +88,7 @@ export async function PATCH(request: Request) {
     status?: ManualGuest["status"];
     name?: string;
     email?: string;
+    phone?: string;
   };
   const slug = body.slug?.trim();
   const id = body.id?.trim();
@@ -98,10 +101,11 @@ export async function PATCH(request: Request) {
   if (
     body.status == null &&
     body.name == null &&
-    body.email == null
+    body.email == null &&
+    body.phone == null
   ) {
     return NextResponse.json(
-      { error: "Provide name, email, and/or status to update" },
+      { error: "Provide name, email, phone, and/or status to update" },
       { status: 400 },
     );
   }
@@ -113,6 +117,7 @@ export async function PATCH(request: Request) {
     status: body.status,
     name: body.name,
     email: body.email,
+    phone: body.phone,
   });
   if (!guest) {
     return NextResponse.json({ error: "Guest not found." }, { status: 404 });

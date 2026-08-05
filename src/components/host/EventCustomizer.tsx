@@ -66,6 +66,10 @@ type Draft = {
   capacity: string;
   registryUrl: string;
   registryLabel: string;
+  cashFundUrl: string;
+  cashFundLabel: string;
+  albumEnabled: boolean;
+  whiteLabel: boolean;
   published: boolean;
   templateId: string;
   colors: Theme["colors"];
@@ -165,6 +169,10 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     capacity: event.capacity != null ? String(event.capacity) : "",
     registryUrl: event.registryUrl ?? "",
     registryLabel: event.registryLabel ?? "",
+    cashFundUrl: event.cashFundUrl ?? "",
+    cashFundLabel: event.cashFundLabel ?? "",
+    albumEnabled: event.albumEnabled ?? false,
+    whiteLabel: event.whiteLabel ?? false,
     published: event.published ?? true,
     templateId: event.templateId || "evening",
     colors: { ...event.theme.colors },
@@ -340,6 +348,10 @@ function toPreviewEvent(
         : null,
     registryUrl: draft.registryUrl.trim() || null,
     registryLabel: draft.registryLabel.trim() || null,
+    cashFundUrl: draft.cashFundUrl.trim() || null,
+    cashFundLabel: draft.cashFundLabel.trim() || null,
+    albumEnabled: draft.albumEnabled,
+    whiteLabel: draft.whiteLabel,
     published: draft.published,
     templateId: draft.templateId || base.templateId || "evening",
     theme: {
@@ -451,6 +463,10 @@ export default function EventCustomizer({
       capacity: preview.capacity,
       registryUrl: preview.registryUrl,
       registryLabel: preview.registryLabel,
+      cashFundUrl: draft.cashFundUrl.trim() || null,
+      cashFundLabel: draft.cashFundLabel.trim() || null,
+      albumEnabled: draft.albumEnabled,
+      whiteLabel: draft.whiteLabel,
       published: draft.published,
       templateId: draft.templateId,
       theme: {
@@ -804,6 +820,23 @@ export default function EventCustomizer({
                 placeholder="Gift registry"
               />
             </label>
+            <label>
+              <span>Cash fund URL</span>
+              <input
+                type="url"
+                placeholder="https://venmo.com/… or Zelle link"
+                value={draft.cashFundUrl}
+                onChange={(e) => updateField("cashFundUrl", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Cash fund label</span>
+              <input
+                value={draft.cashFundLabel}
+                onChange={(e) => updateField("cashFundLabel", e.target.value)}
+                placeholder="Contribute to our fund"
+              />
+            </label>
             <label className="checkbox-row">
               <input
                 type="checkbox"
@@ -811,6 +844,24 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("published", e.target.checked)}
               />
               <span>{t.published}</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.albumEnabled}
+                onChange={(e) => updateField("albumEnabled", e.target.checked)}
+              />
+              <span>Enable guest photo album (moderated)</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.whiteLabel}
+                onChange={(e) => updateField("whiteLabel", e.target.checked)}
+              />
+              <span>
+                White-label (hide Ownvite on invite + guest emails) · Agency
+              </span>
             </label>
             <label className="checkbox-row">
               <input

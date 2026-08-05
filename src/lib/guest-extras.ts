@@ -1,13 +1,20 @@
 import { readJsonBlob, writeJsonBlob } from "./blob-json";
-import type { GuestMessage, ManualGuest, WaitlistEntry } from "./types";
+import type {
+  GuestMessage,
+  GuestPhoto,
+  ManualGuest,
+  WaitlistEntry,
+} from "./types";
 
 const MESSAGES_PATH = "ownvite/guest-messages.json";
 const GUESTS_PATH = "ownvite/manual-guests.json";
 const WAITLIST_PATH = "ownvite/waitlist.json";
+const ALBUM_PATH = "ownvite/guest-album.json";
 
 type MessageRegistry = { version: 1; messages: GuestMessage[] };
 type GuestRegistry = { version: 1; guests: ManualGuest[] };
 type WaitlistRegistry = { version: 1; entries: WaitlistEntry[] };
+type AlbumRegistry = { version: 1; photos: GuestPhoto[] };
 
 export async function listMessages(eventId: string): Promise<GuestMessage[]> {
   const reg = await readJsonBlob<MessageRegistry>(MESSAGES_PATH, {
@@ -69,6 +76,7 @@ export async function addManualGuest(input: {
   eventId: string;
   name: string;
   email: string;
+  phone?: string;
 }): Promise<ManualGuest> {
   const reg = await readJsonBlob<GuestRegistry>(GUESTS_PATH, {
     version: 1,
@@ -79,6 +87,7 @@ export async function addManualGuest(input: {
     eventId: input.eventId,
     name: input.name.trim(),
     email: input.email.trim().toLowerCase(),
+    phone: (input.phone ?? "").trim() || undefined,
     status: "invited",
     createdAt: new Date().toISOString(),
   };
@@ -96,7 +105,7 @@ export async function updateManualGuestStatus(
 
 export async function updateManualGuest(
   guestId: string,
-  partial: Partial<Pick<ManualGuest, "name" | "email" | "status">>,
+  partial: Partial<Pick<ManualGuest, "name" | "email" | "phone" | "status">>,
 ): Promise<ManualGuest | undefined> {
   const reg = await readJsonBlob<GuestRegistry>(GUESTS_PATH, {
     version: 1,
@@ -113,6 +122,10 @@ export async function updateManualGuest(
       partial.email != null
         ? String(partial.email).trim().toLowerCase()
         : current.email,
+    phone:
+      partial.phone != null
+        ? String(partial.phone).trim() || undefined
+        : current.phone,
     status: partial.status ?? current.status,
   };
   await writeJsonBlob(GUESTS_PATH, reg);
@@ -200,5 +213,81 @@ export async function deleteWaitlistEntry(
   );
   if (reg.entries.length === before) return false;
   await writeJsonBlob(WAITLIST_PATH, reg);
+  return true;
+}
+
+export async function listAlbumPhotos(
+  eventId: string,
+  opts?: { includePending?: boolean },
+): Promise<GuestPhoto[]> {
+  const reg = await readJsonBlob<AlbumRegistry>(ALBUM_PATH, {
+    version: 1,
+    photos: [],
+  });
+  return reg.photos
+    .filter((p) => {
+      if (p.eventId !== eventId) return false;
+      if (opts?.includePending) return p.status !== "rejected";
+      return p.status === "approved";
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function addAlbumPhoto(input: {
+  eventId: string;
+  name: string;
+  caption?: string;
+  url: string;
+}): Promise<GuestPhoto> {
+  const reg = await readJsonBlob<AlbumRegistry>(ALBUM_PATH, {
+    version: 1,
+    photos: [],
+  });
+  const photo: GuestPhoto = {
+    id: `alb_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+    eventId: input.eventId,
+    name: input.name.trim() || "Guest",
+    caption: (input.caption ?? "").trim().slice(0, 280),
+    url: input.url,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+  };
+  reg.photos.push(photo);
+  await writeJsonBlob(ALBUM_PATH, reg);
+  return photo;
+}
+
+export async function moderateAlbumPhoto(
+  eventId: string,
+  photoId: string,
+  status: GuestPhoto["status"],
+): Promise<GuestPhoto | undefined> {
+  const reg = await readJsonBlob<AlbumRegistry>(ALBUM_PATH, {
+    version: 1,
+    photos: [],
+  });
+  const idx = reg.photos.findIndex(
+    (p) => p.eventId === eventId && p.id === photoId,
+  );
+  if (idx < 0) return undefined;
+  reg.photos[idx] = { ...reg.photos[idx]!, status };
+  await writeJsonBlob(ALBUM_PATH, reg);
+  return reg.photos[idx];
+}
+
+export async function deleteAlbumPhoto(
+  eventId: string,
+  photoId: string,
+): Promise<boolean> {
+  const reg = await readJsonBlob<AlbumRegistry>(ALBUM_PATH, {
+    version: 1,
+    photos: [],
+  });
+  const before = reg.photos.length;
+  reg.photos = reg.photos.filter(
+    (p) => !(p.eventId === eventId && p.id === photoId),
+  );
+  if (reg.photos.length === before) return false;
+  await writeJsonBlob(ALBUM_PATH, reg);
   return true;
 }

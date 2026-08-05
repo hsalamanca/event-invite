@@ -376,9 +376,9 @@ const en: Dictionary = {
         detail: "One-time · launch $19",
         points: [
           "Custom domain + SSL",
-          "All premium themes",
+          "All premium themes · seating chart",
           "Email blasts · private invites",
-          "Check-in + co-hosts · no footer",
+          "QR check-in + co-hosts · no footer",
         ],
         cta: "Upgrade this event",
       },
@@ -761,9 +761,9 @@ const es: Dictionary = {
         detail: "Pago único · lanzamiento $19",
         points: [
           "Dominio propio + SSL",
-          "Todos los temas premium",
+          "Todos los temas premium · seating",
           "Emails · invitaciones privadas",
-          "Check-in + co-hosts · sin pie",
+          "Check-in QR + co-hosts · sin pie",
         ],
         cta: "Mejorar este evento",
       },

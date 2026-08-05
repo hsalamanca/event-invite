@@ -42,6 +42,7 @@ export default function GuestManager({
   const [guests, setGuests] = useState<ManualGuest[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [csvText, setCsvText] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +52,7 @@ export default function GuestManager({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -118,7 +120,7 @@ export default function GuestManager({
       const res = await fetch("/api/guests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, name, email }),
+        body: JSON.stringify({ slug, name, email, phone }),
       });
       const data = (await res.json()) as { error?: string; guest?: ManualGuest };
       if (!res.ok || !data.guest) {
@@ -128,6 +130,7 @@ export default function GuestManager({
       setGuests((g) => [...g, data.guest!]);
       setName("");
       setEmail("");
+      setPhone("");
     } catch {
       setError(t.error);
     } finally {
@@ -154,6 +157,7 @@ export default function GuestManager({
     setEditingId(g.id);
     setEditName(g.name);
     setEditEmail(g.email);
+    setEditPhone(g.phone ?? "");
     setError(null);
   }
 
@@ -161,6 +165,7 @@ export default function GuestManager({
     setEditingId(null);
     setEditName("");
     setEditEmail("");
+    setEditPhone("");
   }
 
   async function saveEditGuest(id: string) {
@@ -180,6 +185,7 @@ export default function GuestManager({
           id,
           name,
           email: editEmail.trim(),
+          phone: editPhone.trim(),
         }),
       });
       const data = (await res.json()) as { error?: string; guest?: ManualGuest };
@@ -376,14 +382,14 @@ export default function GuestManager({
       {showImport ? (
         <div className="mt-4 space-y-2 rounded-md border border-white/10 bg-white/[0.03] p-4">
           <p className="text-sm text-[var(--mist)]">
-            Paste CSV with columns <code>name,email</code> (header optional).
+            Paste CSV with columns <code>name,email,phone</code> (header optional).
           </p>
           <textarea
             rows={5}
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             className="w-full rounded-md border border-white/15 bg-[var(--ink)] px-3 py-2 text-sm"
-            placeholder={"name,email\nAda Lovelace,ada@example.com"}
+            placeholder={"name,email,phone\nAda Lovelace,ada@example.com,+15550100"}
           />
           <button
             type="button"
@@ -416,7 +422,7 @@ export default function GuestManager({
 
       <form
         onSubmit={addGuest}
-        className="mt-6 grid gap-3 sm:grid-cols-[1fr_1fr_auto]"
+        className="mt-6 grid gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
       >
         <input
           required
@@ -430,6 +436,13 @@ export default function GuestManager({
           placeholder={t.emailPh}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[var(--champagne)]"
+        />
+        <input
+          type="tel"
+          placeholder="+1 555 0100 (SMS)"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
           className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[var(--champagne)]"
         />
         <button
@@ -479,6 +492,14 @@ export default function GuestManager({
                         >
                           Edit link
                         </a>
+                        {" · "}
+                        <a
+                          href={`/api/events/${slug}/qr?token=${encodeURIComponent(r.editToken)}&format=png`}
+                          download
+                          className="text-[var(--champagne)] underline-offset-2 hover:underline"
+                        >
+                          Check-in QR
+                        </a>
                       </>
                     ) : null}
                   </td>
@@ -511,15 +532,30 @@ export default function GuestManager({
                 </td>
                 <td className="py-2.5 pr-3 text-[var(--mist)]">
                   {editingId === g.id ? (
-                    <input
-                      type="email"
-                      value={editEmail}
-                      onChange={(e) => setEditEmail(e.target.value)}
-                      className="w-full min-w-[10rem] rounded border border-white/15 bg-[var(--ink)] px-2 py-1 text-sm"
-                      aria-label="Guest email"
-                    />
+                    <div className="space-y-1">
+                      <input
+                        type="email"
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        className="w-full min-w-[10rem] rounded border border-white/15 bg-[var(--ink)] px-2 py-1 text-sm"
+                        aria-label="Guest email"
+                      />
+                      <input
+                        type="tel"
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        className="w-full min-w-[10rem] rounded border border-white/15 bg-[var(--ink)] px-2 py-1 text-sm"
+                        aria-label="Guest phone"
+                        placeholder="Phone"
+                      />
+                    </div>
                   ) : (
-                    g.email || "—"
+                    <>
+                      {g.email || "—"}
+                      {g.phone ? (
+                        <div className="text-xs opacity-80">{g.phone}</div>
+                      ) : null}
+                    </>
                   )}
                 </td>
                 <td className="py-2.5 pr-3">

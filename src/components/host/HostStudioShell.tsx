@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { AlbumModeration } from "@/components/host/AlbumModeration";
 import { CheckInPanel } from "@/components/host/CheckInPanel";
 import EventCustomizer from "@/components/host/EventCustomizer";
 import GuestManager from "@/components/host/GuestManager";
@@ -86,6 +87,10 @@ export default function HostStudioShell({
         />
         <WaitlistPanel slug={event.slug} capacity={event.capacity} />
         <GuestbookModeration slug={event.slug} />
+        <AlbumModeration
+          slug={event.slug}
+          enabled={Boolean(event.albumEnabled)}
+        />
         <OpenTracking slug={event.slug} />
         <GuestManager
           slug={event.slug}
@@ -102,6 +107,10 @@ export default function HostStudioShell({
             canDelete={canDelete}
             tier={event.tier ?? "free"}
             emailCredits={event.emailCredits ?? 0}
+            smsCredits={event.smsCredits ?? 0}
+            unlockedPackIds={event.unlockedPackIds ?? []}
+            registryClicks={event.registryClicks ?? 0}
+            cashFundClicks={event.cashFundClicks ?? 0}
           />
         </Suspense>
       </div>

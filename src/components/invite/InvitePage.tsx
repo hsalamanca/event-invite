@@ -145,6 +145,7 @@ export default function InvitePage({
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [attendance, setAttendance] = useState(defaultAttendance);
   const attendanceKey = attendanceOptions.join("\0");
   useEffect(() => {
@@ -177,6 +178,14 @@ export default function InvitePage({
   const [messages, setMessages] = useState<
     { id: string; name: string; body: string; createdAt: string }[]
   >([]);
+  const [albumPhotos, setAlbumPhotos] = useState<
+    { id: string; name: string; caption: string; url: string }[]
+  >([]);
+  const [albumName, setAlbumName] = useState("");
+  const [albumCaption, setAlbumCaption] = useState("");
+  const [albumBusy, setAlbumBusy] = useState(false);
+  const [albumDone, setAlbumDone] = useState(false);
+  const [albumError, setAlbumError] = useState<string | null>(null);
   const [waitlistName, setWaitlistName] = useState("");
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistGuests, setWaitlistGuests] = useState(1);
@@ -214,6 +223,69 @@ export default function InvitePage({
       cancelled = true;
     };
   }, [event.slug]);
+
+  useEffect(() => {
+    if (!event.albumEnabled) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/album?slug=${encodeURIComponent(event.slug)}`,
+        );
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          photos?: { id: string; name: string; caption: string; url: string }[];
+        };
+        if (!cancelled && data.photos) setAlbumPhotos(data.photos);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [event.slug, event.albumEnabled]);
+
+  async function trackGiftClick(kind: "registry" | "cash") {
+    void fetch(`/api/events/${encodeURIComponent(event.slug)}/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind }),
+    }).catch(() => undefined);
+  }
+
+  async function submitAlbumPhoto(file: File) {
+    setAlbumBusy(true);
+    setAlbumError(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("slug", event.slug);
+      const up = await fetch("/api/upload", { method: "POST", body: form });
+      const upData = (await up.json()) as { error?: string; url?: string };
+      if (!up.ok || !upData.url) {
+        throw new Error(upData.error || "Upload failed");
+      }
+      const res = await fetch("/api/album", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: event.slug,
+          name: albumName.trim() || name.trim() || "Guest",
+          caption: albumCaption.trim(),
+          url: upData.url,
+        }),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) throw new Error(data.error || "Could not save photo");
+      setAlbumDone(true);
+      setAlbumCaption("");
+    } catch (err) {
+      setAlbumError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setAlbumBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (!trackViews) return;
@@ -323,6 +395,7 @@ export default function InvitePage({
       eventId: event.id,
       name: name.trim(),
       email: email.trim(),
+      phone: phone.trim() || undefined,
       attendance,
       guestCount: rsvpFields.plusOnes.enabled
         ? Math.max(1, Number(guestCount) || 1)
@@ -478,21 +551,37 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      {event.registryUrl ? (
+      {event.registryUrl || event.cashFundUrl ? (
         <section id="registry" className="invite-section">
           <h2 className="invite-section-title">
-            {event.registryLabel || ui.registry}
+            {event.registryLabel ||
+              event.cashFundLabel ||
+              ui.registry}
           </h2>
           <p className="invite-prompt">{ui.registryPrompt}</p>
-          <p className="invite-registry">
-            <a
-              href={event.registryUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-            >
-              {event.registryLabel || ui.registryCta}
-            </a>
+          <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+            {event.registryUrl ? (
+              <a
+                href={event.registryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+                onClick={() => void trackGiftClick("registry")}
+              >
+                {event.registryLabel || ui.registryCta}
+              </a>
+            ) : null}
+            {event.cashFundUrl ? (
+              <a
+                href={event.cashFundUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+                onClick={() => void trackGiftClick("cash")}
+              >
+                {event.cashFundLabel || "Cash fund"}
+              </a>
+            ) : null}
           </p>
         </section>
       ) : null}
@@ -783,6 +872,18 @@ export default function InvitePage({
               />
             </label>
 
+            <label className="rsvp-field">
+              <span>Mobile (optional, for SMS reminders)</span>
+              <input
+                type="tel"
+                name="phone"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+1…"
+              />
+            </label>
+
             {rsvpFields.attendance.enabled && (
               <label className="rsvp-field">
                 <span>{ui.attendance}</span>
@@ -1004,6 +1105,108 @@ export default function InvitePage({
           </ul>
         ) : null}
       </section>
+
+      {event.albumEnabled ? (
+        <section id="album" className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">Photo album</h2>
+          <p className="invite-prompt">
+            Share a moment from the celebration. Photos appear after the host
+            approves them.
+          </p>
+          {albumDone ? (
+            <p className="rsvp-success-sub">
+              Thanks — your photo is waiting for approval.
+            </p>
+          ) : (
+            <form
+              className="rsvp-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = (e.currentTarget.elements.namedItem(
+                  "albumFile",
+                ) as HTMLInputElement | null);
+                const file = input?.files?.[0];
+                if (!file) {
+                  setAlbumError("Choose a photo first");
+                  return;
+                }
+                void submitAlbumPhoto(file);
+              }}
+            >
+              <label className="rsvp-field">
+                <span>Your name</span>
+                <input
+                  value={albumName}
+                  onChange={(e) => setAlbumName(e.target.value)}
+                  placeholder={name || "Guest"}
+                />
+              </label>
+              <label className="rsvp-field">
+                <span>Caption (optional)</span>
+                <input
+                  value={albumCaption}
+                  onChange={(e) => setAlbumCaption(e.target.value)}
+                  maxLength={280}
+                />
+              </label>
+              <label className="rsvp-field">
+                <span>Photo</span>
+                <input
+                  name="albumFile"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  required
+                />
+              </label>
+              {albumError ? (
+                <p className="rsvp-error" role="alert">
+                  {albumError}
+                </p>
+              ) : null}
+              <button
+                type="submit"
+                className="btn-primary btn-submit"
+                disabled={albumBusy}
+              >
+                {albumBusy ? "Uploading…" : "Submit photo"}
+              </button>
+            </form>
+          )}
+          {albumPhotos.length > 0 ? (
+            <ul
+              className="guestbook-list"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                gap: "0.75rem",
+                listStyle: "none",
+                padding: 0,
+                marginTop: "1.5rem",
+              }}
+            >
+              {albumPhotos.slice(0, 24).map((p) => (
+                <li key={p.id} style={{ margin: 0 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.url}
+                    alt={p.caption || `Photo by ${p.name}`}
+                    style={{
+                      width: "100%",
+                      aspectRatio: "1",
+                      objectFit: "cover",
+                      borderRadius: "4px",
+                    }}
+                  />
+                  <strong style={{ display: "block", marginTop: "0.35rem" }}>
+                    {p.name}
+                  </strong>
+                  {p.caption ? <p>{p.caption}</p> : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
 
       <footer className="invite-footer">
         <p>{ui.hostedBy.replace("{name}", event.hostName)}</p>

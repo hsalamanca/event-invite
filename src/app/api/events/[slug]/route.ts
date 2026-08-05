@@ -7,9 +7,15 @@ import {
   getEventBySlug,
   updateEvent,
 } from "@/lib/events";
-import { eventIsPro, canUseCheckIn, canUsePremiumTemplate, canUsePrivateInvite } from "@/lib/tier";
+import {
+  eventIsPro,
+  canUseCheckIn,
+  canUsePremiumTemplate,
+  canUsePrivateInvite,
+} from "@/lib/tier";
 import { getTemplate } from "@/lib/templates";
 import type { EventRecord } from "@/lib/types";
+import { findUserById } from "@/lib/users";
 
 export const runtime = "nodejs";
 
@@ -135,11 +141,30 @@ export async function PATCH(request: Request, { params }: Params) {
     partial.showOwnviteFooter = true;
   }
 
-  // Clients cannot self-assign paid tiers / credits
+  if (partial.whiteLabel === true && !access.isAdmin) {
+    const userId = access.session?.user?.id;
+    const user = userId ? await findUserById(userId) : null;
+    if (user?.agencyStatus !== "active") {
+      return NextResponse.json(
+        {
+          error: "White-label requires an Agency subscription.",
+          upgradeRequired: true,
+          product: "agency",
+        },
+        { status: 402 },
+      );
+    }
+  }
+
+  // Clients cannot self-assign paid tiers / credits / analytics counters
   if (!access.isAdmin) {
     delete partial.tier;
     delete partial.emailCredits;
+    delete partial.smsCredits;
     delete partial.unlockedTemplateIds;
+    delete partial.unlockedPackIds;
+    delete partial.registryClicks;
+    delete partial.cashFundClicks;
   }
 
   try {

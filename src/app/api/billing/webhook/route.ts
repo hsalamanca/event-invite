@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug, listEventsByOwner, updateEvent } from "@/lib/events";
 import { BILLING_PRODUCTS, getStripe } from "@/lib/stripe";
-import { REMINDER_PACK_CREDITS } from "@/lib/tier";
+import { getThemePack } from "@/lib/theme-packs";
+import { REMINDER_PACK_CREDITS, SMS_PACK_CREDITS } from "@/lib/tier";
 import { findUserById, updateUser } from "@/lib/users";
 
 export const runtime = "nodejs";
@@ -13,6 +14,18 @@ async function applyStudioToOwnedEvents(ownerId: string) {
       tier: "studio",
       showOwnviteFooter: false,
       premiumTheme: true,
+    });
+  }
+}
+
+async function applyAgencyToOwnedEvents(ownerId: string) {
+  const owned = await listEventsByOwner(ownerId);
+  for (const event of owned) {
+    await updateEvent(event.slug, {
+      tier: "studio",
+      showOwnviteFooter: false,
+      premiumTheme: true,
+      whiteLabel: true,
     });
   }
 }
@@ -47,6 +60,7 @@ export async function POST(request: Request) {
     const slug = session.metadata?.eventSlug;
     const ownerId = session.metadata?.ownerId || "";
     const templateId = session.metadata?.templateId || "";
+    const packId = session.metadata?.packId || "";
 
     if (product === "studio" && ownerId) {
       const user = await findUserById(ownerId);
@@ -65,6 +79,23 @@ export async function POST(request: Request) {
         });
         await applyStudioToOwnedEvents(ownerId);
       }
+    } else if (product === "agency" && ownerId) {
+      const user = await findUserById(ownerId);
+      if (user) {
+        await updateUser(user.id, {
+          agencyStatus: "active",
+          agencyStripeSubscriptionId:
+            typeof session.subscription === "string"
+              ? session.subscription
+              : user.agencyStripeSubscriptionId,
+          studioStatus: "active",
+          studioStripeSubscriptionId:
+            typeof session.subscription === "string"
+              ? session.subscription
+              : user.studioStripeSubscriptionId,
+        });
+        await applyAgencyToOwnedEvents(ownerId);
+      }
     } else if (product === "theme_unlock" && slug && templateId) {
       const existing = await getEventBySlug(slug);
       if (existing) {
@@ -73,6 +104,20 @@ export async function POST(request: Request) {
         await updateEvent(slug, {
           unlockedTemplateIds: [...unlocked],
           templateId,
+          premiumTheme: true,
+        });
+      }
+    } else if (product === "theme_pack" && slug && packId) {
+      const existing = await getEventBySlug(slug);
+      const pack = getThemePack(packId);
+      if (existing && pack) {
+        const unlocked = new Set(existing.unlockedTemplateIds ?? []);
+        for (const id of pack.templateIds) unlocked.add(id);
+        const packs = new Set(existing.unlockedPackIds ?? []);
+        packs.add(packId);
+        await updateEvent(slug, {
+          unlockedTemplateIds: [...unlocked],
+          unlockedPackIds: [...packs],
           premiumTheme: true,
         });
       }
@@ -87,8 +132,18 @@ export async function POST(request: Request) {
           emailCredits: Math.max(0, existing.emailCredits ?? 0) + add,
         });
       }
+    } else if (product === "sms_pack" && slug) {
+      const existing = await getEventBySlug(slug);
+      if (existing) {
+        const add =
+          Number(session.metadata?.credits) ||
+          BILLING_PRODUCTS.sms_pack.credits ||
+          SMS_PACK_CREDITS;
+        await updateEvent(slug, {
+          smsCredits: Math.max(0, existing.smsCredits ?? 0) + add,
+        });
+      }
     } else if (slug) {
-      // Default: Pro Event
       await updateEvent(slug, {
         tier: "pro",
         showOwnviteFooter: false,
@@ -103,20 +158,28 @@ export async function POST(request: Request) {
   ) {
     const sub = event.data.object;
     const ownerId = sub.metadata?.ownerId;
+    const product = sub.metadata?.product || "studio";
     if (ownerId) {
       const active = sub.status === "active" || sub.status === "trialing";
       const periodEnd = Number(
         (sub as { current_period_end?: number }).current_period_end ?? 0,
       );
-      await updateUser(ownerId, {
-        studioStatus: active ? "active" : "canceled",
-        studioStripeSubscriptionId: sub.id,
-        studioActiveUntil: active
-          ? null
-          : new Date(periodEnd * 1000).toISOString(),
-      });
-      if (active) {
-        await applyStudioToOwnedEvents(ownerId);
+      if (product === "agency") {
+        await updateUser(ownerId, {
+          agencyStatus: active ? "active" : "canceled",
+          agencyStripeSubscriptionId: sub.id,
+          studioStatus: active ? "active" : "canceled",
+        });
+        if (active) await applyAgencyToOwnedEvents(ownerId);
+      } else {
+        await updateUser(ownerId, {
+          studioStatus: active ? "active" : "canceled",
+          studioStripeSubscriptionId: sub.id,
+          studioActiveUntil: active
+            ? null
+            : new Date(periodEnd * 1000).toISOString(),
+        });
+        if (active) await applyStudioToOwnedEvents(ownerId);
       }
     }
   }

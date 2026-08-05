@@ -4,6 +4,7 @@ import {
   rsvpHostNotificationHtml,
 } from "@/lib/email-templates";
 import { appBaseUrl } from "@/lib/mail";
+import { isWhiteLabel } from "@/lib/tier";
 import type { EventRecord, RsvpSubmission } from "@/lib/types";
 import { findUserById } from "@/lib/users";
 
@@ -71,7 +72,7 @@ export async function notifyHostsOfRsvp(input: {
       "",
       `Manage guests: ${manageUrl}`,
       "",
-      "— Ownvite",
+      isWhiteLabel(event) ? `— ${event.hostName}` : "— Ownvite",
     ]
       .filter((line) => line != null)
       .join("\n");
@@ -147,7 +148,9 @@ export async function notifyGuestOfRsvp(input: {
       `Invitation: ${inviteUrl}`,
       editUrl ? `Update your RSVP: ${editUrl}` : null,
       "",
-      `— ${event.hostName} via Ownvite`,
+      isWhiteLabel(event)
+        ? `— ${event.hostName}`
+        : `— ${event.hostName} via Ownvite`,
     ]
       .filter((line) => line != null)
       .join("\n");
@@ -166,6 +169,7 @@ export async function notifyGuestOfRsvp(input: {
       inviteUrl,
       editUrl,
       updated,
+      whiteLabel: isWhiteLabel(event),
     });
 
     await sendEventEmail({
