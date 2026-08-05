@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import { getEventById, getEventBySlug } from "@/lib/events";
-import { notifyHostsOfRsvp } from "@/lib/rsvp-notify";
+import { notifyGuestOfRsvp, notifyHostsOfRsvp } from "@/lib/rsvp-notify";
 import {
   appendRsvp,
   getRsvpByToken,
@@ -117,6 +117,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "RSVP not found" }, { status: 404 });
       }
       await notifyHostsOfRsvp({ event, rsvp: record, updated: true });
+      await notifyGuestOfRsvp({ event, rsvp: record, updated: true });
       return NextResponse.json({ ok: true, rsvp: record, updated: true });
     }
 
@@ -133,6 +134,7 @@ export async function POST(request: Request) {
     });
 
     await notifyHostsOfRsvp({ event, rsvp: record, updated: false });
+    await notifyGuestOfRsvp({ event, rsvp: record, updated: false });
     return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
   } catch (err) {
     console.error("RSVP append failed", err);
@@ -204,6 +206,7 @@ export async function PATCH(request: Request) {
 
   if (updated) {
     await notifyHostsOfRsvp({ event, rsvp: updated, updated: true });
+    await notifyGuestOfRsvp({ event, rsvp: updated, updated: true });
   }
 
   return NextResponse.json({ ok: true, rsvp: updated });

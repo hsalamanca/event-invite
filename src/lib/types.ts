@@ -226,6 +226,7 @@ export type OutboundMessage = {
     | "rsvp_reminder"
     | "event_reminder"
     | "rsvp_notification"
+    | "rsvp_confirmation"
     | "custom";
   to: string;
   subject: string;
