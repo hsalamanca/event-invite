@@ -4,6 +4,7 @@ import {
   normalizeGallery,
   normalizeGalleryLayout,
 } from "./gallery";
+import { remapBrokenHeroImage } from "./templates";
 import type { EventRecord } from "./types";
 
 const PATH = "ownvite/events.json";
@@ -52,6 +53,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     registryUrl: raw.registryUrl ?? null,
     registryLabel: raw.registryLabel ?? null,
     templateId: raw.templateId ?? "evening",
+    heroImage: remapBrokenHeroImage(raw.heroImage),
     rsvpFields: {
       ...raw.rsvpFields,
       customQuestions: raw.rsvpFields?.customQuestions ?? [],

@@ -570,7 +570,7 @@ export const TEMPLATES: EventTemplate[] = [
     layout: "botanical",
     theme: citrusBrunch,
     heroImage:
-      "https://images.unsplash.com/photo-1496412705862-e008682476bd?w=1920&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=1920&q=80&auto=format&fit=crop",
     headline: "Brunch is Served",
     headlineEs: "El brunch está listo",
     tagline: "Fresh juice, warm light, and a table full of friends.",
@@ -660,7 +660,7 @@ export const TEMPLATES: EventTemplate[] = [
     layout: "party",
     theme: balloonBash,
     heroImage:
-      "https://images.unsplash.com/photo-1464349153735-7db55f04b818?w=1920&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=1920&q=80&auto=format&fit=crop",
     headline: "You're Invited to the Party",
     headlineEs: "Estás invitado a la fiesta",
     tagline: "Cake, balloons, and enough joy to fill the room.",
@@ -905,7 +905,7 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: goldenFifty,
     heroImage:
-      "https://images.unsplash.com/photo-1464349153735-7db819ff493e?w=1920&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&q=80&auto=format&fit=crop",
     headline: "Fifty & Fabulous",
     headlineEs: "Cincuenta y fabuloso",
     tagline:
@@ -975,6 +975,27 @@ export function resolveLocalizedInviteCopy(
 
 export function getTemplate(id: string): EventTemplate {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0]!;
+}
+
+/** Remap retired/404 Unsplash stock heroes to working replacements. */
+const BROKEN_HERO_REMAP: Record<string, string> = {
+  "https://images.unsplash.com/photo-1496412705862-e008682476bd?w=1920&q=80&auto=format&fit=crop":
+    "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=1920&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1464349153735-7db55f04b818?w=1920&q=80&auto=format&fit=crop":
+    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=1920&q=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1464349153735-7db819ff493e?w=1920&q=80&auto=format&fit=crop":
+    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&q=80&auto=format&fit=crop",
+};
+
+export function remapBrokenHeroImage(url: string | null | undefined): string {
+  if (!url) return "";
+  if (BROKEN_HERO_REMAP[url]) return BROKEN_HERO_REMAP[url]!;
+  // Also match without query string
+  const base = url.split("?")[0] ?? url;
+  for (const [broken, fixed] of Object.entries(BROKEN_HERO_REMAP)) {
+    if ((broken.split("?")[0] ?? broken) === base) return fixed;
+  }
+  return url;
 }
 
 export function templatesByCategory(
