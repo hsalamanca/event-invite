@@ -287,217 +287,63 @@ function CollageStickers() {
 
       <svg
         className="collage-sticker collage-sticker--cake"
-        viewBox="0 0 72 78"
+        viewBox="0 0 64 72"
         aria-hidden
       >
+        {/* flame */}
+        <ellipse cx="32" cy="8" rx="4" ry="5.5" fill="#F472B6" stroke="#1A1A1A" strokeWidth="1.4" />
+        <ellipse cx="32" cy="9" rx="1.6" ry="2.4" fill="#FDA4AF" />
+        {/* candle */}
+        <rect x="29.5" y="12" width="5" height="14" rx="1.2" fill="#FFF7ED" stroke="#1A1A1A" strokeWidth="1.4" />
+        {/* heart topper */}
         <path
-          d="M36 8c-1.2 2.4-1 4.2 0 6.2 1.2-2 1.4-3.8 0-6.2z"
-          fill="#F472B6"
-          stroke="#1A1A1A"
-          strokeWidth="1.5"
-        />
-        <rect x="33.5" y="14" width="5" height="14" rx="1.5" fill="#1A1A1A" />
-        <path
-          d="M28 12.5c3.2-0.2 5.4 1.6 8 1.4"
-          fill="none"
-          stroke="#F9A8D4"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M36 8 l4 -5.5 l-1.4 5.2 4.8 0.2 -4 3.2 2.4 4.4 -5.8-2.6 -5.8 2.6 2.4-4.4 -4-3.2 4.8-0.2 -1.4-5.2z"
+          d="M44 10c0-2.4 1.8-4 4-4 1.4 0 2.6.8 3.2 1.8C52 6.8 53.2 6 54.6 6c2.2 0 4 1.6 4 4 0 4.4-7.2 8.2-7.2 8.2S44 14.4 44 10z"
           fill="#F472B6"
           stroke="#1A1A1A"
           strokeWidth="1.3"
           strokeLinejoin="round"
-          transform="translate(14 -2) scale(0.55)"
         />
-        <text
-          x="50"
-          y="10"
-          fontSize="7"
-          fontFamily="Georgia, serif"
-          fill="#1A1A1A"
-          transform="rotate(12 50 10)"
-        >
-          love
-        </text>
+        {/* frosting dome */}
         <path
-          d="M14 36c0-8 10-14 22-14s22 6 22 14v4H14z"
+          d="M12 34c0-10 9-16 20-16s20 6 20 16"
           fill="#FFF1F7"
           stroke="#1A1A1A"
           strokeWidth="1.8"
+          strokeLinejoin="round"
         />
         <path
-          d="M16 40c5-5 9-5 14 0s9 5 14 0 9-5 14 0"
+          d="M14 34c4.5-4.5 8-4.5 12.5 0S35 38.5 39.5 34 48 29.5 52 34"
           fill="none"
-          stroke="#F472B6"
+          stroke="#EC4899"
           strokeWidth="2"
           strokeLinecap="round"
         />
+        {/* cake body */}
         <rect
-          x="12"
-          y="40"
-          width="48"
-          height="22"
-          rx="4"
+          x="10"
+          y="34"
+          width="44"
+          height="24"
+          rx="3"
           fill="#F9A8D4"
           stroke="#1A1A1A"
           strokeWidth="1.8"
         />
         <path
-          d="M18 51h36M22 58h28"
+          d="M16 42h32M20 50h24"
           stroke="#1A1A1A"
-          strokeWidth="1.5"
+          strokeWidth="1.4"
           strokeLinecap="round"
-          opacity="0.55"
+          opacity="0.45"
         />
-        <ellipse cx="36" cy="64" rx="26" ry="4" fill="#1A1A1A" opacity="0.08" />
-      </svg>
-
-      <svg
-        className="collage-sticker collage-sticker--disco"
-        viewBox="0 0 64 64"
-        aria-hidden
-      >
-        <defs>
-          <radialGradient id="collageDiscoShine" cx="35%" cy="30%" r="65%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="45%" stopColor="#D4D4D8" />
-            <stop offset="100%" stopColor="#71717A" />
-          </radialGradient>
-        </defs>
-        <circle
-          cx="32"
-          cy="32"
-          r="22"
-          fill="url(#collageDiscoShine)"
+        {/* plate */}
+        <path
+          d="M8 58h48"
           stroke="#1A1A1A"
           strokeWidth="2"
-        />
-        {[0, 1, 2, 3, 4].map((row) =>
-          [0, 1, 2, 3, 4].map((col) => {
-            const x = 16 + col * 7;
-            const y = 16 + row * 7;
-            const inCircle = (x - 32) ** 2 + (y - 32) ** 2 < 17 ** 2;
-            if (!inCircle) return null;
-            return (
-              <rect
-                key={`${row}-${col}`}
-                x={x}
-                y={y}
-                width="5.2"
-                height="5.2"
-                rx="0.6"
-                fill={
-                  (row + col) % 3 === 0
-                    ? "#F9A8D4"
-                    : (row + col) % 2 === 0
-                      ? "#FAFAFA"
-                      : "#A1A1AA"
-                }
-                stroke="#1A1A1A"
-                strokeWidth="0.55"
-                opacity="0.9"
-              />
-            );
-          }),
-        )}
-        <path
-          d="M32 10 V4 M28 5 h8"
-          stroke="#1A1A1A"
-          strokeWidth="1.6"
           strokeLinecap="round"
         />
-        <circle cx="24" cy="22" r="2.2" fill="#fff" opacity="0.75" />
-      </svg>
-
-      <svg
-        className="collage-sticker collage-sticker--balloons"
-        viewBox="0 0 90 88"
-        aria-hidden
-      >
-        <defs>
-          <linearGradient id="collageBalloonMetal" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#F8FAFC" />
-            <stop offset="40%" stopColor="#D4D4D8" />
-            <stop offset="100%" stopColor="#71717A" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M28 58 C 28 72, 22 80, 18 86"
-          fill="none"
-          stroke="#1A1A1A"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M58 58 C 58 72, 64 80, 70 86"
-          fill="none"
-          stroke="#1A1A1A"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-        <g transform="translate(8 4)">
-          <rect
-            x="4"
-            y="6"
-            width="34"
-            height="50"
-            rx="17"
-            fill="url(#collageBalloonMetal)"
-            stroke="#1A1A1A"
-            strokeWidth="2"
-          />
-          <text
-            x="21"
-            y="42"
-            textAnchor="middle"
-            fontSize="34"
-            fontWeight="700"
-            fontFamily="Impact, Arial Black, sans-serif"
-            fill="#1A1A1A"
-          >
-            2
-          </text>
-          <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
-          <path
-            d="M21 56 l-3 4 h6z"
-            fill="#A1A1AA"
-            stroke="#1A1A1A"
-            strokeWidth="1.2"
-          />
-        </g>
-        <g transform="translate(40 8)">
-          <rect
-            x="4"
-            y="6"
-            width="34"
-            height="50"
-            rx="17"
-            fill="url(#collageBalloonMetal)"
-            stroke="#1A1A1A"
-            strokeWidth="2"
-          />
-          <text
-            x="21"
-            y="42"
-            textAnchor="middle"
-            fontSize="34"
-            fontWeight="700"
-            fontFamily="Impact, Arial Black, sans-serif"
-            fill="#1A1A1A"
-          >
-            0
-          </text>
-          <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
-          <path
-            d="M21 56 l-3 4 h6z"
-            fill="#A1A1AA"
-            stroke="#1A1A1A"
-            strokeWidth="1.2"
-          />
-        </g>
+        <ellipse cx="32" cy="62" rx="22" ry="3.5" fill="#1A1A1A" opacity="0.08" />
       </svg>
 
       <svg
@@ -549,6 +395,159 @@ function CollageStickers() {
       <span className="collage-sticker collage-sticker--confetti collage-sticker--confetti-b" aria-hidden />
       <span className="collage-sticker collage-sticker--confetti collage-sticker--confetti-c" aria-hidden />
     </>
+  );
+}
+
+function CollageDiscoBall() {
+  return (
+    <svg
+      className="collage-sticker collage-sticker--disco"
+      viewBox="0 0 64 64"
+      aria-hidden
+    >
+      <defs>
+        <radialGradient id="collageDiscoShine" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="45%" stopColor="#D4D4D8" />
+          <stop offset="100%" stopColor="#71717A" />
+        </radialGradient>
+      </defs>
+      <circle
+        cx="32"
+        cy="32"
+        r="22"
+        fill="url(#collageDiscoShine)"
+        stroke="#1A1A1A"
+        strokeWidth="2"
+      />
+      {[0, 1, 2, 3, 4].map((row) =>
+        [0, 1, 2, 3, 4].map((col) => {
+          const x = 16 + col * 7;
+          const y = 16 + row * 7;
+          const inCircle = (x - 32) ** 2 + (y - 32) ** 2 < 17 ** 2;
+          if (!inCircle) return null;
+          return (
+            <rect
+              key={`${row}-${col}`}
+              x={x}
+              y={y}
+              width="5.2"
+              height="5.2"
+              rx="0.6"
+              fill={
+                (row + col) % 3 === 0
+                  ? "#F9A8D4"
+                  : (row + col) % 2 === 0
+                    ? "#FAFAFA"
+                    : "#A1A1AA"
+              }
+              stroke="#1A1A1A"
+              strokeWidth="0.55"
+              opacity="0.9"
+            />
+          );
+        }),
+      )}
+      <path
+        d="M32 10 V4 M28 5 h8"
+        stroke="#1A1A1A"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <circle cx="24" cy="22" r="2.2" fill="#fff" opacity="0.75" />
+    </svg>
+  );
+}
+
+function CollageNumberBalloons() {
+  return (
+    <svg
+      className="collage-sticker collage-sticker--balloons"
+      viewBox="0 0 90 88"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="collageBalloonMetal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#F8FAFC" />
+          <stop offset="40%" stopColor="#D4D4D8" />
+          <stop offset="100%" stopColor="#71717A" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M28 58 C 28 72, 22 80, 18 86"
+        fill="none"
+        stroke="#1A1A1A"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M58 58 C 58 72, 64 80, 70 86"
+        fill="none"
+        stroke="#1A1A1A"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <g transform="translate(8 4)">
+        <rect
+          x="4"
+          y="6"
+          width="34"
+          height="50"
+          rx="17"
+          fill="url(#collageBalloonMetal)"
+          stroke="#1A1A1A"
+          strokeWidth="2"
+        />
+        <text
+          x="21"
+          y="42"
+          textAnchor="middle"
+          fontSize="34"
+          fontWeight="700"
+          fontFamily="Impact, Arial Black, sans-serif"
+          fill="#1A1A1A"
+        >
+          2
+        </text>
+        <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+        <path
+          d="M21 56 l-3 4 h6z"
+          fill="#A1A1AA"
+          stroke="#1A1A1A"
+          strokeWidth="1.2"
+        />
+      </g>
+      <g transform="translate(40 8)">
+        <rect
+          x="4"
+          y="6"
+          width="34"
+          height="50"
+          rx="17"
+          fill="url(#collageBalloonMetal)"
+          stroke="#1A1A1A"
+          strokeWidth="2"
+        />
+        <text
+          x="21"
+          y="42"
+          textAnchor="middle"
+          fontSize="34"
+          fontWeight="700"
+          fontFamily="Impact, Arial Black, sans-serif"
+          fill="#1A1A1A"
+        >
+          0
+        </text>
+        <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+        <path
+          d="M21 56 l-3 4 h6z"
+          fill="#A1A1AA"
+          stroke="#1A1A1A"
+          strokeWidth="1.2"
+        />
+      </g>
+    </svg>
   );
 }
 
@@ -949,10 +948,21 @@ export default function InviteCover({
             )}
 
             {!photoTop ? (
-              <div className="invite-card-photo invite-card-photo--inset">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={heroImage} alt="" />
-              </div>
+              isCollage ? (
+                <div className="collage-photo-stage">
+                  <CollageDiscoBall />
+                  <div className="invite-card-photo invite-card-photo--inset">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={heroImage} alt="" />
+                  </div>
+                  <CollageNumberBalloons />
+                </div>
+              ) : (
+                <div className="invite-card-photo invite-card-photo--inset">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={heroImage} alt="" />
+                </div>
+              )
             ) : null}
 
             <div
