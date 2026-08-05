@@ -33,6 +33,12 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
     [rsvps],
   );
 
+  const rsvpById = useMemo(() => {
+    const map = new Map<string, RsvpSubmission>();
+    for (const r of rsvps) map.set(r.id, r);
+    return map;
+  }, [rsvps]);
+
   const assignedIds = useMemo(() => {
     const set = new Set<string>();
     for (const t of tables) {
@@ -42,6 +48,27 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
   }, [tables]);
 
   const unassigned = attending.filter((r) => !assignedIds.has(r.id));
+
+  const declinedAssigned = useMemo(() => {
+    const rows: { tableId: string; tableName: string; rsvpId: string; name: string }[] =
+      [];
+    for (const t of tables) {
+      for (const a of t.assignments) {
+        const r = rsvpById.get(a.rsvpId);
+        const stillGoing =
+          r && r.attendance.toLowerCase().includes("attend");
+        if (!stillGoing) {
+          rows.push({
+            tableId: t.id,
+            tableName: t.name,
+            rsvpId: a.rsvpId,
+            name: r?.name || a.guestName || a.rsvpId,
+          });
+        }
+      }
+    }
+    return rows;
+  }, [tables, rsvpById]);
 
   async function save(next: SeatingTable[]) {
     setBusy(true);
@@ -142,6 +169,35 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
     if (pro) void save(next);
   }
 
+  function removeTable(tableId: string) {
+    const table = tables.find((t) => t.id === tableId);
+    if (!table) return;
+    const label = table.name || "this table";
+    if (
+      !window.confirm(
+        table.assignments.length
+          ? `Remove ${label}? ${table.assignments.length} seated guest(s) will become unassigned.`
+          : `Remove ${label}?`,
+      )
+    ) {
+      return;
+    }
+    const next = tables.filter((t) => t.id !== tableId);
+    setTables(next);
+    if (pro) void save(next);
+  }
+
+  function clearDeclinedSeats() {
+    const declined = new Set(declinedAssigned.map((d) => d.rsvpId));
+    if (!declined.size) return;
+    const next = tables.map((t) => ({
+      ...t,
+      assignments: t.assignments.filter((a) => !declined.has(a.rsvpId)),
+    }));
+    setTables(next);
+    if (pro) void save(next);
+  }
+
   return (
     <section className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -181,6 +237,31 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
         <p className="mt-3 text-sm text-[var(--champagne)]">{info}</p>
       ) : null}
 
+      {pro && declinedAssigned.length > 0 ? (
+        <div className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm">
+          <p className="text-red-100">
+            {declinedAssigned.length} seated guest
+            {declinedAssigned.length === 1 ? "" : "s"} declined or changed RSVP
+            (no longer attending).
+          </p>
+          <ul className="mt-1 list-disc pl-5 text-red-100/85">
+            {declinedAssigned.slice(0, 6).map((d) => (
+              <li key={`${d.tableId}-${d.rsvpId}`}>
+                {d.name} · was at {d.tableName}
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={clearDeclinedSeats}
+            className="mt-2 text-xs font-semibold text-[var(--champagne)] underline-offset-2 hover:underline"
+          >
+            Clear declined seats
+          </button>
+        </div>
+      ) : null}
+
       {!pro ? (
         <p className="mt-4 text-sm text-[var(--mist)]">
           Upgrade to assign seats, export a door list by table, and keep the
@@ -217,23 +298,43 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
                   <span className="shrink-0 text-xs text-[var(--mist)]">
                     {table.assignments.length}/{table.seats}
                   </span>
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => removeTable(table.id)}
+                    className="shrink-0 rounded border border-red-400/35 px-2 py-1 text-xs text-red-200 hover:bg-red-500/10 disabled:opacity-60"
+                  >
+                    Remove table
+                  </button>
                 </div>
                 <ul className="mt-2 space-y-1 text-sm">
-                  {table.assignments.map((a) => (
-                    <li
-                      key={a.rsvpId}
-                      className="flex items-center justify-between gap-2 text-[var(--mist)]"
-                    >
-                      <span>{a.guestName || a.rsvpId}</span>
-                      <button
-                        type="button"
-                        className="text-xs text-[var(--champagne)]"
-                        onClick={() => unassign(table.id, a.rsvpId)}
+                  {table.assignments.map((a) => {
+                    const r = rsvpById.get(a.rsvpId);
+                    const declined =
+                      !r || !r.attendance.toLowerCase().includes("attend");
+                    return (
+                      <li
+                        key={a.rsvpId}
+                        className="flex items-center justify-between gap-2 text-[var(--mist)]"
                       >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
+                        <span>
+                          {a.guestName || r?.name || a.rsvpId}
+                          {declined ? (
+                            <span className="ml-1 text-xs text-red-200">
+                              (declined)
+                            </span>
+                          ) : null}
+                        </span>
+                        <button
+                          type="button"
+                          className="text-xs text-[var(--champagne)]"
+                          onClick={() => unassign(table.id, a.rsvpId)}
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
                 {table.assignments.length < table.seats &&
                 unassigned.length > 0 ? (
