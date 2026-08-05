@@ -268,9 +268,9 @@ const rojoCeleste: Theme = {
 /** Canva modern collage — black, white & blush pink */
 const blushCollage: Theme = {
   colors: {
-    background: "#F6F4F1",
-    surface: "#FFFBFA",
-    accentPrimary: "#F472B6",
+    background: "#EFEAE4",
+    surface: "#FFFCFA",
+    accentPrimary: "#EC4899",
     accentSecondary: "#111111",
     textPrimary: "#111111",
     textMuted: "#6B6570",
@@ -916,11 +916,11 @@ export const TEMPLATES: EventTemplate[] = [
     layout: "collage",
     theme: blushCollage,
     heroImage:
-      "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=1920&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1920&q=80&auto=format&fit=crop",
     headline: "Sandra",
     headlineEs: "Sandra",
-    tagline: "Don't miss it — cake, dancing, and a night to remember!",
-    taglineEs: "¡No faltes! Pastel, baile y una noche para recordar.",
+    tagline: "Don't miss it!",
+    taglineEs: "¡No faltes!",
   },
   {
     id: "disco-silver",

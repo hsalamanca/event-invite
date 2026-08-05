@@ -6,11 +6,14 @@ import type { InviteLayout } from "@/lib/templates";
 
 type InviteCoverProps = {
   layout: InviteLayout;
+  templateId?: string;
   hostName: string;
   title: string;
   headline: string;
   tagline: string;
   dateLabel: string;
+  weekdayLabel?: string;
+  dateShortLabel?: string;
   timeLabel: string;
   venue: string;
   address: string;
@@ -254,54 +257,297 @@ function CollageStickers() {
     <>
       <svg
         className="collage-sticker collage-sticker--banner"
-        viewBox="0 0 96 28"
+        viewBox="0 0 140 40"
         aria-hidden
       >
         <path
-          d="M4 8h12l-2 8 2 8H4V8zm16 0h12l-2 8 2 8H20V8zm16 0h12l-2 8 2 8H36V8zm16 0h12l-2 8 2 8H52V8zm16 0h12l-2 8 2 8H68V8z"
-          fill="#F472B6"
-          stroke="#111"
-          strokeWidth="1.4"
-          strokeLinejoin="round"
+          d="M6 10 C 40 4, 90 16, 134 8"
+          fill="none"
+          stroke="#1A1A1A"
+          strokeWidth="2"
+          strokeLinecap="round"
         />
-        <path d="M4 8h88" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+        {[
+          { x: 14, fill: "#F9A8D4" },
+          { x: 36, fill: "#111111" },
+          { x: 58, fill: "#F472B6" },
+          { x: 80, fill: "#111111" },
+          { x: 102, fill: "#FDA4AF" },
+        ].map((f, i) => (
+          <path
+            key={i}
+            d={`M${f.x} 10 L${f.x + 18} 10 L${f.x + 9} 34 Z`}
+            fill={f.fill}
+            stroke="#1A1A1A"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          />
+        ))}
       </svg>
+
       <svg
         className="collage-sticker collage-sticker--cake"
-        viewBox="0 0 56 56"
+        viewBox="0 0 72 78"
         aria-hidden
       >
-        <rect
-          x="12"
-          y="26"
-          width="32"
-          height="18"
-          rx="3"
-          fill="#F9A8D4"
-          stroke="#111"
-          strokeWidth="1.8"
-        />
         <path
-          d="M16 26c4-6 8-6 12 0s8 6 12 0"
+          d="M36 8c-1.2 2.4-1 4.2 0 6.2 1.2-2 1.4-3.8 0-6.2z"
+          fill="#F472B6"
+          stroke="#1A1A1A"
+          strokeWidth="1.5"
+        />
+        <rect x="33.5" y="14" width="5" height="14" rx="1.5" fill="#1A1A1A" />
+        <path
+          d="M28 12.5c3.2-0.2 5.4 1.6 8 1.4"
           fill="none"
-          stroke="#111"
-          strokeWidth="1.6"
-        />
-        <rect x="26" y="14" width="4" height="12" rx="1" fill="#111" />
-        <circle cx="28" cy="12" r="3" fill="#F472B6" stroke="#111" strokeWidth="1.4" />
-        <path
-          d="M22 42h20M18 36h28"
-          stroke="#111"
+          stroke="#F9A8D4"
           strokeWidth="1.4"
           strokeLinecap="round"
         />
+        <path
+          d="M36 8 l4 -5.5 l-1.4 5.2 4.8 0.2 -4 3.2 2.4 4.4 -5.8-2.6 -5.8 2.6 2.4-4.4 -4-3.2 4.8-0.2 -1.4-5.2z"
+          fill="#F472B6"
+          stroke="#1A1A1A"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+          transform="translate(14 -2) scale(0.55)"
+        />
+        <text
+          x="50"
+          y="10"
+          fontSize="7"
+          fontFamily="Georgia, serif"
+          fill="#1A1A1A"
+          transform="rotate(12 50 10)"
+        >
+          love
+        </text>
+        <path
+          d="M14 36c0-8 10-14 22-14s22 6 22 14v4H14z"
+          fill="#FFF1F7"
+          stroke="#1A1A1A"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M16 40c5-5 9-5 14 0s9 5 14 0 9-5 14 0"
+          fill="none"
+          stroke="#F472B6"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <rect
+          x="12"
+          y="40"
+          width="48"
+          height="22"
+          rx="4"
+          fill="#F9A8D4"
+          stroke="#1A1A1A"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M18 51h36M22 58h28"
+          stroke="#1A1A1A"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.55"
+        />
+        <ellipse cx="36" cy="64" rx="26" ry="4" fill="#1A1A1A" opacity="0.08" />
       </svg>
-      <span className="collage-sticker collage-sticker--star" aria-hidden>
-        ✦
-      </span>
+
+      <svg
+        className="collage-sticker collage-sticker--disco"
+        viewBox="0 0 64 64"
+        aria-hidden
+      >
+        <defs>
+          <radialGradient id="collageDiscoShine" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="45%" stopColor="#D4D4D8" />
+            <stop offset="100%" stopColor="#71717A" />
+          </radialGradient>
+        </defs>
+        <circle
+          cx="32"
+          cy="32"
+          r="22"
+          fill="url(#collageDiscoShine)"
+          stroke="#1A1A1A"
+          strokeWidth="2"
+        />
+        {[0, 1, 2, 3, 4].map((row) =>
+          [0, 1, 2, 3, 4].map((col) => {
+            const x = 16 + col * 7;
+            const y = 16 + row * 7;
+            const inCircle = (x - 32) ** 2 + (y - 32) ** 2 < 17 ** 2;
+            if (!inCircle) return null;
+            return (
+              <rect
+                key={`${row}-${col}`}
+                x={x}
+                y={y}
+                width="5.2"
+                height="5.2"
+                rx="0.6"
+                fill={
+                  (row + col) % 3 === 0
+                    ? "#F9A8D4"
+                    : (row + col) % 2 === 0
+                      ? "#FAFAFA"
+                      : "#A1A1AA"
+                }
+                stroke="#1A1A1A"
+                strokeWidth="0.55"
+                opacity="0.9"
+              />
+            );
+          }),
+        )}
+        <path
+          d="M32 10 V4 M28 5 h8"
+          stroke="#1A1A1A"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <circle cx="24" cy="22" r="2.2" fill="#fff" opacity="0.75" />
+      </svg>
+
+      <svg
+        className="collage-sticker collage-sticker--balloons"
+        viewBox="0 0 90 88"
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id="collageBalloonMetal" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#F8FAFC" />
+            <stop offset="40%" stopColor="#D4D4D8" />
+            <stop offset="100%" stopColor="#71717A" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M28 58 C 28 72, 22 80, 18 86"
+          fill="none"
+          stroke="#1A1A1A"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M58 58 C 58 72, 64 80, 70 86"
+          fill="none"
+          stroke="#1A1A1A"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <g transform="translate(8 4)">
+          <rect
+            x="4"
+            y="6"
+            width="34"
+            height="50"
+            rx="17"
+            fill="url(#collageBalloonMetal)"
+            stroke="#1A1A1A"
+            strokeWidth="2"
+          />
+          <text
+            x="21"
+            y="42"
+            textAnchor="middle"
+            fontSize="34"
+            fontWeight="700"
+            fontFamily="Impact, Arial Black, sans-serif"
+            fill="#1A1A1A"
+          >
+            2
+          </text>
+          <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+          <path
+            d="M21 56 l-3 4 h6z"
+            fill="#A1A1AA"
+            stroke="#1A1A1A"
+            strokeWidth="1.2"
+          />
+        </g>
+        <g transform="translate(40 8)">
+          <rect
+            x="4"
+            y="6"
+            width="34"
+            height="50"
+            rx="17"
+            fill="url(#collageBalloonMetal)"
+            stroke="#1A1A1A"
+            strokeWidth="2"
+          />
+          <text
+            x="21"
+            y="42"
+            textAnchor="middle"
+            fontSize="34"
+            fontWeight="700"
+            fontFamily="Impact, Arial Black, sans-serif"
+            fill="#1A1A1A"
+          >
+            0
+          </text>
+          <ellipse cx="14" cy="18" rx="5" ry="8" fill="#fff" opacity="0.45" />
+          <path
+            d="M21 56 l-3 4 h6z"
+            fill="#A1A1AA"
+            stroke="#1A1A1A"
+            strokeWidth="1.2"
+          />
+        </g>
+      </svg>
+
+      <svg
+        className="collage-sticker collage-sticker--star collage-sticker--star-a"
+        viewBox="0 0 32 32"
+        aria-hidden
+      >
+        <path
+          d="M16 2l3.2 8.4H28l-7.2 5.4 2.8 8.6L16 19.8 8.4 24.4l2.8-8.6L4 10.4h8.8z"
+          fill="#F472B6"
+          stroke="#1A1A1A"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <svg
+        className="collage-sticker collage-sticker--star collage-sticker--star-b"
+        viewBox="0 0 24 24"
+        aria-hidden
+      >
+        <path
+          d="M12 2l2.2 5.8H20l-4.6 3.6 1.8 5.8L12 14.2 6.8 17.2l1.8-5.8L4 7.8h5.8z"
+          fill="#FDA4AF"
+          stroke="#1A1A1A"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <svg
+        className="collage-sticker collage-sticker--star collage-sticker--star-c"
+        viewBox="0 0 20 20"
+        aria-hidden
+      >
+        <path
+          d="M10 1.5l1.8 4.8H17l-3.8 3 1.5 4.8L10 11.6 5.3 14.1l1.5-4.8L3 6.3h5.2z"
+          fill="#111"
+          stroke="#1A1A1A"
+          strokeWidth="1"
+          strokeLinejoin="round"
+        />
+      </svg>
+
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-a" aria-hidden />
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-b" aria-hidden />
       <span className="collage-sticker collage-sticker--dot collage-sticker--dot-c" aria-hidden />
+      <span className="collage-sticker collage-sticker--dot collage-sticker--dot-d" aria-hidden />
+      <span className="collage-sticker collage-sticker--dot collage-sticker--dot-e" aria-hidden />
+      <span className="collage-sticker collage-sticker--confetti collage-sticker--confetti-a" aria-hidden />
+      <span className="collage-sticker collage-sticker--confetti collage-sticker--confetti-b" aria-hidden />
+      <span className="collage-sticker collage-sticker--confetti collage-sticker--confetti-c" aria-hidden />
     </>
   );
 }
@@ -508,11 +754,14 @@ function Ornament({ layout }: { layout: InviteLayout }) {
 
 export default function InviteCover({
   layout,
+  templateId,
   hostName,
   title,
   headline,
   tagline,
   dateLabel,
+  weekdayLabel,
+  dateShortLabel,
   timeLabel,
   venue,
   address,
@@ -583,6 +832,7 @@ export default function InviteCover({
     <section
       className="invite-cover"
       data-layout={layout}
+      data-template={templateId || undefined}
       aria-label="Invitation"
     >
       <div
@@ -675,12 +925,28 @@ export default function InviteCover({
 
             <Ornament layout={layout} />
 
-            <div className="invite-card-when">
-              <p className="invite-card-date">{dateLabel}</p>
-              <p className="invite-card-time">{timeLabel}</p>
-              <p className="invite-card-venue">{venue}</p>
-              <p className="invite-card-address">{address}</p>
-            </div>
+            {isCollage ? (
+              <div className="invite-card-when invite-card-when--collage">
+                <div className="collage-when-row">
+                  <span className="collage-when-day">
+                    {weekdayLabel || dateLabel}
+                  </span>
+                  <span className="collage-when-date">
+                    {dateShortLabel || dateLabel}
+                  </span>
+                  <span className="collage-when-time">{timeLabel}</span>
+                </div>
+                <p className="invite-card-venue">{venue}</p>
+                <p className="invite-card-address">{address}</p>
+              </div>
+            ) : (
+              <div className="invite-card-when">
+                <p className="invite-card-date">{dateLabel}</p>
+                <p className="invite-card-time">{timeLabel}</p>
+                <p className="invite-card-venue">{venue}</p>
+                <p className="invite-card-address">{address}</p>
+              </div>
+            )}
 
             {!photoTop ? (
               <div className="invite-card-photo invite-card-photo--inset">

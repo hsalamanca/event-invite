@@ -102,6 +102,29 @@ function formatDateLabel(dateISO: string, locale: Locale): string {
   });
 }
 
+function formatWeekdayLabel(dateISO: string, locale: Locale): string {
+  const d = new Date(`${dateISO}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
+    weekday: "long",
+  });
+}
+
+function formatDateShortLabel(dateISO: string, locale: Locale): string {
+  const d = new Date(`${dateISO}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return dateISO;
+  if (locale === "es") {
+    const day = d.getDate();
+    const month = d
+      .toLocaleDateString("es-ES", { month: "long" })
+      .toUpperCase();
+    return `${day} DE ${month}`;
+  }
+  return d
+    .toLocaleDateString("en-US", { month: "long", day: "numeric" })
+    .toUpperCase();
+}
+
 function mapsUrl(address: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
@@ -472,11 +495,14 @@ export default function InvitePage({
     >
       <InviteCover
         layout={layout}
+        templateId={event.templateId}
         hostName={event.hostName}
         title={event.title}
         headline={headline}
         tagline={tagline}
         dateLabel={formatDateLabel(event.dateISO, locale)}
+        weekdayLabel={formatWeekdayLabel(event.dateISO, locale)}
+        dateShortLabel={formatDateShortLabel(event.dateISO, locale)}
         timeLabel={event.timeLabel}
         venue={event.venue}
         address={event.address}
@@ -2391,22 +2417,33 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="collage"]) {
+          min-height: min(100vh, 56rem);
+          background: var(--invite-bg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-cover-atmosphere-img) {
+          opacity: 0.22;
+          filter: grayscale(0.35) contrast(0.95) saturate(0.7);
+          transform: scale(1.08);
+        }
+
         :global(.invite-cover[data-layout="collage"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
-              circle at 18% 20%,
-              color-mix(in srgb, var(--invite-accent) 28%, transparent),
-              transparent 42%
+              circle at 12% 18%,
+              color-mix(in srgb, var(--invite-accent) 22%, transparent),
+              transparent 38%
             ),
             radial-gradient(
-              circle at 82% 18%,
-              color-mix(in srgb, var(--invite-accent-2) 12%, transparent),
-              transparent 40%
+              circle at 88% 12%,
+              color-mix(in srgb, #fda4af 18%, transparent),
+              transparent 36%
             ),
             linear-gradient(
-              165deg,
-              color-mix(in srgb, var(--invite-bg) 40%, transparent) 0%,
-              color-mix(in srgb, var(--invite-bg) 88%, transparent) 72%,
+              180deg,
+              color-mix(in srgb, var(--invite-bg) 55%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 92%, transparent) 55%,
               var(--invite-bg) 100%
             );
         }
@@ -2416,57 +2453,109 @@ export default function InvitePage({
           position: absolute;
           inset: 0;
           z-index: 0;
-          opacity: 0.18;
+          opacity: 0.22;
           background-image:
-            radial-gradient(#111 0.55px, transparent 0.6px),
-            radial-gradient(#111 0.45px, transparent 0.5px);
-          background-size: 7px 7px, 11px 11px;
-          background-position: 0 0, 4px 6px;
+            radial-gradient(#1a1a1a 0.55px, transparent 0.65px),
+            radial-gradient(#1a1a1a 0.4px, transparent 0.5px);
+          background-size: 6px 6px, 10px 10px;
+          background-position: 0 0, 3px 5px;
+          mix-blend-mode: multiply;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-cover-stage) {
+          padding: clamp(1.5rem, 4vw, 2.75rem) 1rem 2.5rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card) {
           position: relative;
           overflow: visible;
+          width: min(100%, 26.5rem);
+          margin-inline: auto;
           border: 0;
-          border-radius: 0.35rem;
+          border-radius: 0.2rem;
           background:
             linear-gradient(
-              180deg,
-              color-mix(in srgb, var(--invite-surface) 92%, #fff) 0%,
-              var(--invite-surface) 100%
+              165deg,
+              #fffefc 0%,
+              color-mix(in srgb, var(--invite-surface) 88%, #f8f1ec) 100%
             );
           box-shadow:
-            0 1px 0 color-mix(in srgb, #fff 80%, transparent) inset,
-            0 24px 50px color-mix(in srgb, #111 12%, transparent);
+            0 0 0 1px color-mix(in srgb, #111 6%, transparent),
+            0 1px 0 color-mix(in srgb, #fff 90%, transparent) inset,
+            0 28px 60px color-mix(in srgb, #111 14%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card::before) {
+          content: "";
+          position: absolute;
+          inset: 0.55rem;
+          border: 1px solid color-mix(in srgb, #111 8%, transparent);
+          border-radius: 0.1rem;
+          pointer-events: none;
+          z-index: 1;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker) {
           position: absolute;
-          z-index: 3;
+          z-index: 4;
           pointer-events: none;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--banner) {
-          top: 0.7rem;
-          left: 0.85rem;
-          width: 5.5rem;
-          transform: rotate(-8deg);
+          top: 0.85rem;
+          left: 0.65rem;
+          width: clamp(6.5rem, 28vw, 8rem);
+          transform: rotate(-10deg);
+          filter: drop-shadow(0 2px 0 color-mix(in srgb, #111 8%, transparent));
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--cake) {
-          top: 0.55rem;
-          right: 0.7rem;
-          width: 3.2rem;
-          transform: rotate(8deg);
-          animation: collageFloat 3.4s ease-in-out infinite;
+          top: 0.35rem;
+          right: 0.45rem;
+          width: clamp(3.8rem, 16vw, 4.6rem);
+          transform: rotate(9deg);
+          animation: collageFloat 3.6s ease-in-out infinite;
+          filter: drop-shadow(0 3px 4px color-mix(in srgb, #111 12%, transparent));
         }
 
-        :global(.invite-cover[data-layout="collage"] .collage-sticker--star) {
-          top: 42%;
-          right: 1rem;
-          color: var(--invite-accent);
-          font-size: 1.35rem;
-          transform: rotate(12deg);
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--disco) {
+          bottom: 7.2rem;
+          left: -0.55rem;
+          width: clamp(4.2rem, 18vw, 5.2rem);
+          transform: rotate(-12deg);
+          animation: collageDisco 4.8s ease-in-out infinite;
+          filter: drop-shadow(0 6px 10px color-mix(in srgb, #111 18%, transparent));
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--balloons) {
+          bottom: 6.6rem;
+          right: -0.85rem;
+          width: clamp(5.4rem, 24vw, 6.8rem);
+          transform: rotate(8deg);
+          animation: collageFloat 4.2s ease-in-out infinite;
+          animation-delay: -1.2s;
+          filter: drop-shadow(0 8px 12px color-mix(in srgb, #111 16%, transparent));
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--star-a) {
+          top: 38%;
+          right: 0.85rem;
+          width: 1.55rem;
+          transform: rotate(14deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--star-b) {
+          top: 22%;
+          left: 1.1rem;
+          width: 1.1rem;
+          transform: rotate(-18deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--star-c) {
+          bottom: 31%;
+          left: 2.2rem;
+          width: 0.9rem;
+          transform: rotate(8deg);
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--dot) {
@@ -2474,32 +2563,80 @@ export default function InvitePage({
           height: 0.55rem;
           border-radius: 999px;
           background: var(--invite-accent);
+          box-shadow: 0 0 0 1px color-mix(in srgb, #111 20%, transparent);
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-a) {
-          top: 28%;
-          left: 1.1rem;
+          top: 31%;
+          left: 0.85rem;
           background: #60a5fa;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-b) {
-          top: 58%;
-          right: 1.4rem;
+          top: 48%;
+          right: 1.15rem;
           background: #fbbf24;
           width: 0.4rem;
           height: 0.4rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-c) {
-          bottom: 22%;
+          bottom: 27%;
+          right: 28%;
+          background: #f472b6;
+          width: 0.45rem;
+          height: 0.45rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-d) {
+          top: 17%;
+          right: 32%;
+          background: #111;
+          width: 0.32rem;
+          height: 0.32rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-e) {
+          bottom: 42%;
+          left: 12%;
+          background: #a78bfa;
+          width: 0.38rem;
+          height: 0.38rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--confetti) {
+          width: 0.7rem;
+          height: 0.28rem;
+          border-radius: 0.08rem;
+          background: var(--invite-accent);
+          transform: rotate(35deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--confetti-a) {
+          top: 36%;
           left: 18%;
-          background: var(--invite-accent-2);
-          width: 0.35rem;
-          height: 0.35rem;
+          background: #f472b6;
+          transform: rotate(-28deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--confetti-b) {
+          top: 55%;
+          right: 14%;
+          background: #60a5fa;
+          transform: rotate(42deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--confetti-c) {
+          bottom: 36%;
+          left: 8%;
+          background: #fbbf24;
+          transform: rotate(-12deg);
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-body) {
-          padding-top: clamp(2.4rem, 6vw, 3.2rem);
+          position: relative;
+          z-index: 2;
+          padding: clamp(3.1rem, 8vw, 3.7rem) 1.35rem 1.85rem;
           text-align: center;
         }
 
@@ -2513,89 +2650,137 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="collage"] .invite-card-invite-line) {
           font-family: var(--font-great-vibes), cursive;
-          font-size: clamp(1.45rem, 4vw, 1.85rem);
+          font-size: clamp(1.55rem, 4.6vw, 2rem);
           letter-spacing: 0.01em;
           text-transform: none;
-          color: var(--invite-muted);
-          margin-bottom: 0.15rem;
+          font-weight: 400;
+          color: color-mix(in srgb, var(--invite-text) 72%, var(--invite-muted));
+          margin: 0 0 0.05rem;
+          line-height: 1.1;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-headline) {
           font-family: var(--font-display);
           font-weight: 400;
-          font-size: clamp(3.2rem, 12vw, 4.6rem);
-          line-height: 0.95;
-          letter-spacing: 0.01em;
+          font-size: clamp(3.6rem, 15vw, 5.4rem);
+          line-height: 0.88;
+          letter-spacing: -0.01em;
           text-transform: uppercase;
           color: var(--invite-text);
-          margin: 0.15rem 0 1rem;
+          margin: 0.05rem 0 1.15rem;
+          text-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent);
         }
 
-        :global(.invite-cover[data-layout="collage"] .invite-card-when) {
+        :global(.invite-cover[data-layout="collage"] .invite-card-when--collage) {
           margin: 0 auto;
-          max-width: 18rem;
-          padding: 0.85rem 1rem;
-          border: 1.5px solid color-mix(in srgb, var(--invite-text) 75%, transparent);
-          border-radius: 0.15rem;
+          max-width: 19.5rem;
+          padding: 0;
+          border: 0;
           background: transparent;
           display: grid;
-          gap: 0.35rem;
+          gap: 0.55rem;
         }
 
-        :global(.invite-cover[data-layout="collage"] .invite-card-date) {
+        :global(.invite-cover[data-layout="collage"] .collage-when-row) {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+          align-items: center;
+          gap: 0.45rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-when-day),
+        :global(.invite-cover[data-layout="collage"] .collage-when-time) {
           font-family: var(--font-body);
+          font-size: 0.68rem;
           font-weight: 700;
-          font-size: 0.82rem;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           color: var(--invite-text);
+          line-height: 1.2;
         }
 
-        :global(.invite-cover[data-layout="collage"] .invite-card-time),
-        :global(.invite-cover[data-layout="collage"] .invite-card-venue),
-        :global(.invite-cover[data-layout="collage"] .invite-card-address) {
+        :global(.invite-cover[data-layout="collage"] .collage-when-day) {
+          text-align: right;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-when-time) {
+          text-align: left;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-when-date) {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 8.5rem;
+          padding: 0.55rem 0.7rem;
+          border: 1.5px solid var(--invite-text);
+          border-radius: 0.12rem;
           font-family: var(--font-body);
-          font-size: 0.78rem;
+          font-weight: 700;
+          font-size: 0.72rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--invite-text);
+          background: color-mix(in srgb, #fff 70%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-when--collage .invite-card-venue),
+        :global(.invite-cover[data-layout="collage"] .invite-card-when--collage .invite-card-address) {
+          font-family: var(--font-body);
+          font-size: 0.72rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: var(--invite-text);
+          margin: 0;
+          line-height: 1.35;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-photo--inset) {
-          margin: 1.35rem auto 0.35rem;
-          width: 7.5rem;
-          max-width: 42%;
+          position: relative;
+          z-index: 3;
+          margin: 1.55rem auto 0.15rem;
+          width: clamp(7.8rem, 34vw, 9.4rem);
+          max-width: 48%;
           aspect-ratio: 1;
           border-radius: 999px;
-          border: 3px solid #111;
+          border: 2.5px solid #111;
           box-shadow:
-            6px 6px 0 color-mix(in srgb, var(--invite-accent) 70%, transparent),
-            0 12px 24px color-mix(in srgb, #111 12%, transparent);
+            7px 8px 0 color-mix(in srgb, var(--invite-accent) 78%, #fff),
+            0 14px 28px color-mix(in srgb, #111 16%, transparent);
           overflow: hidden;
-          transform: rotate(-4deg);
+          transform: rotate(-5deg);
+          background: #ddd;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-photo--inset img) {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          object-position: center 20%;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-card-tagline) {
           font-family: var(--font-great-vibes), cursive;
-          font-size: clamp(1.35rem, 3.5vw, 1.7rem);
-          color: var(--invite-accent);
-          margin-top: 0.85rem;
+          font-size: clamp(1.55rem, 4.2vw, 2rem);
+          color: var(--invite-text);
+          margin-top: 0.95rem;
+          line-height: 1.1;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-actions) {
+          margin-top: 1.15rem;
+          gap: 0.65rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .btn-primary) {
           border-radius: 999px;
           background: var(--invite-text);
           color: #fff;
-          font-weight: 600;
-          letter-spacing: 0.06em;
+          font-weight: 700;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
-          font-size: 0.8rem;
+          font-size: 0.78rem;
+          padding: 0.7rem 1.25rem;
           box-shadow: 3px 3px 0 var(--invite-accent);
         }
 
@@ -2604,30 +2789,95 @@ export default function InvitePage({
           border: 1.5px solid var(--invite-text);
           background: transparent;
           color: var(--invite-text);
-          font-weight: 600;
-          letter-spacing: 0.06em;
+          font-weight: 700;
+          letter-spacing: 0.08em;
           text-transform: uppercase;
-          font-size: 0.78rem;
+          font-size: 0.76rem;
+          padding: 0.65rem 1.1rem;
         }
 
         :global(.invite-cover[data-layout="collage"] .invite-text-link) {
           color: var(--invite-muted);
+          letter-spacing: 0.04em;
+        }
+
+        :global(.invite-cover[data-layout="collage"][data-template="blush-collage"] .invite-card) {
+          background:
+            linear-gradient(
+              168deg,
+              #fffdfb 0%,
+              #fff7f2 48%,
+              #fff1f6 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="collage"][data-template="disco-silver"] .collage-sticker--cake) {
+          filter: grayscale(0.35) drop-shadow(0 3px 4px color-mix(in srgb, #111 12%, transparent));
+        }
+
+        :global(.invite-cover[data-layout="collage"][data-template="candy-bubble"] .invite-card-headline) {
+          letter-spacing: 0.01em;
+          color: color-mix(in srgb, var(--invite-accent) 55%, var(--invite-text));
+        }
+
+        :global(.invite-cover[data-layout="collage"][data-template="candy-bubble"] .collage-when-date) {
+          border-color: var(--invite-accent);
+          color: var(--invite-accent-2);
         }
 
         @keyframes collageFloat {
           0%,
           100% {
-            transform: rotate(8deg) translateY(0);
+            transform: rotate(9deg) translateY(0);
           }
           50% {
-            transform: rotate(12deg) translateY(-4px);
+            transform: rotate(13deg) translateY(-5px);
           }
         }
 
-        /* Candy bubble variant accents via pink-forward theme */
+        @keyframes collageDisco {
+          0%,
+          100% {
+            transform: rotate(-12deg) translateY(0);
+          }
+          50% {
+            transform: rotate(-7deg) translateY(-4px);
+          }
+        }
+
         :global(.invite-cover[data-layout="collage"] .btn-primary:hover) {
           background: var(--invite-accent);
           color: #fff;
+        }
+
+        @media (max-width: 420px) {
+          :global(.invite-cover[data-layout="collage"] .collage-sticker--disco) {
+            left: -0.15rem;
+            bottom: 8rem;
+            width: 3.8rem;
+          }
+
+          :global(.invite-cover[data-layout="collage"] .collage-sticker--balloons) {
+            right: -0.35rem;
+            bottom: 7.5rem;
+            width: 4.8rem;
+          }
+
+          :global(.invite-cover[data-layout="collage"] .collage-when-row) {
+            gap: 0.3rem;
+          }
+
+          :global(.invite-cover[data-layout="collage"] .collage-when-date) {
+            min-width: 7.2rem;
+            font-size: 0.64rem;
+            padding: 0.45rem 0.5rem;
+          }
+
+          :global(.invite-cover[data-layout="collage"] .collage-when-day),
+          :global(.invite-cover[data-layout="collage"] .collage-when-time) {
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+          }
         }
 
         :global(.invite-cover[data-layout="azure"] .invite-cover-atmosphere-veil) {
@@ -4460,6 +4710,8 @@ export default function InvitePage({
           :global(.splash-sticker),
           :global(.collage-grain),
           :global(.collage-sticker--cake),
+          :global(.collage-sticker--disco),
+          :global(.collage-sticker--balloons),
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),
