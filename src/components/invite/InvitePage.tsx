@@ -484,6 +484,7 @@ export default function InvitePage({
         comicPresents={ui.comicPresents}
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
+        splashInvite={ui.splashInvite}
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
@@ -2187,6 +2188,207 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="splash"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 16% 18%,
+              color-mix(in srgb, #e53935 42%, transparent),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at 84% 22%,
+              color-mix(in srgb, #4fc3f7 48%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 50% 78%,
+              color-mix(in srgb, #ffd54f 40%, transparent),
+              transparent 46%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #fff6eb 35%, transparent) 0%,
+              color-mix(in srgb, #fff6eb 82%, transparent) 70%,
+              #fff6eb 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-blobs) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.55;
+          background-image:
+            radial-gradient(circle at 12% 30%, #e53935 0 10px, transparent 11px),
+            radial-gradient(circle at 88% 24%, #4fc3f7 0 12px, transparent 13px),
+            radial-gradient(circle at 22% 78%, #ffd54f 0 9px, transparent 10px),
+            radial-gradient(circle at 76% 70%, #e53935 0 7px, transparent 8px),
+            radial-gradient(circle at 48% 16%, #4fc3f7 0 8px, transparent 9px);
+          animation: splashFloat 7s ease-in-out infinite alternate;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card) {
+          position: relative;
+          overflow: visible;
+          border: 4px solid #1a2744;
+          border-radius: 1.35rem;
+          background:
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #4fc3f7 10%, #ffffff) 0%,
+              #ffffff 40%,
+              color-mix(in srgb, #ffd54f 12%, #ffffff) 100%
+            );
+          box-shadow:
+            0 0 0 5px #ffd54f,
+            0 0 0 10px #4fc3f7,
+            0 0 0 15px #e53935,
+            0 22px 48px color-mix(in srgb, #1a2744 18%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-sticker) {
+          position: absolute;
+          z-index: 3;
+          width: 3.1rem;
+          height: auto;
+          filter: drop-shadow(2px 3px 0 #1a2744);
+          animation: splashWiggle 2.8s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-sticker--balloon) {
+          top: -1.1rem;
+          left: 0.85rem;
+          width: 2.6rem;
+          --splash-rot: -12deg;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-sticker--star) {
+          top: 1rem;
+          right: -0.55rem;
+          width: 2.8rem;
+          animation-delay: 0.35s;
+          --splash-rot: 14deg;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-sticker--dot) {
+          bottom: 7.5rem;
+          left: -0.7rem;
+          width: 2.4rem;
+          animation-delay: 0.7s;
+          --splash-rot: -8deg;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-photo) {
+          border-bottom: 4px solid #1a2744;
+          border-radius: 1.1rem 1.1rem 0 0;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-ornament--splash) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.4rem;
+          width: auto;
+          margin-bottom: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-pip) {
+          width: 0.55rem;
+          height: 0.55rem;
+          border-radius: 999px;
+          border: 1.5px solid #1a2744;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .splash-pip--diamond) {
+          border-radius: 0.12rem;
+          transform: rotate(45deg);
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-host) {
+          font-family: var(--font-display);
+          font-weight: 600;
+          font-size: 1.05rem;
+          color: #e53935;
+          letter-spacing: 0.01em;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-invite-line) {
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-size: 0.7rem;
+          font-weight: 600;
+          color: #5a6b88;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: clamp(2rem, 7vw, 2.75rem);
+          line-height: 1.1;
+          letter-spacing: -0.02em;
+          color: #1a2744;
+          text-shadow: 3px 3px 0 #ffd54f;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-when) {
+          margin-top: 1rem;
+          padding: 1rem 1.1rem;
+          border-radius: 1rem;
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, #4fc3f7 16%, #ffffff),
+              color-mix(in srgb, #ffd54f 14%, #ffffff)
+            );
+          border: 3px solid #1a2744;
+          box-shadow: 3px 3px 0 #e53935;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .invite-card-date) {
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 1.15rem;
+          color: #e53935;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .btn-primary) {
+          border-radius: 999px;
+          border: 3px solid #1a2744;
+          background: #e53935;
+          color: #ffffff;
+          font-weight: 700;
+          box-shadow: 3px 3px 0 #4fc3f7;
+        }
+
+        :global(.invite-cover[data-layout="splash"] .btn-ghost) {
+          border-radius: 999px;
+          border: 3px solid #1a2744;
+          background: #ffd54f;
+          color: #1a2744;
+          font-weight: 700;
+        }
+
+        @keyframes splashWiggle {
+          0%,
+          100% {
+            transform: rotate(var(--splash-rot, -8deg)) translateY(0);
+          }
+          50% {
+            transform: rotate(calc(var(--splash-rot, -8deg) + 7deg))
+              translateY(-4px);
+          }
+        }
+
+        @keyframes splashFloat {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 10px, 0);
+          }
+        }
+
         :global(.invite-cover[data-layout="azure"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
@@ -2197,7 +2399,7 @@ export default function InvitePage({
             radial-gradient(
               circle at 80% 25%,
               color-mix(in srgb, #7ec8ff 40%, transparent),
-              transparent 45%
+              transparent 42%
             ),
             linear-gradient(
               165deg,
@@ -4013,6 +4215,8 @@ export default function InvitePage({
           :global(.festive-balloon),
           :global(.toybox-dots),
           :global(.toy-sticker),
+          :global(.splash-blobs),
+          :global(.splash-sticker),
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),

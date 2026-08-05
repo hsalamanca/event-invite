@@ -23,6 +23,7 @@ type InviteCoverProps = {
   arcadePlayer?: string;
   quinceInvite?: string;
   fiftyCelebrate?: string;
+  splashInvite?: string;
   rsvpLabel: string;
   detailsLabel: string;
   leaveNoteLabel?: string;
@@ -190,6 +191,63 @@ function ToyStickers() {
   );
 }
 
+function SplashStickers() {
+  return (
+    <>
+      <svg
+        className="splash-sticker splash-sticker--balloon"
+        viewBox="0 0 48 64"
+        aria-hidden
+      >
+        <ellipse
+          cx="24"
+          cy="24"
+          rx="16"
+          ry="20"
+          fill="#E53935"
+          stroke="#1A2744"
+          strokeWidth="2.2"
+        />
+        <path
+          d="M24 43v14M20 57h8"
+          stroke="#1A2744"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <ellipse cx="18" cy="16" rx="4" ry="6" fill="#FFD54F" opacity="0.55" />
+      </svg>
+      <svg
+        className="splash-sticker splash-sticker--star"
+        viewBox="0 0 48 48"
+        aria-hidden
+      >
+        <path
+          d="M24 5l5.4 11 12.1 1.8-8.8 8.5 2.1 12.1L24 32.6 13.2 38.4l2.1-12.1-8.8-8.5 12.1-1.8z"
+          fill="#FFD54F"
+          stroke="#1A2744"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <svg
+        className="splash-sticker splash-sticker--dot"
+        viewBox="0 0 48 48"
+        aria-hidden
+      >
+        <circle
+          cx="24"
+          cy="24"
+          r="15"
+          fill="#4FC3F7"
+          stroke="#1A2744"
+          strokeWidth="2.2"
+        />
+        <circle cx="18" cy="18" r="4" fill="#FFF6EB" opacity="0.7" />
+      </svg>
+    </>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
@@ -206,6 +264,17 @@ function Ornament({ layout }: { layout: InviteLayout }) {
         <span className="festive-dot" style={{ background: "#4D96FF" }} />
         <span className="festive-dot" style={{ background: "#7CFFB2" }} />
         <span className="festive-dot" style={{ background: "#C77DFF" }} />
+      </div>
+    );
+  }
+  if (layout === "splash") {
+    return (
+      <div className="invite-ornament invite-ornament--splash" aria-hidden>
+        <span className="splash-pip" style={{ background: "#E53935" }} />
+        <span className="splash-pip splash-pip--diamond" style={{ background: "#FFD54F" }} />
+        <span className="splash-pip" style={{ background: "#4FC3F7" }} />
+        <span className="splash-pip splash-pip--diamond" style={{ background: "#E53935" }} />
+        <span className="splash-pip" style={{ background: "#FFD54F" }} />
       </div>
     );
   }
@@ -391,6 +460,7 @@ export default function InviteCover({
   arcadePlayer,
   quinceInvite,
   fiftyCelebrate,
+  splashInvite,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -408,6 +478,7 @@ export default function InviteCover({
     layout === "comic" ||
     layout === "festive" ||
     layout === "toybox" ||
+    layout === "splash" ||
     layout === "azure" ||
     layout === "arcade" ||
     layout === "quince" ||
@@ -415,6 +486,7 @@ export default function InviteCover({
   const isComic = layout === "comic";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
+  const isSplash = layout === "splash";
   const isAzure = layout === "azure";
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
@@ -426,15 +498,17 @@ export default function InviteCover({
       ? festiveParty || invitesYou
       : isToybox
         ? toyPartyInvite || invitesYou
-        : isAzure
-          ? modernCelebrate || invitesYou
-          : isArcade
-            ? arcadePlayer || invitesYou
-            : isQuince
-              ? quinceInvite || invitesYou
-              : isFifty
-                ? fiftyCelebrate || invitesYou
-                : invitesYou;
+        : isSplash
+          ? splashInvite || invitesYou
+          : isAzure
+            ? modernCelebrate || invitesYou
+            : isArcade
+              ? arcadePlayer || invitesYou
+              : isQuince
+                ? quinceInvite || invitesYou
+                : isFifty
+                  ? fiftyCelebrate || invitesYou
+                  : invitesYou;
 
   return (
     <section
@@ -456,6 +530,7 @@ export default function InviteCover({
       {isComic ? <div className="comic-halftone" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
+      {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
       {isAzure || isQuince ? <div className="azure-glow" aria-hidden /> : null}
       {isFifty ? <div className="fifty-sparkle" aria-hidden /> : null}
       {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
@@ -474,6 +549,7 @@ export default function InviteCover({
           ) : null}
 
           {isToybox ? <ToyStickers /> : null}
+          {isSplash ? <SplashStickers /> : null}
           {isArcade ? <ArcadeStickers /> : null}
 
           {isAzure ? (

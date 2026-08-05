@@ -33,7 +33,8 @@ export type InviteLayout =
   | "azure"
   | "arcade"
   | "quince"
-  | "fifty";
+  | "fifty"
+  | "splash";
 
 export type EventTemplate = {
   id: string;
@@ -248,6 +249,19 @@ const toyParty: Theme = {
     textMuted: "#5A7399",
   },
   fonts: { display: "Baloo 2", body: "Outfit" },
+};
+
+/** Canva illustrated kids birthday — red, sky blue (celeste), and yellow */
+const rojoCeleste: Theme = {
+  colors: {
+    background: "#FFF6EB",
+    surface: "#FFFFFF",
+    accentPrimary: "#E53935",
+    accentSecondary: "#4FC3F7",
+    textPrimary: "#1A2744",
+    textMuted: "#5A6B88",
+  },
+  fonts: { display: "Fredoka", body: "Outfit" },
 };
 
 /** Canva Blue Modern Birthday — sleek cobalt celebration (dark cover, light body) */
@@ -825,6 +839,28 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs: "Bloques, juguetes, pastel y risas — ¡únete a nuestra fiesta!",
   },
   {
+    id: "rojo-celeste",
+    name: "Rojo & celeste",
+    nameEs: "Rojo y celeste",
+    description:
+      "Illustrated kids birthday in red, sky blue, and sunny yellow — playful vertical party invites.",
+    descriptionEs:
+      "Cumpleaños infantil ilustrado en rojo, celeste y amarillo — invites verticales llenos de juego.",
+    inspiredBy:
+      "Canva Invitación vertical cumpleaños infantil ilustrado rojo celeste y amarillo",
+    inspiredByEs:
+      "Canva Invitación vertical cumpleaños infantil ilustrado rojo celeste y amarillo",
+    categories: ["birthday", "party", "baby"],
+    layout: "splash",
+    theme: rojoCeleste,
+    heroImage:
+      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=1920&q=80&auto=format&fit=crop",
+    headline: "Let's Celebrate!",
+    headlineEs: "¡A celebrar!",
+    tagline: "Cake, balloons, and lots of giggles — come join the party!",
+    taglineEs: "Pastel, globos y muchas risas — ¡ven a la fiesta!",
+  },
+  {
     id: "blue-modern",
     name: "Blue modern",
     nameEs: "Azul moderno",
@@ -1010,6 +1046,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "watercolor-rose",
   "champagne-wedding",
   "toy-party",
+  "rojo-celeste",
   "quince-azul",
 ]);
 
