@@ -229,6 +229,7 @@ export type Dictionary = {
     arcadePlayer: string;
     quinceInvite: string;
     fiftyCelebrate: string;
+    collageInvite: string;
     date: string;
     time: string;
     venue: string;
@@ -605,6 +606,7 @@ const en: Dictionary = {
     arcadePlayer: "player one invites you",
     quinceInvite: "cordially invites you to her quinceañera",
     fiftyCelebrate: "is celebrating fifty fabulous years",
+    collageInvite: "birthday of",
     date: "Date",
     time: "Time",
     venue: "Venue",
@@ -994,6 +996,7 @@ const es: Dictionary = {
     arcadePlayer: "el jugador uno te invita",
     quinceInvite: "te invita cordialmente a su fiesta de quince años",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
+    collageInvite: "cumpleaños de",
     date: "Fecha",
     time: "Hora",
     venue: "Lugar",

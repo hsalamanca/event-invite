@@ -200,7 +200,10 @@ export default function CreateEventWizard({
                                             : tpl.theme.fonts.display ===
                                                 "Press Start 2P"
                                               ? "press-start"
-                                              : "cormorant"
+                                              : tpl.theme.fonts.display ===
+                                                  "Anton"
+                                                ? "anton"
+                                                : "cormorant"
                         })`,
                       }}
                     >

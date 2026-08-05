@@ -119,6 +119,7 @@ const FONT_STACK: Record<string, string> = {
   Fredoka: "var(--font-fredoka), system-ui, sans-serif",
   "Baloo 2": "var(--font-baloo-2), system-ui, sans-serif",
   "Space Grotesk": "var(--font-space-grotesk), system-ui, sans-serif",
+  Anton: "var(--font-anton), Impact, system-ui, sans-serif",
   "Press Start 2P":
     "var(--font-press-start), 'Courier New', monospace",
 };
@@ -485,6 +486,7 @@ export default function InvitePage({
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
         splashInvite={ui.splashInvite}
+        collageInvite={ui.collageInvite}
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
@@ -2389,6 +2391,245 @@ export default function InvitePage({
           }
         }
 
+        :global(.invite-cover[data-layout="collage"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 20%,
+              color-mix(in srgb, var(--invite-accent) 28%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 18%,
+              color-mix(in srgb, var(--invite-accent-2) 12%, transparent),
+              transparent 40%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, var(--invite-bg) 40%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 72%,
+              var(--invite-bg) 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-grain) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.18;
+          background-image:
+            radial-gradient(#111 0.55px, transparent 0.6px),
+            radial-gradient(#111 0.45px, transparent 0.5px);
+          background-size: 7px 7px, 11px 11px;
+          background-position: 0 0, 4px 6px;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card) {
+          position: relative;
+          overflow: visible;
+          border: 0;
+          border-radius: 0.35rem;
+          background:
+            linear-gradient(
+              180deg,
+              color-mix(in srgb, var(--invite-surface) 92%, #fff) 0%,
+              var(--invite-surface) 100%
+            );
+          box-shadow:
+            0 1px 0 color-mix(in srgb, #fff 80%, transparent) inset,
+            0 24px 50px color-mix(in srgb, #111 12%, transparent);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker) {
+          position: absolute;
+          z-index: 3;
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--banner) {
+          top: 0.7rem;
+          left: 0.85rem;
+          width: 5.5rem;
+          transform: rotate(-8deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--cake) {
+          top: 0.55rem;
+          right: 0.7rem;
+          width: 3.2rem;
+          transform: rotate(8deg);
+          animation: collageFloat 3.4s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--star) {
+          top: 42%;
+          right: 1rem;
+          color: var(--invite-accent);
+          font-size: 1.35rem;
+          transform: rotate(12deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot) {
+          width: 0.55rem;
+          height: 0.55rem;
+          border-radius: 999px;
+          background: var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-a) {
+          top: 28%;
+          left: 1.1rem;
+          background: #60a5fa;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-b) {
+          top: 58%;
+          right: 1.4rem;
+          background: #fbbf24;
+          width: 0.4rem;
+          height: 0.4rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .collage-sticker--dot-c) {
+          bottom: 22%;
+          left: 18%;
+          background: var(--invite-accent-2);
+          width: 0.35rem;
+          height: 0.35rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-body) {
+          padding-top: clamp(2.4rem, 6vw, 3.2rem);
+          text-align: center;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-ornament--collage) {
+          display: none;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-host) {
+          display: none;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-invite-line) {
+          font-family: var(--font-great-vibes), cursive;
+          font-size: clamp(1.45rem, 4vw, 1.85rem);
+          letter-spacing: 0.01em;
+          text-transform: none;
+          color: var(--invite-muted);
+          margin-bottom: 0.15rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-headline) {
+          font-family: var(--font-display);
+          font-weight: 400;
+          font-size: clamp(3.2rem, 12vw, 4.6rem);
+          line-height: 0.95;
+          letter-spacing: 0.01em;
+          text-transform: uppercase;
+          color: var(--invite-text);
+          margin: 0.15rem 0 1rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-when) {
+          margin: 0 auto;
+          max-width: 18rem;
+          padding: 0.85rem 1rem;
+          border: 1.5px solid color-mix(in srgb, var(--invite-text) 75%, transparent);
+          border-radius: 0.15rem;
+          background: transparent;
+          display: grid;
+          gap: 0.35rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-date) {
+          font-family: var(--font-body);
+          font-weight: 700;
+          font-size: 0.82rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-time),
+        :global(.invite-cover[data-layout="collage"] .invite-card-venue),
+        :global(.invite-cover[data-layout="collage"] .invite-card-address) {
+          font-family: var(--font-body);
+          font-size: 0.78rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--invite-text);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-photo--inset) {
+          margin: 1.35rem auto 0.35rem;
+          width: 7.5rem;
+          max-width: 42%;
+          aspect-ratio: 1;
+          border-radius: 999px;
+          border: 3px solid #111;
+          box-shadow:
+            6px 6px 0 color-mix(in srgb, var(--invite-accent) 70%, transparent),
+            0 12px 24px color-mix(in srgb, #111 12%, transparent);
+          overflow: hidden;
+          transform: rotate(-4deg);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-photo--inset img) {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-card-tagline) {
+          font-family: var(--font-great-vibes), cursive;
+          font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+          color: var(--invite-accent);
+          margin-top: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .btn-primary) {
+          border-radius: 999px;
+          background: var(--invite-text);
+          color: #fff;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          font-size: 0.8rem;
+          box-shadow: 3px 3px 0 var(--invite-accent);
+        }
+
+        :global(.invite-cover[data-layout="collage"] .btn-ghost) {
+          border-radius: 999px;
+          border: 1.5px solid var(--invite-text);
+          background: transparent;
+          color: var(--invite-text);
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          font-size: 0.78rem;
+        }
+
+        :global(.invite-cover[data-layout="collage"] .invite-text-link) {
+          color: var(--invite-muted);
+        }
+
+        @keyframes collageFloat {
+          0%,
+          100% {
+            transform: rotate(8deg) translateY(0);
+          }
+          50% {
+            transform: rotate(12deg) translateY(-4px);
+          }
+        }
+
+        /* Candy bubble variant accents via pink-forward theme */
+        :global(.invite-cover[data-layout="collage"] .btn-primary:hover) {
+          background: var(--invite-accent);
+          color: #fff;
+        }
+
         :global(.invite-cover[data-layout="azure"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
@@ -4217,6 +4458,8 @@ export default function InvitePage({
           :global(.toy-sticker),
           :global(.splash-blobs),
           :global(.splash-sticker),
+          :global(.collage-grain),
+          :global(.collage-sticker--cake),
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),

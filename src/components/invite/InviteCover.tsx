@@ -24,6 +24,7 @@ type InviteCoverProps = {
   quinceInvite?: string;
   fiftyCelebrate?: string;
   splashInvite?: string;
+  collageInvite?: string;
   rsvpLabel: string;
   detailsLabel: string;
   leaveNoteLabel?: string;
@@ -248,11 +249,75 @@ function SplashStickers() {
   );
 }
 
+function CollageStickers() {
+  return (
+    <>
+      <svg
+        className="collage-sticker collage-sticker--banner"
+        viewBox="0 0 96 28"
+        aria-hidden
+      >
+        <path
+          d="M4 8h12l-2 8 2 8H4V8zm16 0h12l-2 8 2 8H20V8zm16 0h12l-2 8 2 8H36V8zm16 0h12l-2 8 2 8H52V8zm16 0h12l-2 8 2 8H68V8z"
+          fill="#F472B6"
+          stroke="#111"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <path d="M4 8h88" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+      <svg
+        className="collage-sticker collage-sticker--cake"
+        viewBox="0 0 56 56"
+        aria-hidden
+      >
+        <rect
+          x="12"
+          y="26"
+          width="32"
+          height="18"
+          rx="3"
+          fill="#F9A8D4"
+          stroke="#111"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M16 26c4-6 8-6 12 0s8 6 12 0"
+          fill="none"
+          stroke="#111"
+          strokeWidth="1.6"
+        />
+        <rect x="26" y="14" width="4" height="12" rx="1" fill="#111" />
+        <circle cx="28" cy="12" r="3" fill="#F472B6" stroke="#111" strokeWidth="1.4" />
+        <path
+          d="M22 42h20M18 36h28"
+          stroke="#111"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="collage-sticker collage-sticker--star" aria-hidden>
+        ✦
+      </span>
+      <span className="collage-sticker collage-sticker--dot collage-sticker--dot-a" aria-hidden />
+      <span className="collage-sticker collage-sticker--dot collage-sticker--dot-b" aria-hidden />
+      <span className="collage-sticker collage-sticker--dot collage-sticker--dot-c" aria-hidden />
+    </>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
       <div className="invite-ornament invite-ornament--comic" aria-hidden>
         <span className="comic-burst">POW!</span>
+      </div>
+    );
+  }
+  if (layout === "collage") {
+    return (
+      <div className="invite-ornament invite-ornament--collage" aria-hidden>
+        <span className="collage-rule" />
       </div>
     );
   }
@@ -461,6 +526,7 @@ export default function InviteCover({
   quinceInvite,
   fiftyCelebrate,
   splashInvite,
+  collageInvite,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -487,6 +553,7 @@ export default function InviteCover({
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
   const isSplash = layout === "splash";
+  const isCollage = layout === "collage";
   const isAzure = layout === "azure";
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
@@ -500,15 +567,17 @@ export default function InviteCover({
         ? toyPartyInvite || invitesYou
         : isSplash
           ? splashInvite || invitesYou
-          : isAzure
-            ? modernCelebrate || invitesYou
-            : isArcade
-              ? arcadePlayer || invitesYou
-              : isQuince
-                ? quinceInvite || invitesYou
-                : isFifty
-                  ? fiftyCelebrate || invitesYou
-                  : invitesYou;
+          : isCollage
+            ? collageInvite || invitesYou
+            : isAzure
+              ? modernCelebrate || invitesYou
+              : isArcade
+                ? arcadePlayer || invitesYou
+                : isQuince
+                  ? quinceInvite || invitesYou
+                  : isFifty
+                    ? fiftyCelebrate || invitesYou
+                    : invitesYou;
 
   return (
     <section
@@ -531,6 +600,7 @@ export default function InviteCover({
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
+      {isCollage ? <div className="collage-grain" aria-hidden /> : null}
       {isAzure || isQuince ? <div className="azure-glow" aria-hidden /> : null}
       {isFifty ? <div className="fifty-sparkle" aria-hidden /> : null}
       {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
@@ -550,6 +620,7 @@ export default function InviteCover({
 
           {isToybox ? <ToyStickers /> : null}
           {isSplash ? <SplashStickers /> : null}
+          {isCollage ? <CollageStickers /> : null}
           {isArcade ? <ArcadeStickers /> : null}
 
           {isAzure ? (

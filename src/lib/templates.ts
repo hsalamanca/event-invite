@@ -34,7 +34,8 @@ export type InviteLayout =
   | "arcade"
   | "quince"
   | "fifty"
-  | "splash";
+  | "splash"
+  | "collage";
 
 export type EventTemplate = {
   id: string;
@@ -260,6 +261,45 @@ const rojoCeleste: Theme = {
     accentSecondary: "#4FC3F7",
     textPrimary: "#1A2744",
     textMuted: "#5A6B88",
+  },
+  fonts: { display: "Fredoka", body: "Outfit" },
+};
+
+/** Canva modern collage — black, white & blush pink */
+const blushCollage: Theme = {
+  colors: {
+    background: "#F6F4F1",
+    surface: "#FFFBFA",
+    accentPrimary: "#F472B6",
+    accentSecondary: "#111111",
+    textPrimary: "#111111",
+    textMuted: "#6B6570",
+  },
+  fonts: { display: "Anton", body: "Outfit" },
+};
+
+/** Canva disco / silver balloon milestone party */
+const discoSilver: Theme = {
+  colors: {
+    background: "#F3F2F7",
+    surface: "#FFFFFF",
+    accentPrimary: "#111111",
+    accentSecondary: "#F472B6",
+    textPrimary: "#111111",
+    textMuted: "#6B6570",
+  },
+  fonts: { display: "Space Grotesk", body: "Outfit" },
+};
+
+/** Canva candy bubble / hot pink party collage */
+const candyBubble: Theme = {
+  colors: {
+    background: "#FFF0F7",
+    surface: "#FFFFFF",
+    accentPrimary: "#FF2D92",
+    accentSecondary: "#A855F7",
+    textPrimary: "#2A1030",
+    textMuted: "#7A5A72",
   },
   fonts: { display: "Fredoka", body: "Outfit" },
 };
@@ -861,6 +901,69 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs: "Pastel, globos y muchas risas — ¡ven a la fiesta!",
   },
   {
+    id: "blush-collage",
+    name: "Blush collage",
+    nameEs: "Collage blush",
+    description:
+      "Modern black, white & pink collage — script name energy, photo cutouts, and clean date blocks.",
+    descriptionEs:
+      "Collage moderno blanco, negro y rosa — tipografía script, recortes de foto y bloque de fecha limpio.",
+    inspiredBy:
+      "Canva Invitación Vertical cumpleaños moderno blanco negro y rosa",
+    inspiredByEs:
+      "Canva Invitación Vertical cumpleaños moderno blanco negro y rosa",
+    categories: ["birthday", "party"],
+    layout: "collage",
+    theme: blushCollage,
+    heroImage:
+      "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=1920&q=80&auto=format&fit=crop",
+    headline: "Sandra",
+    headlineEs: "Sandra",
+    tagline: "Don't miss it — cake, dancing, and a night to remember!",
+    taglineEs: "¡No faltes! Pastel, baile y una noche para recordar.",
+  },
+  {
+    id: "disco-silver",
+    name: "Disco silver",
+    nameEs: "Disco plateado",
+    description:
+      "Mirrorball glam with silver balloon vibes — milestone birthdays and late-night parties.",
+    descriptionEs:
+      "Glam de bola disco y globos plateados — cumpleaños hito y fiestas de noche.",
+    inspiredBy: "Canva modern collage birthday with silver number balloons",
+    inspiredByEs:
+      "Canva collage moderno de cumpleaños con globos plateados de números",
+    categories: ["birthday", "party", "dinner"],
+    layout: "collage",
+    theme: discoSilver,
+    heroImage:
+      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80&auto=format&fit=crop",
+    headline: "Twenty",
+    headlineEs: "Veinte",
+    tagline: "Lights up, music loud — come dance the night away!",
+    taglineEs: "Luces, música alta — ¡ven a bailar toda la noche!",
+  },
+  {
+    id: "candy-bubble",
+    name: "Candy bubble",
+    nameEs: "Burbuja candy",
+    description:
+      "Hot pink + purple bubble-letter energy — fun adult birthdays and girls’ night invites.",
+    descriptionEs:
+      "Rosa fuerte + tipografía burbuja — cumpleaños divertidos y nights out.",
+    inspiredBy: "Canva candy pink purple bubble birthday collage",
+    inspiredByEs: "Canva collage de cumpleaños rosa y violeta burbuja",
+    categories: ["birthday", "party"],
+    layout: "collage",
+    theme: candyBubble,
+    heroImage:
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1920&q=80&auto=format&fit=crop",
+    headline: "Party Time",
+    headlineEs: "Hora de fiesta",
+    tagline: "Confetti ready, cameras out — let's make it cute and loud!",
+    taglineEs: "Confeti listo, cámaras afuera — ¡vamos a hacerlo cute y fuerte!",
+  },
+  {
     id: "blue-modern",
     name: "Blue modern",
     nameEs: "Azul moderno",
@@ -1048,6 +1151,9 @@ const LATIN_TEMPLATE_IDS = new Set([
   "toy-party",
   "rojo-celeste",
   "quince-azul",
+  "blush-collage",
+  "disco-silver",
+  "candy-bubble",
 ]);
 
 export function defaultRsvpFields(

@@ -13,6 +13,7 @@ import {
   Baloo_2,
   Space_Grotesk,
   Press_Start_2P,
+  Anton,
 } from "next/font/google";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
@@ -109,6 +110,13 @@ const pressStart = Press_Start_2P({
   display: "swap",
 });
 
+const anton = Anton({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-anton",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const meta = getDictionary(locale).meta;
@@ -135,7 +143,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} ${fredoka.variable} ${baloo2.variable} ${spaceGrotesk.variable} ${pressStart.variable} antialiased`}
+        className={`${cormorant.variable} ${sourceSans.variable} ${fraunces.variable} ${dmSans.variable} ${playfair.variable} ${outfit.variable} ${lora.variable} ${greatVibes.variable} ${bangers.variable} ${fredoka.variable} ${baloo2.variable} ${spaceGrotesk.variable} ${pressStart.variable} ${anton.variable} antialiased`}
       >
         {children}
       </body>
