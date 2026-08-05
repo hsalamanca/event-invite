@@ -5,7 +5,7 @@ import {
   addManualGuest,
   deleteManualGuest,
   listManualGuests,
-  updateManualGuestStatus,
+  updateManualGuest,
 } from "@/lib/guest-extras";
 import { deleteRsvpById, listRsvpsByEventId } from "@/lib/rsvp-store";
 import type { ManualGuest } from "@/lib/types";
@@ -84,12 +84,24 @@ export async function PATCH(request: Request) {
     slug?: string;
     id?: string;
     status?: ManualGuest["status"];
+    name?: string;
+    email?: string;
   };
   const slug = body.slug?.trim();
   const id = body.id?.trim();
-  if (!slug || !id || !body.status) {
+  if (!slug || !id) {
     return NextResponse.json(
-      { error: "slug, id, and status required" },
+      { error: "slug and id required" },
+      { status: 400 },
+    );
+  }
+  if (
+    body.status == null &&
+    body.name == null &&
+    body.email == null
+  ) {
+    return NextResponse.json(
+      { error: "Provide name, email, and/or status to update" },
       { status: 400 },
     );
   }
@@ -97,7 +109,11 @@ export async function PATCH(request: Request) {
   const gate = await assertOwner(slug);
   if ("error" in gate && gate.error) return gate.error;
 
-  const guest = await updateManualGuestStatus(id, body.status);
+  const guest = await updateManualGuest(id, {
+    status: body.status,
+    name: body.name,
+    email: body.email,
+  });
   if (!guest) {
     return NextResponse.json({ error: "Guest not found." }, { status: 404 });
   }

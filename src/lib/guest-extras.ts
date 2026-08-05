@@ -91,13 +91,30 @@ export async function updateManualGuestStatus(
   guestId: string,
   status: ManualGuest["status"],
 ): Promise<ManualGuest | undefined> {
+  return updateManualGuest(guestId, { status });
+}
+
+export async function updateManualGuest(
+  guestId: string,
+  partial: Partial<Pick<ManualGuest, "name" | "email" | "status">>,
+): Promise<ManualGuest | undefined> {
   const reg = await readJsonBlob<GuestRegistry>(GUESTS_PATH, {
     version: 1,
     guests: [],
   });
   const idx = reg.guests.findIndex((g) => g.id === guestId);
   if (idx < 0) return undefined;
-  reg.guests[idx] = { ...reg.guests[idx]!, status };
+  const current = reg.guests[idx]!;
+  reg.guests[idx] = {
+    ...current,
+    name:
+      partial.name != null ? String(partial.name).trim() || current.name : current.name,
+    email:
+      partial.email != null
+        ? String(partial.email).trim().toLowerCase()
+        : current.email,
+    status: partial.status ?? current.status,
+  };
   await writeJsonBlob(GUESTS_PATH, reg);
   return reg.guests[idx];
 }

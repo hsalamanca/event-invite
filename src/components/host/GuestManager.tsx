@@ -48,6 +48,9 @@ export default function GuestManager({
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -144,6 +147,56 @@ export default function GuestManager({
       setGuests((list) =>
         list.map((g) => (g.id === data.guest!.id ? data.guest! : g)),
       );
+    }
+  }
+
+  function startEditGuest(g: ManualGuest) {
+    setEditingId(g.id);
+    setEditName(g.name);
+    setEditEmail(g.email);
+    setError(null);
+  }
+
+  function cancelEditGuest() {
+    setEditingId(null);
+    setEditName("");
+    setEditEmail("");
+  }
+
+  async function saveEditGuest(id: string) {
+    const name = editName.trim();
+    if (!name) {
+      setError("Name is required");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/guests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug,
+          id,
+          name,
+          email: editEmail.trim(),
+        }),
+      });
+      const data = (await res.json()) as { error?: string; guest?: ManualGuest };
+      if (!res.ok || !data.guest) {
+        setError(data.error || t.error);
+        return;
+      }
+      setGuests((list) =>
+        list.map((g) => (g.id === data.guest!.id ? data.guest! : g)),
+      );
+      cancelEditGuest();
+      setInfo("Guest updated.");
+      setTimeout(() => setInfo(null), 2000);
+    } catch {
+      setError(t.error);
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -444,11 +497,35 @@ export default function GuestManager({
             })}
             {guests.map((g) => (
               <tr key={g.id} className="border-b border-white/5">
-                <td className="py-2.5 pr-3">{g.name}</td>
-                <td className="py-2.5 pr-3 text-[var(--mist)]">{g.email}</td>
+                <td className="py-2.5 pr-3">
+                  {editingId === g.id ? (
+                    <input
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full min-w-[8rem] rounded border border-white/15 bg-[var(--ink)] px-2 py-1 text-sm"
+                      aria-label="Guest name"
+                    />
+                  ) : (
+                    g.name
+                  )}
+                </td>
+                <td className="py-2.5 pr-3 text-[var(--mist)]">
+                  {editingId === g.id ? (
+                    <input
+                      type="email"
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="w-full min-w-[10rem] rounded border border-white/15 bg-[var(--ink)] px-2 py-1 text-sm"
+                      aria-label="Guest email"
+                    />
+                  ) : (
+                    g.email || "—"
+                  )}
+                </td>
                 <td className="py-2.5 pr-3">
                   <select
                     value={g.status}
+                    disabled={editingId === g.id}
                     onChange={(e) =>
                       void setStatus(
                         g.id,
@@ -466,28 +543,60 @@ export default function GuestManager({
                 </td>
                 <td className="py-2.5 pr-3">1</td>
                 <td className="py-2.5 text-[var(--mist)]">
-                  <button
-                    type="button"
-                    className="text-[var(--champagne)] underline-offset-2 hover:underline"
-                    onClick={() => {
-                      const url = `${window.location.origin}/e/${slug}?e=${encodeURIComponent(g.email)}`;
-                      void navigator.clipboard.writeText(url).then(
-                        () => {
-                          setInfo(`Copied personal link for ${g.email}`);
-                          setTimeout(() => setInfo(null), 2500);
-                        },
-                        () => setError("Could not copy link"),
-                      );
-                    }}
-                  >
-                    Copy personal link
-                  </button>
+                  {editingId === g.id ? (
+                    <span className="inline-flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={busy}
+                        className="text-[var(--champagne)] underline-offset-2 hover:underline disabled:opacity-60"
+                        onClick={() => void saveEditGuest(g.id)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        className="underline-offset-2 hover:underline disabled:opacity-60"
+                        onClick={cancelEditGuest}
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  ) : (
+                    <span className="inline-flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className="text-[var(--champagne)] underline-offset-2 hover:underline"
+                        onClick={() => startEditGuest(g)}
+                      >
+                        Edit
+                      </button>
+                      {g.email ? (
+                        <button
+                          type="button"
+                          className="text-[var(--champagne)] underline-offset-2 hover:underline"
+                          onClick={() => {
+                            const url = `${window.location.origin}/e/${slug}?e=${encodeURIComponent(g.email)}`;
+                            void navigator.clipboard.writeText(url).then(
+                              () => {
+                                setInfo(`Copied personal link for ${g.email}`);
+                                setTimeout(() => setInfo(null), 2500);
+                              },
+                              () => setError("Could not copy link"),
+                            );
+                          }}
+                        >
+                          Copy link
+                        </button>
+                      ) : null}
+                    </span>
+                  )}
                 </td>
                 <td className="py-2.5 text-right">
                   <button
                     type="button"
                     className="rounded border border-white/15 px-2.5 py-1 text-xs text-[var(--mist)] hover:border-red-400/40 hover:text-red-200 disabled:opacity-60"
-                    disabled={removingId === g.id}
+                    disabled={removingId === g.id || editingId === g.id}
                     onClick={() => void removeEntry("manual", g.id, g.name)}
                   >
                     {removingId === g.id ? "…" : "Remove"}
