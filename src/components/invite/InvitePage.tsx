@@ -2470,7 +2470,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="collage"] .invite-card) {
           position: relative;
           overflow: visible;
-          width: min(100%, 26.5rem);
+          width: min(100%, 30rem);
           margin-inline: auto;
           border: 0;
           border-radius: 0.2rem;
