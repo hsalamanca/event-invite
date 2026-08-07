@@ -36,6 +36,8 @@ type InviteCoverProps = {
   calendarLabel: string;
   calendarHref: string;
   copyLabel: string;
+  postcardLabel?: string;
+  postcardHref?: string;
   isPast?: boolean;
   onCopyLink: () => void;
   parallaxY?: number;
@@ -793,6 +795,8 @@ export default function InviteCover({
   calendarLabel,
   calendarHref,
   copyLabel,
+  postcardLabel,
+  postcardHref,
   isPast = false,
   onCopyLink,
   parallaxY = 0,
@@ -1010,6 +1014,16 @@ export default function InviteCover({
               >
                 {copyLabel}
               </button>
+              {postcardHref && postcardLabel ? (
+                <a
+                  className="invite-text-link"
+                  href={postcardHref}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {postcardLabel}
+                </a>
+              ) : null}
             </div>
           </div>
         </article>

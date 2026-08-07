@@ -311,6 +311,12 @@ export default function HostActions({
           Print save-the-date
         </a>
         <a
+          href={`/e/${slug}/print/postcard`}
+          className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
+        >
+          Print / download postcard
+        </a>
+        <a
           href={`/e/${slug}/print/menu`}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >

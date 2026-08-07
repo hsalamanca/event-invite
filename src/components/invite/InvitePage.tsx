@@ -526,6 +526,8 @@ export default function InvitePage({
         calendarLabel={ui.addToCalendar}
         calendarHref={`/api/events/${event.slug}/ics`}
         copyLabel={copied ? ui.copied : ui.copyLink}
+        postcardLabel={ui.downloadPostcard}
+        postcardHref={`/e/${event.slug}/print/postcard`}
         isPast={isPast}
         onCopyLink={() => void copyInviteLink()}
         parallaxY={parallaxY}

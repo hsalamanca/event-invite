@@ -259,6 +259,7 @@ export type Dictionary = {
     share: string;
     copyLink: string;
     copied: string;
+    downloadPostcard: string;
     guestbook: string;
     guestbookPrompt: string;
     guestbookName: string;
@@ -648,6 +649,7 @@ const en: Dictionary = {
     share: "Share",
     copyLink: "Copy link",
     copied: "Link copied",
+    downloadPostcard: "Download postcard",
     guestbook: "Guestbook",
     guestbookPrompt: "Leave a note for the host",
     guestbookName: "Your name",
@@ -1051,6 +1053,7 @@ const es: Dictionary = {
     share: "Compartir",
     copyLink: "Copiar enlace",
     copied: "Enlace copiado",
+    downloadPostcard: "Descargar postal",
     guestbook: "Libro de visitas",
     guestbookPrompt: "Deja una nota para el anfitrión",
     guestbookName: "Tu nombre",
