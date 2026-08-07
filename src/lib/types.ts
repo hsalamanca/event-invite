@@ -154,6 +154,8 @@ export type EventRecord = {
   cashFundClicks?: number;
   /** Hide Ownvite branding on invite + guest emails (Agency / white-label) */
   whiteLabel?: boolean;
+  /** Agency client workspace this event belongs to */
+  clientId?: string | null;
   /** Unlocked seasonal pack ids */
   unlockedPackIds?: string[];
   createdAt: string;
@@ -272,4 +274,62 @@ export type OutboundMessage = {
   status: "queued" | "sent" | "failed" | "preview";
   createdAt: string;
   error?: string;
+  /** Blast campaign this message belongs to */
+  blastId?: string;
+  channel?: "email" | "sms" | "whatsapp";
+  /** Opaque token for open/click tracking pixels */
+  trackingToken?: string;
+  openedAt?: string | null;
+  clickedAt?: string | null;
+  scheduledFor?: string | null;
+};
+
+/** Account-level reusable guest CRM contact */
+export type GuestBookContact = {
+  id: string;
+  ownerId: string;
+  name: string;
+  email: string;
+  phone?: string;
+  dietary?: string;
+  householdName?: string;
+  notes?: string;
+  tags?: string[];
+  history: GuestBookHistoryEntry[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GuestBookHistoryEntry = {
+  eventId: string;
+  eventTitle: string;
+  eventSlug?: string;
+  attendance?: string;
+  dietary?: string;
+  mealChoice?: string;
+  guestCount?: number;
+  at: string;
+};
+
+/** Agency planner client workspace */
+export type AgencyClient = {
+  id: string;
+  agencyOwnerId: string;
+  name: string;
+  email: string;
+  notes?: string;
+  createdAt: string;
+};
+
+/** Invite / reminder blast batch for delivery inbox */
+export type BlastCampaign = {
+  id: string;
+  eventId: string;
+  type: OutboundMessage["type"];
+  channel: "email" | "sms" | "whatsapp";
+  subject: string;
+  status: "sent" | "scheduled" | "sending";
+  scheduledFor?: string | null;
+  recipientCount: number;
+  createdAt: string;
 };

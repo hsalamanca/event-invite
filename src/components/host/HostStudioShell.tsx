@@ -4,7 +4,9 @@ import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { AlbumModeration } from "@/components/host/AlbumModeration";
 import { CheckInPanel } from "@/components/host/CheckInPanel";
+import { DeliveryInbox } from "@/components/host/DeliveryInbox";
 import EventCustomizer from "@/components/host/EventCustomizer";
+import { GuestBookPanel } from "@/components/host/GuestBookPanel";
 import GuestManager from "@/components/host/GuestManager";
 import { GuestbookModeration } from "@/components/host/GuestbookModeration";
 import HostActions from "@/components/host/HostActions";
@@ -92,6 +94,8 @@ export default function HostStudioShell({
           enabled={Boolean(event.albumEnabled)}
         />
         <OpenTracking slug={event.slug} />
+        <DeliveryInbox slug={event.slug} />
+        <GuestBookPanel slug={event.slug} />
         <GuestManager
           slug={event.slug}
           locale={locale}

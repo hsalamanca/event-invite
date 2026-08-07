@@ -147,7 +147,7 @@ export default function HostActions({
           data.message ? ` ${data.message}` : ""
         }${data.note ? ` ${data.note}` : ""}`,
       );
-      if (channel !== "email") router.refresh();
+      router.refresh();
     } catch {
       setError(t.error);
     } finally {
@@ -347,6 +347,14 @@ export default function HostActions({
         >
           {t.calendar}
         </a>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void remind("invite", "email")}
+          className="rounded-md border border-[var(--champagne)]/40 bg-[var(--champagne)]/10 px-3 py-1.5 text-[var(--champagne)] hover:bg-[var(--champagne)]/20 disabled:opacity-60"
+        >
+          Send invite emails
+        </button>
         <button
           type="button"
           disabled={busy}

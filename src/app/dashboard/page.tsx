@@ -6,6 +6,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { isAdminEmail } from "@/lib/admin";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
+import { isAgencyActive } from "@/lib/agency-clients";
 import {
   listEventsByCoHostEmail,
   listEventsByOwner,
@@ -18,6 +19,7 @@ import {
   paperGrainStyle,
   paperThemeVars,
 } from "@/lib/marketing-theme";
+import { findUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard · Ownvite" };
@@ -61,6 +63,8 @@ export default async function DashboardPage() {
   const ownedStats = await withStats(owned);
   const coHostStats = await withStats(coHosted);
   const isAdmin = isAdminEmail(session.user.email);
+  const user = await findUserById(session.user.id);
+  const agencyActive = user ? isAgencyActive(user) : false;
 
   return (
     <main className="relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
@@ -137,13 +141,39 @@ export default async function DashboardPage() {
               {t.support}
             </p>
           </div>
-          <Link
-            href="/events/new"
-            className="rounded-md px-4 py-2.5 text-sm font-semibold text-white"
-            style={{ background: "var(--landing-cedar)" }}
-          >
-            {t.create}
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/guests"
+              className="rounded-md border px-4 py-2.5 text-sm font-semibold"
+              style={{
+                borderColor: "var(--landing-line)",
+                color: "var(--landing-ink)",
+              }}
+            >
+              Guest book
+            </Link>
+            <Link
+              href="/agency"
+              className="rounded-md border px-4 py-2.5 text-sm font-semibold"
+              style={{
+                borderColor: agencyActive
+                  ? "var(--landing-cedar)"
+                  : "var(--landing-line)",
+                color: agencyActive
+                  ? "var(--landing-cedar)"
+                  : "var(--landing-ink)",
+              }}
+            >
+              {agencyActive ? "Agency" : "Agency plan"}
+            </Link>
+            <Link
+              href="/events/new"
+              className="rounded-md px-4 py-2.5 text-sm font-semibold text-white"
+              style={{ background: "var(--landing-cedar)" }}
+            >
+              {t.create}
+            </Link>
+          </div>
         </div>
 
         {ownedStats.length === 0 && coHostStats.length === 0 ? (
