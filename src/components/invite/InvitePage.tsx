@@ -530,11 +530,13 @@ export default function InvitePage({
                     inviteDownloadFileBase(event.slug, event.title),
                   );
                 } catch (err) {
-                  setJpegError(
-                    err instanceof Error
+                  const message =
+                    err instanceof Error && err.message
                       ? err.message
-                      : "Could not create JPEG",
-                  );
+                      : typeof err === "string" && err.trim()
+                        ? err
+                        : "Could not create JPEG";
+                  setJpegError(message);
                 } finally {
                   setJpegBusy(false);
                 }
