@@ -4,14 +4,18 @@ import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { AlbumModeration } from "@/components/host/AlbumModeration";
 import { CheckInPanel } from "@/components/host/CheckInPanel";
+import { AnalyticsFunnelPanel } from "@/components/host/AnalyticsFunnelPanel";
+import { CollabPresenceBanner } from "@/components/host/CollabPresenceBanner";
 import { DeliveryInbox } from "@/components/host/DeliveryInbox";
 import EventCustomizer from "@/components/host/EventCustomizer";
+import { GiftsThankYouPanel } from "@/components/host/GiftsThankYouPanel";
 import { GuestBookPanel } from "@/components/host/GuestBookPanel";
 import GuestManager from "@/components/host/GuestManager";
 import { GuestbookModeration } from "@/components/host/GuestbookModeration";
 import HostActions from "@/components/host/HostActions";
 import { MealDashboard } from "@/components/host/MealDashboard";
 import { OpenTracking } from "@/components/host/OpenTracking";
+import { PrivacyCompliancePanel } from "@/components/host/PrivacyCompliancePanel";
 import { SeatingChart } from "@/components/host/SeatingChart";
 import { WaitlistPanel } from "@/components/host/WaitlistPanel";
 import type { Locale } from "@/lib/i18n/config";
@@ -82,6 +86,8 @@ export default function HostStudioShell({
       </header>
       <EventCustomizer event={event} locale={locale} />
       <div className="mx-auto max-w-[1600px] space-y-10 px-4 pb-24 sm:px-6 sm:pb-16">
+        <CollabPresenceBanner slug={event.slug} />
+        <AnalyticsFunnelPanel slug={event.slug} />
         <MealDashboard
           rsvps={rsvps}
           questions={event.rsvpFields.customQuestions ?? []}
@@ -96,6 +102,7 @@ export default function HostStudioShell({
         <OpenTracking slug={event.slug} />
         <DeliveryInbox slug={event.slug} />
         <GuestBookPanel slug={event.slug} />
+        <GiftsThankYouPanel slug={event.slug} />
         <GuestManager
           slug={event.slug}
           locale={locale}
@@ -104,6 +111,7 @@ export default function HostStudioShell({
         />
         <SeatingChart event={event} rsvps={rsvps} />
         {event.checkInEnabled ? <CheckInPanel slug={event.slug} /> : null}
+        <PrivacyCompliancePanel slug={event.slug} />
         <Suspense fallback={null}>
           <HostActions
             slug={event.slug}

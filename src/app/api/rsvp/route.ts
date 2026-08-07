@@ -90,6 +90,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (event.rsvpConsentRequired && data.consent !== true) {
+    return NextResponse.json(
+      { error: "Consent is required to submit this RSVP" },
+      { status: 400 },
+    );
+  }
+
   if (event.rsvpFields.deadline) {
     const today = new Date().toISOString().slice(0, 10);
     if (today > event.rsvpFields.deadline) {

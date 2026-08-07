@@ -230,6 +230,14 @@ export default function InvitePage({
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
   const [jpegBusy, setJpegBusy] = useState(false);
   const [jpegError, setJpegError] = useState<string | null>(null);
+  const [rsvpConsent, setRsvpConsent] = useState(false);
+  const [pledgeName, setPledgeName] = useState("");
+  const [pledgeEmail, setPledgeEmail] = useState("");
+  const [pledgeAmount, setPledgeAmount] = useState("");
+  const [pledgeNote, setPledgeNote] = useState("");
+  const [pledgeBusy, setPledgeBusy] = useState(false);
+  const [pledgeDone, setPledgeDone] = useState(false);
+  const [pledgeError, setPledgeError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -427,6 +435,12 @@ export default function InvitePage({
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    if (event.rsvpConsentRequired && !rsvpConsent) {
+      setError(
+        "Please agree to receive event updates before submitting your RSVP.",
+      );
+      return;
+    }
     setSubmitting(true);
 
     const payload = {
@@ -442,6 +456,7 @@ export default function InvitePage({
       note: note.trim(),
       answers,
       mealChoice: mealChoice || undefined,
+      consent: event.rsvpConsentRequired ? true : undefined,
     };
 
     try {
@@ -582,6 +597,8 @@ export default function InvitePage({
         venue={event.venue}
         address={event.address}
         heroImage={event.heroImage}
+        heroVideoUrl={event.heroVideoUrl}
+        motionKit={event.motionKit}
         invitesYou={ui.invitesYou}
         comicPresents={ui.comicPresents}
         festiveParty={ui.festiveParty}
@@ -675,7 +692,7 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      {event.registryUrl || event.cashFundUrl ? (
+      {event.registryUrl || event.cashFundUrl || event.cashFundGoal ? (
         <section id="registry" className="invite-section">
           <h2 className="invite-section-title">
             {event.registryLabel ||
@@ -683,6 +700,36 @@ export default function InvitePage({
               ui.registry}
           </h2>
           <p className="invite-prompt">{ui.registryPrompt}</p>
+          {event.cashFundGoal ? (
+            <div style={{ marginBottom: "1rem", maxWidth: "28rem" }}>
+              <p className="invite-prompt" style={{ marginBottom: "0.35rem" }}>
+                Cash fund · $
+                {Math.round(
+                  (event.cashFundRaised ?? 0),
+                ).toLocaleString()}{" "}
+                of ${Math.round(event.cashFundGoal).toLocaleString()}
+              </p>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "color-mix(in srgb, var(--invite-muted) 25%, transparent)",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${Math.min(
+                      100,
+                      ((event.cashFundRaised ?? 0) / event.cashFundGoal) * 100,
+                    )}%`,
+                    background: "var(--invite-accent)",
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
           <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
             {event.registryUrl ? (
               <a
@@ -707,6 +754,138 @@ export default function InvitePage({
               </a>
             ) : null}
           </p>
+          {event.cashFundUrl || event.cashFundGoal ? (
+            <form
+              className="rsvp-form"
+              style={{ marginTop: "1.25rem" }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void (async () => {
+                  setPledgeBusy(true);
+                  setPledgeError(null);
+                  try {
+                    const res = await fetch(
+                      `/api/events/${encodeURIComponent(event.slug)}/gifts`,
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          action: "pledge",
+                          name: pledgeName || name,
+                          email: pledgeEmail || email,
+                          kind: "cash",
+                          amount: Number(pledgeAmount) || undefined,
+                          note: pledgeNote,
+                        }),
+                      },
+                    );
+                    const data = (await res.json()) as { error?: string };
+                    if (!res.ok) throw new Error(data.error || "Could not save");
+                    setPledgeDone(true);
+                  } catch (err) {
+                    setPledgeError(
+                      err instanceof Error ? err.message : "Could not save",
+                    );
+                  } finally {
+                    setPledgeBusy(false);
+                  }
+                })();
+              }}
+            >
+              <p className="invite-prompt">Tell the hosts you contributed</p>
+              {pledgeDone ? (
+                <p className="rsvp-success-sub">Thank you — we noted your gift.</p>
+              ) : (
+                <>
+                  <label className="rsvp-field">
+                    <span>Name</span>
+                    <input
+                      required
+                      value={pledgeName}
+                      onChange={(e) => setPledgeName(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Email</span>
+                    <input
+                      required
+                      type="email"
+                      value={pledgeEmail}
+                      onChange={(e) => setPledgeEmail(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Amount (optional)</span>
+                    <input
+                      type="number"
+                      min={0}
+                      step="1"
+                      value={pledgeAmount}
+                      onChange={(e) => setPledgeAmount(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Note</span>
+                    <input
+                      value={pledgeNote}
+                      onChange={(e) => setPledgeNote(e.target.value)}
+                    />
+                  </label>
+                  {pledgeError ? (
+                    <p className="rsvp-error" role="alert">
+                      {pledgeError}
+                    </p>
+                  ) : null}
+                  <button
+                    type="submit"
+                    className="btn-ghost"
+                    disabled={pledgeBusy}
+                  >
+                    {pledgeBusy ? "Saving…" : "Log my gift"}
+                  </button>
+                </>
+              )}
+            </form>
+          ) : null}
+        </section>
+      ) : null}
+
+      {success && event.printAffiliateEnabled !== false ? (
+        <section className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">Match your stationery</h2>
+          <p className="invite-prompt">
+            Print save-the-dates or day-of cards that match this invite.
+          </p>
+          <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+            <a
+              className="btn-primary"
+              href={`https://www.minted.com/search?phrase=${encodeURIComponent(event.title)}&utm_source=ownvite&utm_medium=affiliate`}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+            >
+              Browse Minted
+            </a>
+            <a
+              className="btn-ghost"
+              href={`/e/${event.slug}/print/postcard`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Download JPEG postcard
+            </a>
+          </p>
+        </section>
+      ) : null}
+
+      {event.guestSeatingEnabled ? (
+        <section className="invite-section">
+          <h2 className="invite-section-title">Find your table</h2>
+          <p className="invite-prompt">
+            Look up your seating assignment with the email you RSVP&apos;d with.
+          </p>
+          <a className="btn-primary" href={`/e/${event.slug}/table`}>
+            Open seating lookup
+          </a>
         </section>
       ) : null}
 
@@ -1163,6 +1342,21 @@ export default function InvitePage({
                 placeholder={ui.note}
               />
             </label>
+
+            {event.rsvpConsentRequired ? (
+              <label className="rsvp-check" style={{ marginTop: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  checked={rsvpConsent}
+                  onChange={(e) => setRsvpConsent(e.target.checked)}
+                  required
+                />
+                <span>
+                  I agree to receive event updates by email/SMS and understand I
+                  can reply STOP to opt out of texts.
+                </span>
+              </label>
+            ) : null}
 
             {error && (
               <p className="rsvp-error" role="alert">
@@ -4962,6 +5156,37 @@ export default function InvitePage({
             break-inside: avoid;
             page-break-inside: avoid;
           }
+        }
+
+        .invite-cover[data-motion="float"] :global(.invite-card) {
+          animation: invite-float 6s ease-in-out infinite;
+        }
+        .invite-cover[data-motion="pulse"] :global(.invite-card) {
+          animation: invite-pulse 3.2s ease-in-out infinite;
+        }
+        .invite-motion-sparkle {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          background-image:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.55) 0 1px, transparent 2px),
+            radial-gradient(circle at 70% 20%, rgba(255,255,255,0.4) 0 1px, transparent 2px),
+            radial-gradient(circle at 40% 75%, rgba(255,255,255,0.35) 0 1px, transparent 2px),
+            radial-gradient(circle at 85% 60%, rgba(255,255,255,0.45) 0 1px, transparent 2px);
+          animation: invite-sparkle 4s linear infinite;
+          opacity: 0.7;
+        }
+        @keyframes invite-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes invite-pulse {
+          0%, 100% { box-shadow: 0 24px 60px rgba(0,0,0,0.12); }
+          50% { box-shadow: 0 28px 70px rgba(0,0,0,0.2); }
+        }
+        @keyframes invite-sparkle {
+          from { transform: translateY(0); opacity: 0.55; }
+          to { transform: translateY(-12px); opacity: 0.85; }
         }
       `}</style>
     </div>

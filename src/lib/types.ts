@@ -96,6 +96,10 @@ export type EventRecord = {
   address: string;
   theme: Theme;
   heroImage: string;
+  /** Optional looping hero video (mp4/webm URL); falls back to heroImage */
+  heroVideoUrl?: string | null;
+  /** Cover motion accent kit */
+  motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
   /** Collage templates: 1–2 digit age/milestone for number balloons */
   balloonDigits?: string | null;
   customDomain: string | null;
@@ -149,9 +153,21 @@ export type EventRecord = {
   /** Cash fund / Venmo / Zelle style link */
   cashFundUrl?: string | null;
   cashFundLabel?: string | null;
+  /** Optional cash fund goal / raised (host-reported or pledges) */
+  cashFundGoal?: number | null;
+  cashFundRaised?: number | null;
   /** Registry / cash-fund click counts */
   registryClicks?: number;
   cashFundClicks?: number;
+  /** Show print/stationery affiliate CTA after RSVP */
+  printAffiliateEnabled?: boolean;
+  /** Guests can look up their table on the invite */
+  guestSeatingEnabled?: boolean;
+  /** Require privacy/SMS consent checkbox on RSVP */
+  rsvpConsentRequired?: boolean;
+  /** Soft collab presence */
+  lastEditedBy?: string | null;
+  lastEditedAt?: string | null;
   /** Hide Ownvite branding on invite + guest emails (Agency / white-label) */
   whiteLabel?: boolean;
   /** Agency client workspace this event belongs to */
@@ -332,4 +348,46 @@ export type BlastCampaign = {
   scheduledFor?: string | null;
   recipientCount: number;
   createdAt: string;
+};
+
+export type GiftPledge = {
+  id: string;
+  eventId: string;
+  name: string;
+  email: string;
+  kind: "registry" | "cash";
+  amount?: number;
+  note: string;
+  createdAt: string;
+};
+
+export type ThankYouItem = {
+  id: string;
+  eventId: string;
+  guestName: string;
+  email: string;
+  note: string;
+  status: "todo" | "sent";
+  createdAt: string;
+  sentAt?: string | null;
+};
+
+export type MarketplaceListing = {
+  id: string;
+  authorId: string;
+  authorName: string;
+  templateId: string;
+  title: string;
+  description: string;
+  priceCents: number;
+  previewImage: string;
+  status: "pending" | "published" | "rejected";
+  createdAt: string;
+};
+
+export type CollabPresence = {
+  eventId: string;
+  userId: string;
+  name: string;
+  at: string;
 };

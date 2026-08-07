@@ -18,6 +18,8 @@ type InviteCoverProps = {
   venue: string;
   address: string;
   heroImage: string;
+  heroVideoUrl?: string | null;
+  motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
   invitesYou: string;
   comicPresents?: string;
   festiveParty?: string;
@@ -781,6 +783,8 @@ export default function InviteCover({
   venue,
   address,
   heroImage,
+  heroVideoUrl,
+  motionKit = "none",
   invitesYou,
   comicPresents,
   festiveParty,
@@ -855,17 +859,37 @@ export default function InviteCover({
       className="invite-cover"
       data-layout={layout}
       data-template={templateId || undefined}
+      data-motion={motionKit && motionKit !== "none" ? motionKit : undefined}
       aria-label="Invitation"
     >
       <div
         className="invite-cover-atmosphere"
         style={
-          { transform: `translateY(${parallaxY * 0.4}px)` } as CSSProperties
+          {
+            transform: `translateY(${parallaxY * (motionKit === "parallax" ? 0.55 : 0.4)}px)`,
+          } as CSSProperties
         }
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={heroImage} alt="" className="invite-cover-atmosphere-img" />
+        {heroVideoUrl && !printMode ? (
+          <video
+            className="invite-cover-atmosphere-img"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={heroImage}
+            aria-hidden
+          >
+            <source src={heroVideoUrl} />
+          </video>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={heroImage} alt="" className="invite-cover-atmosphere-img" />
+        )}
         <div className="invite-cover-atmosphere-veil" aria-hidden />
+        {motionKit === "sparkle" ? (
+          <div className="invite-motion-sparkle" aria-hidden />
+        ) : null}
       </div>
 
       {isComic ? <div className="comic-halftone" aria-hidden /> : null}

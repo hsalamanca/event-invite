@@ -9,12 +9,17 @@ import { paperGrainStyle, paperThemeVars } from "@/lib/marketing-theme";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Create event · Ownvite" };
 
-export default async function NewEventPage() {
+export default async function NewEventPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ template?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login?callbackUrl=/events/new");
   }
   const locale = await getRequestLocale();
+  const params = (await searchParams) || {};
 
   return (
     <main
@@ -42,6 +47,7 @@ export default async function NewEventPage() {
         <CreateEventWizard
           locale={locale}
           defaultHostName={session.user.name || ""}
+          defaultTemplateId={params.template}
         />
       </div>
     </main>

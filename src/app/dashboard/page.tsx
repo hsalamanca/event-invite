@@ -153,6 +153,16 @@ export default async function DashboardPage() {
               Guest book
             </Link>
             <Link
+              href="/marketplace"
+              className="rounded-md border px-4 py-2.5 text-sm font-semibold"
+              style={{
+                borderColor: "var(--landing-line)",
+                color: "var(--landing-ink)",
+              }}
+            >
+              Marketplace
+            </Link>
+            <Link
               href="/agency"
               className="rounded-md border px-4 py-2.5 text-sm font-semibold"
               style={{
