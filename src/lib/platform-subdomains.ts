@@ -1,6 +1,7 @@
 import { getPlatformDomains } from "@/lib/dns-instructions";
 import {
   addDomainToProject,
+  removeDomainFromProject,
   vercelDomainsConfigured,
   verifyProjectDomain,
 } from "@/lib/vercel-domains";
@@ -59,4 +60,39 @@ export async function ensurePlatformSubdomains(slug: string): Promise<{
     hosts,
     results,
   };
+}
+
+/** Best-effort cleanup when a platform subdomain label is renamed. */
+export async function releasePlatformSubdomains(slug: string): Promise<{
+  hosts: string[];
+  results: { host: string; ok: boolean; error?: string }[];
+}> {
+  const clean = slug.trim().toLowerCase();
+  const { apex, app } = getPlatformDomains();
+  const hosts =
+    !clean || clean.includes(".") || clean === "www"
+      ? []
+      : [`${clean}.${app}`, `${clean}.${apex}`];
+
+  if (!hosts.length || !vercelDomainsConfigured()) {
+    return {
+      hosts,
+      results: hosts.map((host) => ({
+        host,
+        ok: false,
+        error: "skipped",
+      })),
+    };
+  }
+
+  const results = [];
+  for (const host of hosts) {
+    const removed = await removeDomainFromProject(host);
+    results.push({
+      host,
+      ok: removed.ok,
+      error: removed.error,
+    });
+  }
+  return { hosts, results };
 }

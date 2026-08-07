@@ -206,6 +206,11 @@ export type Dictionary = {
     alwaysWorks: string;
     freeSub: string;
     subHint: string;
+    editSub: string;
+    editSubHint: string;
+    editSubWarn: string;
+    saveSub: string;
+    subSaved: string;
     yourDomain: string;
     connect: string;
     update: string;
@@ -581,7 +586,14 @@ const en: Dictionary = {
     alwaysWorks: "Always works (no DNS)",
     freeSub: "Free Ownvite subdomain",
     subHint:
-      "Subdomain requires a * CNAME on ownvite.app (platform DNS). Path link works today.",
+      "Works on both ownvite.app and ownvite.com after SSL provisions (usually a minute).",
+    editSub: "Edit subdomain",
+    editSubHint:
+      "Choose the label for your free Ownvite links on .app and .com.",
+    editSubWarn:
+      "Saving renames your invite URL (/e/…) and Host studio link to match.",
+    saveSub: "Save subdomain",
+    subSaved: "Ownvite subdomain updated.",
     yourDomain: "Your domain",
     connect: "Connect",
     update: "Update",
@@ -977,7 +989,14 @@ const es: Dictionary = {
     alwaysWorks: "Siempre funciona (sin DNS)",
     freeSub: "Subdominio gratis de Ownvite",
     subHint:
-      "El subdominio requiere un CNAME * en ownvite.app (DNS de la plataforma). El enlace por ruta ya funciona.",
+      "Funciona en ownvite.app y ownvite.com cuando el SSL termina de provisionarse (suele ser un minuto).",
+    editSub: "Editar subdominio",
+    editSubHint:
+      "Elige la etiqueta de tus enlaces gratis de Ownvite en .app y .com.",
+    editSubWarn:
+      "Al guardar se renombra la URL de la invitación (/e/…) y el enlace del estudio.",
+    saveSub: "Guardar subdominio",
+    subSaved: "Subdominio de Ownvite actualizado.",
     yourDomain: "Tu dominio",
     connect: "Conectar",
     update: "Actualizar",

@@ -5,45 +5,61 @@ import type { DomainBinding, DnsRecordInstruction } from "@/lib/domain-types";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { slugifyLabel } from "@/lib/slug";
 
 type DomainConnectProps = {
   slug: string;
   initialDomain?: string | null;
   onDomainChange?: (domain: string | null) => void;
+  /** Called after the Ownvite subdomain (event slug) is renamed. */
+  onSlugChange?: (nextSlug: string) => void;
   locale?: Locale;
+};
+
+type PlatformUrls = {
+  path: string;
+  subdomain: string;
+  subdomainCom?: string;
+  label?: string;
+  appSuffix?: string;
+  comSuffix?: string;
 };
 
 type StatusPayload = {
   binding: DomainBinding | null;
-  platformUrls: {
-    path: string;
-    subdomain: string;
-  } | null;
+  platformUrls: PlatformUrls | null;
 };
 
 export default function DomainConnect({
   slug,
   initialDomain,
   onDomainChange,
+  onSlugChange,
   locale = "en",
 }: DomainConnectProps) {
   const t = getDictionary(locale).domainConnect;
   const [domainInput, setDomainInput] = useState(initialDomain ?? "");
+  const [subdomainInput, setSubdomainInput] = useState(slug);
   const [binding, setBinding] = useState<DomainBinding | null>(null);
-  const [platformUrls, setPlatformUrls] = useState<StatusPayload["platformUrls"]>(
-    null
-  );
+  const [platformUrls, setPlatformUrls] = useState<PlatformUrls | null>(null);
   const [dns, setDns] = useState<DnsRecordInstruction[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function refresh() {
-    const res = await fetch(`/api/domains?slug=${encodeURIComponent(slug)}`);
+  async function refresh(activeSlug = slug) {
+    const res = await fetch(
+      `/api/domains?slug=${encodeURIComponent(activeSlug)}`,
+    );
     if (!res.ok) return;
     const data = (await res.json()) as StatusPayload;
     setBinding(data.binding);
     setPlatformUrls(data.platformUrls);
+    if (data.platformUrls?.label) {
+      setSubdomainInput(data.platformUrls.label);
+    } else {
+      setSubdomainInput(activeSlug);
+    }
     if (data.binding) {
       setDomainInput(data.binding.domain);
       setDns(data.binding.dns);
@@ -52,9 +68,46 @@ export default function DomainConnect({
   }
 
   useEffect(() => {
-    void refresh();
+    void refresh(slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  async function saveSubdomain() {
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/domains/platform-subdomain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, subdomain: subdomainInput }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        slug?: string;
+        platformUrls?: PlatformUrls;
+        unchanged?: boolean;
+      };
+      if (!res.ok) throw new Error(data.error ?? "Could not update subdomain");
+      const nextSlug = data.slug ?? slugifyLabel(subdomainInput);
+      if (data.platformUrls) setPlatformUrls(data.platformUrls);
+      setSubdomainInput(nextSlug);
+      setMessage(
+        data.unchanged
+          ? t.subSaved
+          : t.subSaved,
+      );
+      if (nextSlug !== slug) {
+        onSlugChange?.(nextSlug);
+      } else {
+        await refresh(nextSlug);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Update failed");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function connect() {
     setBusy(true);
@@ -73,7 +126,7 @@ export default function DomainConnect({
       setMessage(
         data.binding?.status === "active"
           ? "Domain is already live."
-          : "Domain registered. Add the DNS records below, then click Verify."
+          : "Domain registered. Add the DNS records below, then click Verify.",
       );
       onDomainChange?.(data.binding.domain);
     } catch (err) {
@@ -111,13 +164,15 @@ export default function DomainConnect({
     try {
       const res = await fetch(
         `/api/domains?slug=${encodeURIComponent(slug)}&domain=${encodeURIComponent(binding.domain)}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Could not remove domain");
       setBinding(null);
       setDns([]);
-      setMessage("Custom domain removed. Guests can still use your Ownvite link.");
+      setMessage(
+        "Custom domain removed. Guests can still use your Ownvite link.",
+      );
       onDomainChange?.(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Remove failed");
@@ -127,6 +182,10 @@ export default function DomainConnect({
   }
 
   const status = binding?.status ?? null;
+  const appSuffix = platformUrls?.appSuffix ?? ".ownvite.app";
+  const comSuffix = platformUrls?.comSuffix ?? ".ownvite.com";
+  const previewLabel = slugifyLabel(subdomainInput) || "your-event";
+  const subdomainDirty = slugifyLabel(subdomainInput) !== slug;
 
   return (
     <section className="domain-connect">
@@ -141,11 +200,55 @@ export default function DomainConnect({
           <a href={platformUrls.path} target="_blank" rel="noreferrer">
             {platformUrls.path}
           </a>
+
           <p className="label">{t.freeSub}</p>
-          <a href={platformUrls.subdomain} target="_blank" rel="noreferrer">
-            {platformUrls.subdomain}
-          </a>
-          <p className="hint">{t.subHint}</p>
+          <p className="hint">{t.editSubHint}</p>
+          <label className="domain-input subdomain-edit">
+            <span>{t.editSub}</span>
+            <div className="row subdomain-row">
+              <input
+                value={subdomainInput}
+                placeholder={slug}
+                onChange={(e) => setSubdomainInput(e.target.value)}
+                disabled={busy}
+                aria-label={t.editSub}
+              />
+              <span className="suffix" aria-hidden>
+                {appSuffix}
+              </span>
+              <button
+                type="button"
+                onClick={() => void saveSubdomain()}
+                disabled={busy || !subdomainInput.trim()}
+              >
+                {busy ? t.working : t.saveSub}
+              </button>
+            </div>
+          </label>
+          <p className="preview-links">
+            <a
+              href={`https://${previewLabel}${appSuffix}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {previewLabel}
+              {appSuffix}
+            </a>
+            <span aria-hidden> · </span>
+            <a
+              href={`https://${previewLabel}${comSuffix}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {previewLabel}
+              {comSuffix}
+            </a>
+          </p>
+          {subdomainDirty ? (
+            <p className="hint warn">{t.editSubWarn}</p>
+          ) : (
+            <p className="hint">{t.subHint}</p>
+          )}
         </div>
       )}
 
@@ -158,7 +261,11 @@ export default function DomainConnect({
             onChange={(e) => setDomainInput(e.target.value)}
             disabled={busy}
           />
-          <button type="button" onClick={connect} disabled={busy || !domainInput.trim()}>
+          <button
+            type="button"
+            onClick={() => void connect()}
+            disabled={busy || !domainInput.trim()}
+          >
             {busy ? t.working : binding ? t.update : t.connect}
           </button>
         </div>
@@ -207,11 +314,21 @@ export default function DomainConnect({
             ))}
           </ul>
           <div className="actions">
-            <button type="button" className="primary" onClick={verify} disabled={busy}>
+            <button
+              type="button"
+              className="primary"
+              onClick={() => void verify()}
+              disabled={busy}
+            >
               {t.verify}
             </button>
             {binding && (
-              <button type="button" className="ghost" onClick={disconnect} disabled={busy}>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => void disconnect()}
+                disabled={busy}
+              >
                 {t.remove}
               </button>
             )}
@@ -261,14 +378,22 @@ export default function DomainConnect({
           letter-spacing: 0.08em;
           text-transform: uppercase;
         }
-        .domain-platform a {
+        .domain-platform a,
+        .preview-links a {
           color: var(--host-accent);
           word-break: break-all;
+        }
+        .preview-links {
+          margin: 0.15rem 0 0;
+          font-size: 0.85rem;
         }
         .hint {
           margin: 0.25rem 0 0;
           color: var(--host-muted);
           font-size: 0.8rem;
+        }
+        .hint.warn {
+          color: color-mix(in srgb, var(--host-accent) 70%, #c45c26);
         }
         .domain-input span {
           display: block;
@@ -276,12 +401,26 @@ export default function DomainConnect({
           font-size: 0.85rem;
           color: var(--host-muted);
         }
+        .subdomain-edit .suffix {
+          display: inline-flex;
+          align-items: center;
+          margin: 0;
+          padding: 0 0.35rem;
+          color: var(--host-muted);
+          font-size: 0.85rem;
+          white-space: nowrap;
+        }
         .row {
           display: flex;
           gap: 0.5rem;
+          align-items: stretch;
+        }
+        .subdomain-row {
+          flex-wrap: wrap;
         }
         .row input {
           flex: 1;
+          min-width: 8rem;
           min-height: 42px;
           border-radius: 8px;
           border: 1px solid color-mix(in srgb, var(--host-muted) 35%, transparent);
@@ -343,7 +482,8 @@ export default function DomainConnect({
         td {
           text-align: left;
           padding: 0.5rem 0.4rem;
-          border-bottom: 1px solid color-mix(in srgb, var(--host-muted) 25%, transparent);
+          border-bottom: 1px solid
+            color-mix(in srgb, var(--host-muted) 25%, transparent);
         }
         code {
           font-size: 0.82em;

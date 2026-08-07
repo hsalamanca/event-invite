@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import DomainConnect from "@/components/host/DomainConnect";
 import GalleryEditor from "@/components/host/GalleryEditor";
 import ImageUpload from "@/components/host/ImageUpload";
@@ -421,6 +422,7 @@ export default function EventCustomizer({
   event,
   locale = "en",
 }: EventCustomizerProps) {
+  const router = useRouter();
   const t = getDictionary(locale).host;
   const uploadLabels = getDictionary(locale).upload;
   const [draft, setDraft] = useState<Draft>(() => toDraft(event, locale));
@@ -1364,6 +1366,10 @@ export default function EventCustomizer({
             onDomainChange={(domain) =>
               updateField("customDomain", domain ?? "")
             }
+            onSlugChange={(nextSlug) => {
+              router.push(`/host/${encodeURIComponent(nextSlug)}`);
+              router.refresh();
+            }}
           />
 
           <fieldset>

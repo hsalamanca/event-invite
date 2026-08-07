@@ -162,6 +162,30 @@ export async function removeBinding(domain: string): Promise<void> {
   await saveDomainRegistry(registry);
 }
 
+/** Point all active bindings for an event at a new invite slug. */
+export async function rebindSlug(
+  oldSlug: string,
+  newSlug: string,
+  eventId: string,
+): Promise<number> {
+  if (oldSlug === newSlug) return 0;
+  const registry = await getDomainRegistry({ fresh: true });
+  let changed = 0;
+  registry.bindings = registry.bindings.map((b) => {
+    if (b.slug !== oldSlug && b.eventId !== eventId) return b;
+    if (b.status === "removed") return b;
+    changed += 1;
+    return {
+      ...b,
+      slug: newSlug,
+      eventId,
+      updatedAt: new Date().toISOString(),
+    };
+  });
+  if (changed > 0) await saveDomainRegistry(registry);
+  return changed;
+}
+
 export async function domainToSlugMap(): Promise<Record<string, string>> {
   const registry = await getDomainRegistry();
   const map: Record<string, string> = {};

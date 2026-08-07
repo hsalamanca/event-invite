@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import {
   buildDnsInstructions,
+  getPlatformDomains,
   isPlatformDomain,
   isValidHostname,
   normalizeDomain,
@@ -25,13 +26,18 @@ export async function GET(request: Request) {
   }
   const binding = await getBindingBySlug(slug);
   const event = await getEventBySlug(slug);
+  const { apex, app } = getPlatformDomains();
   return NextResponse.json({
     binding: binding ?? null,
     eventDomain: event?.customDomain ?? null,
     platformUrls: event
       ? {
-          path: `https://${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN ?? "ownvite.com"}/e/${slug}`,
-          subdomain: `https://${slug}.${process.env.NEXT_PUBLIC_PLATFORM_APP_DOMAIN ?? "ownvite.app"}`,
+          path: `https://${apex}/e/${slug}`,
+          subdomain: `https://${slug}.${app}`,
+          subdomainCom: `https://${slug}.${apex}`,
+          label: slug,
+          appSuffix: `.${app}`,
+          comSuffix: `.${apex}`,
         }
       : null,
   });
