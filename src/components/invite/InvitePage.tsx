@@ -507,7 +507,23 @@ export default function InvitePage({
           <button
             type="button"
             className="btn-primary"
-            onClick={() => window.print()}
+            onClick={() => {
+              const previous = document.title;
+              const fileName =
+                event.slug?.trim() ||
+                event.title
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/gi, "-")
+                  .replace(/^-|-$/g, "") ||
+                "invite";
+              document.title = fileName;
+              const restore = () => {
+                document.title = previous;
+                window.removeEventListener("afterprint", restore);
+              };
+              window.addEventListener("afterprint", restore);
+              window.print();
+            }}
           >
             {ui.downloadPostcard} · PDF
           </button>
@@ -515,7 +531,7 @@ export default function InvitePage({
             <a
               className="btn-ghost"
               href={qrUrl}
-              download={`${event.slug}-qr.png`}
+              download={`${event.slug || "invite"}-qr.png`}
             >
               QR PNG
             </a>
