@@ -4,6 +4,10 @@ import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import InviteCover from "@/components/invite/InviteCover";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import {
+  downloadInviteCardJpeg,
+  inviteDownloadFileBase,
+} from "@/lib/download-invite-jpeg";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import {
   resolveLocalizedAbout,
@@ -224,6 +228,8 @@ export default function InvitePage({
   const [waitlistBusy, setWaitlistBusy] = useState(false);
   const [waitlistDone, setWaitlistDone] = useState(false);
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
+  const [jpegBusy, setJpegBusy] = useState(false);
+  const [jpegError, setJpegError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -507,31 +513,41 @@ export default function InvitePage({
           <button
             type="button"
             className="btn-primary"
+            disabled={jpegBusy}
             onClick={() => {
-              const previous = document.title;
-              const fileName =
-                event.slug?.trim() ||
-                event.title
-                  .toLowerCase()
-                  .replace(/[^a-z0-9]+/gi, "-")
-                  .replace(/^-|-$/g, "") ||
-                "invite";
-              document.title = fileName;
-              const restore = () => {
-                document.title = previous;
-                window.removeEventListener("afterprint", restore);
-              };
-              window.addEventListener("afterprint", restore);
-              window.print();
+              void (async () => {
+                setJpegError(null);
+                setJpegBusy(true);
+                try {
+                  const target =
+                    document.getElementById("invite-print-target") ??
+                    document.querySelector<HTMLElement>(".invite-card");
+                  if (!target) {
+                    throw new Error("Invite card not ready yet");
+                  }
+                  await downloadInviteCardJpeg(
+                    target,
+                    inviteDownloadFileBase(event.slug, event.title),
+                  );
+                } catch (err) {
+                  setJpegError(
+                    err instanceof Error
+                      ? err.message
+                      : "Could not create JPEG",
+                  );
+                } finally {
+                  setJpegBusy(false);
+                }
+              })();
             }}
           >
-            {ui.downloadPostcard} · PDF
+            {jpegBusy ? "Preparing…" : `${ui.downloadPostcard} · JPEG`}
           </button>
           {qrUrl ? (
             <a
               className="btn-ghost"
               href={qrUrl}
-              download={`${event.slug || "invite"}-qr.png`}
+              download={`${inviteDownloadFileBase(event.slug, event.title)}-qr.png`}
             >
               QR PNG
             </a>
@@ -540,8 +556,13 @@ export default function InvitePage({
             {ui.details}
           </a>
           <p className="invite-print-tip">
-            Tip: choose “Save as PDF” in the print dialog to download.
+            Downloads a small, high-quality JPEG named after your subdomain.
           </p>
+          {jpegError ? (
+            <p className="invite-print-tip" style={{ color: "#b42318" }}>
+              {jpegError}
+            </p>
+          ) : null}
         </div>
       ) : null}
 

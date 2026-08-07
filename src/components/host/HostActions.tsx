@@ -314,7 +314,7 @@ export default function HostActions({
           href={`/e/${slug}/print/postcard`}
           className="rounded-md border border-white/15 px-3 py-1.5 hover:border-[var(--champagne)]/40"
         >
-          Print / download postcard
+          Print / download postcard JPEG
         </a>
         <a
           href={`/e/${slug}/print/menu`}

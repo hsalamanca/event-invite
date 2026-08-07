@@ -878,7 +878,10 @@ export default function InviteCover({
       {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
 
       <div className="invite-cover-stage">
-        <article className="invite-card fade-up fade-up-1">
+        <article
+          className="invite-card fade-up fade-up-1"
+          id={printMode ? "invite-print-target" : undefined}
+        >
           {isComic ? (
             <>
               <span className="comic-sticker comic-sticker--tl" aria-hidden>

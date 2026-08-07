@@ -14,7 +14,6 @@ export async function generateMetadata({
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   if (!event) return { title: { absolute: "invite" } };
-  // Browser "Save as PDF" uses document title as the default filename.
   const fileName = event.slug || event.title;
   return { title: { absolute: fileName } };
 }
