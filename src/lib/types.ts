@@ -144,6 +144,8 @@ export type EventRecord = {
   seatingTables?: SeatingTable[];
   /** Guest photo album enabled on invite */
   albumEnabled?: boolean;
+  /** When false, invite is announcement-only (no RSVP form/CTA) */
+  rsvpEnabled?: boolean;
   /** Cash fund / Venmo / Zelle style link */
   cashFundUrl?: string | null;
   cashFundLabel?: string | null;

@@ -74,6 +74,7 @@ type Draft = {
   cashFundUrl: string;
   cashFundLabel: string;
   albumEnabled: boolean;
+  rsvpEnabled: boolean;
   whiteLabel: boolean;
   published: boolean;
   templateId: string;
@@ -183,6 +184,7 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     cashFundUrl: event.cashFundUrl ?? "",
     cashFundLabel: event.cashFundLabel ?? "",
     albumEnabled: event.albumEnabled ?? false,
+    rsvpEnabled: event.rsvpEnabled !== false,
     whiteLabel: event.whiteLabel ?? false,
     published: event.published ?? true,
     templateId: event.templateId || "evening",
@@ -366,6 +368,7 @@ function toPreviewEvent(
     cashFundUrl: draft.cashFundUrl.trim() || null,
     cashFundLabel: draft.cashFundLabel.trim() || null,
     albumEnabled: draft.albumEnabled,
+    rsvpEnabled: draft.rsvpEnabled,
     whiteLabel: draft.whiteLabel,
     published: draft.published,
     templateId: draft.templateId || base.templateId || "evening",
@@ -485,6 +488,7 @@ export default function EventCustomizer({
       cashFundUrl: draft.cashFundUrl.trim() || null,
       cashFundLabel: draft.cashFundLabel.trim() || null,
       albumEnabled: draft.albumEnabled,
+      rsvpEnabled: draft.rsvpEnabled,
       whiteLabel: draft.whiteLabel,
       published: draft.published,
       templateId: draft.templateId,
@@ -890,6 +894,15 @@ export default function EventCustomizer({
             <label className="checkbox-row">
               <input
                 type="checkbox"
+                checked={draft.rsvpEnabled}
+                onChange={(e) => updateField("rsvpEnabled", e.target.checked)}
+              />
+              <span>{t.rsvpEnabled}</span>
+            </label>
+            <p className="field-hint">{t.rsvpEnabledHint}</p>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
                 checked={draft.albumEnabled}
                 onChange={(e) => updateField("albumEnabled", e.target.checked)}
               />
@@ -960,6 +973,7 @@ export default function EventCustomizer({
             </label>
           </fieldset>
 
+          {draft.rsvpEnabled ? (
           <fieldset>
             <legend>RSVP questions</legend>
             <label>
@@ -1147,6 +1161,7 @@ export default function EventCustomizer({
               + Add question
             </button>
           </fieldset>
+          ) : null}
 
           <fieldset>
             <legend>Celebration extras</legend>

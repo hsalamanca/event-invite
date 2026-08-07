@@ -57,6 +57,8 @@ export async function POST(
     capacity: source.capacity,
     registryUrl: source.registryUrl,
     templateId: source.templateId,
+    rsvpEnabled: source.rsvpEnabled !== false,
+    albumEnabled: source.albumEnabled ?? false,
   });
 
   try {

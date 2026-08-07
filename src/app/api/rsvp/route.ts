@@ -53,6 +53,12 @@ export async function POST(request: Request) {
   if (!event || !event.published) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
+  if (event.rsvpEnabled === false) {
+    return NextResponse.json(
+      { error: "RSVP is not enabled for this invitation" },
+      { status: 403 },
+    );
+  }
 
   if (event.rsvpFields.deadline) {
     const today = new Date().toISOString().slice(0, 10);

@@ -1348,6 +1348,7 @@ export function buildEventFromTemplate(input: {
     capacity: null,
     registryUrl: null,
     templateId: tpl.id,
+    rsvpEnabled: true,
     showOwnviteFooter: true,
     tier: "free",
     premiumTheme: Boolean(tpl.premium),

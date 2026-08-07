@@ -120,6 +120,8 @@ export type Dictionary = {
     capacityHint: string;
     registryUrl: string;
     published: string;
+    rsvpEnabled: string;
+    rsvpEnabledHint: string;
     applyTemplate: string;
     applyTemplateHint: string;
   };
@@ -488,6 +490,9 @@ const en: Dictionary = {
     capacityHint: "Leave blank for unlimited",
     registryUrl: "Gift registry / wishlist URL",
     published: "Published (visible to guests)",
+    rsvpEnabled: "Collect RSVPs",
+    rsvpEnabledHint:
+      "Turn off for announcement-only invites (no RSVP form). Guests can still leave a note.",
     applyTemplate: "Apply template look",
     applyTemplateHint:
       "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
@@ -878,6 +883,9 @@ const es: Dictionary = {
     capacityHint: "Vacío = sin límite",
     registryUrl: "URL de lista de regalos",
     published: "Publicado (visible para invitados)",
+    rsvpEnabled: "Recibir confirmaciones (RSVP)",
+    rsvpEnabledHint:
+      "Desactívalo para invitaciones solo informativas (sin formulario RSVP). Los invitados aún pueden dejar un mensaje.",
     applyTemplate: "Aplicar look de plantilla",
     applyTemplateHint:
       "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",

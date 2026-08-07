@@ -32,6 +32,7 @@ type InviteCoverProps = {
   rsvpLabel: string;
   detailsLabel: string;
   leaveNoteLabel?: string;
+  rsvpEnabled?: boolean;
   calendarLabel: string;
   calendarHref: string;
   copyLabel: string;
@@ -788,6 +789,7 @@ export default function InviteCover({
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
+  rsvpEnabled = true,
   calendarLabel,
   calendarHref,
   copyLabel,
@@ -983,7 +985,7 @@ export default function InviteCover({
             />
 
             <div className="invite-card-actions">
-              {isPast ? (
+              {isPast || !rsvpEnabled ? (
                 <a className="btn-primary" href="#guestbook">
                   {leaveNoteLabel}
                 </a>

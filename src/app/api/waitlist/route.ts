@@ -65,6 +65,12 @@ export async function POST(request: Request) {
   if (!event || !event.published) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (event.rsvpEnabled === false) {
+    return NextResponse.json(
+      { error: "RSVP is not enabled for this invitation" },
+      { status: 403 },
+    );
+  }
   if (!event.capacity) {
     return NextResponse.json(
       { error: "This event does not use a waitlist." },

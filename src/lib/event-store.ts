@@ -96,6 +96,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
         : 0,
     seatingTables: Array.isArray(raw.seatingTables) ? raw.seatingTables : [],
     albumEnabled: raw.albumEnabled ?? false,
+    rsvpEnabled: raw.rsvpEnabled !== false,
     cashFundUrl: raw.cashFundUrl ?? "",
     cashFundLabel: raw.cashFundLabel ?? "",
     registryClicks:

@@ -457,6 +457,7 @@ export default function InvitePage({
   }
 
   const layout = resolveInviteLayout(event.templateId);
+  const rsvpEnabled = event.rsvpEnabled !== false;
   const { headline, tagline, about: aboutFallback } = resolveLocalizedInviteCopy(
     event,
     locale,
@@ -521,6 +522,7 @@ export default function InvitePage({
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
         leaveNoteLabel={ui.leaveNote}
+        rsvpEnabled={rsvpEnabled}
         calendarLabel={ui.addToCalendar}
         calendarHref={`/api/events/${event.slug}/ics`}
         copyLabel={copied ? ui.copied : ui.copyLink}
@@ -753,6 +755,7 @@ export default function InvitePage({
         </section>
       ) : null}
 
+      {rsvpEnabled ? (
       <section
         id="rsvp"
         className="invite-section invite-section--surface invite-section--rsvp"
@@ -1097,6 +1100,7 @@ export default function InvitePage({
         )}
         </div>
       </section>
+      ) : null}
 
       <section id="guestbook" className="invite-section">
         <h2 className="invite-section-title">{ui.guestbook}</h2>
