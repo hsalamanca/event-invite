@@ -38,6 +38,10 @@ type InviteCoverProps = {
   copyLabel: string;
   postcardLabel?: string;
   postcardHref?: string;
+  /** Hide interactive CTAs; show QR/URL for printable downloads */
+  printMode?: boolean;
+  inviteUrl?: string;
+  qrUrl?: string;
   isPast?: boolean;
   onCopyLink: () => void;
   parallaxY?: number;
@@ -797,6 +801,9 @@ export default function InviteCover({
   copyLabel,
   postcardLabel,
   postcardHref,
+  printMode = false,
+  inviteUrl,
+  qrUrl,
   isPast = false,
   onCopyLink,
   parallaxY = 0,
@@ -988,43 +995,63 @@ export default function InviteCover({
               }}
             />
 
-            <div className="invite-card-actions">
-              {isPast || !rsvpEnabled ? (
-                <a className="btn-primary" href="#guestbook">
-                  {leaveNoteLabel}
-                </a>
-              ) : (
-                <a className="btn-primary" href="#rsvp">
-                  {rsvpLabel}
-                </a>
-              )}
-              <a className="btn-ghost" href="#details">
-                {detailsLabel}
-              </a>
-            </div>
+            {!printMode ? (
+              <>
+                <div className="invite-card-actions">
+                  {isPast || !rsvpEnabled ? (
+                    <a className="btn-primary" href="#guestbook">
+                      {leaveNoteLabel}
+                    </a>
+                  ) : (
+                    <a className="btn-primary" href="#rsvp">
+                      {rsvpLabel}
+                    </a>
+                  )}
+                  <a className="btn-ghost" href="#details">
+                    {detailsLabel}
+                  </a>
+                </div>
 
-            <div className="invite-card-share">
-              <a className="invite-text-link" href={calendarHref}>
-                {calendarLabel}
-              </a>
-              <button
-                type="button"
-                className="invite-text-link"
-                onClick={onCopyLink}
-              >
-                {copyLabel}
-              </button>
-              {postcardHref && postcardLabel ? (
-                <a
-                  className="invite-text-link"
-                  href={postcardHref}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {postcardLabel}
-                </a>
-              ) : null}
-            </div>
+                <div className="invite-card-share">
+                  <a className="invite-text-link" href={calendarHref}>
+                    {calendarLabel}
+                  </a>
+                  <button
+                    type="button"
+                    className="invite-text-link"
+                    onClick={onCopyLink}
+                  >
+                    {copyLabel}
+                  </button>
+                  {postcardHref && postcardLabel ? (
+                    <a
+                      className="invite-text-link"
+                      href={postcardHref}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {postcardLabel}
+                    </a>
+                  ) : null}
+                </div>
+              </>
+            ) : (
+              <div className="invite-card-print-footer">
+                {qrUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={qrUrl}
+                    alt=""
+                    width={96}
+                    height={96}
+                    className="invite-card-print-qr"
+                  />
+                ) : null}
+                {inviteUrl ? (
+                  <p className="invite-card-print-url">{inviteUrl}</p>
+                ) : null}
+              </div>
+            )}
           </div>
         </article>
       </div>

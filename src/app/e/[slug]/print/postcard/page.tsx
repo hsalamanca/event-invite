@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PrintPostcard from "@/components/invite/PrintPostcard";
 import { getEventBySlug } from "@/lib/events";
+import { getRequestLocale } from "@/lib/i18n/locale";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -13,11 +14,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   if (!event) return { title: "Postcard" };
-  return { title: `Postcard · ${event.title}` };
+  return { title: `Download invite · ${event.title}` };
 }
 
 export default async function PostcardPrintPage({ params }: PageProps) {
   const { slug } = await params;
+  const locale = await getRequestLocale();
   const event = await getEventBySlug(slug);
   if (!event || !event.published) notFound();
 
@@ -28,6 +30,7 @@ export default async function PostcardPrintPage({ params }: PageProps) {
   return (
     <PrintPostcard
       event={event}
+      locale={locale}
       inviteUrl={`${base}/e/${event.slug}`}
       qrUrl={`/api/events/${event.slug}/qr?format=png`}
     />

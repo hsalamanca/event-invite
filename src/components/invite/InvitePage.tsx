@@ -28,6 +28,10 @@ type InvitePageProps = {
   weather?: WeatherSnapshot | null;
   /** Set false in host live preview to avoid polluting open stats */
   trackViews?: boolean;
+  /** Printable download: same web invite cover only */
+  printCoverOnly?: boolean;
+  inviteUrl?: string;
+  qrUrl?: string;
   onRsvpSubmit?: (payload: {
     eventId: string;
     name: string;
@@ -159,6 +163,9 @@ export default function InvitePage({
   isPast = false,
   weather = null,
   trackViews = true,
+  printCoverOnly = false,
+  inviteUrl,
+  qrUrl,
   onRsvpSubmit,
 }: InvitePageProps) {
   const { theme } = event;
@@ -397,6 +404,7 @@ export default function InvitePage({
   }
 
   useEffect(() => {
+    if (printCoverOnly) return;
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -408,7 +416,7 @@ export default function InvitePage({
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [printCoverOnly]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -485,7 +493,7 @@ export default function InvitePage({
 
   return (
     <div
-      className="invite-root"
+      className={`invite-root${printCoverOnly ? " invite-root--print" : ""}`}
       data-layout={layout}
       data-page={
         layout === "arcade" || layout === "azure" || layout === "quince"
@@ -494,6 +502,33 @@ export default function InvitePage({
       }
       style={cssVars}
     >
+      {printCoverOnly ? (
+        <div className="invite-print-toolbar print:hidden">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => window.print()}
+          >
+            {ui.downloadPostcard} · PDF
+          </button>
+          {qrUrl ? (
+            <a
+              className="btn-ghost"
+              href={qrUrl}
+              download={`${event.slug}-qr.png`}
+            >
+              QR PNG
+            </a>
+          ) : null}
+          <a className="btn-ghost" href={`/e/${event.slug}`}>
+            {ui.details}
+          </a>
+          <p className="invite-print-tip">
+            Tip: choose “Save as PDF” in the print dialog to download.
+          </p>
+        </div>
+      ) : null}
+
       <InviteCover
         layout={layout}
         templateId={event.templateId}
@@ -526,13 +561,20 @@ export default function InvitePage({
         calendarLabel={ui.addToCalendar}
         calendarHref={`/api/events/${event.slug}/ics`}
         copyLabel={copied ? ui.copied : ui.copyLink}
-        postcardLabel={ui.downloadPostcard}
-        postcardHref={`/e/${event.slug}/print/postcard`}
+        postcardLabel={printCoverOnly ? undefined : ui.downloadPostcard}
+        postcardHref={
+          printCoverOnly ? undefined : `/e/${event.slug}/print/postcard`
+        }
+        printMode={printCoverOnly}
+        inviteUrl={inviteUrl}
+        qrUrl={qrUrl}
         isPast={isPast}
         onCopyLink={() => void copyInviteLink()}
-        parallaxY={parallaxY}
+        parallaxY={printCoverOnly ? 0 : parallaxY}
       />
 
+      {!printCoverOnly ? (
+        <>
       <section id="details" className="invite-section invite-section--paper">
         <h2 className="invite-section-title">{ui.details}</h2>
         <dl className="invite-meta">
@@ -1259,6 +1301,8 @@ export default function InvitePage({
           <p className="invite-footer-attr">Ownvite</p>
         ) : null}
       </footer>
+        </>
+      ) : null}
 
       <style jsx>{`
         .invite-root {
@@ -4787,6 +4831,97 @@ export default function InvitePage({
 
           .invite-root {
             scroll-behavior: auto;
+          }
+        }
+
+        .invite-print-toolbar {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem;
+          align-items: center;
+          max-width: 42rem;
+          margin: 0 auto;
+          padding: 1rem 1rem 0;
+        }
+
+        .invite-print-tip {
+          width: 100%;
+          margin: 0;
+          font-size: 0.8rem;
+          color: var(--invite-muted);
+        }
+
+        :global(.invite-card-print-footer) {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.55rem;
+          margin-top: 1rem;
+        }
+
+        :global(.invite-card-print-qr) {
+          width: 5.5rem;
+          height: 5.5rem;
+          background: #fff;
+          border: 1px solid color-mix(in srgb, var(--invite-text) 15%, transparent);
+          padding: 0.25rem;
+        }
+
+        :global(.invite-card-print-url) {
+          margin: 0;
+          font-size: 0.72rem;
+          letter-spacing: 0.02em;
+          color: var(--invite-muted);
+          word-break: break-all;
+          text-align: center;
+        }
+
+        .invite-root--print {
+          min-height: auto;
+        }
+
+        .invite-root--print :global(.invite-cover) {
+          min-height: auto;
+        }
+
+        .invite-root--print :global(.fade-up) {
+          opacity: 1;
+          transform: none;
+          animation: none;
+        }
+
+        @media print {
+          @page {
+            margin: 0.35in;
+          }
+
+          body {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+
+          .invite-root--print {
+            background: var(--invite-bg) !important;
+          }
+
+          .invite-print-toolbar {
+            display: none !important;
+          }
+
+          .invite-root--print :global(.invite-cover) {
+            min-height: auto !important;
+            padding: 0 !important;
+          }
+
+          .invite-root--print :global(.invite-cover-stage) {
+            padding: 0.5rem !important;
+          }
+
+          .invite-root--print :global(.invite-card) {
+            box-shadow: none !important;
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
         }
       `}</style>
