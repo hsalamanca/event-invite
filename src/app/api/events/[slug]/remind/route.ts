@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
+import { createBlast } from "@/lib/blast-store";
 import { sendEventEmail } from "@/lib/email";
 import { inviteEmailHtml } from "@/lib/email-templates";
 import { getEventBySlug, updateEvent } from "@/lib/events";
@@ -36,6 +37,9 @@ export async function POST(
     channel?: RemindChannel;
     emails?: string[];
     phones?: string[];
+    /** Resend only to these emails (e.g. unopened from delivery inbox) */
+    onlyUnopened?: boolean;
+    scheduledFor?: string | null;
   };
   const type = body.type ?? "rsvp_reminder";
   const channel: RemindChannel = body.channel ?? "email";
@@ -44,6 +48,7 @@ export async function POST(
     : "https://ownvite.com";
   const inviteUrl = `${base}/e/${event.slug}`;
   const brandSuffix = isWhiteLabel(event) ? "" : " via Ownvite";
+  const scheduledFor = body.scheduledFor?.trim() || null;
 
   const [rsvps, manual] = await Promise.all([
     listRsvpsByEventId(event.id),
@@ -88,16 +93,13 @@ export async function POST(
           ? `You're invited: ${event.title}`
           : `Please RSVP: ${event.title}`;
 
-    const html = inviteEmailHtml({
-      hostName: event.hostName,
-      title: event.title,
-      dateISO: event.dateISO,
-      timeLabel: event.timeLabel,
-      venue: event.venue,
-      address: event.address,
-      inviteUrl,
-      kind: type,
-      whiteLabel: isWhiteLabel(event),
+    const blast = await createBlast({
+      eventId: event.id,
+      type,
+      channel: "email",
+      subject,
+      recipientCount: capped.length,
+      scheduledFor,
     });
 
     const results = [];
@@ -124,7 +126,23 @@ export async function POST(
           to,
           subject,
           body: bodyText,
-          html,
+          htmlBuilder: ({ token, trackBaseUrl }) =>
+            inviteEmailHtml({
+              hostName: event.hostName,
+              title: event.title,
+              dateISO: event.dateISO,
+              timeLabel: event.timeLabel,
+              venue: event.venue,
+              address: event.address,
+              inviteUrl,
+              kind: type,
+              whiteLabel: isWhiteLabel(event),
+              trackingToken: token,
+              trackBaseUrl,
+            }),
+          blastId: blast.id,
+          channel: "email",
+          scheduledFor,
         }),
       );
     }
@@ -138,6 +156,7 @@ export async function POST(
     return NextResponse.json({
       ok: true,
       channel: "email",
+      blastId: blast.id,
       sent: results.filter((r) => r.status === "sent").length,
       preview: results.filter((r) => r.status === "preview").length,
       failed: results.filter((r) => r.status === "failed").length,
@@ -155,6 +174,7 @@ export async function POST(
             : `Free includes ${FREE_EMAIL_BLAST_CAP} emails per blast (cap ${cap}). Buy a Reminder Pack for +100 credits, or upgrade to Pro for ${PRO_EMAIL_BLAST_CAP}/blast.`
           : null,
         useCredits > 0 ? `Used ${useCredits} reminder credit(s).` : null,
+        scheduledFor ? `Scheduled for ${scheduledFor}.` : null,
       ]
         .filter(Boolean)
         .join(" "),
@@ -182,7 +202,6 @@ export async function POST(
           r.phone && r.attendance.toLowerCase().includes("attend"),
       )
       .map((r) => r.phone!);
-    // Also remind manual "going" with phones who may not have RSVP'd online
     for (const g of manual) {
       if (g.phone && (g.status === "going" || g.status === "maybe")) {
         phoneTargets.push(g.phone);
@@ -226,6 +245,15 @@ export async function POST(
     `— ${event.hostName}${brandSuffix}`,
   ].join("\n");
 
+  const blast = await createBlast({
+    eventId: event.id,
+    type,
+    channel,
+    subject: `${channel.toUpperCase()} ${type}`,
+    recipientCount: capped.length,
+    scheduledFor,
+  });
+
   const results = [];
   for (const to of capped) {
     const result = await sendSmsMessage({
@@ -241,6 +269,9 @@ export async function POST(
       subject: `${channel.toUpperCase()} ${type}`,
       body: smsBody,
       html: `<pre>${smsBody.replace(/</g, "&lt;")}</pre>`,
+      blastId: blast.id,
+      channel,
+      scheduledFor,
     }).catch(() => null);
   }
 
@@ -256,6 +287,7 @@ export async function POST(
   return NextResponse.json({
     ok: true,
     channel,
+    blastId: blast.id,
     sent: results.filter((r) => r.status === "sent").length,
     preview: results.filter((r) => r.status === "preview").length,
     failed: results.filter((r) => r.status === "failed").length,

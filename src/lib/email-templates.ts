@@ -8,6 +8,9 @@ export function inviteEmailHtml(input: {
   inviteUrl: string;
   kind: "invite" | "rsvp_reminder" | "event_reminder";
   whiteLabel?: boolean;
+  /** When set, CTA is wrapped in click tracker */
+  trackingToken?: string;
+  trackBaseUrl?: string;
 }): string {
   const lead =
     input.kind === "event_reminder"
@@ -19,6 +22,11 @@ export function inviteEmailHtml(input: {
   const brand = input.whiteLabel
     ? ""
     : `<tr><td style="font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C9A962;">Ownvite</td></tr>`;
+
+  const ctaHref =
+    input.trackingToken && input.trackBaseUrl
+      ? `${input.trackBaseUrl}/api/track/email/${input.trackingToken}/click?url=${encodeURIComponent(input.inviteUrl)}`
+      : input.inviteUrl;
 
   return `<!doctype html>
 <html><body style="margin:0;background:#0F1A2E;color:#F4F0E8;font-family:Georgia,serif;">
@@ -34,7 +42,7 @@ export function inviteEmailHtml(input: {
           ${escapeHtml(input.address)}
         </td></tr>
         <tr><td style="padding-top:24px;">
-          <a href="${escapeAttr(input.inviteUrl)}" style="display:inline-block;background:#C9A962;color:#0F1A2E;text-decoration:none;padding:12px 18px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
+          <a href="${escapeAttr(ctaHref)}" style="display:inline-block;background:#C9A962;color:#0F1A2E;text-decoration:none;padding:12px 18px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
             Open invitation
           </a>
         </td></tr>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
 import { getEventById, getEventBySlug } from "@/lib/events";
+import { recordGuestBookFromEvent } from "@/lib/guest-book";
 import { notifyGuestOfRsvp, notifyHostsOfRsvp } from "@/lib/rsvp-notify";
 import {
   appendRsvp,
@@ -8,7 +9,36 @@ import {
   listRsvpsByEventId,
   updateRsvpByToken,
 } from "@/lib/rsvp-store";
-import type { RsvpAnswers } from "@/lib/types";
+import type { RsvpAnswers, RsvpSubmission } from "@/lib/types";
+
+async function syncGuestBook(
+  event: {
+    id: string;
+    slug: string;
+    title: string;
+    ownerId: string | null;
+  },
+  rsvp: RsvpSubmission,
+) {
+  if (!event.ownerId) return;
+  try {
+    await recordGuestBookFromEvent({
+      ownerId: event.ownerId,
+      eventId: event.id,
+      eventTitle: event.title,
+      eventSlug: event.slug,
+      name: rsvp.name,
+      email: rsvp.email,
+      phone: rsvp.phone,
+      attendance: rsvp.attendance,
+      dietary: rsvp.dietary,
+      mealChoice: rsvp.mealChoice,
+      guestCount: rsvp.guestCount,
+    });
+  } catch {
+    /* non-blocking */
+  }
+}
 
 export const runtime = "nodejs";
 
@@ -126,6 +156,7 @@ export async function POST(request: Request) {
       }
       await notifyHostsOfRsvp({ event, rsvp: record, updated: true });
       await notifyGuestOfRsvp({ event, rsvp: record, updated: true });
+      await syncGuestBook(event, record);
       return NextResponse.json({ ok: true, rsvp: record, updated: true });
     }
 
@@ -144,6 +175,7 @@ export async function POST(request: Request) {
 
     await notifyHostsOfRsvp({ event, rsvp: record, updated: false });
     await notifyGuestOfRsvp({ event, rsvp: record, updated: false });
+    await syncGuestBook(event, record);
     return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
   } catch (err) {
     console.error("RSVP append failed", err);

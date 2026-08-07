@@ -104,6 +104,10 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     cashFundClicks:
       typeof raw.cashFundClicks === "number" ? raw.cashFundClicks : 0,
     whiteLabel: raw.whiteLabel ?? false,
+    clientId:
+      typeof raw.clientId === "string" && raw.clientId.trim()
+        ? raw.clientId.trim()
+        : null,
     unlockedPackIds: Array.isArray(raw.unlockedPackIds)
       ? raw.unlockedPackIds.filter((id): id is string => typeof id === "string")
       : [],

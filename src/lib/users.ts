@@ -18,6 +18,8 @@ function normalizeUser(raw: UserRecord): UserRecord {
     studioStripeCustomerId: raw.studioStripeCustomerId ?? null,
     studioStripeSubscriptionId: raw.studioStripeSubscriptionId ?? null,
     studioActiveUntil: raw.studioActiveUntil ?? null,
+    agencyStatus: raw.agencyStatus ?? null,
+    agencyStripeSubscriptionId: raw.agencyStripeSubscriptionId ?? null,
   };
 }
 

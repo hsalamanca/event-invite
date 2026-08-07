@@ -123,5 +123,17 @@ export function matchApiRateLimit(
   if (m === "POST" && pathname === "/api/events") {
     return { name: "create-event", limit: 20, windowMs: 60 * 60 * 1000 };
   }
+  if (
+    (m === "POST" || m === "DELETE") &&
+    (pathname === "/api/guest-book" || pathname === "/api/guest-book/import")
+  ) {
+    return { name: "guest-book", limit: 60, windowMs: 60 * 60 * 1000 };
+  }
+  if (
+    (m === "POST" || m === "PATCH" || m === "DELETE") &&
+    pathname.startsWith("/api/agency/")
+  ) {
+    return { name: "agency", limit: 40, windowMs: 60 * 60 * 1000 };
+  }
   return null;
 }

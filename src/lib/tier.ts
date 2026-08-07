@@ -90,3 +90,16 @@ export function canUsePrivateInvite(
 ): boolean {
   return eventIsPro(event);
 }
+
+/** Agency accounts force white-label on client-assigned events. */
+export function ensureAgencyWhiteLabel(
+  event: Pick<EventRecord, "whiteLabel" | "clientId" | "showOwnviteFooter">,
+): Pick<EventRecord, "whiteLabel" | "showOwnviteFooter"> {
+  if (event.clientId || event.whiteLabel) {
+    return { whiteLabel: true, showOwnviteFooter: false };
+  }
+  return {
+    whiteLabel: Boolean(event.whiteLabel),
+    showOwnviteFooter: event.showOwnviteFooter,
+  };
+}
