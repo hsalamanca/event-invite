@@ -1,4 +1,4 @@
-import { domToJpeg } from "modern-screenshot";
+import { domToPng } from "modern-screenshot";
 
 /** Prefer subdomain slug; fall back to a safe event-name slug. */
 export function inviteDownloadFileBase(
@@ -28,7 +28,7 @@ function isSafariLike(): boolean {
 function toErrorMessage(err: unknown, fallback: string): string {
   if (err instanceof Error && err.message) return err.message;
   if (typeof err === "string" && err.trim()) return err;
-  // html-to-image / image onerror often rejects with an Event, not an Error.
+  // Screenshot libs / image onerror often reject with an Event, not an Error.
   if (err && typeof err === "object" && "type" in err) {
     return fallback;
   }
@@ -58,6 +58,7 @@ function delay(ms: number): Promise<void> {
 /**
  * Fetch a remote/same-origin image and return a compact JPEG data URL.
  * Keeps the SVG foreignObject payload small enough for mobile Safari.
+ * Embedded photos stay JPEG; the final postcard export is PNG.
  */
 async function imageUrlToCompactDataUrl(
   src: string,
@@ -81,7 +82,7 @@ async function imageUrlToCompactDataUrl(
     // Fallback: draw via Image + canvas (works when img already loaded with CORS).
     try {
       const img = await loadImage(src, true);
-      return canvasEncode(img, maxEdge, quality);
+      return canvasEncodeJpeg(img, maxEdge, quality);
     } catch {
       return null;
     }
@@ -103,10 +104,10 @@ async function shrinkDataUrl(
   quality: number,
 ): Promise<string> {
   const img = await loadImage(dataUrl, false);
-  return canvasEncode(img, maxEdge, quality);
+  return canvasEncodeJpeg(img, maxEdge, quality);
 }
 
-function canvasEncode(
+function canvasEncodeJpeg(
   img: HTMLImageElement,
   maxEdge: number,
   quality: number,
@@ -123,6 +124,21 @@ function canvasEncode(
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(img, 0, 0, width, height);
   return canvas.toDataURL("image/jpeg", quality);
+}
+
+function canvasEncodePng(img: HTMLImageElement, maxEdge: number): string {
+  const scale = Math.min(1, maxEdge / Math.max(img.width, img.height, 1));
+  const width = Math.max(1, Math.round(img.width * scale));
+  const height = Math.max(1, Math.round(img.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(img, 0, 0, width, height);
+  return canvas.toDataURL("image/png");
 }
 
 function loadImage(
@@ -189,10 +205,10 @@ async function withInlinedImages<T>(
 
 async function triggerDownload(dataUrl: string, fileName: string): Promise<void> {
   const blob = dataUrlToBlob(dataUrl);
-  const file = new File([blob], fileName, { type: blob.type || "image/jpeg" });
+  const file = new File([blob], fileName, { type: blob.type || "image/png" });
 
   // Mobile browsers often block <a download> after async work (lost user gesture).
-  // Web Share with a file is the reliable path on iOS/Android.
+  // Web Share with a file is the reliable path on iOS/Android — ideal for Texts.
   const canShareFile =
     typeof navigator !== "undefined" &&
     typeof navigator.share === "function" &&
@@ -246,7 +262,7 @@ async function triggerDownload(dataUrl: string, fileName: string): Promise<void>
 
 function dataUrlToBlob(dataUrl: string): Blob {
   const [header, data = ""] = dataUrl.split(",", 2);
-  const mime = /data:([^;]+)/.exec(header)?.[1] || "image/jpeg";
+  const mime = /data:([^;]+)/.exec(header)?.[1] || "image/png";
   const binary = atob(data);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) {
@@ -256,22 +272,21 @@ function dataUrlToBlob(dataUrl: string): Blob {
 }
 
 /**
- * Capture an invite card DOM node as a compact, sharp JPEG and download it.
- * Uses 2× scale for crispness, then JPEG compression for a small file.
+ * Capture an invite card DOM node as a sharp PNG and download/share it.
+ * Uses 2× scale for crisp type; PNG keeps text cleaner than JPEG for Texts.
  */
-export async function downloadInviteCardJpeg(
+export async function downloadInviteCardPng(
   node: HTMLElement,
   fileBase: string,
 ): Promise<void> {
   await waitForFonts();
   await waitForPaint();
 
-  const fileName = `${fileBase}.jpg`;
+  const fileName = `${fileBase}.png`;
 
   try {
     const dataUrl = await withInlinedImages(node, async () => {
       const options = {
-        quality: 0.84,
         scale: 2,
         backgroundColor: "#ffffff",
         // Safari needs a beat after SVG→Image decode.
@@ -297,35 +312,40 @@ export async function downloadInviteCardJpeg(
       // Safari often needs a warm-up capture before foreignObject images paint.
       if (isSafariLike()) {
         try {
-          await domToJpeg(node, options);
+          await domToPng(node, options);
         } catch {
           // warm-up failures are fine; second pass is what we keep
         }
         await delay(50);
       }
 
-      return domToJpeg(node, options);
+      return domToPng(node, options);
     });
 
     if (!dataUrl || !dataUrl.startsWith("data:image")) {
-      throw new Error("Could not create JPEG");
+      throw new Error("Could not create PNG");
     }
 
-    const compressed = await recompressJpeg(dataUrl, {
-      maxEdge: 1600,
-      quality: 0.84,
-    });
+    const sized = await resizePng(dataUrl, { maxEdge: 1600 });
 
-    await triggerDownload(compressed, fileName);
+    await triggerDownload(sized, fileName);
   } catch (err) {
-    throw new Error(toErrorMessage(err, "Could not create JPEG"));
+    throw new Error(toErrorMessage(err, "Could not create PNG"));
   }
 }
 
-async function recompressJpeg(
+/** @deprecated Use downloadInviteCardPng — kept for older imports. */
+export async function downloadInviteCardJpeg(
+  node: HTMLElement,
+  fileBase: string,
+): Promise<void> {
+  return downloadInviteCardPng(node, fileBase);
+}
+
+async function resizePng(
   dataUrl: string,
-  opts: { maxEdge: number; quality: number },
+  opts: { maxEdge: number },
 ): Promise<string> {
   const img = await loadImage(dataUrl, false);
-  return canvasEncode(img, opts.maxEdge, opts.quality) || dataUrl;
+  return canvasEncodePng(img, opts.maxEdge) || dataUrl;
 }
