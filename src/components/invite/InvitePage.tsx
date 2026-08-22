@@ -5,7 +5,7 @@ import InviteCover from "@/components/invite/InviteCover";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import {
-  downloadInviteCardJpeg,
+  downloadInviteCardPng,
   inviteDownloadFileBase,
 } from "@/lib/download-invite-jpeg";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
@@ -228,8 +228,8 @@ export default function InvitePage({
   const [waitlistBusy, setWaitlistBusy] = useState(false);
   const [waitlistDone, setWaitlistDone] = useState(false);
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
-  const [jpegBusy, setJpegBusy] = useState(false);
-  const [jpegError, setJpegError] = useState<string | null>(null);
+  const [pngBusy, setPngBusy] = useState(false);
+  const [pngError, setPngError] = useState<string | null>(null);
   const [rsvpConsent, setRsvpConsent] = useState(false);
   const [pledgeName, setPledgeName] = useState("");
   const [pledgeEmail, setPledgeEmail] = useState("");
@@ -528,11 +528,11 @@ export default function InvitePage({
           <button
             type="button"
             className="btn-primary"
-            disabled={jpegBusy}
+            disabled={pngBusy}
             onClick={() => {
               void (async () => {
-                setJpegError(null);
-                setJpegBusy(true);
+                setPngError(null);
+                setPngBusy(true);
                 try {
                   const target =
                     document.getElementById("invite-print-target") ??
@@ -540,7 +540,7 @@ export default function InvitePage({
                   if (!target) {
                     throw new Error("Invite card not ready yet");
                   }
-                  await downloadInviteCardJpeg(
+                  await downloadInviteCardPng(
                     target,
                     inviteDownloadFileBase(event.slug, event.title),
                   );
@@ -550,15 +550,15 @@ export default function InvitePage({
                       ? err.message
                       : typeof err === "string" && err.trim()
                         ? err
-                        : "Could not create JPEG";
-                  setJpegError(message);
+                        : "Could not create PNG";
+                  setPngError(message);
                 } finally {
-                  setJpegBusy(false);
+                  setPngBusy(false);
                 }
               })();
             }}
           >
-            {jpegBusy ? "Preparing…" : `${ui.downloadPostcard} · JPEG`}
+            {pngBusy ? "Preparing…" : `${ui.downloadPostcard} · PNG`}
           </button>
           {qrUrl ? (
             <a
@@ -573,11 +573,11 @@ export default function InvitePage({
             {ui.details}
           </a>
           <p className="invite-print-tip">
-            Downloads a small, high-quality JPEG named after your subdomain.
+            Downloads a sharp PNG named after your subdomain — easy to text.
           </p>
-          {jpegError ? (
+          {pngError ? (
             <p className="invite-print-tip" style={{ color: "#b42318" }}>
-              {jpegError}
+              {pngError}
             </p>
           ) : null}
         </div>
@@ -876,7 +876,7 @@ export default function InvitePage({
               target="_blank"
               rel="noreferrer"
             >
-              Download JPEG postcard
+              Download PNG postcard
             </a>
           </p>
         </section>
