@@ -2581,7 +2581,7 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .invite-card) {
           position: relative;
-          overflow: hidden;
+          overflow: visible;
           border: 4px solid #111;
           border-radius: 1.15rem;
           background: #d40000;
@@ -2593,9 +2593,11 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="spiderweb"] .spider-card) {
           position: relative;
           z-index: 1;
+          overflow: visible;
           padding: 1rem 0.9rem 0.65rem;
           background:
             linear-gradient(180deg, #d40000 0%, #b00000 55%, #8a0000 100%);
+          border-radius: inherit;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-top) {

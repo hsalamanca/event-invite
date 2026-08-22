@@ -130,17 +130,18 @@ function SpiderWebBehind() {
       <g
         fill="none"
         stroke="#111"
-        strokeWidth="2.2"
+        strokeWidth="2.6"
         strokeLinecap="round"
-        opacity="0.55"
+        opacity="0.62"
       >
-        <circle cx="100" cy="100" r="18" />
-        <circle cx="100" cy="100" r="36" />
-        <circle cx="100" cy="100" r="54" />
-        <circle cx="100" cy="100" r="72" />
-        <circle cx="100" cy="100" r="90" />
-        <path d="M100 10 L100 190 M10 100 L190 100 M28 28 L172 172 M172 28 L28 172" />
-        <path d="M100 10 L172 28 L190 100 L172 172 L100 190 L28 172 L10 100 L28 28 Z" />
+        <circle cx="100" cy="100" r="16" />
+        <circle cx="100" cy="100" r="32" />
+        <circle cx="100" cy="100" r="48" />
+        <circle cx="100" cy="100" r="64" />
+        <circle cx="100" cy="100" r="80" />
+        <circle cx="100" cy="100" r="96" />
+        <path d="M100 4 L100 196 M4 100 L196 100 M22 22 L178 178 M178 22 L22 178" />
+        <path d="M100 4 L150 14 L186 50 L196 100 L186 150 L150 186 L100 196 L50 186 L14 150 L4 100 L14 50 L50 14 Z" />
       </g>
     </svg>
   );
