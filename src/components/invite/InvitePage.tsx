@@ -605,6 +605,7 @@ export default function InvitePage({
         superIsTurning={ui.superIsTurning}
         superJoinUs={ui.superJoinUs}
         superBirthday={ui.superBirthday}
+        spiderLetsCelebrate={ui.spiderLetsCelebrate}
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
         splashInvite={ui.splashInvite}
@@ -2550,6 +2551,267 @@ export default function InvitePage({
           width: 100%;
           height: 48px;
           margin-top: -0.35rem;
+        }
+
+        /* —— Spider kids (web-slinger comic) —— */
+        :global(.invite-cover[data-layout="spiderweb"] .invite-cover-atmosphere-veil) {
+          background:
+            linear-gradient(
+              180deg,
+              rgba(180, 0, 0, 0.35),
+              rgba(120, 0, 0, 0.75) 70%,
+              #7a0000 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-web-overlay) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.28;
+          background:
+            radial-gradient(circle at 50% 42%, transparent 0 18%, rgba(0, 0, 0, 0.18) 18.5% 19%, transparent 19.5%),
+            repeating-conic-gradient(
+              from 0deg at 50% 42%,
+              rgba(0, 0, 0, 0.22) 0deg 1.2deg,
+              transparent 1.2deg 18deg
+            );
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 4px solid #111;
+          border-radius: 1.15rem;
+          background: #d40000;
+          box-shadow: 8px 8px 0 #111;
+          padding: 0;
+          color: #fff;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-card) {
+          position: relative;
+          z-index: 1;
+          padding: 1rem 0.9rem 0.35rem;
+          background-size: cover;
+          background-position: center top;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-top) {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 0.75rem;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-date-burst) {
+          max-width: 58%;
+          padding: 0.7rem 0.85rem;
+          background: #1e5bff;
+          border: 3px solid #111;
+          color: #fff;
+          text-align: center;
+          clip-path: polygon(
+            8% 0%,
+            22% 10%,
+            38% 0%,
+            55% 12%,
+            72% 0%,
+            90% 14%,
+            100% 35%,
+            90% 58%,
+            100% 78%,
+            82% 100%,
+            58% 90%,
+            38% 100%,
+            18% 88%,
+            0% 70%,
+            10% 45%,
+            0% 22%
+          );
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          font-size: 0.72rem;
+          line-height: 1.25;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-date-burst p) {
+          margin: 0.1rem 0;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-icon) {
+          width: 78px;
+          height: auto;
+          flex-shrink: 0;
+          filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.35));
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-celebrate) {
+          display: inline-block;
+          margin: 0.85rem auto 0.55rem;
+          width: fit-content;
+          max-width: 100%;
+          background: #fff;
+          color: #111;
+          border: 3px solid #111;
+          border-radius: 999px;
+          padding: 0.45rem 1.1rem;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%);
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-name-burst) {
+          margin: 0.35rem auto 0.9rem;
+          width: min(100%, 320px);
+          min-height: 210px;
+          display: grid;
+          place-content: center;
+          gap: 0.15rem;
+          text-align: center;
+          background: #ffd400;
+          border: 4px solid #111;
+          clip-path: polygon(
+            8% 6%,
+            18% 0%,
+            32% 8%,
+            48% 0%,
+            62% 9%,
+            78% 0%,
+            92% 10%,
+            100% 28%,
+            94% 46%,
+            100% 64%,
+            90% 82%,
+            74% 100%,
+            52% 92%,
+            34% 100%,
+            16% 88%,
+            0% 70%,
+            8% 48%,
+            0% 28%
+          );
+          box-shadow: 0 0 0 2px #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-name) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: clamp(2.8rem, 12vw, 4.2rem);
+          color: #fff;
+          letter-spacing: 0.04em;
+          line-height: 0.92;
+          text-transform: uppercase;
+          text-shadow:
+            -3px -3px 0 #111,
+            3px -3px 0 #111,
+            -3px 3px 0 #111,
+            3px 3px 0 #111,
+            5px 5px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-age) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: clamp(3.2rem, 14vw, 4.8rem);
+          color: #fff;
+          line-height: 0.9;
+          text-shadow:
+            -3px -3px 0 #111,
+            3px -3px 0 #111,
+            -3px 3px 0 #111,
+            3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-bottom) {
+          display: grid;
+          grid-template-columns: 1.15fr 1fr;
+          gap: 0.65rem;
+          align-items: start;
+          margin: 0.25rem 0 0.75rem;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-address) {
+          background: #fff;
+          color: #111;
+          border: 3px solid #111;
+          border-radius: 0.35rem;
+          padding: 0.7rem 0.75rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          font-size: 0.72rem;
+          line-height: 1.35;
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-rsvp-bubble) {
+          background: #1e5bff;
+          color: #fff;
+          border: 3px solid #111;
+          padding: 0.7rem 0.75rem 1rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          font-size: 0.72rem;
+          line-height: 1.3;
+          clip-path: polygon(
+            0% 0%,
+            100% 0%,
+            100% 78%,
+            72% 78%,
+            58% 100%,
+            58% 78%,
+            0% 78%
+          );
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-footer-art) {
+          position: relative;
+          margin: 0 -0.9rem;
+          min-height: 56px;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-footer-art .superburst-skyline) {
+          display: block;
+          width: 100%;
+          height: 52px;
+          opacity: 0.92;
+          color: #5a0000;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-footer-art .superburst-skyline path) {
+          fill: #5a0000;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-smoke) {
+          position: absolute;
+          right: 0.35rem;
+          bottom: 0.1rem;
+          width: 42%;
+          height: auto;
+          opacity: 0.95;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-actions .btn-primary) {
+          background: #1e5bff;
+          border: 3px solid #111;
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-actions .btn-ghost) {
+          background: #fff;
+          color: #111;
+          border: 3px solid #111;
+          box-shadow: 3px 3px 0 #ffd400;
         }
 
         :global(.invite-cover[data-layout="festive"] .invite-cover-atmosphere-veil) {

@@ -186,7 +186,9 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
         ? "20"
         : resolveInviteLayout(event.templateId) === "superhero"
           ? "7"
-          : "");
+          : resolveInviteLayout(event.templateId) === "spiderweb"
+            ? "6"
+            : "");
     })(),
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -691,12 +693,13 @@ export default function EventCustomizer({
               <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
             {resolveInviteLayout(draft.templateId) === "collage" ||
-            resolveInviteLayout(draft.templateId) === "superhero" ? (
+            resolveInviteLayout(draft.templateId) === "superhero" ||
+            resolveInviteLayout(draft.templateId) === "spiderweb" ? (
               <label>
                 <span>
-                  {resolveInviteLayout(draft.templateId) === "superhero"
-                    ? "Age on shield"
-                    : t.balloonDigits}
+                  {resolveInviteLayout(draft.templateId) === "collage"
+                    ? t.balloonDigits
+                    : "Age on invite"}
                 </span>
                 <input
                   inputMode="numeric"
@@ -710,15 +713,17 @@ export default function EventCustomizer({
                     )
                   }
                   placeholder={
-                    resolveInviteLayout(draft.templateId) === "superhero"
-                      ? "7"
-                      : "20"
+                    resolveInviteLayout(draft.templateId) === "collage"
+                      ? "20"
+                      : resolveInviteLayout(draft.templateId) === "spiderweb"
+                        ? "6"
+                        : "7"
                   }
                 />
                 <span className="field-hint">
-                  {resolveInviteLayout(draft.templateId) === "superhero"
-                    ? "1–2 digit age shown in the comic shield."
-                    : t.balloonDigitsHint}
+                  {resolveInviteLayout(draft.templateId) === "collage"
+                    ? t.balloonDigitsHint
+                    : "1–2 digit age shown on the comic invite."}
                 </span>
               </label>
             ) : null}
@@ -878,7 +883,9 @@ export default function EventCustomizer({
                           ? prev.balloonDigits || "20"
                           : tpl.layout === "superhero"
                             ? prev.balloonDigits || "7"
-                            : prev.balloonDigits,
+                            : tpl.layout === "spiderweb"
+                              ? prev.balloonDigits || "6"
+                              : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
                     };

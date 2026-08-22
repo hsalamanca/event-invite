@@ -27,6 +27,7 @@ type InviteCoverProps = {
   superIsTurning?: string;
   superJoinUs?: string;
   superBirthday?: string;
+  spiderLetsCelebrate?: string;
   festiveParty?: string;
   toyPartyInvite?: string;
   modernCelebrate?: string;
@@ -98,6 +99,35 @@ function possessiveName(name: string): string {
   const upper = trimmed.toUpperCase();
   if (/[S]$/i.test(trimmed)) return `${upper}'`;
   return `${upper}'S`;
+}
+
+function SpiderSilhouette() {
+  return (
+    <svg className="spider-icon" viewBox="0 0 120 140" aria-hidden>
+      <ellipse cx="60" cy="58" rx="22" ry="26" fill="#111" />
+      <circle cx="60" cy="36" r="14" fill="#111" />
+      <path
+        d="M38 48 C10 30 4 18 8 8 M38 58 C8 58 2 70 6 86 M40 70 C14 86 10 104 16 118 M82 48 C110 30 116 18 112 8 M82 58 C112 58 118 70 114 86 M80 70 C106 86 110 104 104 118"
+        fill="none"
+        stroke="#111"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <circle cx="54" cy="34" r="2.2" fill="#fff" />
+      <circle cx="66" cy="34" r="2.2" fill="#fff" />
+    </svg>
+  );
+}
+
+function SpiderCitySmoke() {
+  return (
+    <svg className="spider-smoke" viewBox="0 0 160 70" aria-hidden>
+      <ellipse cx="40" cy="48" rx="28" ry="16" fill="#f2f2f2" />
+      <ellipse cx="70" cy="42" rx="24" ry="18" fill="#e4e4e4" />
+      <ellipse cx="105" cy="50" rx="30" ry="16" fill="#f7f7f7" />
+      <ellipse cx="130" cy="44" rx="18" ry="12" fill="#ddd" />
+    </svg>
+  );
 }
 
 function BalloonGarland() {
@@ -628,7 +658,7 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </div>
     );
   }
-  if (layout === "superhero" || layout === "superburst") {
+  if (layout === "superhero" || layout === "superburst" || layout === "spiderweb") {
     return null;
   }
   if (layout === "collage") {
@@ -845,6 +875,7 @@ export default function InviteCover({
   superIsTurning,
   superJoinUs,
   superBirthday,
+  spiderLetsCelebrate,
   festiveParty,
   toyPartyInvite,
   modernCelebrate,
@@ -886,6 +917,7 @@ export default function InviteCover({
   const isComic = layout === "comic";
   const isSuperhero = layout === "superhero";
   const isSuperburst = layout === "superburst";
+  const isSpiderweb = layout === "spiderweb";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
   const isSplash = layout === "splash";
@@ -957,6 +989,7 @@ export default function InviteCover({
 
       {isComic || isSuperhero ? <div className="comic-halftone" aria-hidden /> : null}
       {isSuperburst ? <div className="superburst-rays" aria-hidden /> : null}
+      {isSpiderweb ? <div className="spider-web-overlay" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
@@ -1100,6 +1133,84 @@ export default function InviteCover({
               </div>
               {!printMode ? (
                 <div className="super-actions">
+                  {isPast || !rsvpEnabled ? (
+                    <a className="btn-primary" href="#guestbook">
+                      {leaveNoteLabel}
+                    </a>
+                  ) : (
+                    <a className="btn-primary" href="#rsvp">
+                      {rsvpLabel}
+                    </a>
+                  )}
+                  <a className="btn-ghost" href="#details">
+                    {detailsLabel}
+                  </a>
+                </div>
+              ) : (
+                <div className="invite-card-print-footer">
+                  {qrUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={qrUrl}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="invite-card-print-qr"
+                    />
+                  ) : null}
+                  {inviteUrl ? (
+                    <p className="invite-card-print-url">{inviteUrl}</p>
+                  ) : null}
+                </div>
+              )}
+            </>
+          ) : isSpiderweb ? (
+            <>
+              <div
+                className="spider-card"
+                style={
+                  {
+                    backgroundImage: `linear-gradient(180deg, rgba(212,0,0,0.55), rgba(150,0,0,0.78)), url(${heroImage})`,
+                  } as CSSProperties
+                }
+              >
+                <div className="spider-top">
+                  <div className="spider-date-burst">
+                    <p>
+                      {[weekdayLabel, dateShortLabel || dateLabel]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                    <p>{timeLabel}</p>
+                  </div>
+                  <SpiderSilhouette />
+                </div>
+                <p className="spider-celebrate">
+                  {spiderLetsCelebrate || "Let's celebrate!"}
+                </p>
+                <div className="spider-name-burst">
+                  <h1 className="spider-name">{headline}</h1>
+                  <p className="spider-age" aria-label={`Age ${ageDigit}`}>
+                    {ageDigit}
+                  </p>
+                </div>
+                <div className="spider-bottom">
+                  <div className="spider-address">
+                    {[venue, address].filter(Boolean).join(", ") || "Address TBA"}
+                  </div>
+                  <div className="spider-rsvp-bubble">
+                    {contactPhone
+                      ? `RSVP TO: ${contactPhone}`
+                      : `RSVP · ${rsvpLabel}`}
+                  </div>
+                </div>
+                <div className="spider-footer-art" aria-hidden>
+                  <SuperCitySkyline />
+                  <SpiderCitySmoke />
+                </div>
+              </div>
+              {!printMode ? (
+                <div className="super-actions spider-actions">
                   {isPast || !rsvpEnabled ? (
                     <a className="btn-primary" href="#guestbook">
                       {leaveNoteLabel}

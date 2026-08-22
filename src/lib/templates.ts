@@ -30,6 +30,7 @@ export type InviteLayout =
   | "comic"
   | "superhero"
   | "superburst"
+  | "spiderweb"
   | "festive"
   | "toybox"
   | "azure"
@@ -252,6 +253,19 @@ const superBurst: Theme = {
     textMuted: "#444444",
   },
   fonts: { display: "Anton", body: "Outfit" },
+};
+
+/** Comic spider-web kids birthday — red web field, yellow burst, blue accents */
+const spiderKids: Theme = {
+  colors: {
+    background: "#D40000",
+    surface: "#C10000",
+    accentPrimary: "#FFD400",
+    accentSecondary: "#1E5BFF",
+    textPrimary: "#FFFFFF",
+    textMuted: "#FFE8E8",
+  },
+  fonts: { display: "Bangers", body: "Outfit" },
 };
 
 /** Canva Multicolored Festive Birthday — rainbow balloons & confetti */
@@ -903,6 +917,25 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs: "¡Ponte el traje — pastel, juegos y diversión de cómic!",
   },
   {
+    id: "spider-kids",
+    name: "Spider kids",
+    nameEs: "Fiesta araña",
+    description:
+      "Comic spider-web kids birthday — red web background, yellow name burst, blue date & RSVP bubbles.",
+    descriptionEs:
+      "Cumpleaños cómic de araña — fondo de telaraña rojo, ráfaga amarilla con nombre y burbujas azules.",
+    inspiredBy: "Canva Spiderman-style comic kids birthday invitation",
+    inspiredByEs: "Canva invitación cómic infantil estilo Spiderman",
+    categories: ["birthday", "party", "baby"],
+    layout: "spiderweb",
+    theme: spiderKids,
+    heroImage: "/templates/spider-kids-hero.png",
+    headline: "Tommy",
+    headlineEs: "Tommy",
+    tagline: "Swing by for cake, games, and web-slinging fun!",
+    taglineEs: "¡Ven por pastel, juegos y diversión de telaraña!",
+  },
+  {
     id: "festive-rainbow",
     name: "Festive rainbow",
     nameEs: "Arcoíris festivo",
@@ -1407,7 +1440,9 @@ export function buildEventFromTemplate(input: {
         ? "20"
         : tpl.layout === "superhero"
           ? "7"
-          : null,
+          : tpl.layout === "spiderweb"
+            ? "6"
+            : null,
     customDomain: null,
     rsvpFields: defaultRsvpFields(input.dateISO, {
       locale: input.locale,

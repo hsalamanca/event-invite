@@ -235,6 +235,7 @@ export type Dictionary = {
     superIsTurning: string;
     superJoinUs: string;
     superBirthday: string;
+    spiderLetsCelebrate: string;
     festiveParty: string;
     toyPartyInvite: string;
     splashInvite: string;
@@ -629,6 +630,7 @@ const en: Dictionary = {
     superIsTurning: "is turning",
     superJoinUs: "Join us for",
     superBirthday: "Birthday",
+    spiderLetsCelebrate: "Let's celebrate!",
     festiveParty: "is throwing a birthday party",
     toyPartyInvite: "invites you to a toy party",
     splashInvite: "invites you to a birthday party",
@@ -1037,6 +1039,7 @@ const es: Dictionary = {
     superIsTurning: "cumple",
     superJoinUs: "Acompáñanos a",
     superBirthday: "Cumpleaños",
+    spiderLetsCelebrate: "¡A celebrar!",
     festiveParty: "te invita a una fiesta de cumpleaños",
     toyPartyInvite: "te invita a una fiesta de juguetes",
     splashInvite: "te invita a una fiesta de cumpleaños",
