@@ -182,7 +182,11 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
       const digits = String(event.balloonDigits ?? "")
         .replace(/\D/g, "")
         .slice(0, 2);
-      return digits || (resolveInviteLayout(event.templateId) === "collage" ? "20" : "");
+      return digits || (resolveInviteLayout(event.templateId) === "collage"
+        ? "20"
+        : resolveInviteLayout(event.templateId) === "superhero"
+          ? "7"
+          : "");
     })(),
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -686,9 +690,14 @@ export default function EventCustomizer({
               />
               <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
-            {resolveInviteLayout(draft.templateId) === "collage" ? (
+            {resolveInviteLayout(draft.templateId) === "collage" ||
+            resolveInviteLayout(draft.templateId) === "superhero" ? (
               <label>
-                <span>{t.balloonDigits}</span>
+                <span>
+                  {resolveInviteLayout(draft.templateId) === "superhero"
+                    ? "Age on shield"
+                    : t.balloonDigits}
+                </span>
                 <input
                   inputMode="numeric"
                   maxLength={2}
@@ -700,9 +709,17 @@ export default function EventCustomizer({
                       e.target.value.replace(/\D/g, "").slice(0, 2),
                     )
                   }
-                  placeholder="20"
+                  placeholder={
+                    resolveInviteLayout(draft.templateId) === "superhero"
+                      ? "7"
+                      : "20"
+                  }
                 />
-                <span className="field-hint">{t.balloonDigitsHint}</span>
+                <span className="field-hint">
+                  {resolveInviteLayout(draft.templateId) === "superhero"
+                    ? "1–2 digit age shown in the comic shield."
+                    : t.balloonDigitsHint}
+                </span>
               </label>
             ) : null}
             <label>
@@ -859,7 +876,9 @@ export default function EventCustomizer({
                       balloonDigits:
                         tpl.layout === "collage"
                           ? prev.balloonDigits || "20"
-                          : prev.balloonDigits,
+                          : tpl.layout === "superhero"
+                            ? prev.balloonDigits || "7"
+                            : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
                     };
