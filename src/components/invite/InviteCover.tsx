@@ -1166,22 +1166,11 @@ export default function InviteCover({
             </>
           ) : isSpiderweb ? (
             <>
-              <div
-                className="spider-card"
-                style={
-                  {
-                    backgroundImage: `linear-gradient(180deg, rgba(212,0,0,0.55), rgba(150,0,0,0.78)), url(${heroImage})`,
-                  } as CSSProperties
-                }
-              >
+              <div className="spider-card">
                 <div className="spider-top">
-                  <div className="spider-date-burst">
-                    <p>
-                      {[weekdayLabel, dateShortLabel || dateLabel]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </p>
-                    <p>{timeLabel}</p>
+                  <div className="spider-photo-frame">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={heroImage} alt="" />
                   </div>
                   <SpiderSilhouette />
                 </div>
@@ -1208,23 +1197,34 @@ export default function InviteCover({
                   <SuperCitySkyline />
                   <SpiderCitySmoke />
                 </div>
-              </div>
-              {!printMode ? (
-                <div className="super-actions spider-actions">
-                  {isPast || !rsvpEnabled ? (
-                    <a className="btn-primary" href="#guestbook">
-                      {leaveNoteLabel}
-                    </a>
-                  ) : (
-                    <a className="btn-primary" href="#rsvp">
-                      {rsvpLabel}
-                    </a>
-                  )}
-                  <a className="btn-ghost" href="#details">
-                    {detailsLabel}
-                  </a>
+                <div className="spider-card-bar">
+                  <div className="spider-date-footer">
+                    <p>
+                      {[weekdayLabel, dateShortLabel || dateLabel]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                    {timeLabel ? <p>{timeLabel}</p> : null}
+                  </div>
+                  {!printMode ? (
+                    <div className="super-actions spider-actions">
+                      {isPast || !rsvpEnabled ? (
+                        <a className="btn-primary" href="#guestbook">
+                          {leaveNoteLabel}
+                        </a>
+                      ) : (
+                        <a className="btn-primary" href="#rsvp">
+                          {rsvpLabel}
+                        </a>
+                      )}
+                      <a className="btn-ghost" href="#details">
+                        {detailsLabel}
+                      </a>
+                    </div>
+                  ) : null}
                 </div>
-              ) : (
+              </div>
+              {printMode ? (
                 <div className="invite-card-print-footer">
                   {qrUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -1240,7 +1240,7 @@ export default function InviteCover({
                     <p className="invite-card-print-url">{inviteUrl}</p>
                   ) : null}
                 </div>
-              )}
+              ) : null}
             </>
           ) : (
             <>

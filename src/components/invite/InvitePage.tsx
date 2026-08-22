@@ -2593,9 +2593,9 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="spiderweb"] .spider-card) {
           position: relative;
           z-index: 1;
-          padding: 1rem 0.9rem 0.35rem;
-          background-size: cover;
-          background-position: center top;
+          padding: 1rem 0.9rem 0.65rem;
+          background:
+            linear-gradient(180deg, #d40000 0%, #b00000 55%, #8a0000 100%);
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-top) {
@@ -2605,40 +2605,23 @@ export default function InvitePage({
           gap: 0.75rem;
         }
 
-        :global(.invite-cover[data-layout="spiderweb"] .spider-date-burst) {
-          max-width: 58%;
-          padding: 0.7rem 0.85rem;
-          background: #1e5bff;
-          border: 3px solid #111;
-          color: #fff;
-          text-align: center;
-          clip-path: polygon(
-            8% 0%,
-            22% 10%,
-            38% 0%,
-            55% 12%,
-            72% 0%,
-            90% 14%,
-            100% 35%,
-            90% 58%,
-            100% 78%,
-            82% 100%,
-            58% 90%,
-            38% 100%,
-            18% 88%,
-            0% 70%,
-            10% 45%,
-            0% 22%
-          );
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          font-size: 0.72rem;
-          line-height: 1.25;
+        :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame) {
+          width: min(42%, 148px);
+          aspect-ratio: 1;
+          border: 4px solid #111;
+          background: #fff;
+          box-shadow: 4px 4px 0 #111;
+          overflow: hidden;
+          transform: rotate(-3deg);
+          flex-shrink: 0;
         }
 
-        :global(.invite-cover[data-layout="spiderweb"] .spider-date-burst p) {
-          margin: 0.1rem 0;
+        :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame img) {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-icon) {
@@ -2799,6 +2782,52 @@ export default function InvitePage({
           width: 42%;
           height: auto;
           opacity: 0.95;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-card-bar) {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.65rem;
+          flex-wrap: wrap;
+          margin-top: 0.35rem;
+          padding-top: 0.55rem;
+          border-top: 3px solid rgba(0, 0, 0, 0.28);
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-date-footer) {
+          flex: 1 1 140px;
+          min-width: 0;
+          background: #1e5bff;
+          border: 3px solid #111;
+          color: #fff;
+          padding: 0.55rem 0.7rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          font-size: 0.7rem;
+          line-height: 1.25;
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-date-footer p) {
+          margin: 0.08rem 0;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-card-bar .spider-actions) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+          margin: 0;
+          flex: 1 1 auto;
+          justify-content: flex-end;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-actions .btn-primary),
+        :global(.invite-cover[data-layout="spiderweb"] .spider-actions .btn-ghost) {
+          margin: 0;
+          padding: 0.55rem 0.85rem;
+          font-size: 0.78rem;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-actions .btn-primary) {
