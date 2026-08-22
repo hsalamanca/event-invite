@@ -1,5 +1,6 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { normalizeUploadImage } from "@/lib/normalize-upload-image";
 
 const MAX_BYTES = 8 * 1024 * 1024; // 8MB
 const ALLOWED = new Set([
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(
       { error: "Image uploads are not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -27,31 +28,33 @@ export async function POST(request: Request) {
   if (!ALLOWED.has(file.type)) {
     return NextResponse.json(
       { error: "Use JPG, PNG, WEBP, or GIF" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json(
       { error: "Image must be under 8MB" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const ext =
-    file.type === "image/png"
-      ? "png"
-      : file.type === "image/webp"
-        ? "webp"
-        : file.type === "image/gif"
-          ? "gif"
-          : "jpg";
+  let normalized;
+  try {
+    const input = Buffer.from(await file.arrayBuffer());
+    normalized = await normalizeUploadImage(input, file.type);
+  } catch {
+    return NextResponse.json(
+      { error: "Could not process that image. Try another photo." },
+      { status: 400 },
+    );
+  }
 
-  const pathname = `media/${slug || "event"}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const pathname = `media/${slug || "event"}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${normalized.extension}`;
 
-  const blob = await put(pathname, file, {
+  const blob = await put(pathname, normalized.buffer, {
     access: "private",
     addRandomSuffix: false,
-    contentType: file.type,
+    contentType: normalized.contentType,
     token: process.env.BLOB_READ_WRITE_TOKEN,
   });
 
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
     ok: true,
     pathname: blob.pathname,
     url: publicUrl,
-    contentType: file.type,
-    size: file.size,
+    contentType: normalized.contentType,
+    size: normalized.buffer.byteLength,
   });
 }
