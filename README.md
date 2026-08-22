@@ -59,6 +59,17 @@ Full walkthrough: [`/domains`](https://ownvite.com/domains) · [`docs/CUSTOM_DOM
 
 Next.js App Router · TypeScript · Tailwind · file-backed RSVP store (MVP)
 
+## Deploy (Vercel)
+
+Production is **Vercel**, wired to this GitHub repo:
+
+- Push / merge to **`main`** → **production** deploy
+- Push to any other branch → **preview** deploy
+
+Details: [`docs/VERCEL.md`](docs/VERCEL.md)
+
+## Docs
+
 ## First event
 
 The seeded demo is **H Salamanca · Birthday** (`data/birthday-demo.json`) — edit it in the host studio and share `/e/h-birthday-2026`.
