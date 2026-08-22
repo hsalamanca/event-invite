@@ -2607,16 +2607,17 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-stack) {
           position: relative;
-          width: min(48%, 168px);
+          width: min(52%, 180px);
           flex-shrink: 0;
           display: grid;
           place-items: center;
+          overflow: visible;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-web) {
           position: absolute;
-          width: 148%;
-          height: 148%;
+          width: 230%;
+          height: 230%;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%) rotate(-6deg);
