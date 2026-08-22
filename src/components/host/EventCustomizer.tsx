@@ -186,9 +186,7 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
         ? "20"
         : resolveInviteLayout(event.templateId) === "superhero"
           ? "7"
-          : resolveInviteLayout(event.templateId) === "spiderweb"
-            ? "6"
-            : "");
+          : "");
     })(),
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -716,14 +714,16 @@ export default function EventCustomizer({
                     resolveInviteLayout(draft.templateId) === "collage"
                       ? "20"
                       : resolveInviteLayout(draft.templateId) === "spiderweb"
-                        ? "6"
+                        ? "Optional"
                         : "7"
                   }
                 />
                 <span className="field-hint">
                   {resolveInviteLayout(draft.templateId) === "collage"
                     ? t.balloonDigitsHint
-                    : "1–2 digit age shown on the comic invite."}
+                    : resolveInviteLayout(draft.templateId) === "spiderweb"
+                      ? "Optional. Leave blank to hide the age on the invite."
+                      : "1–2 digit age shown on the comic invite."}
                 </span>
               </label>
             ) : null}
@@ -883,9 +883,7 @@ export default function EventCustomizer({
                           ? prev.balloonDigits || "20"
                           : tpl.layout === "superhero"
                             ? prev.balloonDigits || "7"
-                            : tpl.layout === "spiderweb"
-                              ? prev.balloonDigits || "6"
-                              : prev.balloonDigits,
+                            : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
                     };

@@ -1440,9 +1440,7 @@ export function buildEventFromTemplate(input: {
         ? "20"
         : tpl.layout === "superhero"
           ? "7"
-          : tpl.layout === "spiderweb"
-            ? "6"
-            : null,
+          : null,
     customDomain: null,
     rsvpFields: defaultRsvpFields(input.dateISO, {
       locale: input.locale,

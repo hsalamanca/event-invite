@@ -2619,8 +2619,8 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-web) {
           position: absolute;
-          width: 158%;
-          height: 158%;
+          width: 178%;
+          height: 178%;
           max-width: none;
           top: 50%;
           left: 50%;
@@ -2686,7 +2686,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="spiderweb"] .spider-name-burst) {
           margin: 0.35rem auto 0.9rem;
           width: min(100%, 320px);
-          min-height: 210px;
+          min-height: 180px;
           display: grid;
           place-content: center;
           gap: 0.15rem;
@@ -2714,6 +2714,12 @@ export default function InvitePage({
             0% 28%
           );
           box-shadow: 0 0 0 2px #111;
+          padding: 1.1rem 1rem 1.25rem;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-name-burst:has(.spider-age)) {
+          min-height: 210px;
+          padding: 0.35rem 1rem;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-name) {

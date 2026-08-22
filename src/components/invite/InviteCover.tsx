@@ -969,7 +969,11 @@ export default function InviteCover({
   const isQuince = layout === "quince";
   const isFifty = layout === "fifty";
 
-  const ageDigit = String(balloonDigits ?? "7").replace(/\D/g, "").slice(0, 2) || "7";
+  const ageDigitsRaw = String(balloonDigits ?? "")
+    .replace(/\D/g, "")
+    .slice(0, 2);
+  // Spider kids: age is optional — blank hides it. Other comic layouts keep a fallback.
+  const ageDigit = ageDigitsRaw || (isSpiderweb ? "" : "7");
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
@@ -1224,9 +1228,11 @@ export default function InviteCover({
                 </p>
                 <div className="spider-name-burst">
                   <h1 className="spider-name">{headline}</h1>
-                  <p className="spider-age" aria-label={`Age ${ageDigit}`}>
-                    {ageDigit}
-                  </p>
+                  {ageDigit ? (
+                    <p className="spider-age" aria-label={`Age ${ageDigit}`}>
+                      {ageDigit}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="spider-bottom">
                   <div className="spider-address">
