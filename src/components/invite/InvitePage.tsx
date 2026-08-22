@@ -2338,8 +2338,9 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="superburst"] .superburst-photo-wrap) {
           position: relative;
           width: min(100%, 280px);
-          margin: 0.4rem auto 0.2rem;
+          margin: 0.4rem auto 0;
           min-height: 230px;
+          padding-bottom: 1.75rem;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-balloons) {
@@ -2386,7 +2387,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="superburst"] .superburst-ribbon) {
           position: absolute;
           left: 50%;
-          bottom: 0.35rem;
+          bottom: 0.15rem;
           z-index: 3;
           transform: translateX(-50%);
           margin: 0;
@@ -2402,13 +2403,18 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-title) {
-          margin: 0.35rem 0 0.55rem;
+          margin: 1.35rem 0.75rem 0.85rem;
           font-family: var(--font-display);
-          font-size: clamp(1.7rem, 7vw, 2.5rem);
+          font-size: clamp(1.45rem, 6.2vw, 2.15rem);
           color: #e10600;
           letter-spacing: 0.04em;
-          line-height: 1;
+          line-height: 1.12;
           text-shadow: 2px 2px 0 #111;
+          word-break: break-word;
+          overflow-wrap: anywhere;
+          max-width: 18ch;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-burst) {
