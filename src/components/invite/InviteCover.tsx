@@ -1066,26 +1066,35 @@ export default function InviteCover({
                   {(title || "Super Party").toUpperCase()}
                 </p>
                 <div className="superburst-burst">
-                  <div className="superburst-burst-left">
-                    <p className="superburst-date">
-                      {dateShortLabel || dateLabel}
-                    </p>
-                    <p className="superburst-weekday">
-                      {weekdayLabel || ""}
-                    </p>
-                    <p className="superburst-place">
-                      {[venue, address].filter(Boolean).join(", ")}
-                    </p>
-                    {contactPhone ? (
-                      <p className="superburst-rsvp">RSVP: {contactPhone}</p>
-                    ) : null}
+                  <div className="superburst-burst-inner">
+                    <div className="superburst-burst-left">
+                      <p className="superburst-date">
+                        {dateShortLabel || dateLabel}
+                      </p>
+                      {weekdayLabel ? (
+                        <p className="superburst-weekday">{weekdayLabel}</p>
+                      ) : null}
+                      {venue ? (
+                        <p className="superburst-place">{venue}</p>
+                      ) : null}
+                      {address ? (
+                        <p className="superburst-place superburst-place--address">
+                          {address}
+                        </p>
+                      ) : null}
+                      {contactPhone ? (
+                        <p className="superburst-rsvp">RSVP: {contactPhone}</p>
+                      ) : null}
+                    </div>
+                    <div className="superburst-burst-right">
+                      <div className="superburst-time-pow">
+                        <span>{timeLabel}</span>
+                      </div>
+                      <span className="superburst-bang" aria-hidden>
+                        !
+                      </span>
+                    </div>
                   </div>
-                  <div className="superburst-time-pow">
-                    <span>{timeLabel}</span>
-                  </div>
-                  <span className="superburst-bang" aria-hidden>
-                    !
-                  </span>
                 </div>
                 <SuperCitySkyline />
               </div>

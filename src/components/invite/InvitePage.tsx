@@ -2414,70 +2414,99 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="superburst"] .superburst-burst) {
           position: relative;
           z-index: 2;
-          display: grid;
-          grid-template-columns: 1fr auto auto;
-          gap: 0.55rem;
-          align-items: center;
-          margin: 0.35rem 0.4rem 0;
-          padding: 1.1rem 0.85rem 1.25rem;
+          margin: 0.45rem 0.65rem 0;
+          padding: 0.35rem;
           background: #ffd400;
           border: 3px solid #111;
+          /* Mild jagged edge — keep left/right insets so copy isn't clipped */
           clip-path: polygon(
-            3% 18%,
-            12% 0%,
-            28% 10%,
-            42% 0%,
-            58% 12%,
-            72% 0%,
-            88% 14%,
-            100% 4%,
-            97% 32%,
-            100% 58%,
-            92% 78%,
-            100% 100%,
-            70% 92%,
-            48% 100%,
-            28% 90%,
-            8% 100%,
+            1.5% 10%,
+            7% 0%,
+            18% 7%,
+            30% 0%,
+            44% 8%,
+            58% 0%,
+            72% 7%,
+            86% 0%,
+            98.5% 9%,
+            100% 28%,
+            97% 48%,
+            100% 68%,
+            97% 88%,
+            86% 100%,
+            70% 94%,
+            52% 100%,
+            34% 94%,
+            18% 100%,
+            6% 93%,
             0% 72%,
-            6% 48%
+            2% 48%,
+            0% 26%
           );
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-burst-inner) {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 0.75rem;
+          align-items: center;
+          padding: 1.15rem 1rem 1.25rem 1.2rem;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-burst-left) {
+          min-width: 0;
           text-align: left;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-burst-right) {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          flex-shrink: 0;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-date) {
           margin: 0;
           font-family: var(--font-display);
-          font-size: 1.35rem;
+          font-size: clamp(1.15rem, 4.5vw, 1.45rem);
           color: #e10600;
           letter-spacing: 0.03em;
           text-transform: uppercase;
+          word-break: break-word;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-weekday) {
-          margin: 0.1rem 0 0.35rem;
+          margin: 0.15rem 0 0.4rem;
           font-weight: 900;
           text-transform: uppercase;
           letter-spacing: 0.08em;
           font-size: 0.85rem;
+          color: #111;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-place),
         :global(.invite-cover[data-layout="superburst"] .superburst-rsvp) {
-          margin: 0.12rem 0 0;
-          font-size: 0.72rem;
+          margin: 0.18rem 0 0;
+          font-size: 0.78rem;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.03em;
-          max-width: 14rem;
+          color: #111;
+          line-height: 1.35;
+          overflow-wrap: anywhere;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-place--address) {
+          font-weight: 650;
+          opacity: 0.92;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-time-pow) {
           display: grid;
           place-items: center;
-          min-width: 4.2rem;
-          min-height: 4.2rem;
-          padding: 0.45rem;
+          min-width: 4.4rem;
+          min-height: 4.4rem;
+          padding: 0.5rem 0.45rem;
           background: #e10600;
           color: #fff;
           border: 3px solid #111;
@@ -2497,14 +2526,14 @@ export default function InvitePage({
             0% 22%
           );
           font-family: var(--font-display);
-          font-size: 1.05rem;
+          font-size: 1rem;
           text-align: center;
           line-height: 1.05;
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-bang) {
           font-family: var(--font-display);
-          font-size: 3rem;
+          font-size: 2.75rem;
           color: #e10600;
           line-height: 1;
           text-shadow: 2px 2px 0 #111;
