@@ -154,7 +154,7 @@ function SpiderWebBehind() {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       className="spider-photo-web"
-      src="/templates/spider-web-white.png"
+      src="/templates/spider-web.png"
       alt=""
       aria-hidden
     />

@@ -2628,8 +2628,8 @@ export default function InvitePage({
           z-index: 0;
           pointer-events: none;
           object-fit: contain;
-          opacity: 0.88;
-          filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.28));
+          opacity: 0.9;
+          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame) {
