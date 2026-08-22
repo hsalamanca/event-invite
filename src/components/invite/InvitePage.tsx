@@ -2340,11 +2340,7 @@ export default function InvitePage({
           width: min(100%, 280px);
           margin: 0.4rem auto 0;
           min-height: 230px;
-<<<<<<< Updated upstream
-          padding-bottom: 1.75rem;
-=======
           padding-bottom: 2.35rem;
->>>>>>> Stashed changes
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-balloons) {
@@ -2407,11 +2403,7 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="superburst"] .superburst-title) {
-<<<<<<< Updated upstream
-          margin: 1.35rem 0.75rem 0.85rem;
-=======
           margin: 1.9rem 0.75rem 0.85rem;
->>>>>>> Stashed changes
           font-family: var(--font-display);
           font-size: clamp(1.45rem, 6.2vw, 2.15rem);
           color: #e10600;
