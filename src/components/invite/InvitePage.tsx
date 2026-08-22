@@ -230,6 +230,14 @@ export default function InvitePage({
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
   const [jpegBusy, setJpegBusy] = useState(false);
   const [jpegError, setJpegError] = useState<string | null>(null);
+  const [rsvpConsent, setRsvpConsent] = useState(false);
+  const [pledgeName, setPledgeName] = useState("");
+  const [pledgeEmail, setPledgeEmail] = useState("");
+  const [pledgeAmount, setPledgeAmount] = useState("");
+  const [pledgeNote, setPledgeNote] = useState("");
+  const [pledgeBusy, setPledgeBusy] = useState(false);
+  const [pledgeDone, setPledgeDone] = useState(false);
+  const [pledgeError, setPledgeError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -427,6 +435,12 @@ export default function InvitePage({
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    if (event.rsvpConsentRequired && !rsvpConsent) {
+      setError(
+        "Please agree to receive event updates before submitting your RSVP.",
+      );
+      return;
+    }
     setSubmitting(true);
 
     const payload = {
@@ -442,6 +456,7 @@ export default function InvitePage({
       note: note.trim(),
       answers,
       mealChoice: mealChoice || undefined,
+      consent: event.rsvpConsentRequired ? true : undefined,
     };
 
     try {
@@ -582,13 +597,20 @@ export default function InvitePage({
         venue={event.venue}
         address={event.address}
         heroImage={event.heroImage}
+        heroVideoUrl={event.heroVideoUrl}
+        motionKit={event.motionKit}
         invitesYou={ui.invitesYou}
         comicPresents={ui.comicPresents}
+        superYouAreInvited={ui.superYouAreInvited}
+        superIsTurning={ui.superIsTurning}
+        superJoinUs={ui.superJoinUs}
+        superBirthday={ui.superBirthday}
         festiveParty={ui.festiveParty}
         toyPartyInvite={ui.toyPartyInvite}
         splashInvite={ui.splashInvite}
         collageInvite={ui.collageInvite}
         balloonDigits={event.balloonDigits}
+        contactPhone={event.contactPhone}
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
@@ -675,7 +697,7 @@ export default function InvitePage({
         </section>
       ) : null}
 
-      {event.registryUrl || event.cashFundUrl ? (
+      {event.registryUrl || event.cashFundUrl || event.cashFundGoal ? (
         <section id="registry" className="invite-section">
           <h2 className="invite-section-title">
             {event.registryLabel ||
@@ -683,6 +705,36 @@ export default function InvitePage({
               ui.registry}
           </h2>
           <p className="invite-prompt">{ui.registryPrompt}</p>
+          {event.cashFundGoal ? (
+            <div style={{ marginBottom: "1rem", maxWidth: "28rem" }}>
+              <p className="invite-prompt" style={{ marginBottom: "0.35rem" }}>
+                Cash fund · $
+                {Math.round(
+                  (event.cashFundRaised ?? 0),
+                ).toLocaleString()}{" "}
+                of ${Math.round(event.cashFundGoal).toLocaleString()}
+              </p>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "color-mix(in srgb, var(--invite-muted) 25%, transparent)",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${Math.min(
+                      100,
+                      ((event.cashFundRaised ?? 0) / event.cashFundGoal) * 100,
+                    )}%`,
+                    background: "var(--invite-accent)",
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
           <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
             {event.registryUrl ? (
               <a
@@ -707,6 +759,138 @@ export default function InvitePage({
               </a>
             ) : null}
           </p>
+          {event.cashFundUrl || event.cashFundGoal ? (
+            <form
+              className="rsvp-form"
+              style={{ marginTop: "1.25rem" }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void (async () => {
+                  setPledgeBusy(true);
+                  setPledgeError(null);
+                  try {
+                    const res = await fetch(
+                      `/api/events/${encodeURIComponent(event.slug)}/gifts`,
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          action: "pledge",
+                          name: pledgeName || name,
+                          email: pledgeEmail || email,
+                          kind: "cash",
+                          amount: Number(pledgeAmount) || undefined,
+                          note: pledgeNote,
+                        }),
+                      },
+                    );
+                    const data = (await res.json()) as { error?: string };
+                    if (!res.ok) throw new Error(data.error || "Could not save");
+                    setPledgeDone(true);
+                  } catch (err) {
+                    setPledgeError(
+                      err instanceof Error ? err.message : "Could not save",
+                    );
+                  } finally {
+                    setPledgeBusy(false);
+                  }
+                })();
+              }}
+            >
+              <p className="invite-prompt">Tell the hosts you contributed</p>
+              {pledgeDone ? (
+                <p className="rsvp-success-sub">Thank you — we noted your gift.</p>
+              ) : (
+                <>
+                  <label className="rsvp-field">
+                    <span>Name</span>
+                    <input
+                      required
+                      value={pledgeName}
+                      onChange={(e) => setPledgeName(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Email</span>
+                    <input
+                      required
+                      type="email"
+                      value={pledgeEmail}
+                      onChange={(e) => setPledgeEmail(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Amount (optional)</span>
+                    <input
+                      type="number"
+                      min={0}
+                      step="1"
+                      value={pledgeAmount}
+                      onChange={(e) => setPledgeAmount(e.target.value)}
+                    />
+                  </label>
+                  <label className="rsvp-field">
+                    <span>Note</span>
+                    <input
+                      value={pledgeNote}
+                      onChange={(e) => setPledgeNote(e.target.value)}
+                    />
+                  </label>
+                  {pledgeError ? (
+                    <p className="rsvp-error" role="alert">
+                      {pledgeError}
+                    </p>
+                  ) : null}
+                  <button
+                    type="submit"
+                    className="btn-ghost"
+                    disabled={pledgeBusy}
+                  >
+                    {pledgeBusy ? "Saving…" : "Log my gift"}
+                  </button>
+                </>
+              )}
+            </form>
+          ) : null}
+        </section>
+      ) : null}
+
+      {success && event.printAffiliateEnabled !== false ? (
+        <section className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">Match your stationery</h2>
+          <p className="invite-prompt">
+            Print save-the-dates or day-of cards that match this invite.
+          </p>
+          <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+            <a
+              className="btn-primary"
+              href={`https://www.minted.com/search?phrase=${encodeURIComponent(event.title)}&utm_source=ownvite&utm_medium=affiliate`}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+            >
+              Browse Minted
+            </a>
+            <a
+              className="btn-ghost"
+              href={`/e/${event.slug}/print/postcard`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Download JPEG postcard
+            </a>
+          </p>
+        </section>
+      ) : null}
+
+      {event.guestSeatingEnabled ? (
+        <section className="invite-section">
+          <h2 className="invite-section-title">Find your table</h2>
+          <p className="invite-prompt">
+            Look up your seating assignment with the email you RSVP&apos;d with.
+          </p>
+          <a className="btn-primary" href={`/e/${event.slug}/table`}>
+            Open seating lookup
+          </a>
         </section>
       ) : null}
 
@@ -1163,6 +1347,21 @@ export default function InvitePage({
                 placeholder={ui.note}
               />
             </label>
+
+            {event.rsvpConsentRequired ? (
+              <label className="rsvp-check" style={{ marginTop: "0.5rem" }}>
+                <input
+                  type="checkbox"
+                  checked={rsvpConsent}
+                  onChange={(e) => setRsvpConsent(e.target.checked)}
+                  required
+                />
+                <span>
+                  I agree to receive event updates by email/SMS and understand I
+                  can reply STOP to opt out of texts.
+                </span>
+              </label>
+            ) : null}
 
             {error && (
               <p className="rsvp-error" role="alert">
@@ -1881,6 +2080,441 @@ export default function InvitePage({
           50% {
             transform: rotate(-4deg) scale(1.08);
           }
+        }
+
+        /* —— Super party (duo comic / age shield) —— */
+        :global(.invite-cover[data-layout="superhero"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(circle at 50% 30%, rgba(255, 243, 176, 0.55), transparent 55%),
+            linear-gradient(180deg, rgba(11, 18, 32, 0.35), rgba(255, 243, 176, 0.92) 70%);
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 4px solid #111;
+          border-radius: 1.15rem;
+          background: #fff3b0;
+          box-shadow: 8px 8px 0 #111;
+          padding: 0;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-banner) {
+          background: #0b1220;
+          padding: 0.85rem 1rem;
+          text-align: center;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-banner-title) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: clamp(1.6rem, 6vw, 2.4rem);
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #ffe566;
+          line-height: 1;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-invited) {
+          margin: 0;
+          background: #fff;
+          border-bottom: 3px solid #111;
+          padding: 0.45rem 1rem;
+          text-align: center;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          font-size: 0.78rem;
+          color: #111;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-hero-stage) {
+          position: relative;
+          min-height: 280px;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-hero-art) {
+          display: block;
+          width: 100%;
+          height: 320px;
+          object-fit: cover;
+          object-position: center 30%;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-center-copy) {
+          position: absolute;
+          inset: 8% 12% auto;
+          text-align: center;
+          z-index: 2;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-name) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: clamp(2.4rem, 10vw, 3.6rem);
+          color: #e30613;
+          text-shadow: 3px 3px 0 #111;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          line-height: 0.95;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-turning) {
+          margin: 0.15rem 0 0.55rem;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          font-size: 0.78rem;
+          color: #111;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-shield) {
+          width: 88px;
+          height: 100px;
+          margin: 0 auto;
+          display: grid;
+          place-items: center;
+          background: #ffe566;
+          border: 5px solid #e30613;
+          clip-path: polygon(50% 0%, 100% 22%, 100% 70%, 50% 100%, 0% 70%, 0% 22%);
+          box-shadow: 0 0 0 3px #111;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-shield-age) {
+          font-family: var(--font-display);
+          font-size: 2.6rem;
+          color: #e30613;
+          text-shadow: 2px 2px 0 #111;
+          line-height: 1;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-pow) {
+          position: relative;
+          margin: -2.4rem 0.75rem 0.85rem;
+          background: #111;
+          color: #fff;
+          clip-path: polygon(
+            4% 12%,
+            18% 0%,
+            38% 8%,
+            55% 0%,
+            78% 10%,
+            96% 2%,
+            100% 28%,
+            94% 55%,
+            100% 78%,
+            82% 100%,
+            55% 92%,
+            32% 100%,
+            10% 90%,
+            0% 68%,
+            6% 40%
+          );
+          padding: 1.6rem 1.4rem 2rem;
+          z-index: 3;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-pow-inner) {
+          text-align: center;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-pow-line) {
+          margin: 0.2rem 0;
+          font-size: 0.82rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-bam) {
+          position: absolute;
+          left: 50%;
+          bottom: -0.35rem;
+          transform: translateX(-50%);
+          background: #e30613;
+          color: #ffe566;
+          border: 3px solid #111;
+          padding: 0.2rem 0.55rem;
+          font-family: var(--font-display);
+          font-size: 1.1rem;
+          letter-spacing: 0.06em;
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .super-actions),
+        :global(.invite-cover[data-layout="superburst"] .super-actions) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem;
+          justify-content: center;
+          padding: 0 1rem 1.15rem;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .btn-primary),
+        :global(.invite-cover[data-layout="superburst"] .btn-primary) {
+          border: 3px solid #111;
+          border-radius: 0.55rem;
+          box-shadow: 3px 3px 0 #111;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 800;
+        }
+
+        :global(.invite-cover[data-layout="superhero"] .btn-ghost),
+        :global(.invite-cover[data-layout="superburst"] .btn-ghost) {
+          border: 3px solid #111;
+          border-radius: 0.55rem;
+          background: #fff;
+          box-shadow: 3px 3px 0 var(--invite-accent-2);
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          font-weight: 800;
+        }
+
+        /* —— Birthday super (hex photo / comic burst) —— */
+        :global(.invite-cover[data-layout="superburst"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(circle at 50% 40%, rgba(255, 212, 0, 0.25), transparent 50%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.2), #fff 80%);
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 4px solid #111;
+          border-radius: 1.2rem;
+          background: #fff;
+          box-shadow: 8px 8px 0 #111;
+          padding: 0;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-rays) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.22;
+          background: repeating-conic-gradient(
+            from 0deg at 50% 42%,
+            #cfcfcf 0deg 6deg,
+            transparent 6deg 12deg
+          );
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-card) {
+          position: relative;
+          z-index: 1;
+          padding: 1.1rem 0.85rem 0;
+          text-align: center;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-join) {
+          display: inline-block;
+          margin: 0 auto;
+          background: #ffd400;
+          border: 2px solid #111;
+          padding: 0.28rem 0.7rem;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-name) {
+          margin: 0.55rem 0 0.35rem;
+          font-family: var(--font-display);
+          font-size: clamp(2.6rem, 11vw, 4rem);
+          color: #e10600;
+          letter-spacing: 0.02em;
+          line-height: 0.92;
+          text-shadow:
+            -2px -2px 0 #fff,
+            2px -2px 0 #fff,
+            -2px 2px 0 #fff,
+            2px 2px 0 #fff,
+            3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-photo-wrap) {
+          position: relative;
+          width: min(100%, 280px);
+          margin: 0.4rem auto 0.2rem;
+          min-height: 230px;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-balloons) {
+          position: absolute;
+          inset: -8% -18% auto;
+          width: 136%;
+          left: -18%;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-shield) {
+          position: absolute;
+          left: 50%;
+          top: 18%;
+          width: 78%;
+          aspect-ratio: 1;
+          transform: translateX(-50%) rotate(8deg);
+          background: #e10600;
+          clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+          z-index: 0;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-hex) {
+          position: relative;
+          z-index: 2;
+          width: 72%;
+          margin: 1.4rem auto 0;
+          aspect-ratio: 1;
+          overflow: hidden;
+          background: #ffd400;
+          border: 4px solid #111;
+          clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+          box-shadow: 0 0 0 3px #ffd400;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-hex img) {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-ribbon) {
+          position: absolute;
+          left: 50%;
+          bottom: 0.35rem;
+          z-index: 3;
+          transform: translateX(-50%);
+          margin: 0;
+          background: #ffd400;
+          border: 3px solid #111;
+          padding: 0.28rem 1.4rem 0.35rem;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          clip-path: polygon(6% 0%, 94% 0%, 100% 50%, 94% 100%, 6% 100%, 0% 50%);
+          box-shadow: 3px 3px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-title) {
+          margin: 0.35rem 0 0.55rem;
+          font-family: var(--font-display);
+          font-size: clamp(1.7rem, 7vw, 2.5rem);
+          color: #e10600;
+          letter-spacing: 0.04em;
+          line-height: 1;
+          text-shadow: 2px 2px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-burst) {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: 1fr auto auto;
+          gap: 0.55rem;
+          align-items: center;
+          margin: 0.35rem 0.4rem 0;
+          padding: 1.1rem 0.85rem 1.25rem;
+          background: #ffd400;
+          border: 3px solid #111;
+          clip-path: polygon(
+            3% 18%,
+            12% 0%,
+            28% 10%,
+            42% 0%,
+            58% 12%,
+            72% 0%,
+            88% 14%,
+            100% 4%,
+            97% 32%,
+            100% 58%,
+            92% 78%,
+            100% 100%,
+            70% 92%,
+            48% 100%,
+            28% 90%,
+            8% 100%,
+            0% 72%,
+            6% 48%
+          );
+          text-align: left;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-date) {
+          margin: 0;
+          font-family: var(--font-display);
+          font-size: 1.35rem;
+          color: #e10600;
+          letter-spacing: 0.03em;
+          text-transform: uppercase;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-weekday) {
+          margin: 0.1rem 0 0.35rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.85rem;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-place),
+        :global(.invite-cover[data-layout="superburst"] .superburst-rsvp) {
+          margin: 0.12rem 0 0;
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          max-width: 14rem;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-time-pow) {
+          display: grid;
+          place-items: center;
+          min-width: 4.2rem;
+          min-height: 4.2rem;
+          padding: 0.45rem;
+          background: #e10600;
+          color: #fff;
+          border: 3px solid #111;
+          clip-path: polygon(
+            20% 0%,
+            40% 12%,
+            60% 0%,
+            80% 18%,
+            100% 30%,
+            86% 52%,
+            100% 75%,
+            72% 100%,
+            48% 88%,
+            22% 100%,
+            0% 72%,
+            14% 48%,
+            0% 22%
+          );
+          font-family: var(--font-display);
+          font-size: 1.05rem;
+          text-align: center;
+          line-height: 1.05;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-bang) {
+          font-family: var(--font-display);
+          font-size: 3rem;
+          color: #e10600;
+          line-height: 1;
+          text-shadow: 2px 2px 0 #111;
+        }
+
+        :global(.invite-cover[data-layout="superburst"] .superburst-skyline) {
+          display: block;
+          width: 100%;
+          height: 48px;
+          margin-top: -0.35rem;
         }
 
         :global(.invite-cover[data-layout="festive"] .invite-cover-atmosphere-veil) {
@@ -4962,6 +5596,37 @@ export default function InvitePage({
             break-inside: avoid;
             page-break-inside: avoid;
           }
+        }
+
+        .invite-cover[data-motion="float"] :global(.invite-card) {
+          animation: invite-float 6s ease-in-out infinite;
+        }
+        .invite-cover[data-motion="pulse"] :global(.invite-card) {
+          animation: invite-pulse 3.2s ease-in-out infinite;
+        }
+        .invite-motion-sparkle {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          background-image:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.55) 0 1px, transparent 2px),
+            radial-gradient(circle at 70% 20%, rgba(255,255,255,0.4) 0 1px, transparent 2px),
+            radial-gradient(circle at 40% 75%, rgba(255,255,255,0.35) 0 1px, transparent 2px),
+            radial-gradient(circle at 85% 60%, rgba(255,255,255,0.45) 0 1px, transparent 2px);
+          animation: invite-sparkle 4s linear infinite;
+          opacity: 0.7;
+        }
+        @keyframes invite-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes invite-pulse {
+          0%, 100% { box-shadow: 0 24px 60px rgba(0,0,0,0.12); }
+          50% { box-shadow: 0 28px 70px rgba(0,0,0,0.2); }
+        }
+        @keyframes invite-sparkle {
+          from { transform: translateY(0); opacity: 0.55; }
+          to { transform: translateY(-12px); opacity: 0.85; }
         }
       `}</style>
     </div>

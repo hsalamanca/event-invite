@@ -22,15 +22,21 @@ function slugify(input: string): string {
 export default function CreateEventWizard({
   locale = "en",
   defaultHostName = "",
+  defaultTemplateId,
 }: {
   locale?: Locale;
   defaultHostName?: string;
+  defaultTemplateId?: string;
 }) {
   const t = getDictionary(locale).create;
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState<TemplateCategory | "all">("all");
-  const [templateId, setTemplateId] = useState(TEMPLATES[0]!.id);
+  const [templateId, setTemplateId] = useState(
+    defaultTemplateId && TEMPLATES.some((tpl) => tpl.id === defaultTemplateId)
+      ? defaultTemplateId
+      : TEMPLATES[0]!.id,
+  );
   const [title, setTitle] = useState("");
   const [hostName, setHostName] = useState(defaultHostName);
   const [dateISO, setDateISO] = useState("");
@@ -41,12 +47,63 @@ export default function CreateEventWizard({
   const [slug, setSlug] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiNote, setAiNote] = useState<string | null>(null);
 
   const suggestedSlug = useMemo(() => slugify(title || "my-event"), [title]);
   const visibleTemplates = useMemo(
     () => templatesByCategory(category),
     [category],
   );
+
+  async function parseWithAi() {
+    setAiBusy(true);
+    setError(null);
+    setAiNote(null);
+    try {
+      const res = await fetch("/api/ai/parse-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: pasteText }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not parse invite");
+      const parsed = data.parsed as {
+        title?: string;
+        hostName?: string;
+        dateISO?: string;
+        timeLabel?: string;
+        venue?: string;
+        address?: string;
+        about?: string;
+        suggestedTemplateId?: string;
+      };
+      if (parsed.title) setTitle(parsed.title);
+      if (parsed.hostName) setHostName(parsed.hostName);
+      if (parsed.dateISO) setDateISO(parsed.dateISO);
+      if (parsed.timeLabel) setTimeLabel(parsed.timeLabel);
+      if (parsed.venue) setVenue(parsed.venue);
+      if (parsed.address) setAddress(parsed.address);
+      if (parsed.about) setAbout(parsed.about);
+      if (
+        parsed.suggestedTemplateId &&
+        TEMPLATES.some((tpl) => tpl.id === parsed.suggestedTemplateId)
+      ) {
+        setTemplateId(parsed.suggestedTemplateId);
+      }
+      setStep(2);
+      setAiNote(
+        data.engine === "openai"
+          ? "Filled from your paste with AI."
+          : "Filled from your paste (offline parser).",
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Parse failed");
+    } finally {
+      setAiBusy(false);
+    }
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -246,6 +303,34 @@ export default function CreateEventWizard({
             {t.detailsTitle}
           </h1>
           <p className="mt-2 text-[var(--landing-muted)]">{t.detailsSupport}</p>
+
+          <div className="mt-6 rounded-xl border border-[var(--landing-line)] bg-white/60 p-4">
+            <p className="text-sm font-medium text-[var(--landing-ink)]">
+              Paste an invite draft
+            </p>
+            <p className="mt-1 text-xs text-[var(--landing-muted)]">
+              Drop a text message, email, or notes — we’ll fill the fields for you.
+            </p>
+            <textarea
+              rows={4}
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              placeholder={`You're invited to Maya's 30th!\nSaturday, September 12, 2026 at 7:00 PM\nThe Garden Room, 120 Oak Ave`}
+              className="mt-3 w-full rounded-md border border-[var(--landing-line)] bg-white px-3 py-2.5 text-sm outline-none focus:border-[var(--landing-cedar)]"
+            />
+            <button
+              type="button"
+              onClick={() => void parseWithAi()}
+              disabled={aiBusy || !pasteText.trim()}
+              className="mt-3 rounded-md bg-[var(--landing-ink)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            >
+              {aiBusy ? "Parsing…" : "Fill from paste"}
+            </button>
+            {aiNote ? (
+              <p className="mt-2 text-xs text-[var(--landing-cedar)]">{aiNote}</p>
+            ) : null}
+          </div>
+
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <label className="block text-sm sm:col-span-2">
               <span className="text-[var(--landing-muted)]">{t.title}</span>

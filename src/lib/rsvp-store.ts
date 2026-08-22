@@ -122,6 +122,7 @@ export async function appendRsvp(
     eventId: submission.eventId,
     name: submission.name,
     email: submission.email,
+    phone: submission.phone,
     attendance: submission.attendance,
     guestCount: submission.guestCount,
     dietary: submission.dietary,

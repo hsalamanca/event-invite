@@ -74,6 +74,13 @@ type Draft = {
   registryLabel: string;
   cashFundUrl: string;
   cashFundLabel: string;
+  cashFundGoal: string;
+  cashFundRaised: string;
+  heroVideoUrl: string;
+  motionKit: NonNullable<EventRecord["motionKit"]>;
+  printAffiliateEnabled: boolean;
+  guestSeatingEnabled: boolean;
+  rsvpConsentRequired: boolean;
   albumEnabled: boolean;
   rsvpEnabled: boolean;
   whiteLabel: boolean;
@@ -175,7 +182,11 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
       const digits = String(event.balloonDigits ?? "")
         .replace(/\D/g, "")
         .slice(0, 2);
-      return digits || (resolveInviteLayout(event.templateId) === "collage" ? "20" : "");
+      return digits || (resolveInviteLayout(event.templateId) === "collage"
+        ? "20"
+        : resolveInviteLayout(event.templateId) === "superhero"
+          ? "7"
+          : "");
     })(),
     customDomain: event.customDomain ?? "",
     visibility: event.visibility ?? "public",
@@ -184,6 +195,15 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     registryLabel: event.registryLabel ?? "",
     cashFundUrl: event.cashFundUrl ?? "",
     cashFundLabel: event.cashFundLabel ?? "",
+    cashFundGoal:
+      event.cashFundGoal != null ? String(event.cashFundGoal) : "",
+    cashFundRaised:
+      event.cashFundRaised != null ? String(event.cashFundRaised) : "",
+    heroVideoUrl: event.heroVideoUrl ?? "",
+    motionKit: event.motionKit ?? "none",
+    printAffiliateEnabled: event.printAffiliateEnabled !== false,
+    guestSeatingEnabled: event.guestSeatingEnabled ?? false,
+    rsvpConsentRequired: event.rsvpConsentRequired ?? false,
     albumEnabled: event.albumEnabled ?? false,
     rsvpEnabled: event.rsvpEnabled !== false,
     whiteLabel: event.whiteLabel ?? false,
@@ -368,6 +388,17 @@ function toPreviewEvent(
     registryLabel: draft.registryLabel.trim() || null,
     cashFundUrl: draft.cashFundUrl.trim() || null,
     cashFundLabel: draft.cashFundLabel.trim() || null,
+    cashFundGoal: draft.cashFundGoal.trim()
+      ? Math.max(0, Number(draft.cashFundGoal) || 0)
+      : null,
+    cashFundRaised: draft.cashFundRaised.trim()
+      ? Math.max(0, Number(draft.cashFundRaised) || 0)
+      : null,
+    heroVideoUrl: draft.heroVideoUrl.trim() || null,
+    motionKit: draft.motionKit,
+    printAffiliateEnabled: draft.printAffiliateEnabled,
+    guestSeatingEnabled: draft.guestSeatingEnabled,
+    rsvpConsentRequired: draft.rsvpConsentRequired,
     albumEnabled: draft.albumEnabled,
     rsvpEnabled: draft.rsvpEnabled,
     whiteLabel: draft.whiteLabel,
@@ -489,11 +520,23 @@ export default function EventCustomizer({
       registryLabel: preview.registryLabel,
       cashFundUrl: draft.cashFundUrl.trim() || null,
       cashFundLabel: draft.cashFundLabel.trim() || null,
+      cashFundGoal: draft.cashFundGoal.trim()
+        ? Math.max(0, Number(draft.cashFundGoal) || 0)
+        : null,
+      cashFundRaised: draft.cashFundRaised.trim()
+        ? Math.max(0, Number(draft.cashFundRaised) || 0)
+        : null,
+      heroVideoUrl: draft.heroVideoUrl.trim() || null,
+      motionKit: draft.motionKit,
+      printAffiliateEnabled: draft.printAffiliateEnabled,
+      guestSeatingEnabled: draft.guestSeatingEnabled,
+      rsvpConsentRequired: draft.rsvpConsentRequired,
       albumEnabled: draft.albumEnabled,
       rsvpEnabled: draft.rsvpEnabled,
       whiteLabel: draft.whiteLabel,
       published: draft.published,
       templateId: draft.templateId,
+      lastEditedAt: new Date().toISOString(),
       theme: {
         colors: draft.colors,
         fonts: draft.fonts,
@@ -556,6 +599,12 @@ export default function EventCustomizer({
         } | null;
         throw new Error(data?.error ?? "Failed to save event");
       }
+      void fetch(`/api/events/${encodeURIComponent(event.slug)}/presence`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ editing: true }),
+      }).catch(() => null);
       setSaveMessage(t.saved);
       updateField("invitePassword", "");
     } catch (err) {
@@ -641,9 +690,14 @@ export default function EventCustomizer({
               />
               <span className="field-hint">{t.aboutHtmlHint}</span>
             </label>
-            {resolveInviteLayout(draft.templateId) === "collage" ? (
+            {resolveInviteLayout(draft.templateId) === "collage" ||
+            resolveInviteLayout(draft.templateId) === "superhero" ? (
               <label>
-                <span>{t.balloonDigits}</span>
+                <span>
+                  {resolveInviteLayout(draft.templateId) === "superhero"
+                    ? "Age on shield"
+                    : t.balloonDigits}
+                </span>
                 <input
                   inputMode="numeric"
                   maxLength={2}
@@ -655,9 +709,17 @@ export default function EventCustomizer({
                       e.target.value.replace(/\D/g, "").slice(0, 2),
                     )
                   }
-                  placeholder="20"
+                  placeholder={
+                    resolveInviteLayout(draft.templateId) === "superhero"
+                      ? "7"
+                      : "20"
+                  }
                 />
-                <span className="field-hint">{t.balloonDigitsHint}</span>
+                <span className="field-hint">
+                  {resolveInviteLayout(draft.templateId) === "superhero"
+                    ? "1–2 digit age shown in the comic shield."
+                    : t.balloonDigitsHint}
+                </span>
               </label>
             ) : null}
             <label>
@@ -705,6 +767,36 @@ export default function EventCustomizer({
               onChange={(url) => updateField("heroImage", url)}
               labels={uploadLabels}
             />
+            <label>
+              <span>Hero video URL (optional)</span>
+              <input
+                type="url"
+                placeholder="https://…/invite.mp4"
+                value={draft.heroVideoUrl}
+                onChange={(e) => updateField("heroVideoUrl", e.target.value)}
+              />
+              <span className="field-hint">
+                Looping mp4/webm over the cover. Falls back to the hero image.
+              </span>
+            </label>
+            <label>
+              <span>Cover motion kit</span>
+              <select
+                value={draft.motionKit}
+                onChange={(e) =>
+                  updateField(
+                    "motionKit",
+                    e.target.value as Draft["motionKit"],
+                  )
+                }
+              >
+                <option value="none">None</option>
+                <option value="sparkle">Sparkle</option>
+                <option value="float">Float</option>
+                <option value="parallax">Parallax</option>
+                <option value="pulse">Pulse</option>
+              </select>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -784,7 +876,9 @@ export default function EventCustomizer({
                       balloonDigits:
                         tpl.layout === "collage"
                           ? prev.balloonDigits || "20"
-                          : prev.balloonDigits,
+                          : tpl.layout === "superhero"
+                            ? prev.balloonDigits || "7"
+                            : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
                     };
@@ -885,6 +979,26 @@ export default function EventCustomizer({
                 placeholder="Contribute to our fund"
               />
             </label>
+            <label>
+              <span>Cash fund goal ($)</span>
+              <input
+                type="number"
+                min={0}
+                placeholder="e.g. 2000"
+                value={draft.cashFundGoal}
+                onChange={(e) => updateField("cashFundGoal", e.target.value)}
+              />
+            </label>
+            <label>
+              <span>Cash already raised ($)</span>
+              <input
+                type="number"
+                min={0}
+                placeholder="Host-reported total"
+                value={draft.cashFundRaised}
+                onChange={(e) => updateField("cashFundRaised", e.target.value)}
+              />
+            </label>
             <label className="checkbox-row">
               <input
                 type="checkbox"
@@ -909,6 +1023,36 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("albumEnabled", e.target.checked)}
               />
               <span>Enable guest photo album (moderated)</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.guestSeatingEnabled}
+                onChange={(e) =>
+                  updateField("guestSeatingEnabled", e.target.checked)
+                }
+              />
+              <span>Let guests find their table on the invite</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.rsvpConsentRequired}
+                onChange={(e) =>
+                  updateField("rsvpConsentRequired", e.target.checked)
+                }
+              />
+              <span>Require privacy / messaging consent on RSVP</span>
+            </label>
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={draft.printAffiliateEnabled}
+                onChange={(e) =>
+                  updateField("printAffiliateEnabled", e.target.checked)
+                }
+              />
+              <span>Show print stationery CTA after RSVP</span>
             </label>
             <label className="checkbox-row">
               <input

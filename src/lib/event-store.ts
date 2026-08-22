@@ -54,6 +54,15 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     registryLabel: raw.registryLabel ?? null,
     templateId: raw.templateId ?? "evening",
     heroImage: remapBrokenHeroImage(raw.heroImage),
+    heroVideoUrl:
+      typeof raw.heroVideoUrl === "string" && raw.heroVideoUrl.trim()
+        ? raw.heroVideoUrl.trim()
+        : null,
+    motionKit: (["none", "sparkle", "float", "parallax", "pulse"] as const).includes(
+      raw.motionKit as "none",
+    )
+      ? (raw.motionKit as EventRecord["motionKit"])
+      : "none",
     balloonDigits: (() => {
       const digits = String(raw.balloonDigits ?? "")
         .replace(/\D/g, "")
@@ -99,10 +108,23 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     rsvpEnabled: raw.rsvpEnabled !== false,
     cashFundUrl: raw.cashFundUrl ?? "",
     cashFundLabel: raw.cashFundLabel ?? "",
+    cashFundGoal:
+      typeof raw.cashFundGoal === "number" && Number.isFinite(raw.cashFundGoal)
+        ? Math.max(0, raw.cashFundGoal)
+        : null,
+    cashFundRaised:
+      typeof raw.cashFundRaised === "number" && Number.isFinite(raw.cashFundRaised)
+        ? Math.max(0, raw.cashFundRaised)
+        : null,
     registryClicks:
       typeof raw.registryClicks === "number" ? raw.registryClicks : 0,
     cashFundClicks:
       typeof raw.cashFundClicks === "number" ? raw.cashFundClicks : 0,
+    printAffiliateEnabled: raw.printAffiliateEnabled ?? true,
+    guestSeatingEnabled: raw.guestSeatingEnabled ?? false,
+    rsvpConsentRequired: raw.rsvpConsentRequired ?? false,
+    lastEditedBy: raw.lastEditedBy ?? null,
+    lastEditedAt: raw.lastEditedAt ?? null,
     whiteLabel: raw.whiteLabel ?? false,
     clientId:
       typeof raw.clientId === "string" && raw.clientId.trim()

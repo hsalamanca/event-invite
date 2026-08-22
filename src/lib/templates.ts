@@ -28,6 +28,8 @@ export type InviteLayout =
   | "kraft"
   | "glam"
   | "comic"
+  | "superhero"
+  | "superburst"
   | "festive"
   | "toybox"
   | "azure"
@@ -224,6 +226,32 @@ const funkyComic: Theme = {
     textMuted: "#4A3A2A",
   },
   fonts: { display: "Bangers", body: "Outfit" },
+};
+
+/** Classic superhero comic birthday — navy, yellow, red, blue */
+const superParty: Theme = {
+  colors: {
+    background: "#FFF3B0",
+    surface: "#FFF9E0",
+    accentPrimary: "#E30613",
+    accentSecondary: "#1E4DB7",
+    textPrimary: "#0B1220",
+    textMuted: "#3A3A3A",
+  },
+  fonts: { display: "Bangers", body: "Outfit" },
+};
+
+/** Hexagon photo + comic burst birthday — red, yellow, white action lines */
+const superBurst: Theme = {
+  colors: {
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    accentPrimary: "#E10600",
+    accentSecondary: "#FFD400",
+    textPrimary: "#111111",
+    textMuted: "#444444",
+  },
+  fonts: { display: "Anton", body: "Outfit" },
 };
 
 /** Canva Multicolored Festive Birthday — rainbow balloons & confetti */
@@ -837,6 +865,44 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs: "Pastel, juegos y diversión de cómic — ¡ponte el traje y llega!",
   },
   {
+    id: "super-party",
+    name: "Super party",
+    nameEs: "Súper fiesta",
+    description:
+      "Classic comic-book superhero birthday — bold yellow, red & blue with an age shield and BAM! details.",
+    descriptionEs:
+      "Cumpleaños cómic de superhéroes — amarillo, rojo y azul con escudo de edad y detalles BAM!",
+    inspiredBy: "Canva Super Party comic birthday invitation",
+    inspiredByEs: "Canva invitación cumpleaños cómic Super Party",
+    categories: ["birthday", "party", "baby"],
+    layout: "superhero",
+    theme: superParty,
+    heroImage: "/templates/super-party-hero.png",
+    headline: "Pedro",
+    headlineEs: "Pedro",
+    tagline: "Suit up for cake, games, and comic-book levels of fun!",
+    taglineEs: "¡Ponte el traje para pastel, juegos y diversión de cómic!",
+  },
+  {
+    id: "birthday-super",
+    name: "Birthday super",
+    nameEs: "Cumpleaños súper",
+    description:
+      "Join us for a hexagon-photo super party — red & yellow comic bursts, city skyline, and bold birthday type.",
+    descriptionEs:
+      "Únete a una súper fiesta con foto hexagonal — ráfagas cómic rojo y amarillo, skyline y tipografía bold.",
+    inspiredBy: "Canva Niel's Birthday Super Party invitation",
+    inspiredByEs: "Canva invitación Birthday Super Party",
+    categories: ["birthday", "party", "baby"],
+    layout: "superburst",
+    theme: superBurst,
+    heroImage: "/templates/super-hex-hero.png",
+    headline: "Niel",
+    headlineEs: "Niel",
+    tagline: "Suit up — cake, games, and comic-book levels of fun!",
+    taglineEs: "¡Ponte el traje — pastel, juegos y diversión de cómic!",
+  },
+  {
     id: "festive-rainbow",
     name: "Festive rainbow",
     nameEs: "Arcoíris festivo",
@@ -1336,7 +1402,12 @@ export function buildEventFromTemplate(input: {
     address: input.address,
     theme: tpl.theme,
     heroImage: tpl.heroImage,
-    balloonDigits: tpl.layout === "collage" ? "20" : null,
+    balloonDigits:
+      tpl.layout === "collage"
+        ? "20"
+        : tpl.layout === "superhero"
+          ? "7"
+          : null,
     customDomain: null,
     rsvpFields: defaultRsvpFields(input.dateISO, {
       locale: input.locale,
