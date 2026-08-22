@@ -2581,7 +2581,7 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .invite-card) {
           position: relative;
-          overflow: visible;
+          overflow: hidden;
           border: 4px solid #111;
           border-radius: 1.15rem;
           background: #d40000;
@@ -2593,7 +2593,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="spiderweb"] .spider-card) {
           position: relative;
           z-index: 1;
-          overflow: visible;
+          overflow: hidden;
           padding: 1rem 0.9rem 0.65rem;
           background:
             linear-gradient(180deg, #d40000 0%, #b00000 55%, #8a0000 100%);
@@ -2605,37 +2605,41 @@ export default function InvitePage({
           align-items: flex-start;
           justify-content: space-between;
           gap: 0.75rem;
+          position: relative;
+          z-index: 1;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-stack) {
           position: relative;
-          width: min(52%, 180px);
+          width: min(48%, 168px);
           flex-shrink: 0;
           display: grid;
           place-items: center;
-          overflow: visible;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-web) {
           position: absolute;
-          width: 230%;
-          height: 230%;
+          width: 168%;
+          height: 168%;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%) rotate(-6deg);
+          transform: translate(-50%, -50%) rotate(-4deg);
           z-index: 0;
           pointer-events: none;
-          filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.15));
+          opacity: 0.92;
+          filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame) {
           position: relative;
           z-index: 1;
-          width: 88%;
+          width: 78%;
           aspect-ratio: 1;
           border: 4px solid #111;
           background: #fff;
-          box-shadow: 4px 4px 0 #111;
+          box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.35),
+            4px 4px 0 #111;
           overflow: hidden;
           transform: rotate(-3deg);
         }
@@ -2649,10 +2653,12 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-icon) {
-          width: 78px;
+          width: 72px;
           height: auto;
           flex-shrink: 0;
-          filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.35));
+          margin-top: -0.15rem;
+          margin-right: 0.1rem;
+          filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-celebrate) {

@@ -103,23 +103,75 @@ function possessiveName(name: string): string {
 
 function SpiderSilhouette() {
   return (
-    <svg className="spider-icon" viewBox="0 0 120 140" aria-hidden>
-      <ellipse cx="60" cy="58" rx="22" ry="26" fill="#111" />
-      <circle cx="60" cy="36" r="14" fill="#111" />
+    <svg
+      className="spider-icon"
+      viewBox="0 0 120 170"
+      aria-hidden
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="spiderKidsBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#222" />
+          <stop offset="45%" stopColor="#0d0d0d" />
+          <stop offset="100%" stopColor="#000" />
+        </linearGradient>
+      </defs>
+      {/* silk thread */}
       <path
-        d="M38 48 C10 30 4 18 8 8 M38 58 C8 58 2 70 6 86 M40 70 C14 86 10 104 16 118 M82 48 C110 30 116 18 112 8 M82 58 C112 58 118 70 114 86 M80 70 C106 86 110 104 104 118"
-        fill="none"
-        stroke="#111"
-        strokeWidth="7"
+        d="M60 2 L60 58"
+        stroke="#0a0a0a"
+        strokeWidth="2"
         strokeLinecap="round"
       />
-      <circle cx="54" cy="34" r="2.2" fill="#fff" />
-      <circle cx="66" cy="34" r="2.2" fill="#fff" />
+      {/* jointed legs — left */}
+      <path
+        d="M48 72 C28 60 16 42 10 24 M46 80 C24 78 12 70 4 58 M48 90 C28 98 16 114 10 132 M50 98 C34 112 24 132 20 150"
+        stroke="#0a0a0a"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* jointed legs — right */}
+      <path
+        d="M72 72 C92 60 104 42 110 24 M74 80 C96 78 108 70 116 58 M72 90 C92 98 104 114 110 132 M70 98 C86 112 96 132 100 150"
+        stroke="#0a0a0a"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* cephalothorax */}
+      <ellipse cx="60" cy="72" rx="13" ry="12" fill="url(#spiderKidsBody)" />
+      {/* abdomen */}
+      <ellipse cx="60" cy="100" rx="17" ry="22" fill="url(#spiderKidsBody)" />
+      <circle cx="55" cy="70" r="1.8" fill="#f7f7f7" opacity="0.9" />
+      <circle cx="65" cy="70" r="1.8" fill="#f7f7f7" opacity="0.9" />
     </svg>
   );
 }
 
 function SpiderWebBehind() {
+  const cx = 100;
+  const cy = 100;
+  const spokes = 8;
+  const rings = [16, 30, 44, 58, 72, 86, 98];
+  const spokePaths = Array.from({ length: spokes }, (_, i) => {
+    const a = ((i * 360) / spokes - 90) * (Math.PI / 180);
+    const x = cx + Math.cos(a) * 99;
+    const y = cy + Math.sin(a) * 99;
+    return `M${cx} ${cy} L${x.toFixed(2)} ${y.toFixed(2)}`;
+  }).join(" ");
+  const ringPaths = rings
+    .map((r) => {
+      const pts = Array.from({ length: spokes }, (_, i) => {
+        const a = ((i * 360) / spokes - 90) * (Math.PI / 180);
+        return `${(cx + Math.cos(a) * r).toFixed(2)},${(
+          cy + Math.sin(a) * r
+        ).toFixed(2)}`;
+      });
+      return `M${pts[0]} L${pts.slice(1).join(" L")} Z`;
+    })
+    .join(" ");
+
   return (
     <svg
       className="spider-photo-web"
@@ -127,22 +179,31 @@ function SpiderWebBehind() {
       aria-hidden
       preserveAspectRatio="xMidYMid meet"
     >
+      <defs>
+        <linearGradient id="spiderKidsWebSilk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
+          <stop offset="50%" stopColor="#eef3ff" stopOpacity="0.88" />
+          <stop offset="100%" stopColor="#d7e2ff" stopOpacity="0.72" />
+        </linearGradient>
+      </defs>
       <g
         fill="none"
-        stroke="#111"
-        strokeWidth="2.6"
+        stroke="url(#spiderKidsWebSilk)"
+        strokeWidth="1.65"
         strokeLinecap="round"
-        opacity="0.62"
+        strokeLinejoin="round"
+        opacity="0.95"
       >
-        <circle cx="100" cy="100" r="16" />
-        <circle cx="100" cy="100" r="32" />
-        <circle cx="100" cy="100" r="48" />
-        <circle cx="100" cy="100" r="64" />
-        <circle cx="100" cy="100" r="80" />
-        <circle cx="100" cy="100" r="96" />
-        <path d="M100 4 L100 196 M4 100 L196 100 M22 22 L178 178 M178 22 L22 178" />
-        <path d="M100 4 L150 14 L186 50 L196 100 L186 150 L150 186 L100 196 L50 186 L14 150 L4 100 L14 50 L50 14 Z" />
+        <path d={spokePaths} />
+        <path d={ringPaths} />
       </g>
+      <circle
+        cx={cx}
+        cy={cy}
+        r="3.8"
+        fill="#ffffff"
+        opacity="0.9"
+      />
     </svg>
   );
 }
