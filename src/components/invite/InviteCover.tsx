@@ -119,6 +119,33 @@ function SpiderSilhouette() {
   );
 }
 
+function SpiderWebBehind() {
+  return (
+    <svg
+      className="spider-photo-web"
+      viewBox="0 0 200 200"
+      aria-hidden
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g
+        fill="none"
+        stroke="#111"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        opacity="0.55"
+      >
+        <circle cx="100" cy="100" r="18" />
+        <circle cx="100" cy="100" r="36" />
+        <circle cx="100" cy="100" r="54" />
+        <circle cx="100" cy="100" r="72" />
+        <circle cx="100" cy="100" r="90" />
+        <path d="M100 10 L100 190 M10 100 L190 100 M28 28 L172 172 M172 28 L28 172" />
+        <path d="M100 10 L172 28 L190 100 L172 172 L100 190 L28 172 L10 100 L28 28 Z" />
+      </g>
+    </svg>
+  );
+}
+
 function SpiderCitySmoke() {
   return (
     <svg className="spider-smoke" viewBox="0 0 160 70" aria-hidden>
@@ -1168,9 +1195,12 @@ export default function InviteCover({
             <>
               <div className="spider-card">
                 <div className="spider-top">
-                  <div className="spider-photo-frame">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={heroImage} alt="" />
+                  <div className="spider-photo-stack">
+                    <SpiderWebBehind />
+                    <div className="spider-photo-frame">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={heroImage} alt="" />
+                    </div>
                   </div>
                   <SpiderSilhouette />
                 </div>
@@ -1186,11 +1216,6 @@ export default function InviteCover({
                 <div className="spider-bottom">
                   <div className="spider-address">
                     {[venue, address].filter(Boolean).join(", ") || "Address TBA"}
-                  </div>
-                  <div className="spider-rsvp-bubble">
-                    {contactPhone
-                      ? `RSVP TO: ${contactPhone}`
-                      : `RSVP · ${rsvpLabel}`}
                   </div>
                 </div>
                 <div className="spider-footer-art" aria-hidden>

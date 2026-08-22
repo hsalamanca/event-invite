@@ -2605,15 +2605,36 @@ export default function InvitePage({
           gap: 0.75rem;
         }
 
+        :global(.invite-cover[data-layout="spiderweb"] .spider-photo-stack) {
+          position: relative;
+          width: min(48%, 168px);
+          flex-shrink: 0;
+          display: grid;
+          place-items: center;
+        }
+
+        :global(.invite-cover[data-layout="spiderweb"] .spider-photo-web) {
+          position: absolute;
+          width: 148%;
+          height: 148%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-6deg);
+          z-index: 0;
+          pointer-events: none;
+          filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.15));
+        }
+
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame) {
-          width: min(42%, 148px);
+          position: relative;
+          z-index: 1;
+          width: 88%;
           aspect-ratio: 1;
           border: 4px solid #111;
           background: #fff;
           box-shadow: 4px 4px 0 #111;
           overflow: hidden;
           transform: rotate(-3deg);
-          flex-shrink: 0;
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame img) {
@@ -2714,10 +2735,6 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-bottom) {
-          display: grid;
-          grid-template-columns: 1.15fr 1fr;
-          gap: 0.65rem;
-          align-items: start;
           margin: 0.25rem 0 0.75rem;
         }
 
@@ -2732,28 +2749,6 @@ export default function InvitePage({
           letter-spacing: 0.03em;
           font-size: 0.72rem;
           line-height: 1.35;
-          box-shadow: 3px 3px 0 #111;
-        }
-
-        :global(.invite-cover[data-layout="spiderweb"] .spider-rsvp-bubble) {
-          background: #1e5bff;
-          color: #fff;
-          border: 3px solid #111;
-          padding: 0.7rem 0.75rem 1rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-          font-size: 0.72rem;
-          line-height: 1.3;
-          clip-path: polygon(
-            0% 0%,
-            100% 0%,
-            100% 78%,
-            72% 78%,
-            58% 100%,
-            58% 78%,
-            0% 78%
-          );
           box-shadow: 3px 3px 0 #111;
         }
 
