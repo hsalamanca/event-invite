@@ -20,8 +20,13 @@ type InviteCoverProps = {
   heroImage: string;
   heroVideoUrl?: string | null;
   motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
+  contactPhone?: string;
   invitesYou: string;
   comicPresents?: string;
+  superYouAreInvited?: string;
+  superIsTurning?: string;
+  superJoinUs?: string;
+  superBirthday?: string;
   festiveParty?: string;
   toyPartyInvite?: string;
   modernCelebrate?: string;
@@ -48,6 +53,52 @@ type InviteCoverProps = {
   onCopyLink: () => void;
   parallaxY?: number;
 };
+
+function SuperBurstBalloons() {
+  return (
+    <svg className="superburst-balloons" viewBox="0 0 320 220" aria-hidden>
+      {/* left cluster */}
+      <g transform="translate(18 40)">
+        <ellipse cx="28" cy="48" rx="22" ry="28" fill="#E10600" stroke="#111" strokeWidth="3" />
+        <path d="M28 76 L28 118" stroke="#111" strokeWidth="2" />
+        <path d="M10 30 Q4 55 18 70" fill="none" stroke="#FFD400" strokeWidth="4" />
+        <ellipse cx="58" cy="30" rx="18" ry="24" fill="#FFD400" stroke="#111" strokeWidth="3" />
+        <path d="M58 54 L52 100" stroke="#111" strokeWidth="2" />
+        <path d="M48 18 Q42 34 52 44" fill="none" stroke="#E10600" strokeWidth="3" />
+      </g>
+      {/* right cluster */}
+      <g transform="translate(230 36)">
+        <ellipse cx="40" cy="42" rx="20" ry="26" fill="#FFD400" stroke="#111" strokeWidth="3" />
+        <path d="M40 68 L48 112" stroke="#111" strokeWidth="2" />
+        <path d="M28 24 Q22 40 32 52" fill="none" stroke="#E10600" strokeWidth="3" />
+        <ellipse cx="68" cy="58" rx="18" ry="24" fill="#E10600" stroke="#111" strokeWidth="3" />
+        <path d="M68 82 L62 120" stroke="#111" strokeWidth="2" />
+        <path d="M58 42 Q70 54 62 68" fill="none" stroke="#FFD400" strokeWidth="3" />
+      </g>
+      {/* bolts */}
+      <path d="M118 28 L132 52 L122 52 L140 88" fill="#FFD400" stroke="#111" strokeWidth="2" />
+      <path d="M198 20 L186 46 L196 46 L176 78" fill="#FFD400" stroke="#111" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function SuperCitySkyline() {
+  return (
+    <svg className="superburst-skyline" viewBox="0 0 400 56" aria-hidden preserveAspectRatio="none">
+      <path
+        fill="#111"
+        d="M0 56V34h18V18h10v8h14V10h12v24h16V22h10v14h20V8h14v20h12V16h18v20h10V28h16v12h14V20h12v16h20V12h10v24h16V30h14v26z"
+      />
+    </svg>
+  );
+}
+
+function possessiveName(name: string): string {
+  const trimmed = name.trim() || "Guest";
+  const upper = trimmed.toUpperCase();
+  if (/[S]$/i.test(trimmed)) return `${upper}'`;
+  return `${upper}'S`;
+}
 
 function BalloonGarland() {
   const balloons = [
@@ -577,6 +628,9 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </div>
     );
   }
+  if (layout === "superhero" || layout === "superburst") {
+    return null;
+  }
   if (layout === "collage") {
     return (
       <div className="invite-ornament invite-ornament--collage" aria-hidden>
@@ -787,6 +841,10 @@ export default function InviteCover({
   motionKit = "none",
   invitesYou,
   comicPresents,
+  superYouAreInvited,
+  superIsTurning,
+  superJoinUs,
+  superBirthday,
   festiveParty,
   toyPartyInvite,
   modernCelebrate,
@@ -796,6 +854,7 @@ export default function InviteCover({
   splashInvite,
   collageInvite,
   balloonDigits,
+  contactPhone,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -825,6 +884,8 @@ export default function InviteCover({
     layout === "quince" ||
     layout === "fifty";
   const isComic = layout === "comic";
+  const isSuperhero = layout === "superhero";
+  const isSuperburst = layout === "superburst";
   const isFestive = layout === "festive";
   const isToybox = layout === "toybox";
   const isSplash = layout === "splash";
@@ -833,6 +894,8 @@ export default function InviteCover({
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
   const isFifty = layout === "fifty";
+
+  const ageDigit = String(balloonDigits ?? "7").replace(/\D/g, "").slice(0, 2) || "7";
 
   const inviteLine = isComic
     ? comicPresents || invitesYou
@@ -892,7 +955,8 @@ export default function InviteCover({
         ) : null}
       </div>
 
-      {isComic ? <div className="comic-halftone" aria-hidden /> : null}
+      {isComic || isSuperhero ? <div className="comic-halftone" aria-hidden /> : null}
+      {isSuperburst ? <div className="superburst-rays" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
@@ -906,6 +970,160 @@ export default function InviteCover({
           className="invite-card fade-up fade-up-1"
           id={printMode ? "invite-print-target" : undefined}
         >
+          {isSuperhero ? (
+            <>
+              <div className="super-banner">
+                <p className="super-banner-title">{title || "Super Party"}</p>
+              </div>
+              <p className="super-invited">
+                {superYouAreInvited || "You are invited!"}
+              </p>
+              <div className="super-hero-stage">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={heroImage} alt="" className="super-hero-art" />
+                <div className="super-center-copy">
+                  <h1 className="super-name">{headline}</h1>
+                  <p className="super-turning">
+                    {superIsTurning || "is turning"}
+                  </p>
+                  <div className="super-shield" aria-label={`Age ${ageDigit}`}>
+                    <span className="super-shield-age">{ageDigit}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="super-pow">
+                <div className="super-pow-inner">
+                  <p className="super-pow-line">
+                    <span>{dateLabel}</span>
+                    <span aria-hidden> | </span>
+                    <span>{timeLabel}</span>
+                  </p>
+                  <p className="super-pow-line">
+                    {[venue, address].filter(Boolean).join(", ")}
+                  </p>
+                  {contactPhone ? (
+                    <p className="super-pow-line">
+                      RSVP: {contactPhone}
+                    </p>
+                  ) : null}
+                </div>
+                <span className="super-bam" aria-hidden>
+                  BAM!
+                </span>
+              </div>
+              {!printMode ? (
+                <div className="super-actions">
+                  {isPast || !rsvpEnabled ? (
+                    <a className="btn-primary" href="#guestbook">
+                      {leaveNoteLabel}
+                    </a>
+                  ) : (
+                    <a className="btn-primary" href="#rsvp">
+                      {rsvpLabel}
+                    </a>
+                  )}
+                  <a className="btn-ghost" href="#details">
+                    {detailsLabel}
+                  </a>
+                </div>
+              ) : (
+                <div className="invite-card-print-footer">
+                  {qrUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={qrUrl}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="invite-card-print-qr"
+                    />
+                  ) : null}
+                  {inviteUrl ? (
+                    <p className="invite-card-print-url">{inviteUrl}</p>
+                  ) : null}
+                </div>
+              )}
+            </>
+          ) : isSuperburst ? (
+            <>
+              <div className="superburst-card">
+                <p className="superburst-join">
+                  {superJoinUs || "Join us for"}
+                </p>
+                <h1 className="superburst-name">{possessiveName(headline)}</h1>
+                <div className="superburst-photo-wrap">
+                  <SuperBurstBalloons />
+                  <div className="superburst-shield" aria-hidden />
+                  <div className="superburst-hex">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={heroImage} alt="" />
+                  </div>
+                  <p className="superburst-ribbon">
+                    {superBirthday || "Birthday"}
+                  </p>
+                </div>
+                <p className="superburst-title">
+                  {(title || "Super Party").toUpperCase()}
+                </p>
+                <div className="superburst-burst">
+                  <div className="superburst-burst-left">
+                    <p className="superburst-date">
+                      {dateShortLabel || dateLabel}
+                    </p>
+                    <p className="superburst-weekday">
+                      {weekdayLabel || ""}
+                    </p>
+                    <p className="superburst-place">
+                      {[venue, address].filter(Boolean).join(", ")}
+                    </p>
+                    {contactPhone ? (
+                      <p className="superburst-rsvp">RSVP: {contactPhone}</p>
+                    ) : null}
+                  </div>
+                  <div className="superburst-time-pow">
+                    <span>{timeLabel}</span>
+                  </div>
+                  <span className="superburst-bang" aria-hidden>
+                    !
+                  </span>
+                </div>
+                <SuperCitySkyline />
+              </div>
+              {!printMode ? (
+                <div className="super-actions">
+                  {isPast || !rsvpEnabled ? (
+                    <a className="btn-primary" href="#guestbook">
+                      {leaveNoteLabel}
+                    </a>
+                  ) : (
+                    <a className="btn-primary" href="#rsvp">
+                      {rsvpLabel}
+                    </a>
+                  )}
+                  <a className="btn-ghost" href="#details">
+                    {detailsLabel}
+                  </a>
+                </div>
+              ) : (
+                <div className="invite-card-print-footer">
+                  {qrUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={qrUrl}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="invite-card-print-qr"
+                    />
+                  ) : null}
+                  {inviteUrl ? (
+                    <p className="invite-card-print-url">{inviteUrl}</p>
+                  ) : null}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
           {isComic ? (
             <>
               <span className="comic-sticker comic-sticker--tl" aria-hidden>
@@ -1080,6 +1298,8 @@ export default function InviteCover({
               </div>
             )}
           </div>
+            </>
+          )}
         </article>
       </div>
     </section>
