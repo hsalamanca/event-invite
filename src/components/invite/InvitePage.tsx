@@ -2611,7 +2611,7 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-stack) {
           position: relative;
-          width: min(48%, 168px);
+          width: min(50%, 176px);
           flex-shrink: 0;
           display: grid;
           place-items: center;
@@ -2619,21 +2619,23 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-web) {
           position: absolute;
-          width: 168%;
-          height: 168%;
+          width: 158%;
+          height: 158%;
+          max-width: none;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%) rotate(-4deg);
+          transform: translate(-50%, -50%) rotate(-3deg);
           z-index: 0;
           pointer-events: none;
-          opacity: 0.92;
-          filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
+          object-fit: contain;
+          opacity: 0.88;
+          filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.28));
         }
 
         :global(.invite-cover[data-layout="spiderweb"] .spider-photo-frame) {
           position: relative;
           z-index: 1;
-          width: 78%;
+          width: 76%;
           aspect-ratio: 1;
           border: 4px solid #111;
           background: #fff;

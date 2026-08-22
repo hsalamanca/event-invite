@@ -150,61 +150,14 @@ function SpiderSilhouette() {
 }
 
 function SpiderWebBehind() {
-  const cx = 100;
-  const cy = 100;
-  const spokes = 8;
-  const rings = [16, 30, 44, 58, 72, 86, 98];
-  const spokePaths = Array.from({ length: spokes }, (_, i) => {
-    const a = ((i * 360) / spokes - 90) * (Math.PI / 180);
-    const x = cx + Math.cos(a) * 99;
-    const y = cy + Math.sin(a) * 99;
-    return `M${cx} ${cy} L${x.toFixed(2)} ${y.toFixed(2)}`;
-  }).join(" ");
-  const ringPaths = rings
-    .map((r) => {
-      const pts = Array.from({ length: spokes }, (_, i) => {
-        const a = ((i * 360) / spokes - 90) * (Math.PI / 180);
-        return `${(cx + Math.cos(a) * r).toFixed(2)},${(
-          cy + Math.sin(a) * r
-        ).toFixed(2)}`;
-      });
-      return `M${pts[0]} L${pts.slice(1).join(" L")} Z`;
-    })
-    .join(" ");
-
   return (
-    <svg
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       className="spider-photo-web"
-      viewBox="0 0 200 200"
+      src="/templates/spider-web-white.png"
+      alt=""
       aria-hidden
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <defs>
-        <linearGradient id="spiderKidsWebSilk" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
-          <stop offset="50%" stopColor="#eef3ff" stopOpacity="0.88" />
-          <stop offset="100%" stopColor="#d7e2ff" stopOpacity="0.72" />
-        </linearGradient>
-      </defs>
-      <g
-        fill="none"
-        stroke="url(#spiderKidsWebSilk)"
-        strokeWidth="1.65"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.95"
-      >
-        <path d={spokePaths} />
-        <path d={ringPaths} />
-      </g>
-      <circle
-        cx={cx}
-        cy={cy}
-        r="3.8"
-        fill="#ffffff"
-        opacity="0.9"
-      />
-    </svg>
+    />
   );
 }
 
