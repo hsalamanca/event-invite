@@ -1,8 +1,10 @@
-import { list } from "@vercel/blob";
+import { list, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import sharp from "sharp";
 
 /**
  * Public proxy for private Blob media so <img> / Open Graph work without auth headers.
+ * Auto-orients EXIF so canvas/postcard captures match on-screen photos.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -31,17 +33,42 @@ export async function GET(request: Request) {
       },
       cache: "force-cache",
     });
-    if (!upstream.ok || !upstream.body) {
+    if (!upstream.ok) {
       return NextResponse.json({ error: "Fetch failed" }, { status: 502 });
     }
 
-    const contentType =
-      upstream.headers.get("content-type") ?? "application/octet-stream";
-    return new NextResponse(upstream.body, {
+    const input = Buffer.from(await upstream.arrayBuffer());
+    const meta = await sharp(input, { failOn: "none" }).metadata();
+    const needsOrient = Boolean(meta.orientation && meta.orientation > 1);
+
+    // Bake EXIF orientation into pixels and strip the tag so Texts/canvas stay upright.
+    const oriented = await sharp(input, { failOn: "none", animated: false })
+      .rotate()
+      .jpeg({ quality: 90, mozjpeg: true })
+      .toBuffer();
+
+    // Permanently rewrite rotated uploads so future requests stay fast/consistent.
+    if (needsOrient) {
+      try {
+        await put(path, oriented, {
+          access: "private",
+          addRandomSuffix: false,
+          allowOverwrite: true,
+          contentType: "image/jpeg",
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        });
+      } catch {
+        // Serving the oriented bytes still succeeds even if rewrite fails.
+      }
+    }
+
+    return new NextResponse(new Uint8Array(oriented), {
       status: 200,
       headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Content-Type": "image/jpeg",
+        // Not immutable: orientation-fixed bytes must replace older cached copies.
+        "Cache-Control": "public, max-age=86400, must-revalidate",
+        "X-Image-Oriented": needsOrient ? "1" : "0",
       },
     });
   } catch {

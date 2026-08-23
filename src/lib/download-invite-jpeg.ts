@@ -1,4 +1,9 @@
 import { domToPng } from "modern-screenshot";
+import {
+  drawImageWithExifOrientation,
+  readJpegExifOrientation,
+  sizeAfterOrientation,
+} from "@/lib/exif-orientation";
 
 /** Prefer subdomain slug; fall back to a safe event-name slug. */
 export function inviteDownloadFileBase(
@@ -59,7 +64,7 @@ function delay(ms: number): Promise<void> {
  * Fetch a remote/same-origin image and return a compact JPEG data URL.
  * Keeps the SVG foreignObject payload small enough for mobile Safari.
  * Embedded photos stay JPEG; the final postcard export is PNG.
- * Applies EXIF orientation so phone photos aren't rotated in Texts.
+ * Bakes EXIF orientation into pixels so Texts matches the on-screen invite.
  */
 async function imageUrlToCompactDataUrl(
   src: string,
@@ -74,13 +79,19 @@ async function imageUrlToCompactDataUrl(
   }
 
   try {
-    const res = await fetch(src, { cache: "force-cache", mode: "cors" });
+    // Bypass stale browser caches of pre-orientation-fix media.
+    const fetchUrl = bustMediaCache(src);
+    const res = await fetch(fetchUrl, { cache: "no-store", mode: "cors" });
     if (!res.ok) return null;
     const blob = await res.blob();
-    const oriented = await blobToOrientedDataUrl(blob, maxEdge, quality);
-    if (oriented) return oriented;
-    const raw = await blobToDataUrl(blob);
-    return shrinkDataUrl(raw, maxEdge, quality);
+    const buffer = await blob.arrayBuffer();
+    // /api/media bakes orientation server-side; don't apply EXIF again (avoids double-rotate).
+    const serverOriented = res.headers.get("X-Image-Oriented") != null;
+    const orientation = serverOriented ? 1 : readJpegExifOrientation(buffer);
+    const raw = await blobToDataUrl(
+      new Blob([buffer], { type: blob.type || "image/jpeg" }),
+    );
+    return encodeJpegWithOrientation(raw, orientation, maxEdge, quality);
   } catch {
     // Fallback: draw via Image + canvas (works when img already loaded with CORS).
     try {
@@ -92,36 +103,33 @@ async function imageUrlToCompactDataUrl(
   }
 }
 
-/** Prefer createImageBitmap so EXIF orientation is baked into pixels. */
-async function blobToOrientedDataUrl(
-  blob: Blob,
-  maxEdge: number,
-  quality: number,
-): Promise<string | null> {
-  if (typeof createImageBitmap !== "function") return null;
+/** Force revalidation of /api/media responses after orientation fixes. */
+function bustMediaCache(src: string): string {
   try {
-    // imageOrientation: "from-image" applies EXIF rotation before draw.
-    const bitmap = await createImageBitmap(blob, {
-      imageOrientation: "from-image",
-    } as ImageBitmapOptions);
-    try {
-      return canvasEncodeBitmapJpeg(bitmap, maxEdge, quality);
-    } finally {
-      bitmap.close();
+    const url = new URL(src, typeof window !== "undefined" ? window.location.origin : "http://localhost");
+    if (url.pathname === "/api/media" || src.includes("/api/media?")) {
+      url.searchParams.set("orient", "1");
+      return url.toString();
     }
   } catch {
-    return null;
+    // ignore
   }
+  return src;
 }
 
-function canvasEncodeBitmapJpeg(
-  bitmap: ImageBitmap,
+async function encodeJpegWithOrientation(
+  dataUrl: string,
+  orientation: number,
   maxEdge: number,
   quality: number,
-): string {
-  const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height, 1));
-  const width = Math.max(1, Math.round(bitmap.width * scale));
-  const height = Math.max(1, Math.round(bitmap.height * scale));
+): Promise<string> {
+  const img = await loadImage(dataUrl, false);
+  const srcW = img.naturalWidth || img.width;
+  const srcH = img.naturalHeight || img.height;
+  const oriented = sizeAfterOrientation(srcW, srcH, orientation);
+  const scale = Math.min(1, maxEdge / Math.max(oriented.width, oriented.height, 1));
+  const width = Math.max(1, Math.round(oriented.width * scale));
+  const height = Math.max(1, Math.round(oriented.height * scale));
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -129,7 +137,22 @@ function canvasEncodeBitmapJpeg(
   if (!ctx) return "";
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(bitmap, 0, 0, width, height);
+  // Draw into a full-res oriented canvas first, then scale via drawImage of that,
+  // OR scale the transform. Simplest: work at source size then downscale.
+  if (scale === 1 && orientation === 1) {
+    ctx.drawImage(img, 0, 0, width, height);
+    return canvas.toDataURL("image/jpeg", quality);
+  }
+
+  const full = document.createElement("canvas");
+  full.width = oriented.width;
+  full.height = oriented.height;
+  const fullCtx = full.getContext("2d");
+  if (!fullCtx) return "";
+  fullCtx.fillStyle = "#ffffff";
+  fullCtx.fillRect(0, 0, full.width, full.height);
+  drawImageWithExifOrientation(fullCtx, img, orientation, srcW, srcH);
+  ctx.drawImage(full, 0, 0, width, height);
   return canvas.toDataURL("image/jpeg", quality);
 }
 
@@ -147,17 +170,16 @@ async function shrinkDataUrl(
   maxEdge: number,
   quality: number,
 ): Promise<string> {
-  // Data URLs may still carry EXIF; prefer ImageBitmap orientation when possible.
   try {
     const res = await fetch(dataUrl);
     const blob = await res.blob();
-    const oriented = await blobToOrientedDataUrl(blob, maxEdge, quality);
-    if (oriented) return oriented;
+    const buffer = await blob.arrayBuffer();
+    const orientation = readJpegExifOrientation(buffer);
+    return encodeJpegWithOrientation(dataUrl, orientation, maxEdge, quality);
   } catch {
-    // fall through
+    const img = await loadImage(dataUrl, false);
+    return canvasEncodeJpeg(img, maxEdge, quality);
   }
-  const img = await loadImage(dataUrl, false);
-  return canvasEncodeJpeg(img, maxEdge, quality);
 }
 
 function canvasEncodeJpeg(
