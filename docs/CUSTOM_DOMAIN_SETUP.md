@@ -54,13 +54,12 @@ Public guide: [`/domains`](https://ownvite.com/domains)
 Already on Vercel project `ownvite`:
 
 - `ownvite.com` / `www.ownvite.com` / `ownvite.app`
-- `*.ownvite.com` / `*.ownvite.app` — at Namecheap:
+- Nameservers (both apex domains): `ns1.vercel-dns.com`, `ns2.vercel-dns.com`
+- Wildcard hosts `*.ownvite.com` / `*.ownvite.app` with active wildcard TLS
 
-| Type | Host | Value |
-|------|------|-------|
-| CNAME | `*` | `cname.vercel-dns.com` |
+**SSL:** nameservers are on Vercel DNS, so `*.ownvite.com` / `*.ownvite.app` certificates issue via DNS-01. See [`PLATFORM_SUBDOMAIN_SSL.md`](./PLATFORM_SUBDOMAIN_SSL.md).
 
-**SSL note:** a `*` CNAME alone is not enough for secure wildcards. Vercel needs **nameservers** on Vercel DNS (or `_acme-challenge` NS delegation) for `*.domain` certificates. Until then the app auto-registers each `{slug}.ownvite.com` / `.app` host so HTTP-01 certs issue. See [`PLATFORM_SUBDOMAIN_SSL.md`](./PLATFORM_SUBDOMAIN_SSL.md).
+Per-slug registration (`ensurePlatformSubdomains`) remains as a safety net when creating events.
 
 ## Troubleshooting
 
