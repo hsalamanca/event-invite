@@ -2,17 +2,18 @@
 
 Login and register show **Continue with Google** once OAuth credentials are set.
 
-Production is served on **four hosts**. Auth.js PKCE cookies are host-scoped unless
-the cookie `Domain` is the registrable TLD. A single `AUTH_URL` that does not
-match the address bar host is the usual cause of `InvalidCheck` /
-`pkceCodeVerifier` failures.
+**Hugo / CoS:** live login is `https://ownvite.com`. If Vercel Production
+`AUTH_URL` is `https://ownvite.app` (or www), Auth.js sends Google back to
+`.app` while the PKCE cookie was set on `.com` → `InvalidCheck` /
+`pkceCodeVerifier value could not be parsed`. That is an **env-only** check
+(name `AUTH_URL`). Do not rotate `AUTH_SECRET` to debug this.
 
 | Host | Canonical login host |
 |------|----------------------|
-| `ownvite.com` | `ownvite.com` |
-| `www.ownvite.com` | redirects to `ownvite.com` for `/login` and other auth pages |
-| `ownvite.app` | `ownvite.app` |
-| `www.ownvite.app` | redirects to `ownvite.app` for `/login` and other auth pages |
+| `ownvite.com` | **canonical for Hugo** |
+| `www.ownvite.com` | 308 → `ownvite.com` on `/login` and other auth pages |
+| `ownvite.app` | still works (app pins OAuth origin to the request host) |
+| `www.ownvite.app` | 308 → `ownvite.app` on auth pages |
 
 ## 1. Create the OAuth client
 
@@ -62,7 +63,7 @@ AUTH_GOOGLE_CLIENT_SECRET=...
 |------|----------|--------|
 | `AUTH_SECRET` | **Yes** | Stable random string, **≥ 32 characters**. Encrypts the PKCE verifier cookie. Must be the same across all production instances. Do not rotate mid-incident unless you accept breaking in-flight logins. Also accepted: `NEXTAUTH_SECRET` (prefer one name only). |
 | `AUTH_TRUST_HOST` | Recommended `true` | Trust `Host` / `X-Forwarded-Host` on Vercel. Code also sets `trustHost: true`. |
-| `AUTH_URL` | Prefer **unset** | If set, Auth.js pins Google `redirect_uri` to that origin. That breaks the other TLD (`.com` vs `.app`) unless the app overrides it per request. If you must set it, use `https://ownvite.com` **or** `https://ownvite.app` (origin only, no path). Do not set `NEXTAUTH_URL` to a different host. |
+| `AUTH_URL` | Prefer **unset**, or `https://ownvite.com` | Auth.js uses this origin for Google `redirect_uri` **instead of** the address bar. **If this is `https://ownvite.app` while Hugo signs in on `ownvite.com`, PKCE fails.** Env-only fix: set `AUTH_URL=https://ownvite.com` (origin only, no path) **or** unset it. Do not set `NEXTAUTH_URL` to a different host. This repo also pins `AUTH_URL` to the request host so `.app` login still works if left unset. |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | **Yes** for Google | Same values as the OAuth client above. |
 
 The app pins `AUTH_URL` to the **request origin** on platform hosts so `.com` and `.app` can both complete Google sign-in. Google still needs **every** callback URI listed above.
