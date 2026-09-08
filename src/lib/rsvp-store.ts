@@ -1,6 +1,7 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+import { isBlobNotFound } from "./blob-json";
 import type { RsvpSubmission } from "./types";
 
 const BLOB_PATH = "ownvite/rsvps.json";
@@ -46,8 +47,9 @@ async function readFromBlob(): Promise<RsvpSubmission[] | null> {
     const parsed = JSON.parse(text) as RsvpSubmission[];
     return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
+    if (isBlobNotFound(err)) return [];
     console.error("RSVP blob read failed", err);
-    return null;
+    throw err;
   }
 }
 
@@ -83,11 +85,12 @@ async function writeToLocal(rsvps: RsvpSubmission[]): Promise<void> {
 
 async function readAll(): Promise<RsvpSubmission[]> {
   if (hasBlobToken()) {
-    const fromBlob = await readFromBlob();
-    if (fromBlob) return fromBlob;
+    return (await readFromBlob()) ?? [];
   }
   // Local/dev fallback only (Vercel filesystem is read-only)
-  if (process.env.VERCEL) return [];
+  if (process.env.VERCEL) {
+    throw new Error("RSVP blob is not configured");
+  }
   return readFromLocal();
 }
 

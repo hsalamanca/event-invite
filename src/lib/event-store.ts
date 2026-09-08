@@ -1,5 +1,5 @@
 import birthdayDemo from "../../data/birthday-demo.json";
-import { readJsonBlob, writeJsonBlob } from "./blob-json";
+import { readJsonBlobIfPresent, writeJsonBlob } from "./blob-json";
 import {
   normalizeGallery,
   normalizeGalleryLayout,
@@ -139,21 +139,23 @@ function normalizeEvent(raw: EventRecord): EventRecord {
 }
 
 async function load(): Promise<EventRegistry> {
-  const registry = await readJsonBlob<EventRegistry>(PATH, {
-    version: 1,
-    events: [],
-  });
-  if (registry.events.length === 0) {
-    registry.events = [seedEvent()];
+  const registry = await readJsonBlobIfPresent<EventRegistry>(PATH);
+  if (!registry) {
+    const seeded: EventRegistry = { version: 1, events: [seedEvent()] };
     try {
-      await writeJsonBlob(PATH, registry);
+      await writeJsonBlob(PATH, seeded);
     } catch {
-      /* local without blob */
+      /* local without blob — do not swallow blob 5xx; writeJsonBlob throws those */
     }
-  } else {
-    registry.events = registry.events.map((e) => normalizeEvent(e));
+    return seeded;
   }
-  return registry;
+  if (!Array.isArray(registry.events) || registry.events.length === 0) {
+    return { version: 1, events: [seedEvent()] };
+  }
+  return {
+    version: 1,
+    events: registry.events.map((e) => normalizeEvent(e)),
+  };
 }
 
 async function save(registry: EventRegistry) {

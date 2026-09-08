@@ -1,4 +1,5 @@
 import { put } from "@vercel/blob";
+import { isBlobNotFound } from "./blob-json";
 import type { DomainBinding, DomainRegistry } from "./domain-types";
 
 const BLOB_PATH = "ownvite/domains.json";
@@ -30,10 +31,14 @@ async function readFromBlob(): Promise<DomainRegistry | null> {
       },
       cache: "no-store",
     });
-    if (!res.ok) return null;
+    if (res.status === 404) return null;
+    if (!res.ok) {
+      throw new Error(`Vercel Blob: Failed to fetch ${BLOB_PATH}: ${res.status}`);
+    }
     return (await res.json()) as DomainRegistry;
-  } catch {
-    return null;
+  } catch (err) {
+    if (isBlobNotFound(err)) return null;
+    throw err;
   }
 }
 
@@ -60,7 +65,16 @@ export async function getDomainRegistry(
     return cached.data;
   }
 
-  const fromBlob = await readFromBlob();
+  let fromBlob: DomainRegistry | null = null;
+  try {
+    fromBlob = await readFromBlob();
+  } catch (err) {
+    if (memoryFallback) {
+      cached = { at: Date.now(), data: memoryFallback };
+      return memoryFallback;
+    }
+    throw err;
+  }
   if (fromBlob) {
     cached = { at: Date.now(), data: fromBlob };
     memoryFallback = fromBlob;
@@ -72,7 +86,7 @@ export async function getDomainRegistry(
     return memoryFallback;
   }
 
-  // Seed birthday demo binding for local / first-run
+  // Seed birthday demo binding only when the blob is confirmed missing
   const seeded = emptyRegistry();
   seeded.bindings.push({
     domain: "h-birthday.ownvite.app",
