@@ -1,5 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
+  CANONICAL_AUTH_HOST,
+  isAuthPagePath,
+  PLATFORM_AUTH_HOSTS,
+} from "@/lib/auth-host";
+import {
   detectLocaleFromAcceptLanguage,
   isLocale,
   LOCALE_COOKIE,
@@ -18,14 +23,7 @@ import {
  * - Rate limits on sensitive API routes
  */
 
-const PLATFORM_HOSTS = new Set([
-  "localhost",
-  "127.0.0.1",
-  "ownvite.com",
-  "www.ownvite.com",
-  "ownvite.app",
-  "www.ownvite.app",
-]);
+const DOMAIN_MAP_TIMEOUT_MS = 2_000;
 
 type DomainMapResponse = {
   map?: Record<string, string>;
@@ -43,16 +41,21 @@ function withLocaleCookie(res: NextResponse, locale: Locale) {
 async function loadDomainMap(
   request: NextRequest
 ): Promise<Record<string, string>> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DOMAIN_MAP_TIMEOUT_MS);
   try {
     const url = new URL("/api/domains/map", request.url);
     const res = await fetch(url.toString(), {
       headers: { "x-ownvite-middleware": "1" },
+      signal: controller.signal,
     });
     if (!res.ok) return {};
     const data = (await res.json()) as DomainMapResponse;
     return data.map ?? {};
   } catch {
     return {};
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -105,6 +108,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Keep Google OAuth on apex so PKCE cookies are not split across www.
+  const canonicalHost = CANONICAL_AUTH_HOST[hostname];
+  if (canonicalHost && isAuthPagePath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.hostname = canonicalHost;
+    url.protocol = "https:";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   // Legacy /es and /es/... → cookie locale, clean URL
   if (pathname === "/es" || pathname.startsWith("/es/")) {
     const stripped =
@@ -121,7 +134,7 @@ export async function middleware(request: NextRequest) {
   // Host-based invite routing (custom domains / platform subdomains)
   // Prefer domain registry first so aliases like h-birthday.ownvite.app
   // can point at a different event slug than the hostname label.
-  if (hostname && !PLATFORM_HOSTS.has(hostname) && (pathname === "/" || pathname === "")) {
+  if (hostname && !PLATFORM_AUTH_HOSTS.has(hostname) && (pathname === "/" || pathname === "")) {
     const map = await loadDomainMap(request);
     const mappedSlug = map[hostname];
     if (mappedSlug) {

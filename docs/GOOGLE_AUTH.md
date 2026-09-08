@@ -2,6 +2,18 @@
 
 Login and register show **Continue with Google** once OAuth credentials are set.
 
+Production is served on **four hosts**. Auth.js PKCE cookies are host-scoped unless
+the cookie `Domain` is the registrable TLD. A single `AUTH_URL` that does not
+match the address bar host is the usual cause of `InvalidCheck` /
+`pkceCodeVerifier` failures.
+
+| Host | Canonical login host |
+|------|----------------------|
+| `ownvite.com` | `ownvite.com` |
+| `www.ownvite.com` | redirects to `ownvite.com` for `/login` and other auth pages |
+| `ownvite.app` | `ownvite.app` |
+| `www.ownvite.app` | redirects to `ownvite.app` for `/login` and other auth pages |
+
 ## 1. Create the OAuth client
 
 1. Open [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials).
@@ -14,10 +26,14 @@ Login and register show **Continue with Google** once OAuth credentials are set.
 4. **Create credentials → OAuth client ID → Web application**
    - Name: `Ownvite Web`
    - Authorized JavaScript origins:
+     - `https://ownvite.com`
+     - `https://www.ownvite.com`
      - `https://ownvite.app`
      - `https://www.ownvite.app`
      - `http://localhost:3000`
    - Authorized redirect URIs:
+     - `https://ownvite.com/api/auth/callback/google`
+     - `https://www.ownvite.com/api/auth/callback/google`
      - `https://ownvite.app/api/auth/callback/google`
      - `https://www.ownvite.app/api/auth/callback/google`
      - `http://localhost:3000/api/auth/callback/google`
@@ -40,21 +56,40 @@ AUTH_GOOGLE_CLIENT_ID=...
 AUTH_GOOGLE_CLIENT_SECRET=...
 ```
 
+### Auth.js host / cookie env (Vercel Production)
+
+| Name | Required | Notes |
+|------|----------|--------|
+| `AUTH_SECRET` | **Yes** | Stable random string, **≥ 32 characters**. Encrypts the PKCE verifier cookie. Must be the same across all production instances. Do not rotate mid-incident unless you accept breaking in-flight logins. Also accepted: `NEXTAUTH_SECRET` (prefer one name only). |
+| `AUTH_TRUST_HOST` | Recommended `true` | Trust `Host` / `X-Forwarded-Host` on Vercel. Code also sets `trustHost: true`. |
+| `AUTH_URL` | Prefer **unset** | If set, Auth.js pins Google `redirect_uri` to that origin. That breaks the other TLD (`.com` vs `.app`) unless the app overrides it per request. If you must set it, use `https://ownvite.com` **or** `https://ownvite.app` (origin only, no path). Do not set `NEXTAUTH_URL` to a different host. |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | **Yes** for Google | Same values as the OAuth client above. |
+
+The app pins `AUTH_URL` to the **request origin** on platform hosts so `.com` and `.app` can both complete Google sign-in. Google still needs **every** callback URI listed above.
+
 ### Vercel (production + preview)
 
 ```bash
 vercel env add AUTH_GOOGLE_ID production
 vercel env add AUTH_GOOGLE_SECRET production
+vercel env add AUTH_SECRET production
+vercel env add AUTH_TRUST_HOST production
 # repeat for preview / development as needed
 vercel --prod
 ```
 
+Do not commit secrets. After changing `AUTH_SECRET` or Google client values, redeploy Production.
+
 ### Local
 
 Add the same keys to `.env.local`, then restart `npm run dev`.
+`AUTH_URL` may be `http://localhost:3000` locally. Leave cookies host-only (no `Domain`).
 
 ## 3. Verify
 
-1. Open `/login` — Google button appears above the email form.
-2. Complete Google consent → land on `/dashboard` (or `/events/new` from register).
-3. Same Google email merges with an existing Ownvite account (email linking).
+1. Open `https://ownvite.com/login` and `https://ownvite.app/login` — Google button appears above the email form.
+2. `https://www.ownvite.com/login` should 308 to `https://ownvite.com/login`.
+3. Complete Google consent → land on `/dashboard` (or `/events/new` from register).
+4. Same Google email merges with an existing Ownvite account (email linking).
+5. If Google shows a redirect-URI mismatch, add the missing callback from the list above (do not invent `/create` or `/invites`).
+6. If the app shows `InvalidCheck`, the PKCE cookie was missing or could not be decrypted — confirm `AUTH_SECRET` is set, stable, and not different from `NEXTAUTH_SECRET`.

@@ -15,6 +15,8 @@ const OAUTH_ERRORS: Record<string, string> = {
   Callback: "Sign-in callback failed. Try again.",
   AccessDenied: "Google sign-in was denied.",
   Configuration: "Google sign-in is misconfigured. Contact support.",
+  InvalidCheck:
+    "Google sign-in could not verify this browser. Try again, or use the same address bar host (ownvite.com or ownvite.app, not www).",
   Default: "Could not sign in with Google. Try again.",
 };
 
