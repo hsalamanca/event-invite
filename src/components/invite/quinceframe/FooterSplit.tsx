@@ -11,8 +11,8 @@ export default function FooterSplit({
 }) {
   return (
     <div className="quinceframe-footer">
+      <div className="quinceframe-footer-gown">{gown}</div>
       {lunch}
-      {gown}
       {rsvp}
     </div>
   );

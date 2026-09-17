@@ -74,34 +74,71 @@
   position: absolute;
   z-index: 2;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .quinceframe-floral--tl {
-  top: -2%;
-  left: -4%;
-  width: 72%;
+  top: -4%;
+  left: -8%;
+  width: 78%;
+  height: 34%;
 }
 
 .quinceframe-floral--tr {
-  top: -1%;
-  right: -6%;
-  width: 46%;
-  opacity: 0.92;
+  top: -3%;
+  right: -10%;
+  width: 48%;
+  height: 26%;
 }
 
 .quinceframe-floral--bl {
-  left: -6%;
-  bottom: -2%;
-  width: 48%;
+  left: -10%;
+  bottom: -4%;
+  width: 50%;
+  height: 28%;
 }
 
 .quinceframe-floral--br {
-  right: -5%;
-  bottom: -3%;
-  width: 62%;
+  right: -8%;
+  bottom: -6%;
+  width: 70%;
+  height: 34%;
 }
 
-.quinceframe-floral-svg,
+.quinceframe-floral--tl .quinceframe-asset,
+.quinceframe-floral--tl .quinceframe-floral-svg {
+  width: 130%;
+  max-width: none;
+  object-fit: contain;
+  object-position: top left;
+}
+
+.quinceframe-floral--tr .quinceframe-asset,
+.quinceframe-floral--tr .quinceframe-floral-svg {
+  width: 150%;
+  max-width: none;
+  margin-left: -40%;
+  object-fit: contain;
+  object-position: top right;
+}
+
+.quinceframe-floral--bl .quinceframe-asset,
+.quinceframe-floral--bl .quinceframe-floral-svg {
+  width: 150%;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom left;
+}
+
+.quinceframe-floral--br .quinceframe-asset,
+.quinceframe-floral--br .quinceframe-floral-svg {
+  width: 130%;
+  max-width: none;
+  margin-left: -22%;
+  object-fit: contain;
+  object-position: bottom right;
+}
+
 .quinceframe-tiara-svg,
 .quinceframe-gown-svg,
 .quinceframe-asset {
@@ -117,13 +154,13 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 11% 13% 6%;
+  padding: 9% 12% 3%;
 }
 
 .quinceframe-tiara {
   display: block;
-  width: min(34%, 6.4rem);
-  margin: 0 auto 0.35rem;
+  width: min(38%, 7rem);
+  margin: 0.15rem auto 0.15rem;
 }
 
 .quinceframe-host {
@@ -210,18 +247,48 @@
 }
 
 .quinceframe-footer {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(42%, 52%) minmax(0, 1fr);
-  align-items: end;
-  gap: 0.15rem;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 0.4rem 1.4rem;
   margin-top: auto;
-  min-height: 36%;
+  min-height: 38%;
+  padding-top: 0.35rem;
+}
+
+.quinceframe-footer-gown {
+  position: absolute;
+  left: 50%;
+  bottom: -3%;
+  z-index: 1;
+  width: 64%;
+  height: 108%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.quinceframe-gown {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.quinceframe-gown .quinceframe-asset,
+.quinceframe-gown .quinceframe-gown-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
 }
 
 .quinceframe-lunch,
 .quinceframe-rsvp {
-  padding-bottom: 22%;
+  position: relative;
   z-index: 4;
+  padding-top: 0.2rem;
+  text-shadow: 0 0 8px #fffcfa, 0 0 12px #fffcfa;
 }
 
 .quinceframe-lunch {
@@ -230,14 +297,6 @@
 
 .quinceframe-rsvp {
   text-align: right;
-}
-
-.quinceframe-gown {
-  display: block;
-  width: 145%;
-  margin: 0 0 0 -22%;
-  transform: translateY(10%);
-  z-index: 1;
 }
 
 .quinceframe-rsvp-cta {
