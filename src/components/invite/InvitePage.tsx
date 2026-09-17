@@ -4352,7 +4352,21 @@ export default function InvitePage({
         }
 
         /* Canva Light Blue + Yellow bordered quinceañera */
-        :global(.invite-cover[data-quince="bordered"]) .invite-cover-atmosphere-veil) {
+        :global(.invite-cover[data-quince="bordered"]) {
+          overflow: auto;
+          overflow-x: hidden;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: clamp(1.5rem, 4vw, 2.75rem);
+          padding-bottom: clamp(1.75rem, 5vw, 3rem);
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .invite-cover-stage) {
+          width: min(100%, 26.5rem);
+          margin-inline: auto;
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
               circle at 18% 14%,
@@ -4372,7 +4386,7 @@ export default function InvitePage({
             );
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .celeste-glow) {
+        :global(.invite-cover[data-quince="bordered"] .celeste-glow) {
           pointer-events: none;
           position: absolute;
           inset: 0;
@@ -4386,10 +4400,11 @@ export default function InvitePage({
             radial-gradient(circle at 22% 78%, #7eadc8 0 2px, transparent 3px);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card) {
-          overflow: visible;
-          border: 0;
-          border-radius: 0.35rem;
+        :global(.invite-cover[data-quince="bordered"] .invite-card) {
+          position: relative;
+          overflow: hidden;
+          border: 2px solid #c9a227;
+          border-radius: 0.4rem;
           background:
             linear-gradient(
               180deg,
@@ -4398,43 +4413,70 @@ export default function InvitePage({
               #f7f3e8 100%
             );
           box-shadow:
-            0 0 0 3px #c9a227,
-            0 0 0 8px #fffcf4,
-            0 0 0 10px #d4b45a,
-            0 0 0 14px color-mix(in srgb, #7eadc8 70%, #e8f3fa),
-            0 28px 56px color-mix(in srgb, #243044 22%, transparent);
+            inset 0 0 0 7px #fffcf4,
+            inset 0 0 0 9px #d4b45a,
+            0 22px 48px color-mix(in srgb, #243044 20%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .celeste-frame) {
+        :global(.invite-cover[data-quince="bordered"] .celeste-frame) {
           position: absolute;
           pointer-events: none;
           z-index: 2;
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .celeste-frame--outer) {
-          inset: 10px;
-          border: 1.5px solid color-mix(in srgb, #c9a227 75%, transparent);
+        :global(.invite-cover[data-quince="bordered"] .celeste-frame--outer) {
+          inset: 12px;
+          border: 1.5px solid color-mix(in srgb, #c9a227 80%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .celeste-frame--inner) {
-          inset: 16px;
-          border: 1px solid color-mix(in srgb, #7eadc8 55%, transparent);
+        :global(.invite-cover[data-quince="bordered"] .celeste-frame--inner) {
+          inset: 18px;
+          border: 1px solid color-mix(in srgb, #7eadc8 60%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .celeste-corners) {
+        :global(.invite-cover[data-quince="bordered"] .celeste-corners) {
           position: absolute;
-          inset: 4px;
+          inset: 0;
           z-index: 3;
-          width: auto;
-          height: auto;
           pointer-events: none;
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .quince-xv) {
-          top: 1.35rem;
-          right: 1.45rem;
-          width: 2.85rem;
-          height: 2.85rem;
+        :global(.invite-cover[data-quince="bordered"] .celeste-corner) {
+          position: absolute;
+          width: 4.35rem;
+          height: 4.35rem;
+          display: block;
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .celeste-corner--tl) {
+          top: 6px;
+          left: 6px;
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .celeste-corner--tr) {
+          top: 6px;
+          right: 6px;
+          transform: scaleX(-1);
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .celeste-corner--bl) {
+          bottom: 6px;
+          left: 6px;
+          transform: scaleY(-1);
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .celeste-corner--br) {
+          bottom: 6px;
+          right: 6px;
+          transform: scale(-1);
+        }
+
+        :global(.invite-cover[data-quince="bordered"] .quince-xv) {
+          top: 1.55rem;
+          right: 1.55rem;
+          left: auto;
+          width: 2.7rem;
+          height: 2.7rem;
           background: linear-gradient(145deg, #f4e7b2, #c9a227 62%, #a8881c);
           color: #fffdf6;
           border: 1.5px solid #fff8e0;
@@ -4443,9 +4485,10 @@ export default function InvitePage({
             0 8px 16px color-mix(in srgb, #243044 16%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-photo) {
-          margin: 2rem auto 0;
-          width: min(68%, 14.5rem);
+        :global(.invite-cover[data-quince="bordered"] .invite-card-photo) {
+          display: block;
+          margin: 2.35rem auto 0;
+          width: min(62%, 13.5rem);
           aspect-ratio: 3 / 4;
           border-radius: 12rem 12rem 0.85rem 0.85rem;
           border: 3px solid #c9a227;
@@ -4454,22 +4497,22 @@ export default function InvitePage({
             0 14px 28px color-mix(in srgb, #243044 16%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-body) {
-          padding-left: 1.65rem;
-          padding-right: 1.65rem;
-          padding-bottom: 1.85rem;
+        :global(.invite-cover[data-quince="bordered"] .invite-card-body) {
+          padding-left: 1.85rem;
+          padding-right: 1.85rem;
+          padding-bottom: 2.1rem;
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-host) {
+        :global(.invite-cover[data-quince="bordered"] .invite-card-host) {
           letter-spacing: 0.22em;
           color: #7eadc8;
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-invite-line) {
+        :global(.invite-cover[data-quince="bordered"] .invite-card-invite-line) {
           color: color-mix(in srgb, #243044 70%, #c9a227);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-headline) {
+        :global(.invite-cover[data-quince="bordered"] .invite-card-headline) {
           font-family: var(--font-great-vibes), cursive;
           font-weight: 400;
           font-size: clamp(2.7rem, 10vw, 4rem);
@@ -4480,7 +4523,7 @@ export default function InvitePage({
           color: #c9a227;
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .invite-card-when) {
+        :global(.invite-cover[data-quince="bordered"] .invite-card-when) {
           background:
             linear-gradient(
               135deg,
@@ -4491,13 +4534,13 @@ export default function InvitePage({
           box-shadow: inset 0 0 0 1px color-mix(in srgb, #7eadc8 18%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .btn-primary) {
+        :global(.invite-cover[data-quince="bordered"] .btn-primary) {
           background: linear-gradient(120deg, #c9a227, #a8881c 58%, #7eadc8);
           color: #fffdf6;
           box-shadow: 0 10px 24px color-mix(in srgb, #c9a227 32%, transparent);
         }
 
-        :global(.invite-cover[data-quince="bordered"]) .btn-ghost) {
+        :global(.invite-cover[data-quince="bordered"] .btn-ghost) {
           border: 1.5px solid color-mix(in srgb, #c9a227 60%, #7eadc8);
           color: #8a7218;
         }

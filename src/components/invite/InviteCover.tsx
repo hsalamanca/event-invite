@@ -694,39 +694,38 @@ function CollageNumberBalloons({ digits }: { digits?: string | null }) {
   );
 }
 
+function CelesteCorner({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 72 72" aria-hidden>
+      <path
+        d="M8 64 C8 24 24 8 64 8"
+        fill="none"
+        stroke="#C9A227"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M8 50 C8 30 30 8 50 8"
+        fill="none"
+        stroke="#C9A227"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        opacity="0.7"
+      />
+      <circle cx="8" cy="64" r="2.1" fill="#C9A227" />
+      <circle cx="64" cy="8" r="2.1" fill="#C9A227" />
+    </svg>
+  );
+}
+
 function CelesteCorners() {
   return (
-    <svg
-      className="celeste-corners"
-      viewBox="0 0 320 480"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      <g fill="none" stroke="#C9A227" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M22 86 C22 40 40 22 86 22" />
-        <path d="M22 70 C22 48 48 22 70 22" opacity="0.7" />
-        <path d="M34 48 C48 34 62 28 86 28" opacity="0.55" />
-        <path d="M298 86 C298 40 280 22 234 22" />
-        <path d="M298 70 C298 48 272 22 250 22" opacity="0.7" />
-        <path d="M286 48 C272 34 258 28 234 28" opacity="0.55" />
-        <path d="M22 394 C22 440 40 458 86 458" />
-        <path d="M22 410 C22 432 48 458 70 458" opacity="0.7" />
-        <path d="M34 432 C48 446 62 452 86 452" opacity="0.55" />
-        <path d="M298 394 C298 440 280 458 234 458" />
-        <path d="M298 410 C298 432 272 458 250 458" opacity="0.7" />
-        <path d="M286 432 C272 446 258 452 234 452" opacity="0.55" />
-      </g>
-      <g fill="#C9A227">
-        <circle cx="22" cy="86" r="2.2" />
-        <circle cx="86" cy="22" r="2.2" />
-        <circle cx="298" cy="86" r="2.2" />
-        <circle cx="234" cy="22" r="2.2" />
-        <circle cx="22" cy="394" r="2.2" />
-        <circle cx="86" cy="458" r="2.2" />
-        <circle cx="298" cy="394" r="2.2" />
-        <circle cx="234" cy="458" r="2.2" />
-      </g>
-    </svg>
+    <div className="celeste-corners" aria-hidden>
+      <CelesteCorner className="celeste-corner celeste-corner--tl" />
+      <CelesteCorner className="celeste-corner celeste-corner--tr" />
+      <CelesteCorner className="celeste-corner celeste-corner--bl" />
+      <CelesteCorner className="celeste-corner celeste-corner--br" />
+    </div>
   );
 }
 
