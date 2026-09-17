@@ -53,6 +53,8 @@ type InviteCoverProps = {
   isPast?: boolean;
   onCopyLink: () => void;
   parallaxY?: number;
+  /** Light bordered quince treatment (event theme, not a catalog template) */
+  quinceBordered?: boolean;
 };
 
 function SuperBurstBalloons() {
@@ -692,6 +694,42 @@ function CollageNumberBalloons({ digits }: { digits?: string | null }) {
   );
 }
 
+function CelesteCorners() {
+  return (
+    <svg
+      className="celeste-corners"
+      viewBox="0 0 320 480"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <g fill="none" stroke="#C9A227" strokeWidth="1.6" strokeLinecap="round">
+        <path d="M22 86 C22 40 40 22 86 22" />
+        <path d="M22 70 C22 48 48 22 70 22" opacity="0.7" />
+        <path d="M34 48 C48 34 62 28 86 28" opacity="0.55" />
+        <path d="M298 86 C298 40 280 22 234 22" />
+        <path d="M298 70 C298 48 272 22 250 22" opacity="0.7" />
+        <path d="M286 48 C272 34 258 28 234 28" opacity="0.55" />
+        <path d="M22 394 C22 440 40 458 86 458" />
+        <path d="M22 410 C22 432 48 458 70 458" opacity="0.7" />
+        <path d="M34 432 C48 446 62 452 86 452" opacity="0.55" />
+        <path d="M298 394 C298 440 280 458 234 458" />
+        <path d="M298 410 C298 432 272 458 250 458" opacity="0.7" />
+        <path d="M286 432 C272 446 258 452 234 452" opacity="0.55" />
+      </g>
+      <g fill="#C9A227">
+        <circle cx="22" cy="86" r="2.2" />
+        <circle cx="86" cy="22" r="2.2" />
+        <circle cx="298" cy="86" r="2.2" />
+        <circle cx="234" cy="22" r="2.2" />
+        <circle cx="22" cy="394" r="2.2" />
+        <circle cx="86" cy="458" r="2.2" />
+        <circle cx="298" cy="394" r="2.2" />
+        <circle cx="234" cy="458" r="2.2" />
+      </g>
+    </svg>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
@@ -778,20 +816,20 @@ function Ornament({ layout }: { layout: InviteLayout }) {
         <path
           d="M8 16c20-12 40-12 54 0"
           fill="none"
-          stroke="#2B6FFF"
+          stroke="var(--invite-accent-2)"
           strokeWidth="1.8"
           strokeLinecap="round"
         />
         <path
           d="M78 16c14-12 34-12 54 0"
           fill="none"
-          stroke="#D4AF37"
+          stroke="var(--invite-accent)"
           strokeWidth="1.8"
           strokeLinecap="round"
         />
         <path
           d="M70 4l1.6 4.8H76l-3.8 2.8 1.5 4.7L70 13.8l-3.7 2.7 1.5-4.7-3.8-2.8h4.4z"
-          fill="#D4AF37"
+          fill="var(--invite-accent)"
         />
       </svg>
     );
@@ -943,6 +981,7 @@ export default function InviteCover({
   isPast = false,
   onCopyLink,
   parallaxY = 0,
+  quinceBordered = false,
 }: InviteCoverProps) {
   const photoTop =
     layout === "arch" ||
@@ -967,6 +1006,7 @@ export default function InviteCover({
   const isAzure = layout === "azure";
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
+  const isCeleste = quinceBordered;
   const isFifty = layout === "fifty";
 
   const ageDigitsRaw = String(balloonDigits ?? "")
@@ -1000,6 +1040,7 @@ export default function InviteCover({
       className="invite-cover"
       data-layout={layout}
       data-template={templateId || undefined}
+      data-quince={isCeleste ? "bordered" : undefined}
       data-motion={motionKit && motionKit !== "none" ? motionKit : undefined}
       aria-label="Invitation"
     >
@@ -1040,7 +1081,10 @@ export default function InviteCover({
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
       {isCollage ? <div className="collage-grain" aria-hidden /> : null}
-      {isAzure || isQuince ? <div className="azure-glow" aria-hidden /> : null}
+      {isAzure || (isQuince && !isCeleste) ? (
+        <div className="azure-glow" aria-hidden />
+      ) : null}
+      {isCeleste ? <div className="celeste-glow" aria-hidden /> : null}
       {isFifty ? <div className="fifty-sparkle" aria-hidden /> : null}
       {isArcade ? <div className="arcade-scanlines" aria-hidden /> : null}
 
@@ -1314,13 +1358,24 @@ export default function InviteCover({
           ) : null}
 
           {isQuince ? (
-            <>
-              <span className="quince-ring quince-ring--tl" aria-hidden />
-              <span className="quince-ring quince-ring--br" aria-hidden />
-              <span className="quince-xv" aria-hidden>
-                XV
-              </span>
-            </>
+            isCeleste ? (
+              <>
+                <span className="celeste-frame celeste-frame--outer" aria-hidden />
+                <span className="celeste-frame celeste-frame--inner" aria-hidden />
+                <CelesteCorners />
+                <span className="quince-xv" aria-hidden>
+                  XV
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="quince-ring quince-ring--tl" aria-hidden />
+                <span className="quince-ring quince-ring--br" aria-hidden />
+                <span className="quince-xv" aria-hidden>
+                  XV
+                </span>
+              </>
+            )
           ) : null}
 
           {isFifty ? (

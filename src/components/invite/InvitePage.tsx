@@ -159,6 +159,23 @@ function fontStack(name: string, fallback: string): string {
   return FONT_STACK[name] ?? `"${name}", ${fallback}`;
 }
 
+function isLightHex(hex: string): boolean {
+  const raw = hex.trim().replace("#", "");
+  const full =
+    raw.length === 3
+      ? raw
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : raw.slice(0, 6);
+  const n = parseInt(full, 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return (r * 299 + g * 587 + b * 114) / 1000 > 140;
+}
+
 export default function InvitePage({
   event,
   locale = "en",
@@ -486,6 +503,8 @@ export default function InvitePage({
   }
 
   const layout = resolveInviteLayout(event.templateId);
+  const quinceBordered =
+    layout === "quince" && isLightHex(theme.colors.background);
   const rsvpEnabled = event.rsvpEnabled !== false;
   const { headline, tagline, about: aboutFallback } = resolveLocalizedInviteCopy(
     event,
@@ -516,8 +535,12 @@ export default function InvitePage({
     <div
       className={`invite-root${printCoverOnly ? " invite-root--print" : ""}`}
       data-layout={layout}
+      data-template={event.templateId || undefined}
+      data-quince={quinceBordered ? "bordered" : undefined}
       data-page={
-        layout === "arcade" || layout === "azure" || layout === "quince"
+        layout === "arcade" ||
+        layout === "azure" ||
+        (layout === "quince" && !quinceBordered)
           ? "ink"
           : undefined
       }
@@ -586,6 +609,7 @@ export default function InvitePage({
       <InviteCover
         layout={layout}
         templateId={event.templateId}
+        quinceBordered={quinceBordered}
         hostName={event.hostName}
         title={event.title}
         headline={headline}
@@ -4160,19 +4184,19 @@ export default function InvitePage({
           background:
             radial-gradient(
               circle at 18% 16%,
-              color-mix(in srgb, #2b6fff 50%, transparent),
+              color-mix(in srgb, var(--invite-accent) 50%, transparent),
               transparent 42%
             ),
             radial-gradient(
               circle at 82% 22%,
-              color-mix(in srgb, #d4af37 38%, transparent),
+              color-mix(in srgb, var(--invite-accent-2) 38%, transparent),
               transparent 44%
             ),
             linear-gradient(
               165deg,
-              color-mix(in srgb, #0b1f3a 50%, transparent) 0%,
-              color-mix(in srgb, #0b1f3a 88%, transparent) 70%,
-              #0b1f3a 100%
+              color-mix(in srgb, var(--invite-bg) 50%, transparent) 0%,
+              color-mix(in srgb, var(--invite-bg) 88%, transparent) 70%,
+              var(--invite-bg) 100%
             );
         }
 
@@ -4184,14 +4208,14 @@ export default function InvitePage({
           background:
             linear-gradient(
               160deg,
-              color-mix(in srgb, #d4af37 12%, var(--invite-surface)) 0%,
+              color-mix(in srgb, var(--invite-accent-2) 12%, var(--invite-surface)) 0%,
               var(--invite-surface) 36%,
               #ffffff 100%
             );
           box-shadow:
             0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
-            0 0 0 1px color-mix(in srgb, #d4af37 35%, transparent),
-            0 28px 60px color-mix(in srgb, #041226 45%, transparent);
+            0 0 0 1px color-mix(in srgb, var(--invite-accent-2) 35%, transparent),
+            0 28px 60px color-mix(in srgb, var(--invite-text) 22%, transparent);
         }
 
         :global(.invite-cover[data-layout="quince"] .quince-ring) {
@@ -4206,7 +4230,7 @@ export default function InvitePage({
           height: 7.5rem;
           top: -2.8rem;
           left: -2.6rem;
-          border: 2px solid color-mix(in srgb, #d4af37 65%, transparent);
+          border: 2px solid color-mix(in srgb, var(--invite-accent-2) 65%, transparent);
           animation: azureSpin 20s linear infinite;
         }
 
@@ -4215,7 +4239,7 @@ export default function InvitePage({
           height: 9rem;
           right: -3.2rem;
           bottom: -3.4rem;
-          border: 2px dashed color-mix(in srgb, #2b6fff 45%, transparent);
+          border: 2px dashed color-mix(in srgb, var(--invite-accent) 45%, transparent);
           animation: azureSpin 26s linear infinite reverse;
         }
 
@@ -4230,16 +4254,16 @@ export default function InvitePage({
           width: 3.1rem;
           height: 3.1rem;
           border-radius: 999px;
-          background: linear-gradient(145deg, #2b6fff, #1a4fd6);
+          background: linear-gradient(145deg, var(--invite-accent), color-mix(in srgb, var(--invite-accent) 70%, #111));
           color: #f7faff;
           font-family: var(--font-display);
           font-weight: 700;
           font-size: 1.05rem;
           letter-spacing: 0.04em;
-          border: 2px solid #d4af37;
+          border: 2px solid var(--invite-accent-2);
           box-shadow:
-            0 0 0 3px color-mix(in srgb, #d4af37 30%, white),
-            0 8px 18px color-mix(in srgb, #0b1f3a 22%, transparent);
+            0 0 0 3px color-mix(in srgb, var(--invite-accent-2) 30%, white),
+            0 8px 18px color-mix(in srgb, var(--invite-text) 22%, transparent);
         }
 
         :global(.invite-cover[data-layout="quince"] .invite-card-photo) {
@@ -4249,8 +4273,8 @@ export default function InvitePage({
           border-radius: 999px;
           border: 3px solid var(--invite-accent);
           box-shadow:
-            0 0 0 5px color-mix(in srgb, #d4af37 45%, white),
-            0 16px 32px color-mix(in srgb, #0b1f3a 18%, transparent);
+            0 0 0 5px color-mix(in srgb, var(--invite-accent-2) 45%, white),
+            0 16px 32px color-mix(in srgb, var(--invite-text) 18%, transparent);
         }
 
         :global(.invite-cover[data-layout="quince"] .invite-ornament--quince) {
@@ -4274,7 +4298,7 @@ export default function InvitePage({
           font-size: 1.35rem;
           letter-spacing: 0.01em;
           text-transform: none;
-          color: color-mix(in srgb, var(--invite-text) 80%, #d4af37);
+          color: color-mix(in srgb, var(--invite-text) 80%, var(--invite-accent-2));
         }
 
         :global(.invite-cover[data-layout="quince"] .invite-card-headline) {
@@ -4283,7 +4307,7 @@ export default function InvitePage({
           font-size: clamp(2.4rem, 8.5vw, 3.5rem);
           line-height: 1.05;
           letter-spacing: -0.02em;
-          background: linear-gradient(105deg, #0b1f3a 0%, #2b6fff 55%, #d4af37 100%);
+          background: linear-gradient(105deg, var(--invite-text) 0%, var(--invite-accent) 55%, var(--invite-accent-2) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -4296,11 +4320,11 @@ export default function InvitePage({
           background:
             linear-gradient(
               135deg,
-              color-mix(in srgb, #2b6fff 8%, white),
-              color-mix(in srgb, #d4af37 10%, white)
+              color-mix(in srgb, var(--invite-accent) 8%, white),
+              color-mix(in srgb, var(--invite-accent-2) 10%, white)
             );
-          border-left: 4px solid #d4af37;
-          box-shadow: inset 0 0 0 1px color-mix(in srgb, #2b6fff 12%, transparent);
+          border-left: 4px solid var(--invite-accent-2);
+          box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--invite-accent) 12%, transparent);
         }
 
         :global(.invite-cover[data-layout="quince"] .invite-card-date) {
@@ -4312,19 +4336,170 @@ export default function InvitePage({
 
         :global(.invite-cover[data-layout="quince"] .btn-primary) {
           border-radius: 999px;
-          background: linear-gradient(120deg, #2b6fff, #1a4fd6 60%, #d4af37);
+          background: linear-gradient(120deg, var(--invite-accent), color-mix(in srgb, var(--invite-accent) 70%, #111) 60%, var(--invite-accent-2));
           color: #f7faff;
           font-weight: 600;
           letter-spacing: 0.04em;
-          box-shadow: 0 10px 24px color-mix(in srgb, #2b6fff 32%, transparent);
+          box-shadow: 0 10px 24px color-mix(in srgb, var(--invite-accent) 32%, transparent);
         }
 
         :global(.invite-cover[data-layout="quince"] .btn-ghost) {
           border-radius: 999px;
-          border: 1.5px solid color-mix(in srgb, #d4af37 55%, var(--invite-accent));
+          border: 1.5px solid color-mix(in srgb, var(--invite-accent-2) 55%, var(--invite-accent));
           background: transparent;
           color: var(--invite-accent);
           font-weight: 600;
+        }
+
+        /* Canva Light Blue + Yellow bordered quinceañera */
+        :global(.invite-cover[data-quince="bordered"]) .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 14%,
+              color-mix(in srgb, #c9a227 32%, transparent),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 18%,
+              color-mix(in srgb, #7eadc8 40%, transparent),
+              transparent 46%
+            ),
+            linear-gradient(
+              165deg,
+              color-mix(in srgb, #e8f3fa 42%, transparent) 0%,
+              color-mix(in srgb, #e8f3fa 86%, transparent) 68%,
+              #e8f3fa 100%
+            );
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .celeste-glow) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.55;
+          background-image:
+            radial-gradient(circle at 12% 22%, #c9a227 0 2px, transparent 3px),
+            radial-gradient(circle at 78% 16%, #7eadc8 0 2.2px, transparent 3.2px),
+            radial-gradient(circle at 46% 8%, #ffe08a 0 1.6px, transparent 2.6px),
+            radial-gradient(circle at 88% 58%, #c9a227 0 1.8px, transparent 2.8px),
+            radial-gradient(circle at 22% 78%, #7eadc8 0 2px, transparent 3px);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card) {
+          overflow: visible;
+          border: 0;
+          border-radius: 0.35rem;
+          background:
+            linear-gradient(
+              180deg,
+              #fffdf8 0%,
+              #fffcf4 42%,
+              #f7f3e8 100%
+            );
+          box-shadow:
+            0 0 0 3px #c9a227,
+            0 0 0 8px #fffcf4,
+            0 0 0 10px #d4b45a,
+            0 0 0 14px color-mix(in srgb, #7eadc8 70%, #e8f3fa),
+            0 28px 56px color-mix(in srgb, #243044 22%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .celeste-frame) {
+          position: absolute;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .celeste-frame--outer) {
+          inset: 10px;
+          border: 1.5px solid color-mix(in srgb, #c9a227 75%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .celeste-frame--inner) {
+          inset: 16px;
+          border: 1px solid color-mix(in srgb, #7eadc8 55%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .celeste-corners) {
+          position: absolute;
+          inset: 4px;
+          z-index: 3;
+          width: auto;
+          height: auto;
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .quince-xv) {
+          top: 1.35rem;
+          right: 1.45rem;
+          width: 2.85rem;
+          height: 2.85rem;
+          background: linear-gradient(145deg, #f4e7b2, #c9a227 62%, #a8881c);
+          color: #fffdf6;
+          border: 1.5px solid #fff8e0;
+          box-shadow:
+            0 0 0 3px color-mix(in srgb, #c9a227 40%, white),
+            0 8px 16px color-mix(in srgb, #243044 16%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-photo) {
+          margin: 2rem auto 0;
+          width: min(68%, 14.5rem);
+          aspect-ratio: 3 / 4;
+          border-radius: 12rem 12rem 0.85rem 0.85rem;
+          border: 3px solid #c9a227;
+          box-shadow:
+            0 0 0 5px color-mix(in srgb, #7eadc8 28%, white),
+            0 14px 28px color-mix(in srgb, #243044 16%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-body) {
+          padding-left: 1.65rem;
+          padding-right: 1.65rem;
+          padding-bottom: 1.85rem;
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-host) {
+          letter-spacing: 0.22em;
+          color: #7eadc8;
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-invite-line) {
+          color: color-mix(in srgb, #243044 70%, #c9a227);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-headline) {
+          font-family: var(--font-great-vibes), cursive;
+          font-weight: 400;
+          font-size: clamp(2.7rem, 10vw, 4rem);
+          letter-spacing: 0.01em;
+          background: none;
+          -webkit-background-clip: unset;
+          background-clip: unset;
+          color: #c9a227;
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .invite-card-when) {
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, #7eadc8 10%, white),
+              color-mix(in srgb, #c9a227 10%, white)
+            );
+          border-left: 4px solid #c9a227;
+          box-shadow: inset 0 0 0 1px color-mix(in srgb, #7eadc8 18%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .btn-primary) {
+          background: linear-gradient(120deg, #c9a227, #a8881c 58%, #7eadc8);
+          color: #fffdf6;
+          box-shadow: 0 10px 24px color-mix(in srgb, #c9a227 32%, transparent);
+        }
+
+        :global(.invite-cover[data-quince="bordered"]) .btn-ghost) {
+          border: 1.5px solid color-mix(in srgb, #c9a227 60%, #7eadc8);
+          color: #8a7218;
         }
 
         :global(.invite-cover[data-layout="fifty"] .invite-cover-atmosphere-veil) {
@@ -4975,7 +5150,7 @@ export default function InvitePage({
           color: #7ec8ff;
         }
 
-        /* Quince azul — cobalt + champagne cabinets */
+        /* Quince — theme-colored cabinets */
         .invite-root[data-layout="quince"] .invite-section,
         .invite-root[data-layout="quince"] .invite-section--paper,
         .invite-root[data-layout="quince"] .invite-section--surface,
@@ -4984,36 +5159,80 @@ export default function InvitePage({
             linear-gradient(
               160deg,
               #ffffff 0%,
-              color-mix(in srgb, #2b6fff 6%, #ffffff) 45%,
-              color-mix(in srgb, #d4af37 8%, #ffffff) 100%
+              color-mix(in srgb, var(--invite-accent) 6%, #ffffff) 45%,
+              color-mix(in srgb, var(--invite-accent-2) 8%, #ffffff) 100%
             );
           border-radius: 1.25rem;
-          border: 1px solid color-mix(in srgb, #d4af37 35%, transparent);
+          border: 1px solid color-mix(in srgb, var(--invite-accent-2) 35%, transparent);
           box-shadow:
             0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
-            0 20px 44px color-mix(in srgb, #041226 18%, transparent);
+            0 20px 44px color-mix(in srgb, var(--invite-text) 14%, transparent);
         }
 
         .invite-root[data-layout="quince"] .rsvp-panel {
-          background: color-mix(in srgb, #d4af37 6%, #f7faff);
-          border: 1px solid color-mix(in srgb, #2b6fff 18%, transparent);
+          background: color-mix(in srgb, var(--invite-accent-2) 6%, #f7faff);
+          border: 1px solid color-mix(in srgb, var(--invite-accent) 18%, transparent);
         }
 
         .invite-root[data-layout="quince"] .invite-section-title {
-          background: linear-gradient(105deg, #0b1f3a 0%, #2b6fff 55%, #d4af37 100%);
+          background: linear-gradient(105deg, var(--invite-text) 0%, var(--invite-accent) 55%, var(--invite-accent-2) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
         }
 
         .invite-root[data-layout="quince"] .invite-meta dt {
-          color: #d4af37;
+          color: var(--invite-accent-2);
         }
 
         .invite-root[data-layout="quince"] .btn-primary,
         .invite-root[data-layout="quince"] .invite-section--rsvp .btn-submit {
-          background: linear-gradient(120deg, #2b6fff, #1a4fd6 60%, #d4af37);
+          background: linear-gradient(120deg, var(--invite-accent), color-mix(in srgb, var(--invite-accent) 70%, #111) 60%, var(--invite-accent-2));
           color: #f7faff;
+        }
+
+        .invite-root[data-quince="bordered"] .invite-section,
+        .invite-root[data-quince="bordered"] .invite-section--paper,
+        .invite-root[data-quince="bordered"] .invite-section--surface,
+        .invite-root[data-quince="bordered"] .invite-section--rsvp {
+          background:
+            linear-gradient(
+              160deg,
+              #fffef8 0%,
+              color-mix(in srgb, #7eadc8 8%, #ffffff) 48%,
+              color-mix(in srgb, #c9a227 9%, #ffffff) 100%
+            );
+          border-radius: 0.45rem;
+          border: 1px solid color-mix(in srgb, #c9a227 42%, transparent);
+          box-shadow:
+            0 0 0 4px color-mix(in srgb, #fffef8 90%, transparent),
+            0 0 0 5px color-mix(in srgb, #c9a227 35%, transparent),
+            0 18px 40px color-mix(in srgb, #243044 12%, transparent);
+        }
+
+        .invite-root[data-quince="bordered"] .rsvp-panel {
+          background: color-mix(in srgb, #c9a227 7%, #fffef8);
+          border: 1px solid color-mix(in srgb, #7eadc8 28%, transparent);
+        }
+
+        .invite-root[data-quince="bordered"] .invite-section-title {
+          background: none;
+          -webkit-background-clip: unset;
+          background-clip: unset;
+          color: #c9a227;
+          font-family: var(--font-great-vibes), cursive;
+          font-weight: 400;
+          letter-spacing: 0.01em;
+        }
+
+        .invite-root[data-quince="bordered"] .invite-meta dt {
+          color: #7eadc8;
+        }
+
+        .invite-root[data-quince="bordered"] .btn-primary,
+        .invite-root[data-quince="bordered"] .invite-section--rsvp .btn-submit {
+          background: linear-gradient(120deg, #c9a227, #a8881c 58%, #7eadc8);
+          color: #fffdf6;
         }
 
         /* Game on — pixel cabinets (extends ink base) */
@@ -5820,6 +6039,7 @@ export default function InvitePage({
           :global(.azure-glow),
           :global(.azure-ring),
           :global(.quince-ring),
+          :global(.celeste-glow),
           :global(.fifty-sparkle),
           :global(.fifty-badge),
           :global(.arcade-scanlines),
