@@ -1,4 +1,7 @@
-/** Guest paths prefer WebP; PNG remains the Ink/print fallback. Frame raster is not on the guest path. */
+/**
+ * Guest paths prefer WebP; PNG remains the Ink fallback so re-exports swap in place.
+ * Frame: SVG only on the guest card. Raster frame PNGs are print/Ink, not guest.
+ */
 export type QuinceGuestAsset = {
   webp: string;
   png: string;

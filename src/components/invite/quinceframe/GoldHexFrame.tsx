@@ -1,18 +1,14 @@
+import { QUINCE_TIARA_ASSETS } from "./assets";
+
+/** Guest frame is the SVG slot — do not use the raster frame PNG (checkerboard / stretch). */
 export default function GoldHexFrame() {
   return (
-    <svg
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={QUINCE_TIARA_ASSETS.frameSvg}
+      alt=""
       className="quinceframe-hex"
-      viewBox="0 0 600 900"
-      preserveAspectRatio="xMidYMid meet"
       aria-hidden
-    >
-      <path
-        d="M300 28 L470 70 L545 180 L545 720 L470 830 L300 872 L130 830 L55 720 L55 180 L130 70 Z"
-        fill="none"
-        stroke="#C9A227"
-        strokeWidth="2.5"
-        strokeLinejoin="miter"
-      />
-    </svg>
+    />
   );
 }

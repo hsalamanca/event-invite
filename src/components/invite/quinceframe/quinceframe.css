@@ -69,6 +69,8 @@
   width: 88%;
   height: 91%;
   transform: translate(-50%, -50%);
+  object-fit: contain;
+  object-position: center;
   pointer-events: none;
 }
 
