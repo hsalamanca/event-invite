@@ -106,8 +106,7 @@ Root: `/workspace/ownvite-assets/quince-tiara/`
 | `web/floral-corner-tr.png` | Optional top-right |
 | `web/floral-corner-bl.png` | Optional bottom-left |
 | `web/gown-back-pink.png` | Center illustration |
-| `web/frame-gold-hex.png` | Raster frame (portrait) |
-| `web/frame-gold-hex-landscape.png` | Alternate / marketing |
+| `web/frame-gold-hex.png` | Stroke-only raster (not used on guest) |
 | `svg/frame-gold-hex.svg` | Preferred scalable frame |
 | `print/*.png` | ≥2400px long-edge print masters |
 | `reference/hugo-sample.png` | Visual canon |

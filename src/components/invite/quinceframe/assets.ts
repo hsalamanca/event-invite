@@ -33,8 +33,8 @@ export const QUINCE_TIARA_ASSETS = {
     png: "/templates/quince-tiara/gown-back-pink.png",
   },
   frameSvg: "/templates/quince-tiara/frame-gold-hex.svg",
+  /** Stroke-only raster; guest render uses frameSvg. */
   framePng: "/templates/quince-tiara/frame-gold-hex.png",
-  frameLandscape: "/templates/quince-tiara/frame-gold-hex-landscape.png",
   hero: "/templates/quince-tiara-hero.svg",
 } as const satisfies {
   floralTl: QuinceGuestAsset;
@@ -45,6 +45,5 @@ export const QUINCE_TIARA_ASSETS = {
   gown: QuinceGuestAsset;
   frameSvg: string;
   framePng: string;
-  frameLandscape: string;
   hero: string;
 };
