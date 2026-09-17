@@ -540,6 +540,7 @@ export default function InvitePage({
       data-page={
         layout === "arcade" ||
         layout === "azure" ||
+        layout === "quincebloom" ||
         (layout === "quince" && !quinceBordered)
           ? "ink"
           : undefined
@@ -639,6 +640,7 @@ export default function InvitePage({
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
+        quinceMisXv={ui.quinceMisXv}
         fiftyCelebrate={ui.fiftyCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
@@ -4351,6 +4353,265 @@ export default function InvitePage({
           font-weight: 600;
         }
 
+        /* —— Quince rosa (premium bloom) —— */
+        :global(.invite-cover[data-layout="quincebloom"] .invite-cover-atmosphere-veil) {
+          background:
+            radial-gradient(
+              circle at 18% 20%,
+              rgba(210, 80, 130, 0.45),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 82% 18%,
+              rgba(212, 160, 23, 0.28),
+              transparent 40%
+            ),
+            linear-gradient(
+              165deg,
+              #4a1228 0%,
+              #2a0c18 48%,
+              #1a0810 100%
+            );
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-sparkle) {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 0.55;
+          background-image:
+            radial-gradient(circle at 12% 28%, #ffd98a 0 1.2px, transparent 1.8px),
+            radial-gradient(circle at 78% 22%, #fff 0 1px, transparent 1.6px),
+            radial-gradient(circle at 64% 68%, #ffd98a 0 1.1px, transparent 1.7px),
+            radial-gradient(circle at 30% 72%, #fff 0 0.9px, transparent 1.4px),
+            radial-gradient(circle at 88% 58%, #ffc2d6 0 1.2px, transparent 1.8px);
+          animation: quincebloomTwinkle 4.5s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .invite-card) {
+          position: relative;
+          z-index: 1;
+          overflow: hidden;
+          border: none;
+          border-radius: 1.6rem;
+          background: transparent;
+          box-shadow: none;
+          padding: 0;
+          color: #3a1224;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-card) {
+          position: relative;
+          margin: 0 auto;
+          padding: 1.35rem 1.15rem 1.4rem;
+          width: min(100%, 420px);
+          border-radius: 1.45rem;
+          background:
+            linear-gradient(180deg, #fffafc 0%, #fff0f5 55%, #ffe4ef 100%);
+          border: 1.5px solid color-mix(in srgb, #d4a017 55%, #fff);
+          box-shadow:
+            0 0 0 6px color-mix(in srgb, #c2185b 18%, transparent),
+            0 22px 50px rgba(20, 4, 10, 0.45);
+          text-align: center;
+          overflow: hidden;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-glow) {
+          position: absolute;
+          inset: -20% -10% auto;
+          height: 55%;
+          background: radial-gradient(
+            ellipse at 50% 30%,
+            rgba(212, 160, 23, 0.28),
+            transparent 70%
+          );
+          pointer-events: none;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-brand) {
+          position: relative;
+          z-index: 1;
+          margin: 0;
+          font-family: var(--font-cormorant), Georgia, serif;
+          font-size: clamp(3.4rem, 14vw, 4.6rem);
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          line-height: 0.9;
+          color: #d4a017;
+          text-shadow: 0 2px 0 rgba(90, 24, 48, 0.12);
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-kicker) {
+          position: relative;
+          z-index: 1;
+          margin: 0.15rem 0 0.85rem;
+          font-family: var(--font-cormorant), Georgia, serif;
+          font-size: 0.95rem;
+          font-weight: 600;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: #c2185b;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-photo-stage) {
+          position: relative;
+          z-index: 1;
+          width: min(78%, 260px);
+          margin: 0 auto 0.85rem;
+          aspect-ratio: 3 / 4;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-butterflies) {
+          position: absolute;
+          inset: -8% -14%;
+          width: 128%;
+          height: 116%;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-bf) {
+          transform-origin: center;
+          animation: quincebloomFlutter 3.6s ease-in-out infinite;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-bf--b) {
+          animation-delay: 0.6s;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-bf--c) {
+          animation-delay: 1.2s;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-oval) {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% / 42%;
+          overflow: hidden;
+          border: 3px solid #d4a017;
+          box-shadow:
+            0 0 0 5px color-mix(in srgb, #c2185b 22%, #fff),
+            0 14px 28px rgba(58, 18, 36, 0.28);
+          background: #fff;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-oval-ring) {
+          position: absolute;
+          inset: 7px;
+          border-radius: inherit;
+          border: 1px solid color-mix(in srgb, #d4a017 55%, transparent);
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-oval img) {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-name) {
+          position: relative;
+          z-index: 1;
+          margin: 0.15rem 0 0.2rem;
+          font-family: var(--font-display);
+          font-size: clamp(3rem, 12vw, 4.2rem);
+          font-weight: 400;
+          line-height: 1;
+          color: #c2185b;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-invite) {
+          position: relative;
+          z-index: 1;
+          margin: 0 0.5rem 0.85rem;
+          font-family: var(--font-cormorant), Georgia, serif;
+          font-size: 1.05rem;
+          font-style: italic;
+          color: #8a5468;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-meta) {
+          position: relative;
+          z-index: 1;
+          margin: 0 auto;
+          padding: 0.85rem 1rem;
+          width: min(100%, 300px);
+          border-radius: 1rem;
+          background: color-mix(in srgb, #c2185b 8%, #fff);
+          border: 1px solid color-mix(in srgb, #d4a017 40%, #fff);
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-date),
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-time),
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-place) {
+          margin: 0.15rem 0;
+          font-family: var(--font-cormorant), Georgia, serif;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          color: #3a1224;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-date) {
+          font-size: 1.05rem;
+          text-transform: uppercase;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-time) {
+          color: #c2185b;
+          font-size: 1.15rem;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-place) {
+          font-size: 0.92rem;
+          color: #8a5468;
+          font-weight: 500;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions) {
+          margin-top: 1rem;
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions .btn-primary) {
+          border-radius: 999px;
+          background: linear-gradient(135deg, #c2185b, #a01048);
+          color: #fff8fb;
+          border: none;
+          box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
+        }
+
+        :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions .btn-ghost) {
+          border-radius: 999px;
+          border: 1.5px solid #d4a017;
+          color: #d4a017;
+          background: color-mix(in srgb, #2a0c18 55%, transparent);
+        }
+
+        @keyframes quincebloomFlutter {
+          0%,
+          100% {
+            transform: translateY(0) rotate(-4deg);
+          }
+          50% {
+            transform: translateY(-7px) rotate(5deg);
+          }
+        }
+
+        @keyframes quincebloomTwinkle {
+          0%,
+          100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.75;
+          }
+        }
+
         /* Canva Light Blue + Yellow bordered quinceañera */
         :global(.invite-cover[data-quince="bordered"]) {
           overflow: auto;
@@ -5232,6 +5493,42 @@ export default function InvitePage({
         .invite-root[data-layout="quince"] .invite-section--rsvp .btn-submit {
           background: linear-gradient(120deg, var(--invite-accent), color-mix(in srgb, var(--invite-accent) 70%, #111) 60%, var(--invite-accent-2));
           color: #f7faff;
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-section,
+        .invite-root[data-layout="quincebloom"] .invite-section--paper,
+        .invite-root[data-layout="quincebloom"] .invite-section--surface,
+        .invite-root[data-layout="quincebloom"] .invite-section--rsvp {
+          background:
+            linear-gradient(
+              165deg,
+              #fffafc 0%,
+              #fff0f5 50%,
+              #ffe8f0 100%
+            );
+          border-radius: 1.25rem;
+          border: 1px solid color-mix(in srgb, #d4a017 35%, transparent);
+          box-shadow: 0 18px 40px rgba(42, 12, 24, 0.12);
+        }
+
+        .invite-root[data-layout="quincebloom"] .rsvp-panel {
+          background: color-mix(in srgb, #c2185b 6%, #fffafc);
+          border: 1px solid color-mix(in srgb, #d4a017 28%, transparent);
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-section-title {
+          color: #c2185b;
+          font-family: var(--font-display);
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-meta dt {
+          color: #d4a017;
+        }
+
+        .invite-root[data-layout="quincebloom"] .btn-primary,
+        .invite-root[data-layout="quincebloom"] .invite-section--rsvp .btn-submit {
+          background: linear-gradient(135deg, #c2185b, #a01048);
+          color: #fff8fb;
         }
 
         .invite-root[data-quince="bordered"] .invite-section,

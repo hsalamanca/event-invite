@@ -36,6 +36,7 @@ export type InviteLayout =
   | "azure"
   | "arcade"
   | "quince"
+  | "quincebloom"
   | "fifty"
   | "splash"
   | "collage";
@@ -370,6 +371,19 @@ const quinceAzul: Theme = {
     textMuted: "#5B6F8C",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
+};
+
+/** Premium fun quinceañera — warm rose, champagne gold, soft blush */
+const quinceRosa: Theme = {
+  colors: {
+    background: "#2A0C18",
+    surface: "#FFF7FA",
+    accentPrimary: "#C2185B",
+    accentSecondary: "#D4A017",
+    textPrimary: "#3A1224",
+    textMuted: "#8A5468",
+  },
+  fonts: { display: "Great Vibes", body: "Cormorant Garamond" },
 };
 
 /** Canva-inspired 50th — sunny champagne & coral (joyful milestone) */
@@ -1129,6 +1143,28 @@ export const TEMPLATES: EventTemplate[] = [
       "Una noche de familia, música y recuerdos — estás invitado a celebrar mis quince.",
   },
   {
+    id: "quince-rosa",
+    name: "Quince rosa",
+    nameEs: "Quinceañera rosa",
+    description:
+      "Premium rose + champagne sparkle — a glamorous, fun quinceañera with butterflies and gold glow.",
+    descriptionEs:
+      "Rosa premium + destellos champagne — quinceañera glamurosa y divertida con mariposas y brillo dorado.",
+    inspiredBy: "Canva / Evite glam quinceañera rose gold invitations",
+    inspiredByEs: "Canva / Evite invitaciones quinceañera rosa dorado glam",
+    categories: ["birthday", "party"],
+    layout: "quincebloom",
+    premium: true,
+    theme: quinceRosa,
+    heroImage: "/templates/quince-rosa-hero.png",
+    headline: "Sofía",
+    headlineEs: "Sofía",
+    tagline:
+      "Dress up, dance all night, and celebrate fifteen in rose and gold — you’re invited!",
+    taglineEs:
+      "¡Vístete elegante, baila toda la noche y celebra los quince en rosa y dorado — estás invitada!",
+  },
+  {
     id: "golden-fifty",
     name: "Golden fifty",
     nameEs: "Cincuenta dorado",
@@ -1250,6 +1286,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "toy-party",
   "rojo-celeste",
   "quince-azul",
+  "quince-rosa",
   "blush-collage",
   "disco-silver",
   "candy-bubble",

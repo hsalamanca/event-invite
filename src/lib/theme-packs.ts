@@ -23,7 +23,7 @@ export const THEME_PACKS: ThemePack[] = [
     name: "Fiesta & quince pack",
     nameEs: "Pack fiesta y quince",
     description: "Latin celebration and festive themes.",
-    templateIds: ["latin-fiesta", "gold-confetti", "quince-azul"],
+    templateIds: ["latin-fiesta", "gold-confetti", "quince-azul", "quince-rosa"],
     amountCents: 1200,
   },
   {
@@ -37,6 +37,7 @@ export const THEME_PACKS: ThemePack[] = [
       "gold-confetti",
       "latin-fiesta",
       "quince-azul",
+      "quince-rosa",
       "golden-fifty",
     ],
     amountCents: 1200,

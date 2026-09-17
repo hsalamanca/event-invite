@@ -33,6 +33,7 @@ type InviteCoverProps = {
   modernCelebrate?: string;
   arcadePlayer?: string;
   quinceInvite?: string;
+  quinceMisXv?: string;
   fiftyCelebrate?: string;
   splashInvite?: string;
   collageInvite?: string;
@@ -729,6 +730,28 @@ function CelesteCorners() {
   );
 }
 
+function QuinceBloomButterflies() {
+  return (
+    <svg className="quincebloom-butterflies" viewBox="0 0 320 220" aria-hidden>
+      <g className="quincebloom-bf quincebloom-bf--a" fill="#D4A017" opacity="0.92">
+        <path d="M48 78 C28 52 18 78 48 98 C78 78 68 52 48 78 Z" />
+        <path d="M48 78 C28 104 18 128 48 108 C78 128 68 104 48 78 Z" />
+        <ellipse cx="48" cy="92" rx="2.2" ry="10" fill="#5A1830" />
+      </g>
+      <g className="quincebloom-bf quincebloom-bf--b" fill="#F2C4D8" opacity="0.95">
+        <path d="M268 52 C248 30 236 54 268 70 C300 54 288 30 268 52 Z" />
+        <path d="M268 52 C248 74 236 96 268 78 C300 96 288 74 268 52 Z" />
+        <ellipse cx="268" cy="64" rx="2" ry="8" fill="#5A1830" />
+      </g>
+      <g className="quincebloom-bf quincebloom-bf--c" fill="#C2185B" opacity="0.88">
+        <path d="M250 150 C234 134 224 150 250 162 C276 150 266 134 250 150 Z" />
+        <path d="M250 150 C234 166 224 182 250 168 C276 182 266 166 250 150 Z" />
+        <ellipse cx="250" cy="158" rx="1.6" ry="7" fill="#3A1224" />
+      </g>
+    </svg>
+  );
+}
+
 function Ornament({ layout }: { layout: InviteLayout }) {
   if (layout === "comic") {
     return (
@@ -737,7 +760,12 @@ function Ornament({ layout }: { layout: InviteLayout }) {
       </div>
     );
   }
-  if (layout === "superhero" || layout === "superburst" || layout === "spiderweb") {
+  if (
+    layout === "superhero" ||
+    layout === "superburst" ||
+    layout === "spiderweb" ||
+    layout === "quincebloom"
+  ) {
     return null;
   }
   if (layout === "collage") {
@@ -960,6 +988,7 @@ export default function InviteCover({
   modernCelebrate,
   arcadePlayer,
   quinceInvite,
+  quinceMisXv,
   fiftyCelebrate,
   splashInvite,
   collageInvite,
@@ -1005,6 +1034,7 @@ export default function InviteCover({
   const isAzure = layout === "azure";
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
+  const isQuincebloom = layout === "quincebloom";
   const isCeleste = quinceBordered;
   const isFifty = layout === "fifty";
 
@@ -1028,7 +1058,7 @@ export default function InviteCover({
               ? modernCelebrate || invitesYou
               : isArcade
                 ? arcadePlayer || invitesYou
-                : isQuince
+                : isQuince || isQuincebloom
                   ? quinceInvite || invitesYou
                   : isFifty
                     ? fiftyCelebrate || invitesYou
@@ -1076,6 +1106,7 @@ export default function InviteCover({
       {isComic || isSuperhero ? <div className="comic-halftone" aria-hidden /> : null}
       {isSuperburst ? <div className="superburst-rays" aria-hidden /> : null}
       {isSpiderweb ? <div className="spider-web-overlay" aria-hidden /> : null}
+      {isQuincebloom ? <div className="quincebloom-sparkle" aria-hidden /> : null}
       {isFestive ? <div className="festive-confetti" aria-hidden /> : null}
       {isToybox ? <div className="toybox-dots" aria-hidden /> : null}
       {isSplash ? <div className="splash-blobs" aria-hidden /> : null}
@@ -1330,6 +1361,75 @@ export default function InviteCover({
                   ) : null}
                 </div>
               ) : null}
+            </>
+          ) : isQuincebloom ? (
+            <>
+              <div className="quincebloom-card">
+                <div className="quincebloom-glow" aria-hidden />
+                <p className="quincebloom-brand" aria-hidden>
+                  XV
+                </p>
+                <p className="quincebloom-kicker">
+                  {quinceMisXv || title || "Mis XV Años"}
+                </p>
+                <div className="quincebloom-photo-stage">
+                  <QuinceBloomButterflies />
+                  <div className="quincebloom-oval">
+                    <div className="quincebloom-oval-ring" aria-hidden />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={heroImage} alt="" />
+                  </div>
+                </div>
+                <h1 className="quincebloom-name">{headline}</h1>
+                <p className="quincebloom-invite">{inviteLine}</p>
+                <div className="quincebloom-meta">
+                  <p className="quincebloom-date">
+                    {[weekdayLabel, dateShortLabel || dateLabel]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                  {timeLabel ? (
+                    <p className="quincebloom-time">{timeLabel}</p>
+                  ) : null}
+                  {venue || address ? (
+                    <p className="quincebloom-place">
+                      {[venue, address].filter(Boolean).join(" · ")}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              {!printMode ? (
+                <div className="super-actions quincebloom-actions">
+                  {isPast || !rsvpEnabled ? (
+                    <a className="btn-primary" href="#guestbook">
+                      {leaveNoteLabel}
+                    </a>
+                  ) : (
+                    <a className="btn-primary" href="#rsvp">
+                      {rsvpLabel}
+                    </a>
+                  )}
+                  <a className="btn-ghost" href="#details">
+                    {detailsLabel}
+                  </a>
+                </div>
+              ) : (
+                <div className="invite-card-print-footer">
+                  {qrUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={qrUrl}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="invite-card-print-qr"
+                    />
+                  ) : null}
+                  {inviteUrl ? (
+                    <p className="invite-card-print-url">{inviteUrl}</p>
+                  ) : null}
+                </div>
+              )}
             </>
           ) : (
             <>
