@@ -63,10 +63,12 @@
 
 .quinceframe-hex {
   position: absolute;
-  inset: 4.5% 6%;
+  left: 50%;
+  top: 50%;
   z-index: 1;
   width: 88%;
   height: 91%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
@@ -260,12 +262,12 @@
 .quinceframe-footer-gown {
   position: absolute;
   left: 50%;
-  bottom: -3%;
+  bottom: 0;
   z-index: 1;
   width: 64%;
-  height: 108%;
+  height: 100%;
   transform: translateX(-50%);
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -279,8 +281,8 @@
 .quinceframe-gown .quinceframe-gown-svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 12%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .quinceframe-lunch,
@@ -300,11 +302,14 @@
 }
 
 .quinceframe-rsvp-cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 44px;
+  padding: 0.45rem 0;
   text-decoration: none;
   background: none;
   border: 0;
-  padding: 0;
   color: var(--qf-pink);
 }
 

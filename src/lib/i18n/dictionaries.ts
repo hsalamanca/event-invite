@@ -251,6 +251,8 @@ export type Dictionary = {
     quinceLunch: string;
     quinceLunchAt: string;
     quinceRsvpTo: string;
+    quinceRsvpAt: string;
+    quinceRsvpBy: string;
     quinceAtTime: string;
     fiftyCelebrate: string;
     collageInvite: string;
@@ -656,6 +658,8 @@ const en: Dictionary = {
     quinceLunch: "Lunch",
     quinceLunchAt: "Celebratory Lunch at",
     quinceRsvpTo: "Rsvp to",
+    quinceRsvpAt: "at",
+    quinceRsvpBy: "by",
     quinceAtTime: "at",
     fiftyCelebrate: "is celebrating fifty fabulous years",
     collageInvite: "birthday of",
@@ -1075,6 +1079,8 @@ const es: Dictionary = {
     quinceLunch: "Comida",
     quinceLunchAt: "Almuerzo celebratorio en",
     quinceRsvpTo: "Confirmar con",
+    quinceRsvpAt: "al",
+    quinceRsvpBy: "antes del",
     quinceAtTime: "a las",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
     collageInvite: "cumpleaños de",

@@ -112,7 +112,7 @@ Root: `/workspace/ownvite-assets/quince-tiara/`
 | `print/*.png` | ≥2400px long-edge print masters |
 | `reference/hugo-sample.png` | Visual canon |
 
-Suggested public paths once copied into repo: `/templates/quince-tiara/{asset}.png`
+Suggested public paths once copied into repo: `/templates/quince-tiara/{asset}.webp` (guest) with `.png` Ink/print fallback. Default guest florals are **TL+BR only**; TR/BL load only via `denseFlorals`. Print masters stay out of the guest path.
 
 ---
 

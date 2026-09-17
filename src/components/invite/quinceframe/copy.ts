@@ -11,7 +11,7 @@ import type { ScheduleItem } from "@/lib/types";
  * DateLine      ← dateISO labels
  * MassLine      ← “Mass at” + schedule misa item or venue/address + time
  * LunchBlock    ← “Celebratory Lunch at” + schedule comida/about
- * RsvpBlock     ← “Rsvp to” + contactPhone / existing RSVP CTA
+ * RsvpBlock     ← “Rsvp to” + contactName / at phone / by deadline
  */
 export type QuinceFrameCopy = {
   hostLine: string;
@@ -40,7 +40,9 @@ export type QuinceFrameCopyInput = {
   venue: string;
   address: string;
   schedule?: ScheduleItem[];
+  contactName?: string;
   contactPhone?: string;
+  rsvpDeadlineLabel?: string;
   eventScript: string;
   parentsInvite: string;
   relationPrefix: string;
@@ -48,6 +50,8 @@ export type QuinceFrameCopyInput = {
   lunchAt: string;
   rsvpTo: string;
   timePrep: string;
+  rsvpAt?: string;
+  rsvpBy?: string;
 };
 
 const MASS_KEYS = [
@@ -155,6 +159,17 @@ export function resolveQuinceFrameCopy(
     ? joinLines(lunchItem.description, lunchItem.time ? `${input.timePrep} ${lunchItem.time}` : "")
     : lunchFromAbout(input.about);
 
+  const contactName = input.contactName?.trim() || "";
+  const contactPhone = input.contactPhone?.trim() || "";
+  const deadline = input.rsvpDeadlineLabel?.trim() || "";
+  const atPrep = (input.rsvpAt || input.timePrep || "at").trim();
+  const byPrep = (input.rsvpBy || "by").trim();
+  const rsvpDetail = joinLines(
+    contactName,
+    contactPhone ? `${atPrep} ${contactPhone}` : "",
+    deadline ? `${byPrep} ${deadline}` : "",
+  );
+
   return {
     hostLine,
     eventScript: input.eventScript,
@@ -166,6 +181,6 @@ export function resolveQuinceFrameCopy(
     lunchLabel: input.lunchAt,
     lunchDetail,
     rsvpHeader: input.rsvpTo,
-    rsvpDetail: input.contactPhone?.trim() || "",
+    rsvpDetail,
   };
 }

@@ -29,6 +29,7 @@
   "heroImage": "/templates/quince-tiara-hero.svg",
   "motionKit": "none",
   "customDomain": null,
+  "contactName": "[Contact]",
   "contactPhone": "[phone]",
   "rsvpFields": {
     "plusOnes": {

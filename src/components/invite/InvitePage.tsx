@@ -637,6 +637,12 @@ export default function InvitePage({
         collageInvite={ui.collageInvite}
         balloonDigits={event.balloonDigits}
         contactPhone={event.contactPhone}
+        contactName={event.contactName}
+        rsvpDeadlineLabel={
+          rsvpFields.deadline
+            ? formatDateShortLabel(rsvpFields.deadline, locale)
+            : undefined
+        }
         modernCelebrate={ui.modernCelebrate}
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
@@ -649,6 +655,8 @@ export default function InvitePage({
         quinceLunchLabel={ui.quinceLunch}
         quinceLunchAt={ui.quinceLunchAt}
         quinceRsvpTo={ui.quinceRsvpTo}
+        quinceRsvpAt={ui.quinceRsvpAt}
+        quinceRsvpBy={ui.quinceRsvpBy}
         quinceAtTime={ui.quinceAtTime}
         about={aboutHtml}
         schedule={schedule}

@@ -127,6 +127,8 @@ export type EventRecord = {
   whatToBring?: string;
   contactEmail?: string;
   contactPhone?: string;
+  /** Optional RSVP contact name on stationery (quinceframe). */
+  contactName?: string;
   hotelInfo?: string;
   travelInfo?: string;
   spotifyUrl?: string;

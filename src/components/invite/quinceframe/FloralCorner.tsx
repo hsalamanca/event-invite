@@ -46,7 +46,8 @@ export default function FloralCorner({
 }) {
   return (
     <AssetSlot
-      src={SRC[corner]}
+      src={SRC[corner].webp}
+      fallbackSrc={SRC[corner].png}
       className={`quinceframe-floral quinceframe-floral--${corner}`}
     >
       <RoseBouquet />

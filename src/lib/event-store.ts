@@ -82,6 +82,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     whatToBring: raw.whatToBring ?? "",
     contactEmail: raw.contactEmail ?? "",
     contactPhone: raw.contactPhone ?? "",
+    contactName: raw.contactName ?? "",
     hotelInfo: raw.hotelInfo ?? "",
     travelInfo: raw.travelInfo ?? "",
     spotifyUrl: raw.spotifyUrl ?? "",

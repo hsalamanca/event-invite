@@ -26,6 +26,8 @@ type InviteCoverProps = {
   heroVideoUrl?: string | null;
   motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
   contactPhone?: string;
+  contactName?: string;
+  rsvpDeadlineLabel?: string;
   invitesYou: string;
   comicPresents?: string;
   superYouAreInvited?: string;
@@ -47,6 +49,8 @@ type InviteCoverProps = {
   quinceLunchLabel?: string;
   quinceLunchAt?: string;
   quinceRsvpTo?: string;
+  quinceRsvpAt?: string;
+  quinceRsvpBy?: string;
   quinceAtTime?: string;
   about?: string;
   schedule?: ScheduleItem[];
@@ -1014,6 +1018,8 @@ export default function InviteCover({
   quinceLunchLabel,
   quinceLunchAt,
   quinceRsvpTo,
+  quinceRsvpAt,
+  quinceRsvpBy,
   quinceAtTime,
   about,
   schedule,
@@ -1022,6 +1028,8 @@ export default function InviteCover({
   collageInvite,
   balloonDigits,
   contactPhone,
+  contactName,
+  rsvpDeadlineLabel,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -1406,7 +1414,9 @@ export default function InviteCover({
                 venue,
                 address,
                 schedule,
+                contactName,
                 contactPhone,
+                rsvpDeadlineLabel,
                 eventScript: quinceEventScript || quinceMisXv || "Quinceañera",
                 parentsInvite: quinceParentsInvite || invitesYou,
                 relationPrefix: quinceRelationPrefix || invitesYou,
@@ -1414,6 +1424,8 @@ export default function InviteCover({
                 lunchAt: quinceLunchAt || quinceLunchLabel || "Lunch",
                 rsvpTo: quinceRsvpTo || rsvpLabel,
                 timePrep: quinceAtTime || "at",
+                rsvpAt: quinceRsvpAt,
+                rsvpBy: quinceRsvpBy,
               })}
               printMode={printMode}
               rsvpHref={isPast || !rsvpEnabled ? "#guestbook" : "#rsvp"}

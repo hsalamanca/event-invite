@@ -21,6 +21,7 @@ export default function QuinceFrameCover({
   rsvpLabel,
   inviteUrl,
   qrUrl,
+  denseFlorals = false,
 }: {
   copy: QuinceFrameCopy;
   printMode?: boolean;
@@ -28,14 +29,16 @@ export default function QuinceFrameCover({
   rsvpLabel: string;
   inviteUrl?: string;
   qrUrl?: string;
+  /** Optional TR/BL florals. Default is Hugo/art-dir TL+BR only. */
+  denseFlorals?: boolean;
 }) {
   return (
     <div className="quinceframe-card">
       <div className="quinceframe-sparkle" aria-hidden />
       <GoldHexFrame />
       <FloralCorner corner="tl" />
-      <FloralCorner corner="tr" />
-      <FloralCorner corner="bl" />
+      {denseFlorals ? <FloralCorner corner="tr" /> : null}
+      {denseFlorals ? <FloralCorner corner="bl" /> : null}
       <FloralCorner corner="br" />
       <div className="quinceframe-body">
         <TiaraMark />

@@ -3,7 +3,7 @@ export default function GoldHexFrame() {
     <svg
       className="quinceframe-hex"
       viewBox="0 0 600 900"
-      preserveAspectRatio="none"
+      preserveAspectRatio="xMidYMid meet"
       aria-hidden
     >
       <path
