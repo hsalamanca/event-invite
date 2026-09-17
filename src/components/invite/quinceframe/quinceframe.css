@@ -1,0 +1,275 @@
+.invite-cover[data-layout="quinceframe"] {
+  --qf-gold: #c9a227;
+  --qf-pink: #e8a0b8;
+  --qf-pink-deep: #d4789a;
+  --qf-ink: #6b5e52;
+  --qf-paper: #fffcfa;
+}
+
+.invite-root[data-layout="quinceframe"] {
+  background: var(--qf-paper);
+}
+
+.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-img {
+  opacity: 0.12;
+  filter: blur(18px) saturate(0.65);
+}
+
+.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-veil {
+  background:
+    radial-gradient(circle at 16% 10%, color-mix(in srgb, var(--qf-pink) 14%, transparent), transparent 38%),
+    radial-gradient(circle at 86% 88%, color-mix(in srgb, var(--qf-gold) 12%, transparent), transparent 36%),
+    linear-gradient(180deg, #fff7f4 0%, var(--qf-paper) 46%, #f7efe8 100%);
+}
+
+.invite-cover[data-layout="quinceframe"] .invite-cover-stage {
+  width: min(100%, 30rem);
+}
+
+.invite-cover[data-layout="quinceframe"] .invite-card {
+  width: min(100%, 28.5rem);
+  margin: 0 auto;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--qf-ink);
+}
+
+.quinceframe-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  background: var(--qf-paper);
+  color: var(--qf-ink);
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 18px 44px color-mix(in srgb, #6b5e52 14%, transparent);
+}
+
+.quinceframe-sparkle {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(circle at 18% 16%, #e0b84a 0 0.7px, transparent 1.2px),
+    radial-gradient(circle at 78% 14%, #c9a227 0 0.6px, transparent 1.1px),
+    radial-gradient(circle at 30% 74%, #e0b84a 0 0.55px, transparent 1px),
+    radial-gradient(circle at 70% 78%, #fff 0 0.55px, transparent 1px);
+}
+
+.quinceframe-hex {
+  position: absolute;
+  inset: 4.5% 6%;
+  z-index: 1;
+  width: 88%;
+  height: 91%;
+  pointer-events: none;
+}
+
+.quinceframe-floral {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.quinceframe-floral--tl {
+  top: -2%;
+  left: -4%;
+  width: 72%;
+}
+
+.quinceframe-floral--tr {
+  top: -1%;
+  right: -6%;
+  width: 46%;
+  opacity: 0.92;
+}
+
+.quinceframe-floral--bl {
+  left: -6%;
+  bottom: -2%;
+  width: 48%;
+}
+
+.quinceframe-floral--br {
+  right: -5%;
+  bottom: -3%;
+  width: 62%;
+}
+
+.quinceframe-floral-svg,
+.quinceframe-tiara-svg,
+.quinceframe-gown-svg,
+.quinceframe-asset {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.quinceframe-body {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 11% 13% 6%;
+}
+
+.quinceframe-tiara {
+  display: block;
+  width: min(34%, 6.4rem);
+  margin: 0 auto 0.35rem;
+}
+
+.quinceframe-host {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(0.62rem, 2.4vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.45;
+  text-transform: uppercase;
+  white-space: pre-line;
+  color: var(--qf-gold);
+}
+
+.quinceframe-script {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-great-vibes), cursive;
+  font-size: clamp(1.7rem, 7.2vw, 2.35rem);
+  line-height: 1.05;
+  color: var(--qf-pink);
+}
+
+.quinceframe-relation {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: normal;
+  font-size: clamp(0.62rem, 2.3vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--qf-gold);
+}
+
+.quinceframe-name {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-great-vibes), cursive;
+  font-size: clamp(2.1rem, 8.6vw, 3.05rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--qf-pink);
+}
+
+.quinceframe-date {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(0.62rem, 2.3vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--qf-gold);
+}
+
+.quinceframe-mass {
+  margin: 0.4rem auto 0;
+  max-width: 86%;
+}
+
+.quinceframe-kicker {
+  margin: 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(0.62rem, 2.2vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--qf-gold);
+}
+
+.quinceframe-mass-detail,
+.quinceframe-side-detail {
+  margin: 0.18rem 0 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(0.68rem, 2.3vw, 0.8rem);
+  line-height: 1.35;
+  white-space: pre-line;
+  color: var(--qf-gold);
+}
+
+.quinceframe-col-head {
+  margin: 0;
+  font-family: var(--font-great-vibes), cursive;
+  font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+  line-height: 1.1;
+  color: var(--qf-pink);
+}
+
+.quinceframe-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(42%, 52%) minmax(0, 1fr);
+  align-items: end;
+  gap: 0.15rem;
+  margin-top: auto;
+  min-height: 36%;
+}
+
+.quinceframe-lunch,
+.quinceframe-rsvp {
+  padding-bottom: 22%;
+  z-index: 4;
+}
+
+.quinceframe-lunch {
+  text-align: left;
+}
+
+.quinceframe-rsvp {
+  text-align: right;
+}
+
+.quinceframe-gown {
+  display: block;
+  width: 145%;
+  margin: 0 0 0 -22%;
+  transform: translateY(10%);
+  z-index: 1;
+}
+
+.quinceframe-rsvp-cta {
+  display: inline-block;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--qf-pink);
+}
+
+.quinceframe-rsvp-cta:hover {
+  color: var(--qf-pink-deep);
+}
+
+.quinceframe-rsvp-qr {
+  display: block;
+  margin: 0.35rem 0 0 auto;
+}
+
+.quinceframe-rsvp-url {
+  margin: 0.3rem 0 0;
+  font-size: 0.58rem;
+  line-height: 1.3;
+  word-break: break-all;
+  color: var(--qf-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quinceframe-sparkle,
+  .quinceframe-floral,
+  .quinceframe-hex {
+    animation: none !important;
+  }
+}

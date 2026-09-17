@@ -37,6 +37,7 @@ export type InviteLayout =
   | "arcade"
   | "quince"
   | "quincebloom"
+  | "quinceframe"
   | "fifty"
   | "splash"
   | "collage";
@@ -371,6 +372,19 @@ const quinceAzul: Theme = {
     textMuted: "#5B6F8C",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
+};
+
+/** Hugo stationery quinceañera — white card, champagne gold, pink script */
+const quinceTiara: Theme = {
+  colors: {
+    background: "#FFFCFA",
+    surface: "#FFFCFA",
+    accentPrimary: "#E8A0B8",
+    accentSecondary: "#C9A227",
+    textPrimary: "#6B5E52",
+    textMuted: "#6B5E52",
+  },
+  fonts: { display: "Great Vibes", body: "Cormorant Garamond" },
 };
 
 /** Premium fun quinceañera — warm rose, champagne gold, soft blush */
@@ -1165,6 +1179,27 @@ export const TEMPLATES: EventTemplate[] = [
       "¡Vístete elegante, baila toda la noche y celebra los quince en rosa y dorado — estás invitada!",
   },
   {
+    id: "quince-tiara",
+    name: "Quince tiara",
+    nameEs: "Quinceañera tiara oro-rosa",
+    description:
+      "White stationery card with a thin gold hex frame, watercolor roses, pink glitter tiara, and a central gown — traditional quinceañera layout.",
+    descriptionEs:
+      "Tarjeta blanca con marco hexagonal dorado, rosas en acuarela, tiara rosa glitter y vestido al centro — quinceañera clásica.",
+    inspiredBy: "Hugo stationery quinceañera — gold geometric frame, tiara, gown",
+    inspiredByEs:
+      "Papelería quinceañera Hugo — marco geométrico dorado, tiara y vestido",
+    categories: ["birthday", "party"],
+    layout: "quinceframe",
+    premium: true,
+    theme: quinceTiara,
+    heroImage: "/templates/quince-tiara-hero.svg",
+    headline: "{First Last}",
+    headlineEs: "{Nombre}",
+    tagline: "of their daughter",
+    taglineEs: "de su hija",
+  },
+  {
     id: "golden-fifty",
     name: "Golden fifty",
     nameEs: "Cincuenta dorado",
@@ -1205,6 +1240,11 @@ const STOCK_ABOUT = {
   es: "Otro año, otra razón para reunirnos. Me encantaría contar con tu compañía para una cena relajada — sin regalos, solo tu presencia.",
 } as const;
 
+const QUINCE_TIARA_ABOUT = {
+  en: "Lunch & reception · salon TBD",
+  es: "Comida y recepción · salón por confirmar",
+} as const;
+
 export function resolveLocalizedInviteCopy(
   event: {
     headline: string;
@@ -1224,7 +1264,10 @@ export function resolveLocalizedInviteCopy(
     event.tagline === tpl.tagline || event.tagline === tpl.taglineEs;
   const aboutRaw = event.about ?? "";
   const aboutIsStock =
-    aboutRaw === STOCK_ABOUT.en || aboutRaw === STOCK_ABOUT.es;
+    aboutRaw === STOCK_ABOUT.en ||
+    aboutRaw === STOCK_ABOUT.es ||
+    aboutRaw === QUINCE_TIARA_ABOUT.en ||
+    aboutRaw === QUINCE_TIARA_ABOUT.es;
 
   const headline = headlineIsStock
     ? locale === "es"
@@ -1240,8 +1283,16 @@ export function resolveLocalizedInviteCopy(
 
   const about = aboutIsStock
     ? locale === "es"
-      ? STOCK_ABOUT.es
-      : STOCK_ABOUT.en
+      ? aboutRaw === QUINCE_TIARA_ABOUT.en ||
+        aboutRaw === QUINCE_TIARA_ABOUT.es ||
+        tpl.id === "quince-tiara"
+        ? QUINCE_TIARA_ABOUT.es
+        : STOCK_ABOUT.es
+      : aboutRaw === QUINCE_TIARA_ABOUT.en ||
+          aboutRaw === QUINCE_TIARA_ABOUT.es ||
+          tpl.id === "quince-tiara"
+        ? QUINCE_TIARA_ABOUT.en
+        : STOCK_ABOUT.en
     : resolveLocalizedAbout(aboutRaw, event.aboutEs, locale);
 
   return { headline, tagline, about };
@@ -1287,6 +1338,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "rojo-celeste",
   "quince-azul",
   "quince-rosa",
+  "quince-tiara",
   "blush-collage",
   "disco-silver",
   "candy-bubble",
@@ -1458,6 +1510,16 @@ export function buildEventFromTemplate(input: {
   locale?: "en" | "es";
 }): Omit<EventRecord, "id" | "createdAt" | "updatedAt"> {
   const tpl = getTemplate(input.templateId);
+  const genericAbout =
+    !input.about.trim() ||
+    input.about === STOCK_ABOUT.en ||
+    input.about === STOCK_ABOUT.es ||
+    input.about === "I'd love your company — no gifts, just your presence." ||
+    input.about === "Me encantaría contar con tu compañía.";
+  const about =
+    tpl.id === "quince-tiara" && genericAbout
+      ? QUINCE_TIARA_ABOUT.en
+      : input.about;
   return {
     slug: input.slug,
     ownerId: input.ownerId,
@@ -1466,6 +1528,8 @@ export function buildEventFromTemplate(input: {
     // Store English stock copy; guests see ES via resolveLocalizedInviteCopy
     headline: tpl.headline,
     tagline: tpl.tagline,
+    headlineEs: tpl.headlineEs,
+    taglineEs: tpl.taglineEs,
     dateISO: input.dateISO,
     timeLabel: input.timeLabel,
     venue: input.venue,
@@ -1483,12 +1547,38 @@ export function buildEventFromTemplate(input: {
       locale: input.locale,
       templateId: tpl.id,
     }),
-    about: input.about,
+    about,
+    aboutEs:
+      tpl.id === "quince-tiara" && genericAbout
+        ? QUINCE_TIARA_ABOUT.es
+        : undefined,
     published: true,
     visibility: "public",
     capacity: null,
     registryUrl: null,
     templateId: tpl.id,
+    schedule:
+      tpl.id === "quince-tiara"
+        ? [
+            {
+              id: "misa",
+              time: input.timeLabel,
+              title: "Mass",
+              titleEs: "Misa",
+              description: [input.venue, input.address]
+                .filter(Boolean)
+                .join(", "),
+            },
+            {
+              id: "comida",
+              time: "",
+              title: "Lunch",
+              titleEs: "Comida",
+              description: "Reception venue TBD",
+              descriptionEs: "Salón por confirmar",
+            },
+          ]
+        : undefined,
     rsvpEnabled: true,
     showOwnviteFooter: true,
     tier: "free",

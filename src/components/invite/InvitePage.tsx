@@ -641,6 +641,17 @@ export default function InvitePage({
         arcadePlayer={ui.arcadePlayer}
         quinceInvite={ui.quinceInvite}
         quinceMisXv={ui.quinceMisXv}
+        quinceEventScript={ui.quinceEventScript}
+        quinceRelationPrefix={ui.quinceRelationPrefix}
+        quinceParentsInvite={ui.quinceParentsInvite}
+        quinceMassLabel={ui.quinceMass}
+        quinceMassAt={ui.quinceMassAt}
+        quinceLunchLabel={ui.quinceLunch}
+        quinceLunchAt={ui.quinceLunchAt}
+        quinceRsvpTo={ui.quinceRsvpTo}
+        quinceAtTime={ui.quinceAtTime}
+        about={aboutHtml}
+        schedule={schedule}
         fiftyCelebrate={ui.fiftyCelebrate}
         rsvpLabel={ui.rsvp}
         detailsLabel={ui.details}
@@ -675,7 +686,7 @@ export default function InvitePage({
             <dd>{event.timeLabel}</dd>
           </div>
           <div>
-            <dt>{ui.venue}</dt>
+            <dt>{layout === "quinceframe" ? ui.quinceMass : ui.venue}</dt>
             <dd>{event.venue}</dd>
           </div>
           <div>
@@ -694,7 +705,7 @@ export default function InvitePage({
         </dl>
         <div className="invite-about">
           <h3 className="invite-section-title invite-section-title--sm">
-            {ui.about}
+            {layout === "quinceframe" ? ui.quinceLunch : ui.about}
           </h3>
           <div
             className="invite-about-body"
@@ -1576,6 +1587,10 @@ export default function InvitePage({
           color: var(--invite-text);
           font-family: var(--font-body);
           scroll-behavior: smooth;
+        }
+
+        .invite-root[data-layout="quinceframe"] {
+          background: var(--invite-surface);
         }
 
         :global(.invite-cover) {
@@ -5531,6 +5546,50 @@ export default function InvitePage({
           color: #fff8fb;
         }
 
+        .invite-root[data-layout="quinceframe"] .invite-section,
+        .invite-root[data-layout="quinceframe"] .invite-section--paper,
+        .invite-root[data-layout="quinceframe"] .invite-section--surface,
+        .invite-root[data-layout="quinceframe"] .invite-section--rsvp {
+          background:
+            linear-gradient(
+              165deg,
+              #fffefb 0%,
+              #fff7fa 48%,
+              #fff0f4 100%
+            );
+          border-radius: 0.35rem;
+          border: 1px solid color-mix(in srgb, #d4a017 38%, transparent);
+          box-shadow: 0 16px 36px rgba(42, 12, 24, 0.08);
+        }
+
+        .invite-root[data-layout="quinceframe"] .rsvp-panel {
+          background: color-mix(in srgb, #c2185b 5%, #fffefb);
+          border: 1px solid color-mix(in srgb, #d4a017 28%, transparent);
+        }
+
+        .invite-root[data-layout="quinceframe"] .invite-section-title {
+          background: none;
+          -webkit-background-clip: unset;
+          background-clip: unset;
+          color: #e8a0b8;
+          font-family: var(--font-great-vibes), cursive;
+          font-weight: 400;
+          letter-spacing: 0.01em;
+        }
+
+        .invite-root[data-layout="quinceframe"] .invite-meta dt {
+          color: #c9a227;
+          font-family: var(--font-cormorant), Georgia, serif;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        .invite-root[data-layout="quinceframe"] .btn-primary,
+        .invite-root[data-layout="quinceframe"] .invite-section--rsvp .btn-submit {
+          background: #c9a227;
+          color: #fffcfa;
+        }
+
         .invite-root[data-quince="bordered"] .invite-section,
         .invite-root[data-quince="bordered"] .invite-section--paper,
         .invite-root[data-quince="bordered"] .invite-section--surface,
@@ -6493,6 +6552,13 @@ export default function InvitePage({
             box-shadow: none !important;
             break-inside: avoid;
             page-break-inside: avoid;
+          }
+
+          .invite-root--print[data-layout="quinceframe"] :global(.invite-cover-stage),
+          .invite-root--print[data-layout="quinceframe"] :global(.invite-card) {
+            width: min(100%, 28.5rem) !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
           }
         }
 

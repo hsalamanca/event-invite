@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 640" role="img" aria-label="Quince tiara">
+  <rect width="480" height="640" fill="#FFFCFA"/>
+  <path d="M240 36 L376 70 L436 144 L436 496 L376 570 L240 604 L104 570 L44 496 L44 144 L104 70 Z" fill="none" stroke="#C9A227" stroke-width="2"/>
+  <circle cx="240" cy="118" r="18" fill="none" stroke="#E8A0B8" stroke-width="2"/>
+  <path d="M210 118 H270" stroke="#C9A227" stroke-width="2"/>
+  <text x="240" y="168" text-anchor="middle" fill="#C9A227" font-family="Georgia, serif" font-size="13" letter-spacing="5">MR. &amp; MRS. [LAST]</text>
+  <text x="240" y="230" text-anchor="middle" fill="#E8A0B8" font-family="Georgia, serif" font-size="36" font-style="italic">Quinceañera</text>
+  <text x="240" y="292" text-anchor="middle" fill="#E8A0B8" font-family="Georgia, serif" font-size="34" font-style="italic">{First Last}</text>
+  <ellipse cx="240" cy="500" rx="70" ry="88" fill="#E8A0B8" opacity="0.85"/>
+  <ellipse cx="240" cy="390" rx="16" ry="22" fill="#E8A0B8"/>
+</svg>

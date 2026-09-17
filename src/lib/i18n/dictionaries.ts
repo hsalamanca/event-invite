@@ -243,6 +243,15 @@ export type Dictionary = {
     arcadePlayer: string;
     quinceInvite: string;
     quinceMisXv: string;
+    quinceEventScript: string;
+    quinceRelationPrefix: string;
+    quinceParentsInvite: string;
+    quinceMass: string;
+    quinceMassAt: string;
+    quinceLunch: string;
+    quinceLunchAt: string;
+    quinceRsvpTo: string;
+    quinceAtTime: string;
     fiftyCelebrate: string;
     collageInvite: string;
     date: string;
@@ -639,6 +648,15 @@ const en: Dictionary = {
     arcadePlayer: "player one invites you",
     quinceInvite: "cordially invites you to her quinceañera",
     quinceMisXv: "Mis XV Años",
+    quinceEventScript: "Quinceañera",
+    quinceRelationPrefix: "of their daughter",
+    quinceParentsInvite: "invite you to celebrate the",
+    quinceMass: "Mass",
+    quinceMassAt: "Mass at",
+    quinceLunch: "Lunch",
+    quinceLunchAt: "Celebratory Lunch at",
+    quinceRsvpTo: "Rsvp to",
+    quinceAtTime: "at",
     fiftyCelebrate: "is celebrating fifty fabulous years",
     collageInvite: "birthday of",
     date: "Date",
@@ -1049,6 +1067,15 @@ const es: Dictionary = {
     arcadePlayer: "el jugador uno te invita",
     quinceInvite: "te invita cordialmente a su fiesta de quince años",
     quinceMisXv: "Mis XV Años",
+    quinceEventScript: "Quinceañera",
+    quinceRelationPrefix: "de su hija",
+    quinceParentsInvite: "los invitan a celebrar la",
+    quinceMass: "Misa",
+    quinceMassAt: "Misa en",
+    quinceLunch: "Comida",
+    quinceLunchAt: "Almuerzo celebratorio en",
+    quinceRsvpTo: "Confirmar con",
+    quinceAtTime: "a las",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
     collageInvite: "cumpleaños de",
     date: "Fecha",
