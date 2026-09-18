@@ -33,27 +33,25 @@
 }
 
 .qw-locale {
-  position: absolute;
+  position: fixed;
   top: max(0.75rem, env(safe-area-inset-top));
   right: max(0.75rem, env(safe-area-inset-right));
   z-index: 50;
 }
 
 .qw-mute {
-  position: absolute;
+  position: fixed;
   right: max(0.75rem, env(safe-area-inset-right));
   bottom: calc(3.25rem + env(safe-area-inset-bottom));
   z-index: 45;
+  display: grid;
+  place-items: center;
   width: var(--qw-tap);
   height: var(--qw-tap);
   border: 1px solid color-mix(in srgb, var(--qw-gold) 55%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--qw-bg) 88%, white);
   color: var(--qw-accent);
-  font-family: var(--qw-font-sans);
-  font-size: var(--qw-type-kicker);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   cursor: pointer;
 }
 
