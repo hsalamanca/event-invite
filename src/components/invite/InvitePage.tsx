@@ -4469,7 +4469,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-photo-stage) {
           position: relative;
           z-index: 1;
-          width: min(78%, 260px);
+          width: min(72%, 280px);
           margin: 0 auto 0.85rem;
           aspect-ratio: 3 / 4;
         }
@@ -4553,7 +4553,7 @@ export default function InvitePage({
           z-index: 1;
           margin: 0 auto;
           padding: 0.85rem 1rem;
-          width: min(100%, 300px);
+          width: min(100%, 340px);
           border-radius: 1rem;
           background: color-mix(in srgb, #c2185b 8%, #fff);
           border: 1px solid color-mix(in srgb, #d4a017 40%, #fff);
