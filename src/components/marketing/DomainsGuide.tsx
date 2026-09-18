@@ -20,7 +20,7 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
       headerExtra={
         <Link
           href={localePath(locale, "/host/h-birthday-2026")}
-          className="hidden text-sm transition hover:text-[var(--landing-ink)] sm:inline"
+          className="text-sm transition hover:text-[var(--landing-ink)]"
           style={{ color: "var(--landing-muted)" }}
         >
           {t.openStudio}

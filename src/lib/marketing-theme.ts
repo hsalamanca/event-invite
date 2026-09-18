@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
  * CoS type lock: Fraunces (display) + DM Sans (UI).
  */
 export const paperThemeVars = {
+  "--ink": "#3A2A30",
   "--landing-ink": "#3A2A30",
   "--landing-muted": "#5C564E",
   "--landing-paper": "#FBF6F2",

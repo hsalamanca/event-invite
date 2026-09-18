@@ -1,9 +1,9 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import AddressBarMarquee from "@/components/marketing/AddressBarMarquee";
 import LandingReveal from "@/components/marketing/LandingReveal";
 import LandingStills from "@/components/marketing/LandingStills";
+import MarketingNav from "@/components/marketing/MarketingNav";
 import PeekFilmstrip from "@/components/marketing/PeekFilmstrip";
 import { MARQUEE } from "@/lib/marquee-assets";
 import type { Locale } from "@/lib/i18n/config";
@@ -56,110 +56,78 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           }}
         >
           <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8 sm:py-5">
-          <BrandLogo tone="paper" height={26} href="/" />
-          <nav
-            className="flex flex-wrap items-center justify-end gap-2.5 text-sm sm:gap-5"
-            style={{ color: "var(--landing-ink)" }}
-          >
-            <LanguageSwitcher locale={locale} path="/" variant="paper" />
-            <Link
-              href={localePath(locale, "/marketplace")}
-              className="hidden transition hover:text-[var(--landing-rose-deep)] sm:inline"
-            >
-              {nav.templates}
-            </Link>
-            <Link
-              href={localePath(locale, "/domains")}
-              className="hidden transition hover:text-[var(--landing-rose-deep)] sm:inline"
-            >
-              {nav.domains}
-            </Link>
-            <Link
-              href={localePath(locale, "/pricing")}
-              className="hidden transition hover:text-[var(--landing-rose-deep)] sm:inline"
-            >
-              {nav.pricing}
-            </Link>
-            <Link
-              href="/login"
-              className="transition hover:text-[var(--landing-rose-deep)]"
-            >
-              {nav.signIn}
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-full px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-              style={{ background: "var(--landing-cta)" }}
-            >
-              {nav.signUp}
-            </Link>
-          </nav>
+            <BrandLogo tone="paper" height={26} href="/" />
+            <MarketingNav locale={locale} path="/" />
           </div>
         </header>
 
-        <div className="relative z-10 mx-auto flex min-h-[calc(100svh-3.5rem)] max-w-6xl flex-col justify-end px-5 pb-8 pt-6 sm:min-h-[calc(100svh-4.5rem)] sm:px-8 sm:pb-14">
-          <AddressBarMarquee urls={[t.mockUrl, t.demoUrl]} size="hero" />
-          <p
-            className="mt-2 text-center text-[11px] font-medium uppercase tracking-[0.18em] sm:text-xs"
-            style={{ color: "#FFFCFA" }}
-          >
-            {t.demoCredit}
-          </p>
-          <h1
-            className="mt-5 max-w-xl text-balance sm:mt-6"
-            style={{
-              ...heroDisplayFont,
-              fontSize: "clamp(2.15rem, 9.2vw, 4.35rem)",
-              fontWeight: 600,
-              lineHeight: 1.02,
-              letterSpacing: "-0.03em",
-              color: "#FFFCFA",
-              textShadow: "0 2px 24px rgba(58,42,48,0.35)",
-            }}
-          >
-            {t.headline}
-          </h1>
-          <p
-            className="mt-3 max-w-lg text-base leading-snug sm:mt-4 sm:text-lg"
-            style={{ color: "#FFFCFA" }}
-          >
-            {t.support}
-          </p>
-          <div className="mt-5 flex w-full max-w-md flex-col items-start gap-3 sm:mt-7">
-            <Link
-              href="/register"
-              className="inline-flex min-h-12 w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:w-auto sm:min-w-[12.5rem]"
+        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-3.5rem)] max-w-6xl grid-cols-1 content-end gap-6 px-5 pb-8 pt-6 md:min-h-[calc(100svh-4.5rem)] md:grid-cols-2 md:items-center md:gap-12 md:px-8 md:pb-16">
+          <div className="order-2 md:order-1">
+            <h1
+              className="max-w-xl text-balance"
               style={{
-                background: "var(--landing-cta)",
-                boxShadow: "0 8px 20px rgba(183,110,121,0.32)",
+                ...heroDisplayFont,
+                fontSize: "clamp(2.15rem, 9.2vw, 4.35rem)",
+                fontWeight: 600,
+                lineHeight: 1.02,
+                letterSpacing: "-0.03em",
+                color: "#FFFCFA",
+                textShadow: "0 2px 24px rgba(58,42,48,0.35)",
               }}
             >
-              {t.ctaStart}
-            </Link>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold">
+              {t.headline}
+            </h1>
+            <p
+              className="mt-3 max-w-lg text-base leading-snug sm:mt-4 sm:text-lg"
+              style={{ color: "#FFFCFA" }}
+            >
+              {t.support}
+            </p>
+            <div className="mt-5 flex w-full max-w-md flex-col items-start gap-3 sm:mt-7">
               <Link
-                href={peekHref}
-                className="underline-offset-[5px] transition hover:underline"
-                style={{ color: "#FFFCFA" }}
+                href="/register"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:w-auto sm:min-w-[12.5rem]"
+                style={{
+                  background: "var(--landing-cta)",
+                  boxShadow: "0 8px 20px rgba(183,110,121,0.32)",
+                }}
               >
-                {t.ctaDemo} →
+                {t.ctaStart}
               </Link>
-              <Link
-                href={localePath(locale, "/marketplace")}
-                className="underline-offset-[5px] transition hover:underline"
-                style={{ color: "rgba(255,252,250,0.82)" }}
-              >
-                {t.ctaBrowse}
-              </Link>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold">
+                <Link
+                  href={peekHref}
+                  className="underline-offset-[5px] transition hover:underline"
+                  style={{ color: "#FFFCFA" }}
+                >
+                  {t.ctaDemo} →
+                </Link>
+                <Link
+                  href={localePath(locale, "/marketplace")}
+                  className="underline-offset-[5px] transition hover:underline"
+                  style={{ color: "rgba(255,252,250,0.82)" }}
+                >
+                  {t.ctaBrowse}
+                </Link>
+              </div>
             </div>
+            <Link
+              href={localePath(locale, "/pricing")}
+              className="marquee-price mt-4 inline-flex max-w-md items-center rounded-lg px-3 py-2 text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
+              style={{ color: "var(--landing-ink)" }}
+            >
+              {t.priceLine}
+            </Link>
           </div>
-          <Link
-            href={localePath(locale, "/pricing")}
-            className="marquee-price mt-4 inline-flex max-w-md items-center rounded-lg px-3 py-2 text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
-            style={{ color: "var(--landing-ink)" }}
-          >
-            {t.priceLine}
-          </Link>
+          <div className="order-1 flex flex-col items-center md:order-2">
+            <AddressBarMarquee urls={[t.mockUrl, t.demoUrl]} size="hero" />
+            <p
+              className="mt-2 text-center text-[11px] font-medium uppercase tracking-[0.18em] sm:text-xs"
+              style={{ color: "#FFFCFA" }}
+            >
+              {t.demoCredit}
+            </p>
+          </div>
         </div>
       </section>
 

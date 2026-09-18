@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0f1a2e;
-  --slate: #1a2744;
+  --ink: #3a2a30;
+  --slate: #5c564e;
   --champagne: #c9a962;
   --champagne-bright: #e4c77a;
   --ember: #e07a5f;
@@ -12,10 +12,17 @@
   --mist: #9ba8bc;
   --coral: #e07a5f;
   --sun: #ffc857;
-  --background: var(--ink);
-  --foreground: var(--ivory);
+  --background: #fffcfa;
+  --foreground: #3a2a30;
   --font-display: var(--font-cormorant), Georgia, serif;
   --font-body: var(--font-source-sans), system-ui, sans-serif;
+}
+
+html:not(:has(.paper-surface)) {
+  --ink: #0f1a2e;
+  --slate: #1a2744;
+  --background: #0f1a2e;
+  --foreground: var(--ivory);
 }
 
 html {
@@ -149,7 +156,13 @@ body {
   }
 }
 
-/* Marketing home/gallery: never flash navy body chrome. */
+/* Marketing home/gallery: cream/rose tokens only — never flash navy. */
+html:has(.paper-surface) {
+  --ink: #3a2a30;
+  --slate: #5c564e;
+  --background: #fffcfa;
+  --foreground: #3a2a30;
+}
 html:has(.paper-surface),
 html:has(.paper-surface) body {
   background: #fffcfa;
