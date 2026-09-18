@@ -420,10 +420,14 @@
   color: var(--qf-gold-deep);
 }
 
+/* Auto margins let leftover height split above and below the flourish, so a
+   short honoree name leaves balanced air instead of one gap over the footer. */
 .quinceframe-ornament {
   display: block;
   width: 54%;
-  margin: 0.65rem auto 0;
+  margin-block: auto;
+  margin-inline: auto;
+  padding-block: 0.65rem;
 }
 
 .quinceframe-ornament-svg {

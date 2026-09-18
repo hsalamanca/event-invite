@@ -40,7 +40,9 @@ export default function QuinceFrameCover({
     <div className="quinceframe-card">
       <div className="quinceframe-grain" aria-hidden />
       <div className="quinceframe-sparkle" aria-hidden />
-      {printMode ? null : <div className="quinceframe-foil" aria-hidden />}
+      {printMode ? null : (
+        <div className="quinceframe-foil print-hidden" aria-hidden />
+      )}
       <FloralCorner corner="tl" />
       {denseFlorals ? <FloralCorner corner="tr" /> : null}
       {denseFlorals ? <FloralCorner corner="bl" /> : null}
