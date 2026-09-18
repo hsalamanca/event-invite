@@ -58,8 +58,7 @@ function GownSvg() {
 export default function GownIllustration() {
   return (
     <AssetSlot
-      src={QUINCE_TIARA_ASSETS.gown.webp}
-      fallbackSrc={QUINCE_TIARA_ASSETS.gown.png}
+      src={QUINCE_TIARA_ASSETS.gown.png}
       className="quinceframe-gown"
     >
       <GownSvg />

@@ -1,6 +1,6 @@
 /**
  * Guest paths prefer WebP; PNG remains the Ink fallback so re-exports swap in place.
- * Frame: SVG only on the guest card. Raster frame PNGs are print/Ink, not guest.
+ * No gold geometric frame — Hugo/Pixel: florals + tiara + gown, open composition.
  */
 export type QuinceGuestAsset = {
   webp: string;
@@ -32,9 +32,6 @@ export const QUINCE_TIARA_ASSETS = {
     webp: "/templates/quince-tiara/gown-back-pink.webp",
     png: "/templates/quince-tiara/gown-back-pink.png",
   },
-  frameSvg: "/templates/quince-tiara/frame-gold-hex.svg",
-  /** Stroke-only raster; guest render uses frameSvg. */
-  framePng: "/templates/quince-tiara/frame-gold-hex.png",
   hero: "/templates/quince-tiara-hero.svg",
 } as const satisfies {
   floralTl: QuinceGuestAsset;
@@ -43,7 +40,5 @@ export const QUINCE_TIARA_ASSETS = {
   floralBl: QuinceGuestAsset;
   tiara: QuinceGuestAsset;
   gown: QuinceGuestAsset;
-  frameSvg: string;
-  framePng: string;
   hero: string;
 };

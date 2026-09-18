@@ -1700,6 +1700,21 @@ export default function InvitePage({
           backdrop-filter: blur(6px);
         }
 
+        :global(.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere),
+        :global(.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-img),
+        :global(.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-veil) {
+          display: none !important;
+        }
+
+        :global(.invite-cover[data-layout="quinceframe"] .invite-card) {
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+
         :global(.invite-card-body) {
           padding: clamp(1.6rem, 5vw, 2.75rem) clamp(1.35rem, 4vw, 2.4rem);
           text-align: center;
