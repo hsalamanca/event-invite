@@ -9,6 +9,7 @@ import {
   normalizeVenueBlock,
 } from "./quince-fields";
 import { remapBrokenHeroImage } from "./templates";
+import { safeHttpsUrl } from "./safe-https-url";
 import type { EventRecord } from "./types";
 
 const PATH = "ownvite/events.json";
@@ -21,6 +22,8 @@ function seedEvent(): EventRecord {
   return {
     id: demo.id,
     slug: demo.slug,
+    // Seed demos stay ownerless and read-only for guests; canManageEvent denies
+    // management unless the caller is a platform admin.
     ownerId: null,
     hostName: demo.hostName,
     title: demo.title,
@@ -54,7 +57,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     published: raw.published ?? true,
     visibility: raw.visibility ?? "public",
     capacity: raw.capacity ?? null,
-    registryUrl: raw.registryUrl ?? null,
+    registryUrl: safeHttpsUrl(raw.registryUrl) ?? null,
     registryLabel: raw.registryLabel ?? null,
     templateId: raw.templateId ?? "evening",
     heroImage: remapBrokenHeroImage(raw.heroImage),
@@ -120,7 +123,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     seatingTables: Array.isArray(raw.seatingTables) ? raw.seatingTables : [],
     albumEnabled: raw.albumEnabled ?? false,
     rsvpEnabled: raw.rsvpEnabled !== false,
-    cashFundUrl: raw.cashFundUrl ?? "",
+    cashFundUrl: safeHttpsUrl(raw.cashFundUrl) ?? "",
     cashFundLabel: raw.cashFundLabel ?? "",
     cashFundGoal:
       typeof raw.cashFundGoal === "number" && Number.isFinite(raw.cashFundGoal)

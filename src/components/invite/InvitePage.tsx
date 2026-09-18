@@ -10,6 +10,7 @@ import {
   inviteDownloadFileBase,
 } from "@/lib/download-invite-jpeg";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
+import { safeHttpsUrl } from "@/lib/safe-https-url";
 import {
   resolveLocalizedAbout,
   resolveLocalizedFaqs,
@@ -209,6 +210,8 @@ export default function InvitePage({
 }: InvitePageProps) {
   const { theme } = event;
   const ui = getDictionary(locale).invite;
+  const registryHref = safeHttpsUrl(event.registryUrl);
+  const cashFundHref = safeHttpsUrl(event.cashFundUrl);
   const rsvpFields = resolveLocalizedRsvpFields(event.rsvpFields, locale);
   const attendanceOptions = rsvpFields.attendance.options;
   const defaultAttendance = attendanceOptions[0] ?? "";
@@ -231,7 +234,6 @@ export default function InvitePage({
   const [note, setNote] = useState("");
   const [answers, setAnswers] = useState<RsvpAnswers>({});
   const [mealChoice, setMealChoice] = useState("");
-  const [editToken, setEditToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -505,12 +507,10 @@ export default function InvitePage({
         });
         const body = (await res.json().catch(() => null)) as {
           error?: string;
-          rsvp?: { editToken?: string };
         } | null;
         if (!res.ok) {
           throw new Error(body?.error ?? ui.submitError);
         }
-        if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
@@ -817,9 +817,9 @@ export default function InvitePage({
             </div>
           ) : null}
           <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-            {event.registryUrl ? (
+            {registryHref ? (
               <a
-                href={event.registryUrl}
+                href={registryHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
@@ -828,9 +828,9 @@ export default function InvitePage({
                 {event.registryLabel || ui.registryCta}
               </a>
             ) : null}
-            {event.cashFundUrl ? (
+            {cashFundHref ? (
               <a
-                href={event.cashFundUrl}
+                href={cashFundHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
@@ -1166,13 +1166,6 @@ export default function InvitePage({
             <p className="rsvp-success-sub">
               {event.thankYouMessage?.trim() || ui.successBody}
             </p>
-            {editToken ? (
-              <p className="rsvp-success-sub">
-                <a href={`/rsvp/${editToken}`} className="invite-address">
-                  {ui.updateRsvp}
-                </a>
-              </p>
-            ) : null}
           </div>
         ) : deadlinePassed ? (
           <p className="invite-prompt">{ui.rsvpClosed}</p>

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, managerDeniedStatus } from "@/lib/access";
 import { getEventById, getEventBySlug } from "@/lib/events";
 import { recordGuestBookFromEvent } from "@/lib/guest-book";
 import { notifyGuestOfRsvp, notifyHostsOfRsvp } from "@/lib/rsvp-notify";
@@ -9,6 +9,7 @@ import {
   listRsvpsByEventId,
   updateRsvpByToken,
 } from "@/lib/rsvp-store";
+import { omitRsvpEditToken, toGuestRsvpConfirmation } from "@/lib/guest-rsvp";
 import type { RsvpAnswers, RsvpSubmission } from "@/lib/types";
 
 async function syncGuestBook(
@@ -164,7 +165,11 @@ export async function POST(request: Request) {
       await notifyHostsOfRsvp({ event, rsvp: record, updated: true });
       await notifyGuestOfRsvp({ event, rsvp: record, updated: true });
       await syncGuestBook(event, record);
-      return NextResponse.json({ ok: true, rsvp: record, updated: true });
+      return NextResponse.json({
+        ok: true,
+        rsvp: toGuestRsvpConfirmation(record),
+        updated: true,
+      });
     }
 
     const record = await appendRsvp({
@@ -183,7 +188,10 @@ export async function POST(request: Request) {
     await notifyHostsOfRsvp({ event, rsvp: record, updated: false });
     await notifyGuestOfRsvp({ event, rsvp: record, updated: false });
     await syncGuestBook(event, record);
-    return NextResponse.json({ ok: true, rsvp: record }, { status: 201 });
+    return NextResponse.json(
+      { ok: true, rsvp: toGuestRsvpConfirmation(record) },
+      { status: 201 },
+    );
   } catch (err) {
     console.error("RSVP append failed", err);
     return NextResponse.json(
@@ -257,7 +265,10 @@ export async function PATCH(request: Request) {
     await notifyGuestOfRsvp({ event, rsvp: updated, updated: true });
   }
 
-  return NextResponse.json({ ok: true, rsvp: updated });
+  return NextResponse.json({
+    ok: true,
+    rsvp: updated ? omitRsvpEditToken(updated) : updated,
+  });
 }
 
 export async function GET(request: Request) {
@@ -270,10 +281,7 @@ export async function GET(request: Request) {
     }
     const event = await getEventById(rsvp.eventId);
     return NextResponse.json({
-      rsvp: {
-        ...rsvp,
-        // expose token only to the holder
-      },
+      rsvp: omitRsvpEditToken(rsvp),
       event: event
         ? {
             slug: event.slug,
@@ -305,8 +313,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   const access = await canManageEvent(event);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Forbidden" },
+      { status: denied },
+    );
   }
 
   try {

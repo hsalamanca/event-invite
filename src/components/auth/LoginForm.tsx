@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { safeCallbackUrl } from "@/lib/safe-callback-url";
 
 const OAUTH_ERRORS: Record<string, string> = {
   OAuthSignin: "Could not start Google sign-in. Try again.",
@@ -27,7 +28,7 @@ export default function LoginForm({
 }) {
   const router = useRouter();
   const search = useSearchParams();
-  const callbackUrl = search.get("callbackUrl") || "/dashboard";
+  const callbackUrl = safeCallbackUrl(search.get("callbackUrl"));
   const resetOk = search.get("reset") === "1";
   const oauthError = search.get("error");
   const [email, setEmail] = useState("");
