@@ -41,8 +41,7 @@ function TiaraSvg() {
 export default function TiaraMark() {
   return (
     <AssetSlot
-      src={QUINCE_TIARA_ASSETS.tiara.webp}
-      fallbackSrc={QUINCE_TIARA_ASSETS.tiara.png}
+      src={QUINCE_TIARA_ASSETS.tiara.png}
       className="quinceframe-tiara"
     >
       <TiaraSvg />

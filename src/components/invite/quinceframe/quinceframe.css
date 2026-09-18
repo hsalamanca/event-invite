@@ -95,10 +95,10 @@
 }
 
 .quinceframe-floral--tl {
-  top: -1%;
-  left: -2%;
-  width: 42%;
-  height: 22%;
+  top: -3%;
+  left: -5%;
+  width: 58%;
+  height: 32%;
 }
 
 .quinceframe-floral--tr {
@@ -116,10 +116,10 @@
 }
 
 .quinceframe-floral--br {
-  right: -1%;
-  bottom: -2%;
-  width: 38%;
-  height: 24%;
+  right: -4%;
+  bottom: -4%;
+  width: 54%;
+  height: 32%;
 }
 
 .quinceframe-floral .quinceframe-asset,
@@ -287,7 +287,7 @@
   left: 50%;
   bottom: 0;
   z-index: 1;
-  width: 64%;
+  width: 56%;
   height: 100%;
   transform: translateX(-50%);
   overflow: visible;
