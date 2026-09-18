@@ -44,6 +44,8 @@ export type Dictionary = {
     ctaStart: string;
     ctaDemo: string;
     ctaHow: string;
+    ctaBrowse: string;
+    demoCredit: string;
     priceLine: string;
     mockUrl: string;
     demoUrl: string;
@@ -433,21 +435,24 @@ const en: Dictionary = {
   },
   landing: {
     brand: "Ownvite",
-    headline: "Hosted on your name, not ours.",
-    support: "A celebration guests remember.",
+    headline: "A celebration worth opening.",
+    support:
+      "Stationery-grade invites on cream paper — hosted on your domain, not ours.",
     ctaStart: "Create an invitation",
     ctaDemo: "Peek a live invite",
     ctaHow: "See how it works",
+    ctaBrowse: "Browse templates",
+    demoCredit: "Katia Gonzalez · Mis XV años",
     priceLine: "Free to start · Pay per event · No per-guest · No ads",
     mockUrl: "yourevent.com",
     demoUrl: "katia.com",
     filmstripTitle: "See a real Ownvite invite",
     filmstripCaptions: ["Envelope", "The night", "RSVP"],
     stillsTitle: "Looks guests actually open.",
-    domainTitle: "Guests arrive at you.",
+    domainTitle: "Hosted on your name, not ours.",
     domainBody:
       "Guests open your domain. RSVPs, updates, and memories stay under your brand — not a disposable link.",
-    domainLink: "See how your domain looks",
+    domainLink: "Connect your domain",
     domainUrl: "katia.com",
     craftTitle: "Designed like print. Delivered like the web.",
     craftBody:
@@ -469,7 +474,7 @@ const en: Dictionary = {
     closeBody: "Start free. Connect a domain when you’re ready.",
     closeNote: "No credit card to explore templates.",
     seePricing: "See pricing",
-    footer: "Ownvite · Your event, your domain, your design",
+    footer: "ownvite.app · Your event, your domain, your design",
   },
   pricing: {
     title: "Pricing",
@@ -914,21 +919,24 @@ const es: Dictionary = {
   },
   landing: {
     brand: "Ownvite",
-    headline: "En tu nombre, no en el nuestro.",
-    support: "Una celebración que se recuerda.",
+    headline: "Una celebración que vale la pena abrir.",
+    support:
+      "Invitaciones con calidad de papelería en papel crema — en tu dominio, no en el nuestro.",
     ctaStart: "Crear una invitación",
     ctaDemo: "Ver una invitación en vivo",
     ctaHow: "Cómo funciona",
-    priceLine: "Gratis para empezar · Pagas por evento · Sin cobro por invitado · Sin anuncios",
+    ctaBrowse: "Ver plantillas",
+    demoCredit: "Katia Gonzalez · Mis XV años",
+    priceLine: "Empieza gratis · Pagas por evento · Sin costo por invitado · Sin anuncios",
     mockUrl: "yourevent.com",
     demoUrl: "katia.com",
     filmstripTitle: "Mira una invitación Ownvite de verdad",
     filmstripCaptions: ["El sobre", "La noche", "RSVP"],
     stillsTitle: "Looks que los invitados sí abren.",
-    domainTitle: "Llegan a tu nombre.",
+    domainTitle: "En tu nombre, no en el nuestro.",
     domainBody:
       "Tus invitados abren tu dominio. Confirmaciones, novedades y recuerdos quedan bajo tu marca — no en un enlace genérico.",
-    domainLink: "Mira cómo se ve tu dominio",
+    domainLink: "Conecta tu dominio",
     domainUrl: "katia.com",
     craftTitle: "Diseñada como impresión. Entregada como la web.",
     craftBody:
@@ -954,7 +962,7 @@ const es: Dictionary = {
     closeBody: "Empieza gratis. Conecta un dominio cuando quieras.",
     closeNote: "Sin tarjeta para explorar plantillas.",
     seePricing: "Ver precios",
-    footer: "Ownvite · Tu evento, tu dominio, tu diseño",
+    footer: "ownvite.app · Tu evento, tu dominio, tu diseño",
   },
   pricing: {
     title: "Precios",

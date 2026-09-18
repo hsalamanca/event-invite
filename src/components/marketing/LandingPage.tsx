@@ -100,6 +100,12 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-3.5rem)] max-w-6xl flex-col justify-end px-5 pb-8 pt-6 sm:min-h-[calc(100svh-4.5rem)] sm:px-8 sm:pb-14">
           <AddressBarMarquee urls={[t.mockUrl, t.demoUrl]} size="hero" />
+          <p
+            className="mt-2 text-center text-[11px] font-medium uppercase tracking-[0.18em] sm:text-xs"
+            style={{ color: "#FFFCFA" }}
+          >
+            {t.demoCredit}
+          </p>
           <h1
             className="mt-5 max-w-xl text-balance sm:mt-6"
             style={{
@@ -115,15 +121,15 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
             {t.headline}
           </h1>
           <p
-            className="mt-3 max-w-md text-base leading-snug sm:mt-4 sm:text-lg"
+            className="mt-3 max-w-lg text-base leading-snug sm:mt-4 sm:text-lg"
             style={{ color: "#FFFCFA" }}
           >
             {t.support}
           </p>
-          <div className="mt-5 flex w-full max-w-md flex-col gap-3 sm:mt-7 sm:flex-row">
+          <div className="mt-5 flex w-full max-w-md flex-col items-start gap-3 sm:mt-7">
             <Link
               href="/register"
-              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95"
+              className="inline-flex min-h-12 w-full items-center justify-center rounded-full px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:w-auto sm:min-w-[12.5rem]"
               style={{
                 background: "var(--landing-cta)",
                 boxShadow: "0 8px 20px rgba(183,110,121,0.32)",
@@ -131,24 +137,30 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
             >
               {t.ctaStart}
             </Link>
-            <Link
-              href={peekHref}
-              className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full border px-5 py-3.5 text-sm font-semibold transition hover:opacity-95"
-              style={{
-                background: "rgba(255,252,250,0.94)",
-                borderColor: "var(--landing-gold, #C4A574)",
-                color: "var(--landing-ink)",
-              }}
-            >
-              {t.ctaDemo}
-            </Link>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold">
+              <Link
+                href={peekHref}
+                className="underline-offset-[5px] transition hover:underline"
+                style={{ color: "#FFFCFA" }}
+              >
+                {t.ctaDemo} →
+              </Link>
+              <Link
+                href={localePath(locale, "/marketplace")}
+                className="underline-offset-[5px] transition hover:underline"
+                style={{ color: "rgba(255,252,250,0.82)" }}
+              >
+                {t.ctaBrowse}
+              </Link>
+            </div>
           </div>
-          <p
-            className="marquee-price mt-4 inline-flex max-w-md items-center rounded-lg px-3 py-2 text-xs leading-relaxed sm:text-sm"
+          <Link
+            href={localePath(locale, "/pricing")}
+            className="marquee-price mt-4 inline-flex max-w-md items-center rounded-lg px-3 py-2 text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
             style={{ color: "var(--landing-ink)" }}
           >
             {t.priceLine}
-          </p>
+          </Link>
         </div>
       </section>
 

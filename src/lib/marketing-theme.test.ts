@@ -22,16 +22,39 @@ describe("marquee marketing chrome", () => {
     assert.equal(vars["--landing-ink"], "#3A2A30");
   });
 
-  it("keeps Scout price honesty, Katia demo, and Peek on princesa", () => {
+  it("locks Scout EN/ES hero copy, Katia demo, and Peek on princesa", () => {
     const en = getDictionary("en").landing;
     const es = getDictionary("es").landing;
-    assert.match(en.priceLine, /Free to start/);
-    assert.match(es.priceLine, /Gratis/);
+    assert.equal(en.headline, "A celebration worth opening.");
+    assert.equal(
+      en.support,
+      "Stationery-grade invites on cream paper — hosted on your domain, not ours.",
+    );
+    assert.equal(en.ctaStart, "Create an invitation");
+    assert.equal(en.ctaDemo, "Peek a live invite");
+    assert.equal(en.ctaBrowse, "Browse templates");
+    assert.equal(
+      en.priceLine,
+      "Free to start · Pay per event · No per-guest · No ads",
+    );
+    assert.equal(es.headline, "Una celebración que vale la pena abrir.");
+    assert.equal(
+      es.support,
+      "Invitaciones con calidad de papelería en papel crema — en tu dominio, no en el nuestro.",
+    );
+    assert.equal(es.ctaStart, "Crear una invitación");
+    assert.equal(es.ctaDemo, "Ver una invitación en vivo");
+    assert.equal(es.ctaBrowse, "Ver plantillas");
+    assert.equal(
+      es.priceLine,
+      "Empieza gratis · Pagas por evento · Sin costo por invitado · Sin anuncios",
+    );
+    assert.equal(en.demoCredit, "Katia Gonzalez · Mis XV años");
+    assert.match(en.footer, /ownvite\.app/);
     assert.equal(en.demoUrl, "katia.com");
     assert.equal(es.demoUrl, "katia.com");
     assert.equal(en.mockUrl, "yourevent.com");
     assert.equal(PEEK_DEMO_PATH, "/preview/quince-princesa");
-    assert.equal(en.ctaDemo.toLowerCase().includes("peek"), true);
   });
 
   it("points hero and filmstrip at unpacked Ink stills", () => {
