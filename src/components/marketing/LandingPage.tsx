@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -21,23 +18,6 @@ import {
 export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
   const t = getDictionary(locale).landing;
   const nav = getDictionary(locale).nav;
-  const [heroReady, setHeroReady] = useState(false);
-
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setHeroReady(true);
-      return;
-    }
-    const id = window.requestAnimationFrame(() => setHeroReady(true));
-    return () => window.cancelAnimationFrame(id);
-  }, []);
-
-  const fade = (delay: number): CSSProperties => ({
-    opacity: heroReady ? 1 : 0,
-    transform: heroReady ? "translateY(0)" : "translateY(12px)",
-    transition: `opacity 700ms ease ${delay}ms, transform 700ms ease ${delay}ms`,
-  });
 
   return (
     <main
@@ -53,7 +33,6 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
 
       <header
         className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8 sm:py-5"
-        style={fade(40)}
       >
         <BrandLogo tone="paper" height={26} href="/" />
         <nav
@@ -100,7 +79,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           <div>
             <p
               className="text-[11px] uppercase tracking-[0.28em] sm:text-xs"
-              style={{ color: "var(--landing-rose)", ...fade(80) }}
+              style={{ color: "var(--landing-rose)" }}
             >
               {t.brand}
             </p>
@@ -113,20 +92,18 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
                 lineHeight: 1.02,
                 letterSpacing: "-0.03em",
                 color: "var(--landing-ink)",
-                ...fade(120),
               }}
             >
               {t.headline}
             </h1>
             <p
               className="mt-3 hidden max-w-md text-base leading-relaxed sm:mt-4 sm:block sm:text-lg"
-              style={{ color: "var(--landing-muted)", ...fade(180) }}
+              style={{ color: "var(--landing-muted)" }}
             >
               {t.support}
             </p>
             <div
               className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-7"
-              style={fade(240)}
             >
               <Link
                 href="/register"
@@ -148,13 +125,13 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
             </div>
             <p
               className="mt-3 text-xs leading-relaxed sm:mt-4 sm:text-sm"
-              style={{ color: "var(--landing-muted)", ...fade(300) }}
+              style={{ color: "var(--landing-muted)" }}
             >
               {t.priceLine}
             </p>
           </div>
 
-          <div className="pt-1 sm:pt-0" style={fade(160)}>
+          <div className="pt-1 sm:pt-0">
             <HeroCraftMock
               url={t.mockUrl}
               peekHref={localePath(locale, "/preview/quince-princesa")}

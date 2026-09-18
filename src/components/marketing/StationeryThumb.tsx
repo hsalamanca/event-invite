@@ -6,7 +6,6 @@ const PRINCESA_GOWN = "/templates/quince-tiara/gown-back-pink.webp";
 const TIARA = "/templates/quince-tiara/tiara-pink-glitter.webp";
 const FLORAL_TL = "/templates/quince-tiara/floral-corner-tl.webp";
 const FLORAL_BR = "/templates/quince-tiara/floral-corner-br.webp";
-const ROSA_HERO = "/templates/quince-rosa-hero.png";
 
 type StationeryThumbProps = {
   template: EventTemplate;
@@ -96,24 +95,6 @@ export default function StationeryThumb({
           src={PRINCESA_GOWN}
           alt=""
           className="absolute bottom-[-8%] left-1/2 w-[58%] -translate-x-1/2 object-contain"
-        />
-      </div>
-    );
-  }
-
-  if (template.id === "quince-rosa" || template.heroImage.startsWith("/templates/")) {
-    return (
-      <div
-        className="relative flex h-full w-full items-center justify-center p-3"
-        style={{ background: template.theme.colors.background }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={
-            template.id === "quince-rosa" ? ROSA_HERO : template.heroImage
-          }
-          alt=""
-          className="max-h-full max-w-full object-contain"
         />
       </div>
     );

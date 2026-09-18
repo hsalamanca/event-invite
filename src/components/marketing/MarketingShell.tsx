@@ -67,7 +67,7 @@ export default function MarketingShell({
             {headerExtra}
             <Link
               href={localePath(locale, "/marketplace")}
-              className="transition hover:text-[var(--landing-ink)]"
+              className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
             >
               {nav.templates}
             </Link>
