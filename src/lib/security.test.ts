@@ -14,6 +14,13 @@ import {
   sanitizeCallbackSearch,
 } from "./safe-callback-url";
 import { safeHttpsUrl } from "./safe-https-url";
+import { omitRsvpEditToken, toGuestRsvpConfirmation } from "./guest-rsvp";
+import { stripClientEventOwnership } from "./event-patch";
+import {
+  authCookies,
+  canonicalWwwRedirect,
+  cookieDomainForHost,
+} from "./auth-host";
 import type { EventRecord } from "./types";
 
 const nullOwner = { ownerId: null as string | null, coHostEmails: [] as string[] };
@@ -186,5 +193,87 @@ describe("public GET /api/events/[slug]", () => {
     assert.equal(pub.lastEditedBy, null);
     assert.equal(pub.registryUrl, null);
     assert.equal(pub.cashFundUrl, "https://cash.example/fund");
+  });
+});
+
+describe("guest RSVP JSON must not expose editToken", () => {
+  const rsvp = {
+    id: "r1",
+    name: "Ada",
+    email: "ada@example.com",
+    phone: "555-0100",
+    attendance: "Joyfully attending",
+    guestCount: 2,
+    editToken: "secret-edit-token",
+    createdAt: "2026-01-01T00:00:00.000Z",
+  };
+
+  it("POST confirmation omits editToken, email, and phone", () => {
+    const body = { ok: true, rsvp: toGuestRsvpConfirmation(rsvp) };
+    assert.equal("editToken" in body.rsvp, false);
+    assert.equal((body.rsvp as { email?: string }).email, undefined);
+    assert.equal((body.rsvp as { phone?: string }).phone, undefined);
+    assert.equal(JSON.stringify(body).includes("secret-edit-token"), false);
+    assert.equal(body.rsvp.id, "r1");
+    assert.equal(body.rsvp.name, "Ada");
+  });
+
+  it("token-holder payloads omit editToken even when the record has one", () => {
+    const exposed = omitRsvpEditToken(rsvp);
+    assert.equal("editToken" in exposed, false);
+    assert.equal(JSON.stringify(exposed).includes("secret-edit-token"), false);
+    assert.equal(exposed.email, "ada@example.com");
+  });
+});
+
+describe("auth cookie Domain excludes invite subdomains", () => {
+  it("uses host-only cookies on apex, www, and invite hosts", () => {
+    for (const host of [
+      "ownvite.app",
+      "www.ownvite.app",
+      "ownvite.com",
+      "www.ownvite.com",
+      "h-birthday-2026.ownvite.app",
+      "party.example",
+    ]) {
+      assert.equal(cookieDomainForHost(host), undefined);
+    }
+    const cookies = authCookies("ownvite.app", true);
+    assert.equal(cookies.sessionToken.options.domain, undefined);
+    assert.equal(cookies.pkceCodeVerifier.options.domain, undefined);
+    assert.equal(cookies.callbackUrl.options.domain, undefined);
+    assert.equal(cookies.state.options.domain, undefined);
+  });
+
+  it("308s www → apex for dashboard so host-only cookies still apply", () => {
+    assert.equal(
+      canonicalWwwRedirect("www.ownvite.app", "/dashboard", ""),
+      "https://ownvite.app/dashboard",
+    );
+    assert.equal(
+      canonicalWwwRedirect("www.ownvite.com", "/host/x", "?n=1"),
+      "https://ownvite.com/host/x?n=1",
+    );
+    assert.equal(canonicalWwwRedirect("ownvite.app", "/dashboard", ""), null);
+    assert.equal(
+      canonicalWwwRedirect("h-birthday-2026.ownvite.app", "/", ""),
+      null,
+    );
+  });
+});
+
+describe("PATCH ownerId is not client-assignable", () => {
+  it("strips ownerId and transferOwnerId from a spread client body", () => {
+    const patched = stripClientEventOwnership({
+      ownerId: "attacker",
+      transferOwnerId: "attacker",
+      title: "Birthday",
+      published: true,
+    });
+    assert.equal("ownerId" in patched, false);
+    assert.equal("transferOwnerId" in patched, false);
+    assert.equal(patched.title, "Birthday");
+    assert.equal(patched.published, true);
+    assert.equal(JSON.stringify(patched).includes("attacker"), false);
   });
 });

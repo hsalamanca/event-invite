@@ -4,6 +4,7 @@ import UpdateRsvpForm from "@/components/invite/UpdateRsvpForm";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventById } from "@/lib/events";
 import { getRsvpByToken } from "@/lib/rsvp-store";
+import { omitRsvpEditToken } from "@/lib/guest-rsvp";
 
 type PageProps = { params: Promise<{ token: string }> };
 
@@ -28,6 +29,11 @@ export default async function UpdateRsvpPage({ params }: PageProps) {
   const locale = await getRequestLocale();
 
   return (
-    <UpdateRsvpForm event={event} rsvp={rsvp} token={token} locale={locale} />
+    <UpdateRsvpForm
+      event={event}
+      rsvp={omitRsvpEditToken(rsvp)}
+      token={token}
+      locale={locale}
+    />
   );
 }

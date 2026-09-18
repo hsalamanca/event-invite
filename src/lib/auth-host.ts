@@ -1,7 +1,8 @@
 /**
  * Multi-domain Auth.js helpers for ownvite.com / ownvite.app (and www).
- * Cookie Domain is the registrable TLD so PKCE/session survive apex ↔ www.
- * AUTH_URL, if pinned to one origin, is overridden per request on platform hosts.
+ * Session cookies are host-only so invite subdomains (slug.ownvite.app) never
+ * receive the apex session. AUTH_URL, if pinned to one origin, is overridden
+ * per request on platform hosts.
  */
 
 export const PLATFORM_AUTH_HOSTS = new Set([
@@ -46,18 +47,16 @@ export function isAuthPagePath(pathname: string): boolean {
 }
 
 /**
- * Apex/www share a session via Domain=.ownvite.com / .ownvite.app.
- * That also sends the cookie to invite hosts (slug.ownvite.app). Do not treat
- * those event subdomains as login callback targets — PLATFORM_AUTH_HOSTS is
- * apex, www, and loopback only.
+ * Host-only cookies (no Domain attribute).
+ * Domain=.ownvite.app / .ownvite.com would also send the session to invite
+ * hosts (slug.ownvite.app) and custom subdomains. Omit Domain so cookies stay
+ * on the exact auth host.
+ *
+ * Apex ↔ www: cookies are not shared. Middleware 308s www → apex for document
+ * navigations so login/dashboard stay on one host per TLD. Direct calls to
+ * www /api/auth can still mint a www-only cookie (use the canonical host).
  */
-export function cookieDomainForHost(hostname: string): string | undefined {
-  if (hostname === "ownvite.com" || hostname.endsWith(".ownvite.com")) {
-    return ".ownvite.com";
-  }
-  if (hostname === "ownvite.app" || hostname.endsWith(".ownvite.app")) {
-    return ".ownvite.app";
-  }
+export function cookieDomainForHost(_hostname: string): string | undefined {
   return undefined;
 }
 
@@ -148,6 +147,22 @@ export function canonicalAuthRedirect(
   return `${origin}${pathname}${search}`;
 }
 
+/**
+ * Collapse www → apex for platform document navigations so host-only session
+ * cookies still apply after login. Invite subdomains are not platform auth hosts.
+ */
+export function canonicalWwwRedirect(
+  hostname: string,
+  pathname: string,
+  search: string,
+): string | null {
+  if (!isPlatformAuthHost(hostname)) return null;
+  if (hostname === "localhost" || hostname === "127.0.0.1") return null;
+  const apex = CANONICAL_AUTH_HOST[hostname];
+  if (!apex) return null;
+  return `https://${apex}${pathname}${search}`;
+}
+
 const cookieBase = (secure: boolean, domain?: string) => ({
   httpOnly: true,
   sameSite: "lax" as const,
@@ -158,8 +173,8 @@ const cookieBase = (secure: boolean, domain?: string) => ({
 
 /**
  * Explicit Auth.js cookie names/options.
- * CSRF keeps the __Host- prefix (no Domain). PKCE/state/session share the TLD
- * so www and apex can complete the Google round-trip.
+ * CSRF keeps the __Host- prefix (no Domain). Session/PKCE/state are host-only
+ * so invite subdomains never receive the apex session.
  */
 export function authCookies(hostname: string, secure: boolean) {
   const domain = cookieDomainForHost(hostname);

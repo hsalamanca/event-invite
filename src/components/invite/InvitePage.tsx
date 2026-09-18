@@ -234,7 +234,6 @@ export default function InvitePage({
   const [note, setNote] = useState("");
   const [answers, setAnswers] = useState<RsvpAnswers>({});
   const [mealChoice, setMealChoice] = useState("");
-  const [editToken, setEditToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -508,12 +507,10 @@ export default function InvitePage({
         });
         const body = (await res.json().catch(() => null)) as {
           error?: string;
-          rsvp?: { editToken?: string };
         } | null;
         if (!res.ok) {
           throw new Error(body?.error ?? ui.submitError);
         }
-        if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
@@ -1169,13 +1166,6 @@ export default function InvitePage({
             <p className="rsvp-success-sub">
               {event.thankYouMessage?.trim() || ui.successBody}
             </p>
-            {editToken ? (
-              <p className="rsvp-success-sub">
-                <a href={`/rsvp/${editToken}`} className="invite-address">
-                  {ui.updateRsvp}
-                </a>
-              </p>
-            ) : null}
           </div>
         ) : deadlinePassed ? (
           <p className="invite-prompt">{ui.rsvpClosed}</p>

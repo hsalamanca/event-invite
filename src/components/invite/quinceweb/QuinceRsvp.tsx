@@ -61,7 +61,6 @@ export default function QuinceRsvp({
   const [note, setNote] = useState("");
   const [answers, setAnswers] = useState<RsvpAnswers>({});
   const [mealChoice, setMealChoice] = useState("");
-  const [editToken, setEditToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,10 +104,8 @@ export default function QuinceRsvp({
         });
         const body = (await res.json().catch(() => null)) as {
           error?: string;
-          rsvp?: { editToken?: string };
         } | null;
         if (!res.ok) throw new Error(body?.error ?? ui.submitError);
-        if (body?.rsvp?.editToken) setEditToken(body.rsvp.editToken);
       }
       setSuccess(true);
     } catch (err) {
@@ -129,11 +126,6 @@ export default function QuinceRsvp({
       <div className="qw-rsvp-success" role="status">
         <p className="qw-body">{ui.successTitle}</p>
         <p className="qw-body">{event.thankYouMessage?.trim() || ui.successBody}</p>
-        {editToken ? (
-          <p className="qw-body">
-            <a href={`/rsvp/${editToken}`}>{ui.updateRsvp}</a>
-          </p>
-        ) : null}
       </div>
     );
   }

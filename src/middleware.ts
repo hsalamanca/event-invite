@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   canonicalAuthRedirect,
+  canonicalWwwRedirect,
   PLATFORM_AUTH_HOSTS,
 } from "@/lib/auth-host";
 import { sanitizeCallbackSearch } from "@/lib/safe-callback-url";
@@ -117,6 +118,15 @@ export async function middleware(request: NextRequest) {
   );
   if (authRedirect) {
     return NextResponse.redirect(authRedirect, 308);
+  }
+
+  const wwwRedirect = canonicalWwwRedirect(
+    hostname,
+    pathname,
+    request.nextUrl.search,
+  );
+  if (wwwRedirect) {
+    return NextResponse.redirect(wwwRedirect, 308);
   }
 
   // Legacy /es and /es/... → cookie locale, clean URL

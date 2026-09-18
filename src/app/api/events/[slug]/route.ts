@@ -8,6 +8,7 @@ import {
   updateEvent,
 } from "@/lib/events";
 import { toPublicEvent } from "@/lib/public-event";
+import { stripClientEventOwnership } from "@/lib/event-patch";
 import { safeHttpsUrl } from "@/lib/safe-https-url";
 import {
   eventIsPro,
@@ -88,12 +89,15 @@ export async function PATCH(request: Request, { params }: Params) {
     clearInvitePassword?: boolean;
   };
 
-  const partial: Partial<EventRecord> = { ...data };
+  const partial: Partial<EventRecord> = stripClientEventOwnership({
+    ...data,
+  });
   delete (partial as { invitePassword?: unknown }).invitePassword;
   delete (partial as { clearInvitePassword?: unknown }).clearInvitePassword;
 
-  // Never accept a raw hash from the client
+  // Never accept a raw hash or ownership reassignment from the client
   delete partial.invitePasswordHash;
+  delete partial.ownerId;
 
   if (data.clearInvitePassword) {
     partial.invitePasswordHash = null;
@@ -212,6 +216,9 @@ export async function PATCH(request: Request, { params }: Params) {
     delete partial.registryClicks;
     delete partial.cashFundClicks;
   }
+
+  // Server-side owner only (admin transfers use /api/admin/events/[slug])
+  delete partial.ownerId;
 
   try {
     const updated = await updateEvent(slug, partial);
