@@ -43,12 +43,34 @@ describe("marquee marketing chrome", () => {
   it("remaps --ink off navy on paper marketing surfaces", async () => {
     const { readFileSync } = await import("node:fs");
     const css = readFileSync("src/app/globals.css", "utf8");
+    const root = css.slice(css.indexOf(":root"), css.indexOf("html:not"));
+    assert.match(root, /--ink:\s*#3a2a30/i);
+    assert.equal(/#0f1a2e/i.test(root), false);
     const start = css.indexOf("html:has(.paper-surface)");
     assert.ok(start >= 0);
     const block = css.slice(start, start + 280);
     assert.match(block, /--ink:\s*#3a2a30/i);
     assert.equal(/#0f1a2e/i.test(block), false);
     assert.equal(/#1a2744/i.test(block), false);
+  });
+
+  it("keeps Templates/Domains/Pricing in a 390 overflow row (no JS gate)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const nav = readFileSync("src/components/marketing/MarketingNav.tsx", "utf8");
+    assert.equal(/useState/.test(nav), false);
+    assert.equal(/open \?/.test(nav), false);
+    assert.match(nav, /data-marketing-phone-nav/);
+    assert.match(nav, /\/marketplace/);
+    assert.match(nav, /\/domains/);
+    assert.match(nav, /\/pricing/);
+    const landing = readFileSync(
+      "src/components/marketing/LandingPage.tsx",
+      "utf8",
+    );
+    assert.match(
+      landing,
+      /md:grid-cols-\[minmax\(0,0\.86fr\)_minmax\(0,1\.14fr\)\]/,
+    );
   });
 
   it("locks Scout EN/ES hero copy, Katia demo, and Peek on princesa", () => {

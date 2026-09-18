@@ -62,8 +62,8 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           />
         </header>
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-3.5rem)] max-w-6xl grid-cols-1 content-end gap-6 px-5 pb-8 pt-6 md:min-h-[calc(100svh-4.5rem)] md:grid-cols-2 md:items-center md:gap-12 md:px-8 md:pb-16">
-          <div className="order-2 md:order-1">
+        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-6.5rem)] max-w-6xl grid-cols-1 content-end gap-6 px-5 pb-8 pt-6 md:min-h-[calc(100svh-4.5rem)] md:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] md:items-center md:gap-10 md:px-8 md:pb-16 lg:gap-16">
+          <div className="order-2 md:order-1 md:pr-2 lg:pr-6">
             <h1
               className="max-w-xl text-balance"
               style={{

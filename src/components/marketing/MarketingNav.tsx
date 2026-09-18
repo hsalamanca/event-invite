@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useId, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
@@ -23,17 +21,6 @@ export default function MarketingNav({
   maxWidthClass = "max-w-6xl",
 }: MarketingNavProps) {
   const nav = getDictionary(locale).nav;
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
 
   const links = [
     { href: localePath(locale, "/marketplace"), label: nav.templates },
@@ -44,7 +31,7 @@ export default function MarketingNav({
   const linkClass = "transition hover:text-[var(--landing-rose-deep)]";
 
   return (
-    <>
+    <div>
       <div
         className={`mx-auto flex ${maxWidthClass} items-center justify-between px-5 py-3 sm:px-8 sm:py-5`}
       >
@@ -73,95 +60,41 @@ export default function MarketingNav({
           >
             {nav.signUp}
           </Link>
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full sm:hidden"
-            style={{
-              border: "1px solid var(--landing-champagne, #E8D5B5)",
-              background: "var(--landing-surface, #FFFCFA)",
-              color: "var(--landing-ink)",
-            }}
-            aria-expanded={open}
-            aria-controls={panelId}
-            aria-label={
-              open
-                ? locale === "es"
-                  ? "Cerrar menú"
-                  : "Close menu"
-                : locale === "es"
-                  ? "Abrir menú"
-                  : "Open menu"
-            }
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className="sr-only">
-              {open
-                ? locale === "es"
-                  ? "Cerrar"
-                  : "Close"
-                : locale === "es"
-                  ? "Menú"
-                  : "Menu"}
-            </span>
-            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-              {open ? (
-                <path
-                  d="M4 4l10 10M14 4L4 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              ) : (
-                <path
-                  d="M3 5h12M3 9h12M3 13h12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              )}
-            </svg>
-          </button>
         </nav>
       </div>
-      {open ? (
-        <div
-          id={panelId}
-          className="border-t px-5 py-2 sm:hidden"
-          style={{
-            background: "rgba(255,252,250,0.98)",
-            borderColor: "var(--landing-line)",
-          }}
+      <nav
+        className="border-t sm:hidden"
+        style={{
+          background: "rgba(255,252,250,0.96)",
+          borderColor: "var(--landing-line)",
+        }}
+        aria-label={locale === "es" ? "Secciones" : "Sections"}
+        data-marketing-phone-nav
+      >
+        <ul
+          className={`mx-auto flex ${maxWidthClass} min-h-11 items-stretch gap-1 overflow-x-auto px-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
         >
-          <ul className={`mx-auto flex ${maxWidthClass} flex-col`}>
-            {extra ? (
-              <li
-                className="border-b py-1"
-                style={{ borderColor: "var(--landing-line)" }}
+          {extra ? (
+            <li
+              className="flex shrink-0 items-center border-r px-2"
+              style={{ borderColor: "var(--landing-line)" }}
+            >
+              {extra}
+            </li>
+          ) : null}
+          {phoneLinks.map((item) => (
+            <li key={item.href} className="flex shrink-0 items-stretch">
+              <Link
+                href={item.href}
+                className="flex min-h-11 items-center whitespace-nowrap px-3 text-sm font-medium"
+                style={{ color: "var(--landing-ink)" }}
               >
-                <div className="flex min-h-11 items-center">{extra}</div>
-              </li>
-            ) : null}
-            {phoneLinks.map((item) => (
-              <li
-                key={item.href}
-                className="border-b last:border-b-0"
-                style={{ borderColor: "var(--landing-line)" }}
-              >
-                <Link
-                  href={item.href}
-                  className="flex min-h-11 items-center text-sm font-medium"
-                  style={{ color: "var(--landing-ink)" }}
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-    </>
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 }
