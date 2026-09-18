@@ -106,6 +106,10 @@ describe("callbackUrl open redirect", () => {
     assert.equal(safeCallbackUrl("/dashboard"), "/dashboard");
     assert.equal(safeCallbackUrl("/host/h-birthday-2026"), "/host/h-birthday-2026");
     assert.equal(safeCallbackUrl("/events/new?x=1"), "/events/new?x=1");
+    assert.equal(
+      safeCallbackUrl("/events/new?template=quince-princesa"),
+      "/events/new?template=quince-princesa",
+    );
   });
 
   it("allows explicit ownvite.com / ownvite.app apex and www hosts", () => {

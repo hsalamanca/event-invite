@@ -66,6 +66,12 @@ export default function MarketingShell({
             />
             {headerExtra}
             <Link
+              href={localePath(locale, "/marketplace")}
+              className="transition hover:text-[var(--landing-ink)]"
+            >
+              {nav.templates}
+            </Link>
+            <Link
               href={localePath(locale, "/domains")}
               className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
             >
@@ -108,6 +114,12 @@ export default function MarketingShell({
               height={22}
             />
             <div className="flex flex-wrap items-center justify-center gap-5">
+              <Link
+                href={localePath(locale, "/marketplace")}
+                className="transition hover:text-[var(--landing-ink)]"
+              >
+                {nav.templates}
+              </Link>
               <Link
                 href={localePath(locale, "/domains")}
                 className="transition hover:text-[var(--landing-ink)]"

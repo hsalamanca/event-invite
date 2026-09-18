@@ -126,6 +126,12 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               variant="marketing"
             />
             <Link
+              href={localePath(locale, "/marketplace")}
+              className="transition hover:text-white"
+            >
+              {nav.templates}
+            </Link>
+            <Link
               href={localePath(locale, "/domains")}
               className="hidden transition hover:text-white sm:inline"
             >
@@ -219,7 +225,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
                 {t.ctaStart}
               </Link>
               <Link
-                href={localePath(locale, "/e/h-birthday-2026")}
+                href={localePath(locale, "/preview/quince-princesa")}
                 className="inline-flex items-center justify-center px-2 py-3.5 text-sm font-medium text-white/90 underline-offset-[6px] transition hover:underline sm:px-4"
               >
                 {t.ctaDemo}
@@ -541,6 +547,13 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
         >
           <BrandLogo tone="ink" height={22} href="/" />
           <div className="flex flex-wrap items-center justify-center gap-5">
+            <Link
+              href={localePath(locale, "/marketplace")}
+              className="transition hover:opacity-100"
+              style={{ color: "inherit" }}
+            >
+              {nav.templates}
+            </Link>
             <Link
               href={localePath(locale, "/domains")}
               className="transition hover:opacity-100"

@@ -8,6 +8,7 @@ export type Dictionary = {
   nav: {
     domains: string;
     pricing: string;
+    templates: string;
     openInvite: string;
     customize: string;
     language: string;
@@ -15,6 +16,19 @@ export type Dictionary = {
     signUp: string;
     dashboard: string;
     createEvent: string;
+  };
+  gallery: {
+    metaTitle: string;
+    eyebrow: string;
+    title: string;
+    support: string;
+    preview: string;
+    useThis: string;
+    premium: string;
+    peek: string;
+    otherTitle: string;
+    otherBody: string;
+    birthdayCta: string;
   };
   landing: {
     brand: string;
@@ -373,6 +387,7 @@ const en: Dictionary = {
   nav: {
     domains: "Domains",
     pricing: "Pricing",
+    templates: "Templates",
     openInvite: "Open birthday invite",
     customize: "Customize it",
     language: "ES",
@@ -380,6 +395,21 @@ const en: Dictionary = {
     signUp: "Sign up",
     dashboard: "Dashboard",
     createEvent: "Create event",
+  },
+  gallery: {
+    metaTitle: "Templates",
+    eyebrow: "Templates",
+    title: "Quince craft, and a few more",
+    support:
+      "A short cream-paper picker. Preview a live invite, then use it to start yours.",
+    preview: "Preview",
+    useThis: "Use this",
+    premium: "Premium",
+    peek: "Peek a live invite",
+    otherTitle: "Other occasions",
+    otherBody:
+      "Birthday stays as a live sample — not the quality bar. Quince princesa is the demo to peek.",
+    birthdayCta: "See birthday invite →",
   },
   landing: {
     brand: "Ownvite",
@@ -826,6 +856,7 @@ const es: Dictionary = {
   nav: {
     domains: "Dominios",
     pricing: "Precios",
+    templates: "Plantillas",
     openInvite: "Ver invitación",
     customize: "Personalizar",
     language: "EN",
@@ -833,6 +864,21 @@ const es: Dictionary = {
     signUp: "Crear cuenta",
     dashboard: "Panel",
     createEvent: "Crear evento",
+  },
+  gallery: {
+    metaTitle: "Plantillas",
+    eyebrow: "Plantillas",
+    title: "Quinceañera, y unas cuantas más",
+    support:
+      "Un picker corto en papel cream. Mira la invitación en vivo y úsala para crear la tuya.",
+    preview: "Vista previa",
+    useThis: "Usar esta",
+    premium: "Premium",
+    peek: "Ver una invitación en vivo",
+    otherTitle: "Otras ocasiones",
+    otherBody:
+      "El cumpleaños sigue como muestra secundaria — no es la barra de calidad. Quince princesa es el demo para mirar.",
+    birthdayCta: "Ver invitación de cumpleaños →",
   },
   landing: {
     brand: "Ownvite",

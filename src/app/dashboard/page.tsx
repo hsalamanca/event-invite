@@ -55,7 +55,9 @@ export default async function DashboardPage() {
   }
 
   const locale = await getRequestLocale();
-  const t = getDictionary(locale).dashboard;
+  const dict = getDictionary(locale);
+  const t = dict.dashboard;
+  const nav = dict.nav;
   const owned = await listEventsByOwner(session.user.id);
   const coHosted = (await listEventsByCoHostEmail(session.user.email ?? "")).filter(
     (e) => !owned.some((o) => o.id === e.id),
@@ -160,7 +162,7 @@ export default async function DashboardPage() {
                 color: "var(--landing-ink)",
               }}
             >
-              Marketplace
+              {nav.templates}
             </Link>
             <Link
               href="/agency"

@@ -15,11 +15,17 @@ export default async function NewEventPage({
   searchParams?: Promise<{ template?: string }>;
 }) {
   const session = await auth();
-  if (!session?.user?.id) {
-    redirect("/login?callbackUrl=/events/new");
+  const params = (await searchParams) || {};
+  const template =
+    typeof params.template === "string" ? params.template.trim() : "";
+  const user = session?.user;
+  if (!user?.id) {
+    const next = template
+      ? `/events/new?template=${encodeURIComponent(template)}`
+      : "/events/new";
+    redirect(`/register?callbackUrl=${encodeURIComponent(next)}`);
   }
   const locale = await getRequestLocale();
-  const params = (await searchParams) || {};
 
   return (
     <main
@@ -46,8 +52,8 @@ export default async function NewEventPage({
       <div className="relative z-10 px-5 py-10 sm:px-8">
         <CreateEventWizard
           locale={locale}
-          defaultHostName={session.user.name || ""}
-          defaultTemplateId={params.template}
+          defaultHostName={user.name || ""}
+          defaultTemplateId={template || undefined}
         />
       </div>
     </main>

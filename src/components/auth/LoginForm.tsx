@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
-import { safeCallbackUrl } from "@/lib/safe-callback-url";
+import { DEFAULT_CALLBACK_PATH, safeCallbackUrl } from "@/lib/safe-callback-url";
 
 const OAUTH_ERRORS: Record<string, string> = {
   OAuthSignin: "Could not start Google sign-in. Try again.",
@@ -125,7 +125,14 @@ export default function LoginForm({
         </button>
         <p className="text-center text-sm text-[var(--landing-muted)]">
           New here?{" "}
-          <Link href="/register" className="text-[var(--landing-cedar)] underline">
+          <Link
+            href={
+              callbackUrl === DEFAULT_CALLBACK_PATH
+                ? "/register"
+                : `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
+            }
+            className="text-[var(--landing-cedar)] underline"
+          >
             Create an account
           </Link>
         </p>
