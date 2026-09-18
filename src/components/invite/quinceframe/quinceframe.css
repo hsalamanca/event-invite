@@ -274,7 +274,7 @@
 }
 
 .quinceframe-footer-gown:has(.quinceframe-honoree--filled) {
-  width: 70%;
+  width: 54%;
   height: auto;
   aspect-ratio: 3 / 4;
   bottom: 2%;
