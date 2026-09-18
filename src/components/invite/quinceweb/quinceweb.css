@@ -3,8 +3,10 @@
   --qw-surface: #ffe8ef;
   --qw-accent: #b76e79;
   --qw-gold: #c9a27a;
+  --qw-gold-ink: #7a5234;
   --qw-text: #3a2a30;
   --qw-muted: color-mix(in srgb, #3a2a30 58%, #fff7f9);
+  --qw-hint: color-mix(in srgb, #3a2a30 82%, #fff7f9);
   --qw-font-script: var(--font-great-vibes), "Great Vibes", cursive;
   --qw-font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --qw-font-sans: var(--font-source-sans), var(--font-dm-sans), "Source Sans 3",
@@ -39,10 +41,20 @@
   z-index: 50;
 }
 
+.qw-locale [role="group"] {
+  padding: 0.125rem;
+}
+
+.qw-locale button {
+  min-height: var(--qw-tap);
+  min-width: var(--qw-tap);
+  padding-block: 0;
+}
+
 .qw-mute {
   position: fixed;
-  right: max(0.75rem, env(safe-area-inset-right));
-  bottom: calc(3.25rem + env(safe-area-inset-bottom));
+  top: max(0.75rem, env(safe-area-inset-top));
+  left: max(0.75rem, env(safe-area-inset-left));
   z-index: 45;
   display: grid;
   place-items: center;
@@ -177,7 +189,7 @@
   font-size: 0.8125rem;
   line-height: 1.4;
   letter-spacing: 0.04em;
-  color: var(--qw-muted);
+  color: var(--qw-hint);
   text-align: center;
 }
 
@@ -237,7 +249,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-variant-caps: small-caps;
-  color: var(--qw-gold);
+  color: var(--qw-gold-ink);
 }
 
 .qw-hero-name {
@@ -251,16 +263,6 @@
     0 8px 22px color-mix(in srgb, var(--qw-gold) 28%, transparent);
 }
 
-.qw-hero-invite {
-  margin: 0.85rem auto 0;
-  max-width: 22rem;
-  font-family: var(--qw-font-serif);
-  font-weight: 400;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: var(--qw-muted);
-}
-
 .qw-scroll-cue {
   position: absolute;
   left: 50%;
@@ -271,7 +273,7 @@
   width: 44px;
   height: 44px;
   transform: translateX(-50%);
-  color: var(--qw-gold);
+  color: var(--qw-gold-ink);
   text-decoration: none;
 }
 
@@ -301,7 +303,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--qw-gold);
+  color: var(--qw-gold-ink);
 }
 
 .qw-body {

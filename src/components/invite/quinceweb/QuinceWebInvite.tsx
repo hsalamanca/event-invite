@@ -58,7 +58,7 @@ export default function QuinceWebInvite({
   }) => Promise<void> | void;
 }) {
   const ui = getDictionary(locale).invite;
-  const { headline, tagline } = resolveLocalizedInviteCopy(event, locale);
+  const { headline } = resolveLocalizedInviteCopy(event, locale);
   const honoreeName = headline || event.title;
   const [opened, setOpened] = useState(false);
   const [tick, setTick] = useState(0);
@@ -116,7 +116,6 @@ export default function QuinceWebInvite({
       <HeroCinematic
         name={honoreeName}
         misXv={ui.quinceMisXv}
-        inviteLine={tagline}
         photoUrl={event.honoreePhotoUrl}
         photoAlt={ui.honoreePhotoAlt.replace("{name}", honoreeName)}
         heroImage={event.heroImage}

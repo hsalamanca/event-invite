@@ -4,7 +4,6 @@ import { QUINCE_PRINCESA_ASSETS } from "./assets";
 export default function HeroCinematic({
   name,
   misXv,
-  inviteLine,
   photoUrl,
   photoAlt,
   heroImage,
@@ -12,7 +11,6 @@ export default function HeroCinematic({
 }: {
   name: string;
   misXv: string;
-  inviteLine: string;
   photoUrl?: string;
   photoAlt: string;
   heroImage?: string;
@@ -43,7 +41,6 @@ export default function HeroCinematic({
       <div className="qw-hero-copy">
         <p className="qw-hero-kicker">{misXv}</p>
         <h1 className="qw-hero-name">{name}</h1>
-        {inviteLine ? <p className="qw-hero-invite">{inviteLine}</p> : null}
       </div>
       <a className="qw-scroll-cue" href="#padres" aria-label={scrollLabel}>
         <span />
