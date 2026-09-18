@@ -21,7 +21,12 @@ import {
   resolveLocalizedInviteCopy,
   resolveLocalizedRsvpFields,
 } from "@/lib/templates";
-import type { CustomQuestion, EventRecord, RsvpAnswers } from "@/lib/types";
+import type {
+  CustomQuestion,
+  EventRecord,
+  RsvpAnswers,
+  Theme,
+} from "@/lib/types";
 import type { WeatherSnapshot } from "@/lib/weather";
 
 type InvitePageProps = {
@@ -158,6 +163,17 @@ const FONT_STACK: Record<string, string> = {
 
 function fontStack(name: string, fallback: string): string {
   return FONT_STACK[name] ?? `"${name}", ${fallback}`;
+}
+
+/** Script faces read beautifully on a cover but poorly as running headings. */
+const SCRIPT_DISPLAY_FONTS = new Set(["Great Vibes", "Press Start 2P"]);
+
+/** Heading face for body sections: never a script, so headings stay legible. */
+function titleFontStack(fonts: Theme["fonts"]): string {
+  if (SCRIPT_DISPLAY_FONTS.has(fonts.display)) {
+    return fontStack(fonts.body, "Georgia, serif");
+  }
+  return fontStack(fonts.display, "Georgia, serif");
 }
 
 function isLightHex(hex: string): boolean {
@@ -531,6 +547,7 @@ export default function InvitePage({
     "--invite-muted": theme.colors.textMuted,
     "--font-display": fontStack(theme.fonts.display, "Georgia, serif"),
     "--font-body": fontStack(theme.fonts.body, "system-ui, sans-serif"),
+    "--font-title": titleFontStack(theme.fonts),
   } as CSSProperties;
 
   return (
@@ -5386,10 +5403,10 @@ export default function InvitePage({
         }
 
         .invite-root[data-page="ink"] .invite-section-title {
-          font-family: var(--font-display);
-          font-weight: 600;
-          font-size: clamp(1.35rem, 3vw, 1.7rem);
-          letter-spacing: -0.02em;
+          font-family: var(--font-title);
+          font-weight: 700;
+          font-size: clamp(1.5rem, 3.2vw, 1.85rem);
+          letter-spacing: -0.01em;
           color: #0b1f3a;
         }
 
@@ -5586,12 +5603,24 @@ export default function InvitePage({
         }
 
         .invite-root[data-layout="quincebloom"] .invite-section-title {
-          color: #c2185b;
-          font-family: var(--font-display);
+          color: #8b0f3f;
+          font-family: var(--font-title);
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-section-title--sm {
+          color: #7a0d3a;
         }
 
         .invite-root[data-layout="quincebloom"] .invite-meta dt {
-          color: #d4a017;
+          color: #a07810;
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-padrinos .padrino-role {
+          color: #a07810;
+        }
+
+        .invite-root[data-layout="quincebloom"] .invite-padrinos .padrino-name {
+          color: #2a101c;
         }
 
         .invite-root[data-layout="quincebloom"] .btn-primary,
@@ -5672,10 +5701,10 @@ export default function InvitePage({
           background: none;
           -webkit-background-clip: unset;
           background-clip: unset;
-          color: #c9a227;
-          font-family: var(--font-great-vibes), cursive;
-          font-weight: 400;
-          letter-spacing: 0.01em;
+          color: #8a6a13;
+          font-family: var(--font-title);
+          font-weight: 700;
+          letter-spacing: 0.02em;
         }
 
         .invite-root[data-quince="bordered"] .invite-meta dt {
@@ -5811,33 +5840,69 @@ export default function InvitePage({
         }
 
         .invite-extra-block {
-          margin-bottom: 1.5rem;
+          margin-bottom: 2.25rem;
         }
 
         .invite-schedule {
           list-style: none;
           margin: 0;
-          padding: 0;
+          padding: 0 0 0 1.5rem;
           display: grid;
-          gap: 0.85rem;
+          gap: 1.1rem;
+          position: relative;
+        }
+
+        .invite-schedule::before {
+          content: "";
+          position: absolute;
+          left: 0.31rem;
+          top: 0.5rem;
+          bottom: 0.5rem;
+          width: 2px;
+          border-radius: 999px;
+          background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--invite-accent) 55%, transparent),
+            color-mix(in srgb, var(--invite-accent-2) 45%, transparent)
+          );
         }
 
         .invite-schedule li {
           display: grid;
-          gap: 0.15rem;
+          gap: 0.2rem;
+          position: relative;
+        }
+
+        .invite-schedule li::before {
+          content: "";
+          position: absolute;
+          left: -1.5rem;
+          top: 0.42rem;
+          width: 0.75rem;
+          height: 0.75rem;
+          border-radius: 999px;
+          background: var(--invite-surface);
+          border: 2px solid var(--invite-accent);
         }
 
         .invite-schedule strong {
-          font-size: 0.8rem;
-          letter-spacing: 0.08em;
+          font-size: 0.84rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: var(--invite-accent);
+          color: color-mix(in srgb, var(--invite-accent) 88%, var(--invite-text));
+        }
+
+        .invite-schedule span {
+          font-size: 1.1rem;
+          line-height: 1.35;
+          color: var(--invite-text);
         }
 
         .invite-schedule em {
           font-style: normal;
-          color: var(--invite-muted);
-          font-size: 0.95rem;
+          color: color-mix(in srgb, var(--invite-text) 72%, var(--invite-muted));
+          font-size: 1rem;
         }
 
         .invite-padrinos {
@@ -5845,29 +5910,51 @@ export default function InvitePage({
           margin: 0;
           padding: 0;
           display: grid;
-          gap: 1.15rem;
-          text-align: center;
+          gap: 0.85rem;
+          grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
         }
 
         .invite-padrinos li {
           display: grid;
-          gap: 0.25rem;
+          gap: 0.3rem;
           justify-items: center;
+          text-align: center;
+          padding: 1.1rem 1rem;
+          border-radius: 1rem;
+          border: 1px solid
+            color-mix(in srgb, var(--invite-accent-2) 32%, transparent);
+          background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--invite-accent) 5%, var(--invite-surface)),
+            color-mix(in srgb, var(--invite-accent-2) 6%, var(--invite-surface))
+          );
         }
 
         .invite-padrinos .padrino-role {
+          display: block;
           font-size: 0.78rem;
           font-weight: 700;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.14em;
+          line-height: 1.4;
           text-transform: uppercase;
-          color: var(--invite-accent);
+          text-wrap: balance;
+          color: color-mix(in srgb, var(--invite-accent) 85%, var(--invite-text));
+        }
+
+        .invite-padrinos .padrino-role::before {
+          content: "";
+          display: block;
+          width: 1.75rem;
+          height: 1px;
+          margin: 0 auto 0.6rem;
+          background: color-mix(in srgb, var(--invite-accent-2) 75%, transparent);
         }
 
         .invite-padrinos .padrino-name {
-          font-family: var(--font-display);
-          font-size: clamp(1.2rem, 3.5vw, 1.45rem);
-          font-weight: 400;
-          line-height: 1.25;
+          font-family: var(--font-title);
+          font-size: clamp(1.15rem, 3.2vw, 1.3rem);
+          font-weight: 600;
+          line-height: 1.35;
           color: var(--invite-text);
         }
 
@@ -5879,29 +5966,33 @@ export default function InvitePage({
 
         .invite-extra-line strong {
           display: block;
-          margin-bottom: 0.15rem;
-          font-size: 0.75rem;
-          letter-spacing: 0.1em;
+          margin-bottom: 0.25rem;
+          font-size: 0.82rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--invite-accent);
+          color: color-mix(in srgb, var(--invite-accent) 88%, var(--invite-text));
         }
 
         .invite-faq {
           display: grid;
-          gap: 1.1rem;
+          gap: 1.6rem;
           margin: 0;
         }
 
         .invite-faq dt {
-          font-family: var(--font-display);
-          font-size: 1.15rem;
-          margin-bottom: 0.25rem;
+          font-family: var(--font-title);
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: var(--invite-text);
+          margin-bottom: 0.4rem;
         }
 
         .invite-faq dd {
           margin: 0;
-          color: var(--invite-muted);
-          line-height: 1.55;
+          font-size: 1.05rem;
+          color: color-mix(in srgb, var(--invite-text) 78%, var(--invite-muted));
+          line-height: 1.65;
         }
 
         .invite-gallery {
@@ -6197,15 +6288,21 @@ export default function InvitePage({
 
         .invite-section-title {
           margin: 0 0 1.5rem;
-          font-family: var(--font-display);
-          font-size: clamp(1.5rem, 3vw, 1.75rem);
-          font-weight: 600;
+          font-family: var(--font-title);
+          font-size: clamp(1.65rem, 3.4vw, 2rem);
+          font-weight: 700;
+          line-height: 1.2;
+          letter-spacing: 0.01em;
           color: var(--invite-text);
         }
 
         .invite-section-title--sm {
-          font-size: 1.25rem;
-          margin-bottom: 0.75rem;
+          font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: color-mix(in srgb, var(--invite-accent) 72%, var(--invite-text));
+          margin-bottom: 1rem;
         }
 
         .invite-meta {
@@ -6215,17 +6312,19 @@ export default function InvitePage({
         }
 
         .invite-meta dt {
-          font-size: 0.75rem;
+          font-size: 0.8rem;
+          font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--invite-muted);
-          margin-bottom: 0.25rem;
+          color: color-mix(in srgb, var(--invite-muted) 82%, var(--invite-text));
+          margin-bottom: 0.3rem;
         }
 
         .invite-meta dd {
           margin: 0;
-          font-size: 1.0625rem;
+          font-size: 1.15rem;
           line-height: 1.5;
+          color: var(--invite-text);
         }
 
         .invite-address {
@@ -6247,9 +6346,9 @@ export default function InvitePage({
 
         .invite-about-body {
           margin: 0;
-          font-size: 1rem;
-          line-height: 1.65;
-          color: color-mix(in srgb, var(--invite-text) 90%, var(--invite-muted));
+          font-size: 1.08rem;
+          line-height: 1.7;
+          color: color-mix(in srgb, var(--invite-text) 94%, var(--invite-muted));
         }
 
         .invite-about-body :global(h1),
@@ -6259,8 +6358,8 @@ export default function InvitePage({
         .invite-about-body :global(h5),
         .invite-about-body :global(h6) {
           margin: 1.1rem 0 0.4rem;
-          font-family: var(--font-display);
-          font-weight: 600;
+          font-family: var(--font-title);
+          font-weight: 700;
           color: var(--invite-text);
           line-height: 1.25;
         }
@@ -6284,9 +6383,9 @@ export default function InvitePage({
 
         .invite-prompt {
           margin: -0.5rem 0 1.75rem;
-          color: var(--invite-muted);
-          font-size: 1rem;
-          line-height: 1.5;
+          color: color-mix(in srgb, var(--invite-text) 76%, var(--invite-muted));
+          font-size: 1.05rem;
+          line-height: 1.6;
         }
 
         .rsvp-form {
@@ -6399,19 +6498,20 @@ export default function InvitePage({
         .invite-footer {
           padding: 2.5rem 1.5rem 3rem;
           text-align: center;
-          color: var(--invite-muted);
-          font-size: 0.875rem;
+          color: color-mix(in srgb, var(--invite-muted) 88%, var(--invite-text));
+          font-size: 0.95rem;
         }
 
         .invite-footer p {
-          margin: 0 0 0.35rem;
+          margin: 0 0 0.45rem;
         }
 
         .invite-footer-attr {
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          font-size: 0.6875rem;
-          color: color-mix(in srgb, var(--invite-muted) 70%, transparent);
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: color-mix(in srgb, var(--invite-muted) 92%, transparent);
         }
 
         :global(.fade-up),
