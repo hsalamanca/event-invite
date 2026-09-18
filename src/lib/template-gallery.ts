@@ -36,8 +36,40 @@ export const GALLERY_TEMPLATE_IDS = [
 
 export type GalleryTemplateId = (typeof GALLERY_TEMPLATE_IDS)[number];
 
+export const GALLERY_OCCASIONS = [
+  { id: "all", templateIds: GALLERY_TEMPLATE_IDS },
+  {
+    id: "quince",
+    templateIds: [
+      "quince-princesa",
+      "quince-tiara",
+      "quince-rosa",
+      "quince-azul",
+    ],
+  },
+  {
+    id: "wedding",
+    templateIds: ["champagne-wedding", "watercolor-rose"],
+  },
+  { id: "fiesta", templateIds: ["latin-fiesta"] },
+  {
+    id: "birthday",
+    templateIds: ["golden-fifty", "gold-confetti", "blush-collage"],
+  },
+] as const;
+
+export type GalleryOccasionId = (typeof GALLERY_OCCASIONS)[number]["id"];
+
 export function isGalleryTemplateId(id: string): id is GalleryTemplateId {
   return (GALLERY_TEMPLATE_IDS as readonly string[]).includes(id);
+}
+
+export function templatesForOccasion(occasion: GalleryOccasionId) {
+  const group =
+    GALLERY_OCCASIONS.find((item) => item.id === occasion) ??
+    GALLERY_OCCASIONS[0];
+  const ids = new Set(group.templateIds as readonly string[]);
+  return galleryTemplates().filter((tpl) => ids.has(tpl.id));
 }
 
 export function galleryTemplates() {

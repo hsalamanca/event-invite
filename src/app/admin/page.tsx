@@ -24,7 +24,7 @@ export default async function AdminPage() {
 
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="paper-surface relative min-h-screen overflow-x-hidden"
       style={paperThemeVars}
     >
       <div
@@ -35,7 +35,7 @@ export default async function AdminPage() {
       <header className="relative z-20 border-b border-[var(--landing-line)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
           <div className="flex items-center gap-4">
-            <BrandLogo href="/" tone="ink" height={28} />
+            <BrandLogo href="/" tone="paper" height={28} />
             <span
               className="rounded border px-2 py-0.5 text-[10px] uppercase tracking-[0.2em]"
               style={{

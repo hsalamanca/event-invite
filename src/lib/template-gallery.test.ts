@@ -5,6 +5,7 @@ import {
   GALLERY_ALIAS_PATHS,
   GALLERY_BIRTHDAY_SAMPLE_PATH,
   GALLERY_CANONICAL_PATH,
+  GALLERY_OCCASIONS,
   GALLERY_TEMPLATE_IDS,
   PEEK_DEMO_PATH,
   galleryTemplates,
@@ -12,6 +13,7 @@ import {
   templatePreviewPath,
   templateRegisterPath,
   templateUsePath,
+  templatesForOccasion,
 } from "./template-gallery";
 
 describe("public template gallery", () => {
@@ -27,6 +29,17 @@ describe("public template gallery", () => {
       );
     }
     assert.equal(galleryTemplates().length, GALLERY_TEMPLATE_IDS.length);
+    assert.equal(GALLERY_OCCASIONS[0]?.id, "all");
+    assert.equal(GALLERY_OCCASIONS[1]?.id, "quince");
+    assert.equal(
+      templatesForOccasion("quince")[0]?.id,
+      "quince-princesa",
+    );
+    assert.ok(
+      templatesForOccasion("quince").every((tpl) =>
+        tpl.id.startsWith("quince-"),
+      ),
+    );
   });
 
   it("maps preview and use-this to existing create/preview routes", () => {

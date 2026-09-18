@@ -37,7 +37,7 @@ export default function MarketingShell({
 
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="paper-surface relative min-h-screen overflow-x-hidden"
       style={paperThemeVars}
     >
       <div
@@ -52,7 +52,7 @@ export default function MarketingShell({
         >
           <BrandLogo
             href={localePath(locale, "/")}
-            tone="ink"
+            tone="paper"
             height={28}
           />
           <nav
@@ -110,7 +110,7 @@ export default function MarketingShell({
           >
             <BrandLogo
               href={localePath(locale, "/")}
-              tone="ink"
+              tone="paper"
               height={22}
             />
             <div className="flex flex-wrap items-center justify-center gap-5">

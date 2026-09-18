@@ -29,6 +29,11 @@ export type Dictionary = {
     otherTitle: string;
     otherBody: string;
     birthdayCta: string;
+    chipAll: string;
+    chipQuince: string;
+    chipWedding: string;
+    chipFiesta: string;
+    chipBirthday: string;
   };
   landing: {
     brand: string;
@@ -37,6 +42,9 @@ export type Dictionary = {
     ctaStart: string;
     ctaDemo: string;
     ctaHow: string;
+    priceLine: string;
+    mockUrl: string;
+    stillsTitle: string;
     domainTitle: string;
     domainBody: string;
     domainLink: string;
@@ -410,15 +418,23 @@ const en: Dictionary = {
     otherBody:
       "Birthday stays as a live sample — not the quality bar. Quince princesa is the demo to peek.",
     birthdayCta: "See birthday invite →",
+    chipAll: "All",
+    chipQuince: "Quinceañera",
+    chipWedding: "Wedding",
+    chipFiesta: "Fiesta",
+    chipBirthday: "Birthday",
   },
   landing: {
     brand: "Ownvite",
-    headline: "Your invitation. Your domain.",
+    headline: "A celebration worth opening.",
     support:
-      "Beautiful digital invites that live on the address you already own.",
+      "Stationery-grade invites on cream paper, living on the address you already own.",
     ctaStart: "Create an invitation",
     ctaDemo: "Peek a live invite",
     ctaHow: "See how it works",
+    priceLine: "Free to start · Pay per event · No per-guest · No ads",
+    mockUrl: "yourevent.com",
+    stillsTitle: "Looks guests actually open.",
     domainTitle: "Hosted on your name, not ours.",
     domainBody:
       "Guests open your domain. RSVPs, updates, and memories stay under your brand — not a disposable link.",
@@ -879,15 +895,23 @@ const es: Dictionary = {
     otherBody:
       "El cumpleaños sigue como muestra secundaria — no es la barra de calidad. Quince princesa es el demo para mirar.",
     birthdayCta: "Ver invitación de cumpleaños →",
+    chipAll: "Todas",
+    chipQuince: "Quinceañera",
+    chipWedding: "Boda",
+    chipFiesta: "Fiesta",
+    chipBirthday: "Cumpleaños",
   },
   landing: {
     brand: "Ownvite",
-    headline: "Tu invitación. Tu dominio.",
+    headline: "Una celebración que da gusto abrir.",
     support:
-      "Invitaciones digitales hermosas que viven en la dirección que ya es tuya.",
+      "Invitaciones de papelería en cream, que viven en la dirección que ya es tuya.",
     ctaStart: "Crear una invitación",
     ctaDemo: "Ver una invitación en vivo",
     ctaHow: "Cómo funciona",
+    priceLine: "Gratis para empezar · Pagas por evento · Sin cobro por invitado · Sin anuncios",
+    mockUrl: "yourevent.com",
+    stillsTitle: "Looks que los invitados sí abren.",
     domainTitle: "En tu nombre, no en el nuestro.",
     domainBody:
       "Tus invitados abren tu dominio. Confirmaciones, novedades y recuerdos quedan bajo tu marca — no en un enlace genérico.",

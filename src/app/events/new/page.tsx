@@ -29,7 +29,7 @@ export default async function NewEventPage({
 
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="paper-surface relative min-h-screen overflow-x-hidden"
       style={paperThemeVars}
     >
       <div
@@ -39,7 +39,7 @@ export default async function NewEventPage({
       />
       <header className="relative z-20 border-b border-[var(--landing-line)]">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5 sm:px-8">
-          <BrandLogo href="/dashboard" tone="ink" height={28} />
+          <BrandLogo href="/dashboard" tone="paper" height={28} />
           <Link
             href="/dashboard"
             className="text-sm hover:text-[var(--landing-ink)]"
