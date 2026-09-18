@@ -4475,20 +4475,20 @@ export default function InvitePage({
           font-weight: 700;
           letter-spacing: 0.14em;
           line-height: 0.9;
-          color: #d4a017;
-          text-shadow: 0 2px 0 rgba(90, 24, 48, 0.12);
+          color: #a07810;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-kicker) {
           position: relative;
           z-index: 1;
-          margin: 0.15rem 0 0.85rem;
+          margin: 0.2rem 0 0.9rem;
           font-family: var(--font-cormorant), Georgia, serif;
-          font-size: 0.95rem;
-          font-weight: 600;
-          letter-spacing: 0.28em;
+          font-size: clamp(1.05rem, 3.2vw, 1.2rem);
+          font-weight: 700;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #c2185b;
+          color: #7a0d3a;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-photo-stage) {
@@ -4555,59 +4555,62 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-name) {
           position: relative;
           z-index: 1;
-          margin: 0.15rem 0 0.2rem;
+          margin: 0.2rem 0 0.35rem;
           font-family: var(--font-display);
-          font-size: clamp(3rem, 12vw, 4.2rem);
+          font-size: clamp(3.1rem, 12vw, 4.4rem);
           font-weight: 400;
           line-height: 1;
-          color: #c2185b;
+          color: #8b0f3f;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-invite) {
           position: relative;
           z-index: 1;
-          margin: 0 0.5rem 0.85rem;
+          margin: 0 0.65rem 1rem;
           font-family: var(--font-cormorant), Georgia, serif;
-          font-size: 1.05rem;
+          font-size: clamp(1.15rem, 3.5vw, 1.3rem);
           font-style: italic;
-          color: #8a5468;
+          font-weight: 600;
+          line-height: 1.35;
+          color: #2a101c;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-meta) {
           position: relative;
           z-index: 1;
           margin: 0 auto;
-          padding: 0.85rem 1rem;
+          padding: 0.95rem 1.1rem;
           width: min(100%, 340px);
           border-radius: 1rem;
-          background: color-mix(in srgb, #c2185b 8%, #fff);
-          border: 1px solid color-mix(in srgb, #d4a017 40%, #fff);
+          background: color-mix(in srgb, #c2185b 10%, #fff);
+          border: 1px solid color-mix(in srgb, #d4a017 45%, #fff);
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-date),
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-time),
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-place) {
-          margin: 0.15rem 0;
+          margin: 0.2rem 0;
           font-family: var(--font-cormorant), Georgia, serif;
-          font-weight: 600;
-          letter-spacing: 0.04em;
-          color: #3a1224;
+          font-weight: 700;
+          letter-spacing: 0.03em;
+          color: #1f0c14;
+          line-height: 1.35;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-date) {
-          font-size: 1.05rem;
+          font-size: clamp(1.1rem, 3.2vw, 1.25rem);
           text-transform: uppercase;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-time) {
-          color: #c2185b;
-          font-size: 1.15rem;
+          color: #7a0d3a;
+          font-size: clamp(1.2rem, 3.4vw, 1.35rem);
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-place) {
-          font-size: 0.92rem;
-          color: #8a5468;
-          font-weight: 500;
+          font-size: clamp(1.05rem, 3vw, 1.15rem);
+          color: #2a101c;
+          font-weight: 600;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions) {
@@ -4628,14 +4631,18 @@ export default function InvitePage({
           border: none;
           box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
           min-width: 7.5rem;
+          font-size: 1rem;
+          font-weight: 700;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions .btn-ghost) {
           border-radius: 999px;
-          border: 1.5px solid #d4a017;
-          color: #d4a017;
-          background: color-mix(in srgb, #2a0c18 55%, transparent);
+          border: 1.5px solid #a07810;
+          color: #fff4d6;
+          background: color-mix(in srgb, #2a0c18 70%, transparent);
           min-width: 7.5rem;
+          font-size: 1rem;
+          font-weight: 700;
         }
 
         @keyframes quincebloomFlutter {
