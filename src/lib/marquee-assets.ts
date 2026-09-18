@@ -1,0 +1,20 @@
+/** Ink Marquee Domain pack — served from public/landing/marquee-domain. */
+export const MARQUEE = {
+  heroPhone: "/landing/marquee-domain/stills/phone-9x16/01-garden.webp",
+  heroDesk: "/landing/marquee-domain/stills/desk-16x9/02-dance.webp",
+  toast: "/landing/marquee-domain/stills/phone-9x16/02-toast.webp",
+  prep: "/landing/marquee-domain/stills/phone-9x16/03-prep.webp",
+  tablescape: "/landing/marquee-domain/stills/desk-16x9/01-tablescape.webp",
+  envelopeClosed: "/landing/marquee-domain/demo/envelope-closed.webp",
+  envelopeOpen: "/landing/marquee-domain/demo/envelope-open.webp",
+  rsvpCard: "/landing/marquee-domain/demo/rsvp-card.webp",
+  peek1: "/landing/marquee-domain/mocks/peek-filmstrip-01.png",
+  peek2: "/landing/marquee-domain/mocks/peek-filmstrip-02.png",
+  peek3: "/landing/marquee-domain/mocks/peek-filmstrip-03.png",
+  storyDomain: "/landing/marquee-domain/mocks/story-domain-to-phone.webp",
+  browserKatia: "/landing/marquee-domain/mocks/browser-katia-com.webp",
+  addressBarRef: "/landing/marquee-domain/chrome/address-bar-yourevent.png",
+  poster1: "/landing/marquee-domain/gallery/poster-matte-filled-01.webp",
+  poster2: "/landing/marquee-domain/gallery/poster-matte-filled-02.webp",
+  poster3: "/landing/marquee-domain/gallery/poster-matte-filled-03.webp",
+} as const;

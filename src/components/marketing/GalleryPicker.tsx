@@ -85,11 +85,12 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
               }
             >
               <article
-                className="flex h-full flex-col overflow-hidden rounded-md border"
+                className="flex h-full flex-col overflow-hidden rounded-md"
                 style={{
-                  borderColor: "var(--landing-line)",
+                  border: "1px solid var(--landing-champagne, #E8D5B5)",
                   background: "var(--landing-surface)",
-                  boxShadow: "0 1px 2px rgba(26,23,20,0.05)",
+                  boxShadow:
+                    "0 12px 28px rgba(58,42,48,0.08), inset 0 0 0 3px #FFFCFA",
                 }}
               >
                 <div
@@ -103,10 +104,24 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                     locale={locale}
                     featured={featured}
                   />
+                  {featured ? (
+                    <span
+                      className="absolute right-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wide"
+                      style={{
+                        background: "rgba(255,252,250,0.94)",
+                        color: "var(--landing-ink)",
+                        border: "1px solid var(--landing-gold, #C4A574)",
+                        fontFamily:
+                          "var(--font-space-grotesk), 'Space Grotesk', sans-serif",
+                      }}
+                    >
+                      {t.domainChip}
+                    </span>
+                  ) : null}
                   {tpl.premium ? (
                     <span
                       className="absolute left-3 top-3 rounded-sm px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white"
-                      style={{ background: "var(--landing-cedar)" }}
+                      style={{ background: "var(--landing-rose)" }}
                     >
                       {t.premium}
                     </span>
@@ -121,8 +136,16 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                       color: "var(--landing-ink)",
                     }}
                   >
-                    {name}
+                    {featured ? t.featuredHonoree : name}
                   </h2>
+                  {featured ? (
+                    <p
+                      className="mt-1 text-xs font-medium uppercase tracking-[0.18em]"
+                      style={{ color: "var(--landing-rose)" }}
+                    >
+                      {name}
+                    </p>
+                  ) : null}
                   <p
                     className="mt-2 flex-1 text-sm leading-relaxed"
                     style={{ color: "var(--landing-muted)" }}
@@ -132,17 +155,18 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                   <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                     <Link
                       href={templatePreviewPath(tpl.id)}
-                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
+                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold"
                       style={{
                         background: "var(--landing-blush)",
                         color: "var(--landing-rose-deep)",
+                        border: "1px solid var(--landing-gold, #C4A574)",
                       }}
                     >
                       {t.preview}
                     </Link>
                     <Link
                       href={templateRegisterPath(tpl.id)}
-                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold text-white"
+                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold text-white"
                       style={{ background: "var(--landing-cta)" }}
                     >
                       {t.useThis}

@@ -34,6 +34,8 @@ export type Dictionary = {
     chipWedding: string;
     chipFiesta: string;
     chipBirthday: string;
+    domainChip: string;
+    featuredHonoree: string;
   };
   landing: {
     brand: string;
@@ -44,6 +46,9 @@ export type Dictionary = {
     ctaHow: string;
     priceLine: string;
     mockUrl: string;
+    demoUrl: string;
+    filmstripTitle: string;
+    filmstripCaptions: string[];
     stillsTitle: string;
     domainTitle: string;
     domainBody: string;
@@ -423,23 +428,27 @@ const en: Dictionary = {
     chipWedding: "Wedding",
     chipFiesta: "Fiesta",
     chipBirthday: "Birthday",
+    domainChip: "katia.com",
+    featuredHonoree: "Katia Gonzalez",
   },
   landing: {
     brand: "Ownvite",
-    headline: "A celebration worth opening.",
-    support:
-      "Stationery-grade invites on cream paper, living on the address you already own.",
+    headline: "Hosted on your name, not ours.",
+    support: "A celebration guests remember.",
     ctaStart: "Create an invitation",
     ctaDemo: "Peek a live invite",
     ctaHow: "See how it works",
     priceLine: "Free to start · Pay per event · No per-guest · No ads",
     mockUrl: "yourevent.com",
+    demoUrl: "katia.com",
+    filmstripTitle: "See a real Ownvite invite",
+    filmstripCaptions: ["Envelope", "The night", "RSVP"],
     stillsTitle: "Looks guests actually open.",
-    domainTitle: "Hosted on your name, not ours.",
+    domainTitle: "Guests arrive at you.",
     domainBody:
       "Guests open your domain. RSVPs, updates, and memories stay under your brand — not a disposable link.",
-    domainLink: "Connect your domain",
-    domainUrl: "mayraandhugo.com",
+    domainLink: "See how your domain looks",
+    domainUrl: "katia.com",
     craftTitle: "Designed like print. Delivered like the web.",
     craftBody:
       "Typography, paper texture, and layout that feel intentional — then open instantly on any phone.",
@@ -900,23 +909,27 @@ const es: Dictionary = {
     chipWedding: "Boda",
     chipFiesta: "Fiesta",
     chipBirthday: "Cumpleaños",
+    domainChip: "katia.com",
+    featuredHonoree: "Katia Gonzalez",
   },
   landing: {
     brand: "Ownvite",
-    headline: "Una celebración que da gusto abrir.",
-    support:
-      "Invitaciones de papelería en cream, que viven en la dirección que ya es tuya.",
+    headline: "En tu nombre, no en el nuestro.",
+    support: "Una celebración que se recuerda.",
     ctaStart: "Crear una invitación",
     ctaDemo: "Ver una invitación en vivo",
     ctaHow: "Cómo funciona",
     priceLine: "Gratis para empezar · Pagas por evento · Sin cobro por invitado · Sin anuncios",
     mockUrl: "yourevent.com",
+    demoUrl: "katia.com",
+    filmstripTitle: "Mira una invitación Ownvite de verdad",
+    filmstripCaptions: ["El sobre", "La noche", "RSVP"],
     stillsTitle: "Looks que los invitados sí abren.",
-    domainTitle: "En tu nombre, no en el nuestro.",
+    domainTitle: "Llegan a tu nombre.",
     domainBody:
       "Tus invitados abren tu dominio. Confirmaciones, novedades y recuerdos quedan bajo tu marca — no en un enlace genérico.",
-    domainLink: "Conecta tu dominio",
-    domainUrl: "mayraandhugo.com",
+    domainLink: "Mira cómo se ve tu dominio",
+    domainUrl: "katia.com",
     craftTitle: "Diseñada como impresión. Entregada como la web.",
     craftBody:
       "Tipografía, textura de papel y composición intencional — y se abre al instante en cualquier teléfono.",
