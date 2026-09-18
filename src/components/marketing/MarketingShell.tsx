@@ -47,16 +47,19 @@ export default function MarketingShell({
       />
 
       <header className="relative z-20 border-b border-[var(--landing-line)]">
-        <div
-          className={`mx-auto flex ${maxWidthClass} items-center justify-between gap-4 px-5 py-5 sm:px-8`}
-        >
-          <BrandLogo
-            href={localePath(locale, "/")}
-            tone="paper"
-            height={28}
-          />
-          <MarketingNav locale={locale} path={path} extra={headerExtra} />
-        </div>
+        <MarketingNav
+          locale={locale}
+          path={path}
+          extra={headerExtra}
+          maxWidthClass={maxWidthClass}
+          brand={
+            <BrandLogo
+              href={localePath(locale, "/")}
+              tone="paper"
+              height={28}
+            />
+          }
+        />
       </header>
 
       <div className="relative z-10">{children}</div>
