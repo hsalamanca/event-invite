@@ -1,7 +1,7 @@
 import AuthShell from "@/components/auth/AuthShell";
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 
-export const metadata = { title: "Forgot password · Ownvite" };
+export const metadata = { title: "Forgot password" };
 
 export default function ForgotPasswordPage() {
   return (

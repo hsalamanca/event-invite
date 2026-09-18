@@ -19,7 +19,7 @@ export default function AuthShell({
 }) {
   return (
     <main
-      className="auth-paper relative min-h-screen overflow-hidden"
+      className="auth-paper paper-surface relative min-h-screen overflow-hidden"
       style={paperThemeVars}
     >
       <div
@@ -38,7 +38,7 @@ export default function AuthShell({
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
         <div className="mb-10">
-          <BrandLogo tone="ink" height={32} />
+          <BrandLogo tone="paper" height={32} />
         </div>
         <h1
           style={{

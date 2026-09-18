@@ -35,7 +35,7 @@ export default function PaperAppShell({
 }: PaperAppShellProps) {
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="paper-surface relative min-h-screen overflow-x-hidden"
       style={paperThemeVars}
     >
       <div
@@ -47,7 +47,7 @@ export default function PaperAppShell({
         <div
           className={`mx-auto flex ${maxWidthClass} items-center justify-between gap-4 px-5 py-5 sm:px-8`}
         >
-          <BrandLogo href="/" tone="ink" height={28} />
+          <BrandLogo href="/" tone="paper" height={28} />
           <div className="flex flex-wrap items-center justify-end gap-3 text-sm">
             <LanguageSwitcher locale={locale} path={path} variant="paper" />
             {headerRight}

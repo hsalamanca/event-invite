@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { safeCallbackUrl } from "@/lib/safe-callback-url";
 
 export default function RegisterForm({
   googleEnabled = false,
@@ -12,6 +13,11 @@ export default function RegisterForm({
   googleEnabled?: boolean;
 }) {
   const router = useRouter();
+  const search = useSearchParams();
+  const callbackUrl = safeCallbackUrl(
+    search.get("callbackUrl"),
+    "/events/new?verify=1",
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,10 +45,10 @@ export default function RegisterForm({
         redirect: false,
       });
       if (login?.error) {
-        router.push("/login");
+        router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
         return;
       }
-      router.push("/events/new?verify=1");
+      router.push(callbackUrl);
       router.refresh();
     } catch {
       setError("Could not create account. Try again.");
@@ -56,7 +62,7 @@ export default function RegisterForm({
       {googleEnabled ? (
         <>
           <GoogleSignInButton
-            callbackUrl="/events/new"
+            callbackUrl={callbackUrl}
             label="Sign up with Google"
           />
           <p className="text-center text-xs uppercase tracking-[0.18em] text-[var(--landing-muted)]">
@@ -117,7 +123,10 @@ export default function RegisterForm({
         </p>
         <p className="text-center text-sm text-[var(--landing-muted)]">
           Already have an account?{" "}
-          <Link href="/login" className="text-[var(--landing-cedar)] underline">
+          <Link
+            href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            className="text-[var(--landing-cedar)] underline"
+          >
             Sign in
           </Link>
         </p>

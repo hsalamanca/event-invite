@@ -13,7 +13,7 @@ import {
 import { findUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Agency · Ownvite" };
+export const metadata = { title: "Agency" };
 
 export default async function AgencyPage() {
   const session = await auth();
@@ -53,7 +53,7 @@ export default async function AgencyPage() {
     }));
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
+    <main className="paper-surface relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
@@ -61,7 +61,7 @@ export default async function AgencyPage() {
       />
       <header className="relative z-20 border-b border-[var(--landing-line)]">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-          <BrandLogo tone="ink" height={28} />
+          <BrandLogo tone="paper" height={28} />
           <Link
             href="/dashboard"
             className="text-sm"

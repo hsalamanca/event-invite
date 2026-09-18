@@ -68,6 +68,25 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/templates",
+        destination: "/marketplace",
+        permanent: false,
+      },
+      {
+        source: "/gallery",
+        destination: "/marketplace",
+        permanent: false,
+      },
+      {
+        source: "/themes",
+        destination: "/marketplace",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

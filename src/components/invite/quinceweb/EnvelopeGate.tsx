@@ -32,7 +32,7 @@ export default function EnvelopeGate({
     setOpen(true);
   }
 
-  const useKxzSeal = monogram === "KXZ";
+  const useDemoSeal = monogram === "KG" || monogram === "KXZ";
 
   return (
     <div className={`qw-envelope${open ? " is-open" : ""}`} aria-hidden={open}>
@@ -46,19 +46,15 @@ export default function EnvelopeGate({
             aria-label={hint}
           >
             <span className="qw-seal">
-              {useKxzSeal ? (
-                <picture>
-                  <source
-                    type="image/svg+xml"
-                    srcSet={QUINCE_PRINCESA_ASSETS.sealMonogramSvg}
-                  />
-                  <img
-                    src={QUINCE_PRINCESA_ASSETS.sealMonogramPng}
-                    alt=""
-                    width={88}
-                    height={88}
-                  />
-                </picture>
+              {useDemoSeal ? (
+                // SVG only — PNG still has the old KXZ raster.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={QUINCE_PRINCESA_ASSETS.sealMonogramSvg}
+                  alt=""
+                  width={88}
+                  height={88}
+                />
               ) : (
                 <span className="qw-seal-custom">
                   <picture>

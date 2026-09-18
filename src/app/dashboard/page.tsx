@@ -22,7 +22,7 @@ import {
 import { findUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dashboard · Ownvite" };
+export const metadata = { title: "Dashboard" };
 
 async function withStats(events: EventRecord[]) {
   return Promise.all(
@@ -55,7 +55,9 @@ export default async function DashboardPage() {
   }
 
   const locale = await getRequestLocale();
-  const t = getDictionary(locale).dashboard;
+  const dict = getDictionary(locale);
+  const t = dict.dashboard;
+  const nav = dict.nav;
   const owned = await listEventsByOwner(session.user.id);
   const coHosted = (await listEventsByCoHostEmail(session.user.email ?? "")).filter(
     (e) => !owned.some((o) => o.id === e.id),
@@ -67,7 +69,7 @@ export default async function DashboardPage() {
   const agencyActive = user ? isAgencyActive(user) : false;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
+    <main className="paper-surface relative min-h-screen overflow-x-hidden" style={paperThemeVars}>
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
@@ -75,7 +77,7 @@ export default async function DashboardPage() {
       />
       <header className="relative z-20 border-b border-[var(--landing-line)]">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-          <BrandLogo tone="ink" height={28} />
+          <BrandLogo tone="paper" height={28} />
           <div className="flex items-center gap-3 text-sm">
             <LanguageSwitcher locale={locale} path="/dashboard" variant="paper" />
             {isAdmin ? (
@@ -160,7 +162,7 @@ export default async function DashboardPage() {
                 color: "var(--landing-ink)",
               }}
             >
-              Marketplace
+              {nav.templates}
             </Link>
             <Link
               href="/agency"

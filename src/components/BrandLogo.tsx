@@ -4,7 +4,7 @@ type BrandLogoProps = {
   href?: string;
   className?: string;
   /** Text color for the wordmark (spark stays champagne gold). */
-  tone?: "ink" | "ivory" | "champagne";
+  tone?: "ink" | "ivory" | "champagne" | "paper";
   height?: number;
 };
 
@@ -12,6 +12,7 @@ const TONE_CLASS: Record<NonNullable<BrandLogoProps["tone"]>, string> = {
   ink: "text-[var(--ink)]",
   ivory: "text-[var(--ivory)]",
   champagne: "text-[var(--champagne)]",
+  paper: "text-[var(--landing-ink,#1A1714)]",
 };
 
 function LogoMark({

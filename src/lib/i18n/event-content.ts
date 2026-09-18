@@ -78,9 +78,10 @@ const HEADLINE_ES: Record<string, string> = {
   "50th Birthday Party": "Fiesta de 50 cumpleaños",
   "A Night to Celebrate Fifty Years": "Una noche para celebrar cincuenta años",
   Isabella: "Isabella",
-  "{First Last}": "Katia Xiomara Zelaya",
-  "{Nombre}": "Katia Xiomara Zelaya",
-  "Katia Xiomara Zelaya": "Katia Xiomara Zelaya",
+  "{First Last}": "Katia Gonzalez",
+  "{Nombre}": "Katia Gonzalez",
+  "Katia Xiomara Zelaya": "Katia Gonzalez",
+  "Katia Gonzalez": "Katia Gonzalez",
 };
 
 /** Common / known host taglines (EN → ES), including light HTML. */

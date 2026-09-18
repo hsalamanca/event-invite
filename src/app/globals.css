@@ -148,3 +148,67 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Marketing home/gallery: never flash navy body chrome. */
+html:has(.paper-surface),
+html:has(.paper-surface) body {
+  background: #fbf6f2;
+  color: #1a1714;
+}
+
+@keyframes landing-petal {
+  0% {
+    transform: translate3d(0, 12px, 0) rotate(0deg);
+    opacity: 0.12;
+  }
+  45% {
+    transform: translate3d(10px, -18px, 0) rotate(14deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(-8px, -42px, 0) rotate(-10deg);
+    opacity: 0.08;
+  }
+}
+
+@keyframes landing-spark {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.65) rotate(0deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.12) rotate(18deg);
+  }
+}
+
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.landing-petal {
+  animation: landing-petal 9s ease-in-out infinite;
+}
+
+.landing-spark {
+  animation: landing-spark 3.6s ease-in-out infinite;
+}
+
+.landing-float {
+  animation: landing-float 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-petal,
+  .landing-spark,
+  .landing-float {
+    animation: none !important;
+  }
+}

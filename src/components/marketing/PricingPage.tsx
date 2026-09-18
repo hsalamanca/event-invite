@@ -21,7 +21,7 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
       path="/pricing"
       headerExtra={
         <Link
-          href={localePath(locale, "/e/h-birthday-2026")}
+          href={localePath(locale, "/preview/quince-princesa")}
           className="hidden text-sm transition hover:text-[var(--landing-ink)] sm:inline"
           style={{ color: "var(--landing-muted)" }}
         >
@@ -134,7 +134,7 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
                   style={
                     i === 1
                       ? {
-                          background: "var(--landing-cedar)",
+                          background: "var(--landing-cta)",
                           color: "#fff",
                         }
                       : {

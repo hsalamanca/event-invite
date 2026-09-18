@@ -37,7 +37,7 @@ export default function MarketingShell({
 
   return (
     <main
-      className="relative min-h-screen overflow-x-hidden"
+      className="paper-surface relative min-h-screen overflow-x-hidden"
       style={paperThemeVars}
     >
       <div
@@ -52,7 +52,7 @@ export default function MarketingShell({
         >
           <BrandLogo
             href={localePath(locale, "/")}
-            tone="ink"
+            tone="paper"
             height={28}
           />
           <nav
@@ -65,6 +65,12 @@ export default function MarketingShell({
               variant="paper"
             />
             {headerExtra}
+            <Link
+              href={localePath(locale, "/marketplace")}
+              className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
+            >
+              {nav.templates}
+            </Link>
             <Link
               href={localePath(locale, "/domains")}
               className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
@@ -85,8 +91,8 @@ export default function MarketingShell({
             </Link>
             <Link
               href="/register"
-              className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-              style={{ background: "var(--landing-cedar)" }}
+            className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
+            style={{ background: "var(--landing-cta)" }}
             >
               {nav.signUp}
             </Link>
@@ -104,10 +110,16 @@ export default function MarketingShell({
           >
             <BrandLogo
               href={localePath(locale, "/")}
-              tone="ink"
+              tone="paper"
               height={22}
             />
             <div className="flex flex-wrap items-center justify-center gap-5">
+              <Link
+                href={localePath(locale, "/marketplace")}
+                className="transition hover:text-[var(--landing-ink)]"
+              >
+                {nav.templates}
+              </Link>
               <Link
                 href={localePath(locale, "/domains")}
                 className="transition hover:text-[var(--landing-ink)]"

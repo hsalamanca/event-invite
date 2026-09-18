@@ -3,7 +3,7 @@ import AuthShell from "@/components/auth/AuthShell";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Set new password · Ownvite" };
+export const metadata = { title: "Set new password" };
 
 function Inner({ token }: { token: string }) {
   return <ResetPasswordForm token={token} />;
