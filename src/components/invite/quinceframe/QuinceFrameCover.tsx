@@ -3,8 +3,8 @@ import EventScript from "./EventScript";
 import FloralCorner from "./FloralCorner";
 import FooterSplit from "./FooterSplit";
 import GoldHexFrame from "./GoldHexFrame";
-import GownIllustration from "./GownIllustration";
 import HonoreeName from "./HonoreeName";
+import HonoreePortrait from "./HonoreePortrait";
 import HostLine from "./HostLine";
 import LunchBlock from "./LunchBlock";
 import MassLine from "./MassLine";
@@ -22,6 +22,8 @@ export default function QuinceFrameCover({
   inviteUrl,
   qrUrl,
   denseFlorals = false,
+  honoreePhotoUrl,
+  honoreePhotoAlt,
 }: {
   copy: QuinceFrameCopy;
   printMode?: boolean;
@@ -31,6 +33,8 @@ export default function QuinceFrameCover({
   qrUrl?: string;
   /** Optional TR/BL florals. Default is Hugo/art-dir TL+BR only. */
   denseFlorals?: boolean;
+  honoreePhotoUrl?: string;
+  honoreePhotoAlt?: string;
 }) {
   return (
     <div className="quinceframe-card">
@@ -52,7 +56,13 @@ export default function QuinceFrameCover({
           lunch={
             <LunchBlock label={copy.lunchLabel} detail={copy.lunchDetail} />
           }
-          gown={<GownIllustration />}
+          gown={
+            <HonoreePortrait
+              photoUrl={honoreePhotoUrl}
+              honoreeName={copy.honoreeName}
+              photoAlt={honoreePhotoAlt}
+            />
+          }
           rsvp={
             <RsvpBlock
               header={copy.rsvpHeader}

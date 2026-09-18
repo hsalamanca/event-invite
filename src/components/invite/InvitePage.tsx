@@ -622,6 +622,8 @@ export default function InvitePage({
         venue={event.venue}
         address={event.address}
         heroImage={event.heroImage}
+        honoreePhotoUrl={event.honoreePhotoUrl}
+        honoreePhotoAlt={ui.honoreePhotoAlt}
         heroVideoUrl={event.heroVideoUrl}
         motionKit={event.motionKit}
         invitesYou={ui.invitesYou}

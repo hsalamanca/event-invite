@@ -11,9 +11,16 @@ type ImageUploadProps = {
     hint?: string;
     upload?: string;
     uploading?: string;
+    replace?: string;
+    remove?: string;
     orUrl?: string;
     urlPlaceholder?: string;
+    invalidUrl?: string;
   };
+  allowClear?: boolean;
+  emptyPreviewSrc?: string;
+  previewVariant?: "wide" | "oval";
+  acceptUrl?: (url: string) => string | undefined;
 };
 
 export default function ImageUpload({
@@ -21,6 +28,10 @@ export default function ImageUpload({
   value,
   onChange,
   labels = {},
+  allowClear = false,
+  emptyPreviewSrc,
+  previewVariant = "wide",
+  acceptUrl,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -32,8 +43,11 @@ export default function ImageUpload({
     hint: labels.hint ?? "Upload a photo from your device (JPG, PNG, WEBP · max 8MB).",
     upload: labels.upload ?? "Upload image",
     uploading: labels.uploading ?? "Uploading…",
+    replace: labels.replace ?? "Replace",
+    remove: labels.remove ?? "Remove",
     orUrl: labels.orUrl ?? "Or paste an image URL",
     urlPlaceholder: labels.urlPlaceholder ?? "https://…",
+    invalidUrl: labels.invalidUrl ?? "Use an https or /api/media image URL.",
   };
 
   async function onFile(file: File | null) {
@@ -56,17 +70,39 @@ export default function ImageUpload({
     }
   }
 
+  function onUrlChange(next: string) {
+    if (!next) {
+      setError(null);
+      onChange("");
+      return;
+    }
+    if (acceptUrl) {
+      const safe = acceptUrl(next);
+      if (!safe) {
+        setError(t.invalidUrl);
+        return;
+      }
+      setError(null);
+      onChange(safe);
+      return;
+    }
+    onChange(next);
+  }
+
+  const previewSrc = value || emptyPreviewSrc;
+  const cta = uploading ? t.uploading : value ? t.replace : t.upload;
+
   return (
-    <div className="image-upload">
+    <div className={`image-upload${previewVariant === "oval" ? " image-upload--oval" : ""}`}>
       <div className="head">
         <span className="title">{t.title}</span>
         <p className="hint">{t.hint}</p>
       </div>
 
-      {value ? (
-        <div className="preview">
+      {previewSrc ? (
+        <div className={`preview${value ? "" : " preview--empty"}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="" />
+          <img src={previewSrc} alt="" />
         </div>
       ) : null}
 
@@ -77,7 +113,7 @@ export default function ImageUpload({
           disabled={uploading}
           onClick={() => inputRef.current?.click()}
         >
-          {uploading ? t.uploading : t.upload}
+          {cta}
         </button>
         <input
           ref={inputRef}
@@ -86,6 +122,18 @@ export default function ImageUpload({
           hidden
           onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
         />
+        {allowClear && value ? (
+          <button
+            type="button"
+            className="linkish"
+            onClick={() => {
+              setError(null);
+              onChange("");
+            }}
+          >
+            {t.remove}
+          </button>
+        ) : null}
         <button
           type="button"
           className="linkish"
@@ -100,7 +148,7 @@ export default function ImageUpload({
           className="url-input"
           value={value}
           placeholder={t.urlPlaceholder}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onUrlChange(e.target.value)}
         />
       )}
 
@@ -129,10 +177,21 @@ export default function ImageUpload({
           aspect-ratio: 16 / 10;
           background: var(--host-bg);
         }
+        .image-upload--oval .preview {
+          width: min(100%, 11rem);
+          aspect-ratio: 3 / 4;
+          border-radius: 50%;
+          border-color: #c9a227;
+          justify-self: start;
+        }
+        .preview--empty {
+          opacity: 0.72;
+        }
         .preview img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          object-position: center top;
           display: block;
         }
         .actions {
@@ -142,7 +201,7 @@ export default function ImageUpload({
           gap: 0.65rem;
         }
         .upload-btn {
-          min-height: 42px;
+          min-height: 44px;
           padding: 0 1rem;
           border: none;
           border-radius: 8px;
@@ -163,9 +222,10 @@ export default function ImageUpload({
           text-underline-offset: 3px;
           cursor: pointer;
           font-size: 0.85rem;
+          min-height: 44px;
         }
         .url-input {
-          min-height: 42px;
+          min-height: 44px;
           border-radius: 8px;
           border: 1px solid color-mix(in srgb, var(--host-muted) 35%, transparent);
           background: var(--host-bg);

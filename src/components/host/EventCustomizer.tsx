@@ -6,6 +6,8 @@ import DomainConnect from "@/components/host/DomainConnect";
 import GalleryEditor from "@/components/host/GalleryEditor";
 import ImageUpload from "@/components/host/ImageUpload";
 import InvitePage from "@/components/invite/InvitePage";
+import { QUINCE_TIARA_ASSETS } from "@/components/invite/quinceframe/assets";
+import { safeInviteImageUrl } from "@/lib/safe-image-url";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import {
@@ -66,6 +68,7 @@ type Draft = {
   aboutEs: string;
   parkingEs: string;
   heroImage: string;
+  honoreePhotoUrl: string;
   balloonDigits: string;
   customDomain: string;
   visibility: EventRecord["visibility"];
@@ -178,6 +181,7 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     aboutEs: event.aboutEs || "",
     parkingEs: event.parkingEs || "",
     heroImage: event.heroImage,
+    honoreePhotoUrl: event.honoreePhotoUrl ?? "",
     balloonDigits: (() => {
       const digits = String(event.balloonDigits ?? "")
         .replace(/\D/g, "")
@@ -374,6 +378,7 @@ function toPreviewEvent(
     about: localized.about,
     aboutEs: localized.aboutEs,
     heroImage: draft.heroImage,
+    honoreePhotoUrl: draft.honoreePhotoUrl.trim(),
     balloonDigits: (() => {
       const digits = draft.balloonDigits.replace(/\D/g, "").slice(0, 2);
       return digits || null;
@@ -509,6 +514,7 @@ export default function EventCustomizer({
       about: localized.about,
       aboutEs: localized.aboutEs,
       heroImage: draft.heroImage,
+      honoreePhotoUrl: draft.honoreePhotoUrl.trim(),
       balloonDigits: (() => {
         const digits = draft.balloonDigits.replace(/\D/g, "").slice(0, 2);
         return digits || null;
@@ -772,6 +778,27 @@ export default function EventCustomizer({
               onChange={(url) => updateField("heroImage", url)}
               labels={uploadLabels}
             />
+            {resolveInviteLayout(draft.templateId) === "quinceframe" ? (
+              <ImageUpload
+                slug={event.slug}
+                value={draft.honoreePhotoUrl}
+                onChange={(url) => updateField("honoreePhotoUrl", url)}
+                allowClear
+                emptyPreviewSrc={QUINCE_TIARA_ASSETS.gown.webp}
+                previewVariant="oval"
+                acceptUrl={safeInviteImageUrl}
+                labels={{
+                  title: t.honoreePhoto,
+                  hint: t.honoreePhotoHint,
+                  upload: t.honoreePhotoAdd,
+                  uploading: uploadLabels.uploading,
+                  replace: t.honoreePhotoReplace,
+                  remove: t.honoreePhotoRemove,
+                  orUrl: uploadLabels.orUrl,
+                  urlPlaceholder: uploadLabels.urlPlaceholder,
+                }}
+              />
+            ) : null}
             <label>
               <span>Hero video URL (optional)</span>
               <input

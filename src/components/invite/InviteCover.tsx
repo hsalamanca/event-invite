@@ -23,6 +23,8 @@ type InviteCoverProps = {
   venue: string;
   address: string;
   heroImage: string;
+  honoreePhotoUrl?: string;
+  honoreePhotoAlt?: string;
   heroVideoUrl?: string | null;
   motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
   contactPhone?: string;
@@ -995,6 +997,8 @@ export default function InviteCover({
   venue,
   address,
   heroImage,
+  honoreePhotoUrl,
+  honoreePhotoAlt,
   heroVideoUrl,
   motionKit = "none",
   invitesYou,
@@ -1434,6 +1438,8 @@ export default function InviteCover({
               }
               inviteUrl={inviteUrl}
               qrUrl={qrUrl}
+              honoreePhotoUrl={honoreePhotoUrl}
+              honoreePhotoAlt={honoreePhotoAlt}
             />
           ) : isQuincebloom ? (
             <>

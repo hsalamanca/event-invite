@@ -54,6 +54,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     registryLabel: raw.registryLabel ?? null,
     templateId: raw.templateId ?? "evening",
     heroImage: remapBrokenHeroImage(raw.heroImage),
+    honoreePhotoUrl: raw.honoreePhotoUrl ?? "",
     heroVideoUrl:
       typeof raw.heroVideoUrl === "string" && raw.heroVideoUrl.trim()
         ? raw.heroVideoUrl.trim()

@@ -124,6 +124,11 @@ export type Dictionary = {
     rsvpEnabledHint: string;
     applyTemplate: string;
     applyTemplateHint: string;
+    honoreePhoto: string;
+    honoreePhotoHint: string;
+    honoreePhotoAdd: string;
+    honoreePhotoReplace: string;
+    honoreePhotoRemove: string;
   };
   dashboard: {
     eyebrow: string;
@@ -254,6 +259,7 @@ export type Dictionary = {
     quinceRsvpAt: string;
     quinceRsvpBy: string;
     quinceAtTime: string;
+    honoreePhotoAlt: string;
     fiftyCelebrate: string;
     collageInvite: string;
     date: string;
@@ -517,6 +523,12 @@ const en: Dictionary = {
     rsvpEnabledHint:
       "Turn off for announcement-only invites (no RSVP form). Guests can still leave a note.",
     applyTemplate: "Apply template look",
+    honoreePhoto: "Birthday girl’s photo",
+    honoreePhotoHint:
+      "Oval portrait on the stationery card. Empty keeps the gown illustration. JPG, PNG, WEBP · max 8MB.",
+    honoreePhotoAdd: "Add her photo",
+    honoreePhotoReplace: "Replace",
+    honoreePhotoRemove: "Remove",
     applyTemplateHint:
       "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
   },
@@ -661,6 +673,7 @@ const en: Dictionary = {
     quinceRsvpAt: "at",
     quinceRsvpBy: "by",
     quinceAtTime: "at",
+    honoreePhotoAlt: "Photo of {name}",
     fiftyCelebrate: "is celebrating fifty fabulous years",
     collageInvite: "birthday of",
     date: "Date",
@@ -935,6 +948,12 @@ const es: Dictionary = {
     rsvpEnabledHint:
       "Desactívalo para invitaciones solo informativas (sin formulario RSVP). Los invitados aún pueden dejar un mensaje.",
     applyTemplate: "Aplicar look de plantilla",
+    honoreePhoto: "Foto de la quinceañera",
+    honoreePhotoHint:
+      "Retrato ovalado en la tarjeta. Vacío deja el vestido ilustrado. JPG, PNG, WEBP · máx. 8MB.",
+    honoreePhotoAdd: "Agregar su foto",
+    honoreePhotoReplace: "Reemplazar",
+    honoreePhotoRemove: "Quitar",
     applyTemplateHint:
       "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",
   },
@@ -1082,6 +1101,7 @@ const es: Dictionary = {
     quinceRsvpAt: "al",
     quinceRsvpBy: "antes del",
     quinceAtTime: "a las",
+    honoreePhotoAlt: "Foto de {name}",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
     collageInvite: "cumpleaños de",
     date: "Fecha",

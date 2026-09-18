@@ -69,7 +69,7 @@ Do not use Inter / Roboto / system-ui as brand faces.
 
 Frame: thin gold irregular hex / geometric polygon — prefer SVG stroke (`svg/frame-gold-hex.svg`) for crisp scale; PNG available as raster fallback.
 
-Gown: absolute bottom-center, behind column text or between columns; width ~45–55% of card; never crop the skirt flare.
+Gown: absolute bottom-center, behind column text or between columns; width ~45–55% of card; never crop the skirt flare. When `honoreePhotoUrl` is set (https or `/api/media` only), `HonoreePortrait` replaces the gown with a gold oval (`object-fit: cover`, `center top`). Empty / error / loading keep the Ink gown. `heroImage` stays the catalog + paper-wash atmosphere — do not reuse it for the girl.
 
 ---
 
