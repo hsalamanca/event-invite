@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useId, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
@@ -11,25 +9,18 @@ type MarketingNavProps = {
   locale: Locale;
   path?: string;
   extra?: ReactNode;
+  brand: ReactNode;
+  maxWidthClass?: string;
 };
 
 export default function MarketingNav({
   locale,
   path = "/",
   extra,
+  brand,
+  maxWidthClass = "max-w-6xl",
 }: MarketingNavProps) {
   const nav = getDictionary(locale).nav;
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
 
   const links = [
     { href: localePath(locale, "/marketplace"), label: nav.templates },
@@ -37,122 +28,73 @@ export default function MarketingNav({
     { href: localePath(locale, "/pricing"), label: nav.pricing },
   ];
   const phoneLinks = [...links, { href: "/login", label: nav.signIn }];
-
-  const linkClass =
-    "transition hover:text-[var(--landing-rose-deep)]";
+  const linkClass = "transition hover:text-[var(--landing-rose-deep)]";
 
   return (
-    <>
-      <nav
-        className="flex items-center justify-end gap-2.5 text-sm sm:gap-5"
-        style={{ color: "var(--landing-ink)" }}
-        aria-label={locale === "es" ? "Principal" : "Primary"}
+    <div>
+      <div
+        className={`mx-auto flex ${maxWidthClass} items-center justify-between px-5 py-3 sm:px-8 sm:py-5`}
       >
-        <LanguageSwitcher locale={locale} path={path} variant="paper" />
-        {extra ? <span className="hidden sm:inline">{extra}</span> : null}
-        <div className="hidden items-center gap-5 sm:flex">
-          {links.map((item) => (
-            <Link key={item.href} href={item.href} className={linkClass}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
-        <Link href="/login" className={`hidden sm:inline ${linkClass}`}>
-          {nav.signIn}
-        </Link>
-        <Link
-          href="/register"
-          className="rounded-full px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-          style={{ background: "var(--landing-cta)" }}
+        {brand}
+        <nav
+          className="flex items-center justify-end gap-2.5 text-sm sm:gap-5"
+          style={{ color: "var(--landing-ink)" }}
+          aria-label={locale === "es" ? "Principal" : "Primary"}
         >
-          {nav.signUp}
-        </Link>
-        <button
-          type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full sm:hidden"
-          style={{
-            border: "1px solid var(--landing-champagne, #E8D5B5)",
-            background: "var(--landing-surface, #FFFCFA)",
-            color: "var(--landing-ink)",
-          }}
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label={
-            open
-              ? locale === "es"
-                ? "Cerrar menú"
-                : "Close menu"
-              : locale === "es"
-                ? "Abrir menú"
-                : "Open menu"
-          }
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span className="sr-only">
-            {open
-              ? locale === "es"
-                ? "Cerrar"
-                : "Close"
-              : locale === "es"
-                ? "Menú"
-                : "Menu"}
-          </span>
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-            {open ? (
-              <path
-                d="M4 4l10 10M14 4L4 14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                d="M3 5h12M3 9h12M3 13h12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-              />
-            )}
-          </svg>
-        </button>
-      </nav>
-      {open ? (
-        <div
-          id={panelId}
-          className="absolute inset-x-0 top-full z-30 border-b px-5 py-3 sm:hidden"
-          style={{
-            background: "rgba(255,252,250,0.98)",
-            borderColor: "var(--landing-line)",
-            boxShadow: "0 12px 24px rgba(58,42,48,0.08)",
-          }}
-        >
-          <ul className="flex flex-col">
-            {extra ? (
-              <li className="border-b py-1" style={{ borderColor: "var(--landing-line)" }}>
-                <div className="flex min-h-11 items-center">{extra}</div>
-              </li>
-            ) : null}
-            {phoneLinks.map((item) => (
-              <li
-                key={item.href}
-                className="border-b last:border-b-0"
-                style={{ borderColor: "var(--landing-line)" }}
-              >
-                <Link
-                  href={item.href}
-                  className="flex min-h-11 items-center text-sm font-medium"
-                  style={{ color: "var(--landing-ink)" }}
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              </li>
+          <LanguageSwitcher locale={locale} path={path} variant="paper" />
+          {extra ? <span className="hidden sm:inline">{extra}</span> : null}
+          <div className="hidden items-center gap-5 sm:flex">
+            {links.map((item) => (
+              <Link key={item.href} href={item.href} className={linkClass}>
+                {item.label}
+              </Link>
             ))}
-          </ul>
-        </div>
-      ) : null}
-    </>
+          </div>
+          <Link href="/login" className={`hidden sm:inline ${linkClass}`}>
+            {nav.signIn}
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-full px-3.5 py-2 font-medium text-white transition hover:opacity-95"
+            style={{ background: "var(--landing-cta)" }}
+          >
+            {nav.signUp}
+          </Link>
+        </nav>
+      </div>
+      <nav
+        className="border-t sm:hidden"
+        style={{
+          background: "rgba(255,252,250,0.96)",
+          borderColor: "var(--landing-line)",
+        }}
+        aria-label={locale === "es" ? "Secciones" : "Sections"}
+        data-marketing-phone-nav
+      >
+        <ul
+          className={`mx-auto flex ${maxWidthClass} min-h-11 items-stretch gap-1 overflow-x-auto px-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+        >
+          {extra ? (
+            <li
+              className="flex shrink-0 items-center border-r px-2"
+              style={{ borderColor: "var(--landing-line)" }}
+            >
+              {extra}
+            </li>
+          ) : null}
+          {phoneLinks.map((item) => (
+            <li key={item.href} className="flex shrink-0 items-stretch">
+              <Link
+                href={item.href}
+                className="flex min-h-11 items-center whitespace-nowrap px-3 text-sm font-medium"
+                style={{ color: "var(--landing-ink)" }}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 }
