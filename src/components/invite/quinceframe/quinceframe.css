@@ -282,13 +282,16 @@
 
 .quinceframe-footer {
   position: relative;
+  z-index: 5;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
-  gap: 0.4rem 1.4rem;
+  gap: 0.4rem 1.5rem;
   margin-top: auto;
   min-height: 38%;
   padding-top: 0.35rem;
+  padding-left: 1.15rem;
+  padding-right: 1.15rem;
 }
 
 .quinceframe-footer-gown {
@@ -382,9 +385,8 @@
 .quinceframe-lunch,
 .quinceframe-rsvp {
   position: relative;
-  z-index: 4;
+  z-index: 5;
   padding-top: 0.2rem;
-  text-shadow: 0 0 8px #fffcfa, 0 0 12px #fffcfa;
 }
 
 .quinceframe-lunch {
