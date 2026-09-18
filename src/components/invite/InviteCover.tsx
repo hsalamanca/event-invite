@@ -1114,6 +1114,7 @@ export default function InviteCover({
       data-motion={motionKit && motionKit !== "none" ? motionKit : undefined}
       aria-label="Invitation"
     >
+      {!isQuinceframe ? (
       <div
         className="invite-cover-atmosphere"
         style={
@@ -1143,6 +1144,7 @@ export default function InviteCover({
           <div className="invite-motion-sparkle" aria-hidden />
         ) : null}
       </div>
+      ) : null}
 
       {isComic || isSuperhero ? <div className="comic-halftone" aria-hidden /> : null}
       {isSuperburst ? <div className="superburst-rays" aria-hidden /> : null}

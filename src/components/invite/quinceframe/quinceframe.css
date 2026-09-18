@@ -10,30 +10,28 @@
   background: var(--qf-paper);
 }
 
-.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-img {
-  opacity: 0.12;
-  filter: blur(18px) saturate(0.65);
-}
-
+/* Atmosphere hero SVG is an opaque #FFFCFA rect — hide it so florals stay true-alpha. */
+.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere,
+.invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-img,
 .invite-cover[data-layout="quinceframe"] .invite-cover-atmosphere-veil {
-  background:
-    radial-gradient(circle at 16% 10%, color-mix(in srgb, var(--qf-pink) 14%, transparent), transparent 38%),
-    radial-gradient(circle at 86% 88%, color-mix(in srgb, var(--qf-gold) 12%, transparent), transparent 36%),
-    linear-gradient(180deg, #fff7f4 0%, var(--qf-paper) 46%, #f7efe8 100%);
+  display: none !important;
 }
 
 .invite-cover[data-layout="quinceframe"] .invite-cover-stage {
   width: min(100%, 30rem);
 }
 
+/* Beat InvitePage :global(.invite-card) cream/overflow so only .quinceframe-card paints paper. */
 .invite-cover[data-layout="quinceframe"] .invite-card {
   width: min(100%, 28.5rem);
   margin: 0 auto;
   padding: 0;
-  overflow: visible;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   color: var(--qf-ink);
 }
 
@@ -72,46 +70,62 @@
   object-fit: contain;
   object-position: center;
   pointer-events: none;
+  background: transparent;
+}
+
+.quinceframe-floral,
+.quinceframe-floral picture,
+.quinceframe-floral img,
+.quinceframe-floral .quinceframe-asset,
+.quinceframe-floral .quinceframe-floral-svg {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none;
+  mix-blend-mode: normal;
+  filter: none;
+  box-shadow: none;
 }
 
 .quinceframe-floral {
+  display: block;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .quinceframe-floral--tl {
-  top: -4%;
-  left: -8%;
-  width: 78%;
-  height: 34%;
+  top: -1%;
+  left: -2%;
+  width: 42%;
+  height: 22%;
 }
 
 .quinceframe-floral--tr {
-  top: -3%;
-  right: -10%;
-  width: 48%;
-  height: 26%;
+  top: -1%;
+  right: -2%;
+  width: 28%;
+  height: 18%;
 }
 
 .quinceframe-floral--bl {
-  left: -10%;
-  bottom: -4%;
-  width: 50%;
-  height: 28%;
+  left: -2%;
+  bottom: -1%;
+  width: 28%;
+  height: 18%;
 }
 
 .quinceframe-floral--br {
-  right: -8%;
-  bottom: -6%;
-  width: 70%;
-  height: 34%;
+  right: -1%;
+  bottom: -2%;
+  width: 38%;
+  height: 24%;
 }
 
 .quinceframe-floral--tl .quinceframe-asset,
 .quinceframe-floral--tl .quinceframe-floral-svg {
-  width: 130%;
+  width: 100%;
+  height: 100%;
   max-width: none;
   object-fit: contain;
   object-position: top left;
@@ -119,16 +133,18 @@
 
 .quinceframe-floral--tr .quinceframe-asset,
 .quinceframe-floral--tr .quinceframe-floral-svg {
-  width: 150%;
+  width: 100%;
+  height: 100%;
   max-width: none;
-  margin-left: -40%;
+  margin-left: 0;
   object-fit: contain;
   object-position: top right;
 }
 
 .quinceframe-floral--bl .quinceframe-asset,
 .quinceframe-floral--bl .quinceframe-floral-svg {
-  width: 150%;
+  width: 100%;
+  height: 100%;
   max-width: none;
   object-fit: contain;
   object-position: bottom left;
@@ -136,9 +152,10 @@
 
 .quinceframe-floral--br .quinceframe-asset,
 .quinceframe-floral--br .quinceframe-floral-svg {
-  width: 130%;
+  width: 100%;
+  height: 100%;
   max-width: none;
-  margin-left: -22%;
+  margin-left: 0;
   object-fit: contain;
   object-position: bottom right;
 }

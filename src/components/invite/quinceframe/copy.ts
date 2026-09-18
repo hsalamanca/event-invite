@@ -104,8 +104,23 @@ function joinDetail(...parts: Array<string | undefined>): string {
     .join(", ");
 }
 
+const DEMO_HONOREE = "Katia Xiomara Zelaya";
+const STOCK_HONOREE = new Set(["{First Last}", "{Nombre}", "{First}", "{Last}"]);
+const TOKEN_RE = /\{[^{}]+\}/g;
+
+/** Guest preview must never show raw `{First Last}` (or any `{…}`) tokens. */
+export function stripTemplateTokens(value: string): string {
+  return value.replace(TOKEN_RE, "").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function resolveHonoreeName(raw: string): string {
+  const trimmed = raw.trim();
+  if (STOCK_HONOREE.has(trimmed)) return DEMO_HONOREE;
+  return stripTemplateTokens(trimmed);
+}
+
 function lunchFromAbout(about: string): string {
-  const plain = stripAboutHtml(about).replace(/\s+/g, " ").trim();
+  const plain = stripTemplateTokens(stripAboutHtml(about).replace(/\s+/g, " "));
   if (!plain) return "";
   const sentence = plain.split(/(?<=[.!?])\s+/)[0] ?? plain;
   return sentence.length > 96 ? `${sentence.slice(0, 93).trim()}…` : sentence;
@@ -126,9 +141,9 @@ function isRelationTagline(tagline: string, prefix: string): boolean {
 export function resolveQuinceFrameCopy(
   input: QuinceFrameCopyInput,
 ): QuinceFrameCopy {
-  const parents = input.hostName.trim();
-  const honoreeName = (input.headline || input.title).trim();
-  const tagline = stripAboutHtml(input.tagline).trim();
+  const parents = stripTemplateTokens(input.hostName);
+  const honoreeName = resolveHonoreeName(input.headline || input.title);
+  const tagline = stripTemplateTokens(stripAboutHtml(input.tagline));
 
   const hostLine = parents
     ? joinLines(parents, input.parentsInvite)
@@ -171,16 +186,16 @@ export function resolveQuinceFrameCopy(
   );
 
   return {
-    hostLine,
-    eventScript: input.eventScript,
-    relationLine,
+    hostLine: stripTemplateTokens(hostLine),
+    eventScript: stripTemplateTokens(input.eventScript),
+    relationLine: stripTemplateTokens(relationLine),
     honoreeName,
-    dateLine,
-    massLabel: input.massAt,
-    massDetail,
-    lunchLabel: input.lunchAt,
-    lunchDetail,
-    rsvpHeader: input.rsvpTo,
-    rsvpDetail,
+    dateLine: stripTemplateTokens(dateLine),
+    massLabel: stripTemplateTokens(input.massAt),
+    massDetail: stripTemplateTokens(massDetail),
+    lunchLabel: stripTemplateTokens(input.lunchAt),
+    lunchDetail: stripTemplateTokens(lunchDetail),
+    rsvpHeader: stripTemplateTokens(input.rsvpTo),
+    rsvpDetail: stripTemplateTokens(rsvpDetail),
   };
 }

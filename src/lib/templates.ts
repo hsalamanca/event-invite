@@ -1194,8 +1194,8 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: quinceTiara,
     heroImage: "/templates/quince-tiara-hero.svg",
-    headline: "{First Last}",
-    headlineEs: "{Nombre}",
+    headline: "Katia Xiomara Zelaya",
+    headlineEs: "Katia Xiomara Zelaya",
     tagline: "of their daughter",
     taglineEs: "de su hija",
   },
@@ -1258,8 +1258,15 @@ export function resolveLocalizedInviteCopy(
   locale: "en" | "es",
 ): { headline: string; tagline: string; about: string } {
   const tpl = getTemplate(event.templateId || "evening");
+  const quinceTiaraStockHeadlines = new Set([
+    "{First Last}",
+    "{Nombre}",
+    "Katia Xiomara Zelaya",
+  ]);
   const headlineIsStock =
-    event.headline === tpl.headline || event.headline === tpl.headlineEs;
+    event.headline === tpl.headline ||
+    event.headline === tpl.headlineEs ||
+    (tpl.id === "quince-tiara" && quinceTiaraStockHeadlines.has(event.headline));
   const taglineIsStock =
     event.tagline === tpl.tagline || event.tagline === tpl.taglineEs;
   const aboutRaw = event.about ?? "";
