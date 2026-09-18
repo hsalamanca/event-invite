@@ -1,12 +1,14 @@
 import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, managerDeniedStatus } from "@/lib/access";
 import {
   adminDeleteEvent,
   deleteEvent,
   getEventBySlug,
   updateEvent,
 } from "@/lib/events";
+import { toPublicEvent } from "@/lib/public-event";
+import { safeHttpsUrl } from "@/lib/safe-https-url";
 import {
   eventIsPro,
   canUseCheckIn,
@@ -21,13 +23,41 @@ export const runtime = "nodejs";
 
 type Params = { params: Promise<{ slug: string }> };
 
+function normalizeGiftUrl(raw: unknown): string | null {
+  if (raw == null) return null;
+  const trimmed = String(raw).trim();
+  return trimmed ? (safeHttpsUrl(trimmed) ?? null) : null;
+}
+
+function validateHttpsGiftUrl(
+  data: Partial<EventRecord>,
+  field: "registryUrl" | "cashFundUrl",
+): string | null {
+  if (!(field in data)) return null;
+  const raw = data[field];
+  if (raw == null || String(raw).trim() === "") return null;
+  if (!safeHttpsUrl(String(raw))) {
+    return `${field} must be an https URL`;
+  }
+  return null;
+}
+
 export async function GET(_request: Request, { params }: Params) {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   if (!event) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
-  return NextResponse.json({ event });
+  const access = await canManageEvent(event);
+  if (access.allowed) {
+    return NextResponse.json({
+      event: { ...event, invitePasswordHash: null },
+    });
+  }
+  if (!event.published) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+  return NextResponse.json({ event: toPublicEvent(event) });
 }
 
 export async function PATCH(request: Request, { params }: Params) {
@@ -38,8 +68,12 @@ export async function PATCH(request: Request, { params }: Params) {
   }
 
   const access = await canManageEvent(existing);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Not allowed" },
+      { status: denied },
+    );
   }
 
   let body: unknown;
@@ -74,6 +108,18 @@ export async function PATCH(request: Request, { params }: Params) {
     partial.coHostEmails = data.coHostEmails
       .map((e) => String(e).trim().toLowerCase())
       .filter(Boolean);
+  }
+
+  const giftUrlError = validateHttpsGiftUrl(data, "registryUrl")
+    ?? validateHttpsGiftUrl(data, "cashFundUrl");
+  if (giftUrlError) {
+    return NextResponse.json({ error: giftUrlError }, { status: 400 });
+  }
+  if ("registryUrl" in data) {
+    partial.registryUrl = normalizeGiftUrl(data.registryUrl);
+  }
+  if ("cashFundUrl" in data) {
+    partial.cashFundUrl = normalizeGiftUrl(data.cashFundUrl);
   }
 
   if (typeof partial.templateId === "string" && partial.templateId) {

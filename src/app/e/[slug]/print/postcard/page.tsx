@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PrintPostcard from "@/components/invite/PrintPostcard";
 import { getEventBySlug } from "@/lib/events";
+import { canAccessGuestPrintSuite } from "@/lib/print-access";
 import { getRequestLocale } from "@/lib/i18n/locale";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -13,7 +14,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-  if (!event) return { title: { absolute: "invite" } };
+  if (!canAccessGuestPrintSuite(event)) return { title: { absolute: "invite" } };
   const fileName = event.slug || event.title;
   return { title: { absolute: fileName } };
 }
@@ -22,7 +23,7 @@ export default async function PostcardPrintPage({ params }: PageProps) {
   const { slug } = await params;
   const locale = await getRequestLocale();
   const event = await getEventBySlug(slug);
-  if (!event || !event.published) notFound();
+  if (!canAccessGuestPrintSuite(event)) notFound();
 
   const base = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN
     ? `https://${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN}`

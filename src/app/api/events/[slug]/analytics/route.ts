@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, managerDeniedStatus } from "@/lib/access";
 import { listBlastsForEvent, summarizeBlastDelivery } from "@/lib/blast-store";
 import { listOutboundForEvent } from "@/lib/email";
 import { getEventBySlug } from "@/lib/events";
@@ -18,8 +18,12 @@ export async function GET(
   const event = await getEventBySlug(slug);
   if (!event) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const access = await canManageEvent(event);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Forbidden" },
+      { status: denied },
+    );
   }
 
   const [rsvps, manual, views, blasts, messages, pledges, cashPledged] =

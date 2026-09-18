@@ -45,6 +45,12 @@ export function isAuthPagePath(pathname: string): boolean {
   );
 }
 
+/**
+ * Apex/www share a session via Domain=.ownvite.com / .ownvite.app.
+ * That also sends the cookie to invite hosts (slug.ownvite.app). Do not treat
+ * those event subdomains as login callback targets — PLATFORM_AUTH_HOSTS is
+ * apex, www, and loopback only.
+ */
 export function cookieDomainForHost(hostname: string): string | undefined {
   if (hostname === "ownvite.com" || hostname.endsWith(".ownvite.com")) {
     return ".ownvite.com";
@@ -138,6 +144,7 @@ export function canonicalAuthRedirect(
   if (hostname === targetHost) return null;
 
   const origin = envOrigin ?? `https://${targetHost}`;
+  // `search` should already have callbackUrl allowlisted (see middleware).
   return `${origin}${pathname}${search}`;
 }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, checkInRsvpPublicFields, managerDeniedStatus } from "@/lib/access";
 import { parseCheckInPayload } from "@/lib/check-in-qr";
 import { getEventBySlug } from "@/lib/events";
 import {
@@ -19,21 +19,16 @@ export async function GET(
   const event = await getEventBySlug(slug);
   if (!event) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const access = await canManageEvent(event);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Forbidden" },
+      { status: denied },
+    );
   }
   const rsvps = await listRsvpsByEventId(event.id);
   return NextResponse.json({
-    rsvps: rsvps.map((r) => ({
-      id: r.id,
-      name: r.name,
-      email: r.email,
-      attendance: r.attendance,
-      guestCount: r.guestCount,
-      checkedIn: Boolean(r.checkedIn),
-      checkedInAt: r.checkedInAt ?? null,
-      editToken: r.editToken ?? null,
-    })),
+    rsvps: rsvps.map((r) => checkInRsvpPublicFields(r, true)),
   });
 }
 
@@ -45,8 +40,12 @@ export async function POST(
   const event = await getEventBySlug(slug);
   if (!event) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const access = await canManageEvent(event);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Forbidden" },
+      { status: denied },
+    );
   }
   if (!canUseCheckIn(event) && !access.isAdmin) {
     return NextResponse.json(

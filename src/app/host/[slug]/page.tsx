@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import HostStudioShell from "@/components/host/HostStudioShell";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, hostStudioDecision } from "@/lib/access";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
@@ -24,14 +24,12 @@ export default async function HostEditorPage({ params }: PageProps) {
   if (!event) notFound();
 
   const access = await canManageEvent(event);
-
-  if (event.ownerId) {
-    if (!access.session?.user?.id) {
-      redirect(`/login?callbackUrl=/host/${slug}`);
-    }
-    if (!access.allowed) {
-      redirect("/dashboard");
-    }
+  const studio = hostStudioDecision(access);
+  if (studio === "login") {
+    redirect(`/login?callbackUrl=/host/${encodeURIComponent(slug)}`);
+  }
+  if (studio === "forbidden") {
+    redirect("/dashboard");
   }
 
   const rsvps = await listRsvpsByEventId(event.id);

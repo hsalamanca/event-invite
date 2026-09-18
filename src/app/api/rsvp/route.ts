@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageEvent } from "@/lib/access";
+import { canManageEvent, managerDeniedStatus } from "@/lib/access";
 import { getEventById, getEventBySlug } from "@/lib/events";
 import { recordGuestBookFromEvent } from "@/lib/guest-book";
 import { notifyGuestOfRsvp, notifyHostsOfRsvp } from "@/lib/rsvp-notify";
@@ -305,8 +305,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   const access = await canManageEvent(event);
-  if (!access.allowed) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const denied = managerDeniedStatus(access);
+  if (denied) {
+    return NextResponse.json(
+      { error: denied === 401 ? "Unauthorized" : "Forbidden" },
+      { status: denied },
+    );
   }
 
   try {

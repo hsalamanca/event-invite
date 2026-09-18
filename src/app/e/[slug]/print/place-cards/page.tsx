@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PrintPlaceCards } from "@/components/invite/PrintSuite";
 import { getEventBySlug } from "@/lib/events";
+import { canAccessGuestPrintSuite } from "@/lib/print-access";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -12,14 +13,14 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-  if (!event) return { title: "Place cards" };
+  if (!canAccessGuestPrintSuite(event)) return { title: "Place cards" };
   return { title: `Place cards · ${event.title}` };
 }
 
 export default async function PlaceCardsPrintPage({ params }: PageProps) {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-  if (!event) notFound();
+  if (!canAccessGuestPrintSuite(event)) notFound();
   return (
     <PrintPlaceCards
       event={event}

@@ -3,6 +3,7 @@ import {
   canonicalAuthRedirect,
   PLATFORM_AUTH_HOSTS,
 } from "@/lib/auth-host";
+import { sanitizeCallbackSearch } from "@/lib/safe-callback-url";
 import {
   detectLocaleFromAcceptLanguage,
   isLocale,
@@ -108,10 +109,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Keep Google OAuth on one host so PKCE cookies are not split across www / TLDs.
+  // Strip open-redirect callbackUrl values so .app → .com 308 cannot preserve them.
   const authRedirect = canonicalAuthRedirect(
     hostname,
     pathname,
-    request.nextUrl.search,
+    sanitizeCallbackSearch(request.nextUrl.search),
   );
   if (authRedirect) {
     return NextResponse.redirect(authRedirect, 308);

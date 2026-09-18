@@ -6,10 +6,10 @@ import { findUserByEmail, upsertOAuthUser } from "@/lib/users";
 import {
   authCookies,
   hostnameFromRequestOrEnv,
-  isPlatformAuthHost,
   useSecureAuthCookies,
   warnIfAuthSecretMissing,
 } from "@/lib/auth-host";
+import { safeAuthRedirect } from "@/lib/safe-callback-url";
 
 warnIfAuthSecretMissing();
 
@@ -110,14 +110,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth((request) => {
         return session;
       },
       async redirect({ url, baseUrl }) {
-        if (url.startsWith("/")) return `${baseUrl}${url}`;
-        try {
-          const target = new URL(url);
-          if (isPlatformAuthHost(target.hostname)) return url;
-        } catch {
-          return baseUrl;
-        }
-        return baseUrl;
+        return safeAuthRedirect(url, baseUrl);
       },
     },
   };

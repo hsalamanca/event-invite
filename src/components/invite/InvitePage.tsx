@@ -10,6 +10,7 @@ import {
   inviteDownloadFileBase,
 } from "@/lib/download-invite-jpeg";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
+import { safeHttpsUrl } from "@/lib/safe-https-url";
 import {
   resolveLocalizedAbout,
   resolveLocalizedFaqs,
@@ -209,6 +210,8 @@ export default function InvitePage({
 }: InvitePageProps) {
   const { theme } = event;
   const ui = getDictionary(locale).invite;
+  const registryHref = safeHttpsUrl(event.registryUrl);
+  const cashFundHref = safeHttpsUrl(event.cashFundUrl);
   const rsvpFields = resolveLocalizedRsvpFields(event.rsvpFields, locale);
   const attendanceOptions = rsvpFields.attendance.options;
   const defaultAttendance = attendanceOptions[0] ?? "";
@@ -817,9 +820,9 @@ export default function InvitePage({
             </div>
           ) : null}
           <p className="invite-registry" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-            {event.registryUrl ? (
+            {registryHref ? (
               <a
-                href={event.registryUrl}
+                href={registryHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
@@ -828,9 +831,9 @@ export default function InvitePage({
                 {event.registryLabel || ui.registryCta}
               </a>
             ) : null}
-            {event.cashFundUrl ? (
+            {cashFundHref ? (
               <a
-                href={event.cashFundUrl}
+                href={cashFundHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
