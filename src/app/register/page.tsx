@@ -6,7 +6,7 @@ import RegisterForm from "@/components/auth/RegisterForm";
 import { safeCallbackUrl } from "@/lib/safe-callback-url";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Create account · Ownvite" };
+export const metadata = { title: "Create account" };
 
 export default async function RegisterPage({
   searchParams,

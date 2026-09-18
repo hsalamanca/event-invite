@@ -54,7 +54,7 @@ export default function StationeryThumb({
           className="absolute left-3 right-3 top-[22%] text-center text-[clamp(1.05rem,3.2vw,1.45rem)] leading-tight sm:top-[24%]"
           style={{ color: "#B76E79", ...displayFont, fontWeight: 600 }}
         >
-          Katia Xiomara
+          Katia Gonzalez
         </p>
       </div>
     );

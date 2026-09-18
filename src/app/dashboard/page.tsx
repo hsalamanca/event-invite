@@ -22,7 +22,7 @@ import {
 import { findUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dashboard · Ownvite" };
+export const metadata = { title: "Dashboard" };
 
 async function withStats(events: EventRecord[]) {
   return Promise.all(

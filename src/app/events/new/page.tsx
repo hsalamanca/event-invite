@@ -7,7 +7,7 @@ import { getRequestLocale } from "@/lib/i18n/locale";
 import { paperGrainStyle, paperThemeVars } from "@/lib/marketing-theme";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Create event · Ownvite" };
+export const metadata = { title: "Create event" };
 
 export default async function NewEventPage({
   searchParams,

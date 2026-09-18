@@ -10,6 +10,7 @@ export const paperThemeVars = {
   "--landing-rose": "#B76E79",
   "--landing-rose-deep": "#8F4E58",
   "--landing-rose-gold": "#C9A27A",
+  "--landing-cta": "#B76E79",
   "--landing-cedar": "#6B5338",
   "--landing-cedar-deep": "#534028",
   "--landing-line": "#E4D5C8",

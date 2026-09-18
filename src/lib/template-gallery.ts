@@ -86,7 +86,7 @@ export function templateUsePath(templateId: string): string {
   return `/events/new?template=${encodeURIComponent(templateId)}`;
 }
 
-/** Logged-out “Use this” goes through register, then back to create. */
+/** Logged-out “Use this” on the public gallery. Register, then create with template. Logged-in visitors hitting /register are redirected to the same create URL. */
 export function templateRegisterPath(templateId: string): string {
   return `/register?callbackUrl=${encodeURIComponent(templateUsePath(templateId))}`;
 }

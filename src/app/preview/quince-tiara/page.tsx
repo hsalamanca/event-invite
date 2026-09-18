@@ -4,7 +4,7 @@ import { getQuinceTiaraPreviewEvent } from "@/lib/quince-tiara-preview";
 import PreviewInvite from "./PreviewInvite";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Quince tiara preview · Ownvite" };
+export const metadata = { title: "Quince tiara preview" };
 
 export default async function QuinceTiaraPreviewPage() {
   const locale = await getRequestLocale();

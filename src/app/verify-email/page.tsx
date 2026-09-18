@@ -3,7 +3,7 @@ import AuthShell from "@/components/auth/AuthShell";
 import VerifyEmailClient from "@/components/auth/VerifyEmailClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Verify email · Ownvite" };
+export const metadata = { title: "Verify email" };
 
 export default async function VerifyEmailPage({
   searchParams,

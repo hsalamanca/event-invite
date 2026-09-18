@@ -32,7 +32,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
       <LandingSparkle />
 
       <header
-        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8 sm:py-5"
+        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8 sm:py-5"
       >
         <BrandLogo tone="paper" height={26} href="/" />
         <nav
@@ -67,7 +67,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           <Link
             href="/register"
             className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-            style={{ background: "var(--landing-rose)" }}
+            style={{ background: "var(--landing-cta)" }}
           >
             {nav.signUp}
           </Link>
@@ -75,7 +75,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
       </header>
 
       <section className="relative z-10">
-        <div className="mx-auto grid max-w-6xl items-center gap-5 px-5 pb-10 pt-1 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] sm:gap-10 sm:px-8 sm:pb-20 sm:pt-4 lg:gap-10 lg:pb-24 lg:pt-2">
+        <div className="mx-auto grid max-w-6xl items-center gap-3 px-5 pb-6 pt-0 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] sm:gap-10 sm:px-8 sm:pb-20 sm:pt-4 lg:gap-10 lg:pb-24 lg:pt-2">
           <div>
             <p
               className="text-[11px] uppercase tracking-[0.28em] sm:text-xs"
@@ -87,7 +87,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               className="mt-2 max-w-xl sm:mt-3"
               style={{
                 ...displayFont,
-                fontSize: "clamp(2.05rem, 7.4vw, 4.4rem)",
+                fontSize: "clamp(1.85rem, 7.2vw, 4.4rem)",
                 fontWeight: 600,
                 lineHeight: 1.02,
                 letterSpacing: "-0.03em",
@@ -103,13 +103,13 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               {t.support}
             </p>
             <div
-              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-7"
+              className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-7"
             >
               <Link
                 href="/register"
                 className="inline-flex min-h-12 items-center justify-center rounded-md px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:px-7"
                 style={{
-                  background: "var(--landing-rose)",
+                  background: "var(--landing-cta)",
                   boxShadow: "0 1px 2px rgba(143,78,88,0.18)",
                 }}
               >
@@ -315,7 +315,7 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               <Link
                 href="/register"
                 className="inline-flex min-h-12 items-center justify-center rounded-md px-7 py-3.5 text-sm font-semibold text-white transition hover:opacity-95"
-                style={{ background: "var(--landing-rose)" }}
+                style={{ background: "var(--landing-cta)" }}
               >
                 {t.ctaStart}
               </Link>

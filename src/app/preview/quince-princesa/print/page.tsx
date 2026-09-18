@@ -4,7 +4,7 @@ import { getRequestLocale } from "@/lib/i18n/locale";
 import { getQuincePrincesaPreviewEvent } from "@/lib/quince-princesa-preview";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Quince princesa postcard · Ownvite" };
+export const metadata = { title: "Quince princesa postcard" };
 
 const INVITE_URL = "https://ownvite.com/preview/quince-princesa";
 

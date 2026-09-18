@@ -91,8 +91,8 @@ export default function MarketingShell({
             </Link>
             <Link
               href="/register"
-              className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-              style={{ background: "var(--landing-cedar)" }}
+            className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
+            style={{ background: "var(--landing-cta)" }}
             >
               {nav.signUp}
             </Link>

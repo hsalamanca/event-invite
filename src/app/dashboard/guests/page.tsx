@@ -11,7 +11,7 @@ import {
 import { listGuestBook } from "@/lib/guest-book";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Guest book · Ownvite" };
+export const metadata = { title: "Guest book" };
 
 export default async function GuestBookPage() {
   const session = await auth();

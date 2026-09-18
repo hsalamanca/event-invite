@@ -53,6 +53,10 @@ describe("public template gallery", () => {
       templateRegisterPath("gold-confetti"),
       "/register?callbackUrl=%2Fevents%2Fnew%3Ftemplate%3Dgold-confetti",
     );
+    assert.equal(
+      templateRegisterPath("quince-princesa"),
+      "/register?callbackUrl=%2Fevents%2Fnew%3Ftemplate%3Dquince-princesa",
+    );
   });
 
   it("keeps birthday as a secondary sample and Peek on princesa", () => {

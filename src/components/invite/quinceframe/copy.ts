@@ -104,7 +104,7 @@ function joinDetail(...parts: Array<string | undefined>): string {
     .join(", ");
 }
 
-const DEMO_HONOREE = "Katia Xiomara Zelaya";
+const DEMO_HONOREE = "Katia Gonzalez";
 const STOCK_HONOREE = new Set(["{First Last}", "{Nombre}", "{First}", "{Last}"]);
 const TOKEN_RE = /\{[^{}]+\}/g;
 

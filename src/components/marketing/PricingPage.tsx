@@ -134,7 +134,7 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
                   style={
                     i === 1
                       ? {
-                          background: "var(--landing-cedar)",
+                          background: "var(--landing-cta)",
                           color: "#fff",
                         }
                       : {

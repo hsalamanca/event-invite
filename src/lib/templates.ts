@@ -1210,8 +1210,8 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: quinceTiara,
     heroImage: "/templates/quince-tiara-hero.svg",
-    headline: "Katia Xiomara Zelaya",
-    headlineEs: "Katia Xiomara Zelaya",
+    headline: "Katia Gonzalez",
+    headlineEs: "Katia Gonzalez",
     tagline: "of their daughter",
     taglineEs: "de su hija",
   },
@@ -1230,8 +1230,8 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: quincePrincesa,
     heroImage: "/templates/quince-princesa-hero.svg",
-    headline: "Katia Xiomara Zelaya",
-    headlineEs: "Katia Xiomara Zelaya",
+    headline: "Katia Gonzalez",
+    headlineEs: "Katia Gonzalez",
     tagline:
       "With God’s blessing and my parents’, you are invited to this unforgettable night.",
     taglineEs:
@@ -1300,6 +1300,7 @@ export function resolveLocalizedInviteCopy(
     "{First Last}",
     "{Nombre}",
     "Katia Xiomara Zelaya",
+    "Katia Gonzalez",
   ]);
   const headlineIsStock =
     event.headline === tpl.headline ||

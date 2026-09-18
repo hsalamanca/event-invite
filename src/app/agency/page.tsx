@@ -13,7 +13,7 @@ import {
 import { findUserById } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Agency · Ownvite" };
+export const metadata = { title: "Agency" };
 
 export default async function AgencyPage() {
   const session = await auth();

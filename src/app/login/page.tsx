@@ -6,7 +6,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import { safeCallbackUrl } from "@/lib/safe-callback-url";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Sign in · Ownvite" };
+export const metadata = { title: "Sign in" };
 
 export default async function LoginPage({
   searchParams,

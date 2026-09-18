@@ -269,7 +269,7 @@ export default function DomainsGuide({ locale = "en" }: { locale?: Locale }) {
           <Link
             href={localePath(locale, "/host/h-birthday-2026")}
             className="mt-5 inline-block rounded-md px-4 py-2.5 text-sm font-semibold text-white"
-            style={{ background: "var(--landing-cedar)" }}
+            style={{ background: "var(--landing-cta)" }}
           >
             {t.tryCta}
           </Link>

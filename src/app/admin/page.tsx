@@ -11,7 +11,7 @@ import {
 } from "@/lib/marketing-theme";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Ownvite" };
+export const metadata = { title: "Admin" };
 
 export default async function AdminPage() {
   const session = await auth();

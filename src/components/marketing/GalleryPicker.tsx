@@ -11,7 +11,7 @@ import {
   type GalleryOccasionId,
   templatesForOccasion,
   templatePreviewPath,
-  templateUsePath,
+  templateRegisterPath,
 } from "@/lib/template-gallery";
 
 export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
@@ -141,9 +141,9 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                       {t.preview}
                     </Link>
                     <Link
-                      href={templateUsePath(tpl.id)}
+                      href={templateRegisterPath(tpl.id)}
                       className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold text-white"
-                      style={{ background: "var(--landing-cedar)" }}
+                      style={{ background: "var(--landing-cta)" }}
                     >
                       {t.useThis}
                     </Link>
