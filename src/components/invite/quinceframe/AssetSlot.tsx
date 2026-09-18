@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 
-/** Renders a WebP guest asset with PNG fallback; SVG/CSS children if both fail. */
+/** Renders the Ink PNG; SVG/CSS children only until the bitmap is ready. */
 export default function AssetSlot({
   src,
   fallbackSrc,
@@ -15,6 +15,12 @@ export default function AssetSlot({
   children: ReactNode;
 }) {
   const [loaded, setLoaded] = useState(false);
+  const markReady = useCallback((node: HTMLImageElement | null) => {
+    if (node && node.complete && node.naturalWidth > 0) setLoaded(true);
+  }, []);
+  const imgClass = loaded
+    ? "quinceframe-asset"
+    : "quinceframe-asset quinceframe-asset--pending";
 
   return (
     <span className={className}>
@@ -23,10 +29,10 @@ export default function AssetSlot({
           <source srcSet={src} type="image/webp" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
+            ref={markReady}
             src={fallbackSrc}
             alt=""
-            className="quinceframe-asset"
-            hidden={!loaded}
+            className={imgClass}
             onLoad={() => setLoaded(true)}
             onError={() => setLoaded(false)}
           />
@@ -34,10 +40,10 @@ export default function AssetSlot({
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          ref={markReady}
           src={src}
           alt=""
-          className="quinceframe-asset"
-          hidden={!loaded}
+          className={imgClass}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(false)}
         />

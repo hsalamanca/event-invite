@@ -173,6 +173,15 @@
   object-fit: contain;
 }
 
+/* Do not use [hidden] — .quinceframe-asset { display:block } overrides it. */
+.quinceframe-asset--pending {
+  position: absolute;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .quinceframe-body {
   position: relative;
   z-index: 3;
