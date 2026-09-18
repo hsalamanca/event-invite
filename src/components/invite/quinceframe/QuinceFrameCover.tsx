@@ -2,7 +2,6 @@ import DateLine from "./DateLine";
 import EventScript from "./EventScript";
 import FloralCorner from "./FloralCorner";
 import FooterSplit from "./FooterSplit";
-import GoldHexFrame from "./GoldHexFrame";
 import HonoreeName from "./HonoreeName";
 import HonoreePortrait from "./HonoreePortrait";
 import HostLine from "./HostLine";
@@ -39,7 +38,6 @@ export default function QuinceFrameCover({
   return (
     <div className="quinceframe-card">
       <div className="quinceframe-sparkle" aria-hidden />
-      <GoldHexFrame />
       <FloralCorner corner="tl" />
       {denseFlorals ? <FloralCorner corner="tr" /> : null}
       {denseFlorals ? <FloralCorner corner="bl" /> : null}

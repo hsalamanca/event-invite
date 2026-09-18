@@ -59,20 +59,6 @@
     radial-gradient(circle at 70% 78%, #fff 0 0.55px, transparent 1px);
 }
 
-.quinceframe-hex {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 88%;
-  height: 91%;
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-  object-position: center;
-  pointer-events: none;
-  background: transparent;
-}
-
 .quinceframe-floral,
 .quinceframe-floral picture,
 .quinceframe-floral img,
@@ -428,8 +414,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .quinceframe-sparkle,
-  .quinceframe-floral,
-  .quinceframe-hex {
+  .quinceframe-floral {
     animation: none !important;
   }
 }

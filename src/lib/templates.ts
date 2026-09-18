@@ -1183,12 +1183,12 @@ export const TEMPLATES: EventTemplate[] = [
     name: "Quince tiara",
     nameEs: "Quinceañera tiara oro-rosa",
     description:
-      "White stationery card with a thin gold hex frame, watercolor roses, pink glitter tiara, and a central gown — traditional quinceañera layout.",
+      "White stationery card with watercolor roses, pink glitter tiara, and a central gown — traditional quinceañera layout, no geometric frame.",
     descriptionEs:
-      "Tarjeta blanca con marco hexagonal dorado, rosas en acuarela, tiara rosa glitter y vestido al centro — quinceañera clásica.",
-    inspiredBy: "Hugo stationery quinceañera — gold geometric frame, tiara, gown",
+      "Tarjeta blanca con rosas en acuarela, tiara rosa glitter y vestido al centro — quinceañera clásica, sin marco geométrico.",
+    inspiredBy: "Hugo stationery quinceañera — florals, tiara, gown (no gold outline)",
     inspiredByEs:
-      "Papelería quinceañera Hugo — marco geométrico dorado, tiara y vestido",
+      "Papelería quinceañera Hugo — florales, tiara y vestido (sin marco dorado)",
     categories: ["birthday", "party"],
     layout: "quinceframe",
     premium: true,

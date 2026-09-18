@@ -67,7 +67,7 @@ Do not use Inter / Roboto / system-ui as brand faces.
 └─────────────────────────────┘
 ```
 
-Frame: thin gold irregular hex / geometric polygon — prefer SVG stroke (`svg/frame-gold-hex.svg`) for crisp scale; PNG available as raster fallback.
+Frame: **none** — Hugo/Pixel dropped the gold geometric outline. Do not render `GoldHexFrame` or any hex/polygonal stroke around the card. Open composition: florals, tiara, gown, Lunch|RSVP only.
 
 Gown: absolute bottom-center, behind column text or between columns; width ~45–55% of card; never crop the skirt flare. When `honoreePhotoUrl` is set (https or `/api/media` only), `HonoreePortrait` replaces the gown with a gold oval (`object-fit: cover`, `center top`). Empty / error / loading keep the Ink gown. `heroImage` stays the catalog + paper-wash atmosphere — do not reuse it for the girl.
 
@@ -106,8 +106,8 @@ Root: `/workspace/ownvite-assets/quince-tiara/`
 | `web/floral-corner-tr.png` | Optional top-right |
 | `web/floral-corner-bl.png` | Optional bottom-left |
 | `web/gown-back-pink.png` | Center illustration |
-| `web/frame-gold-hex.png` | Stroke-only raster (not used on guest) |
-| `svg/frame-gold-hex.svg` | Preferred scalable frame |
+| `web/frame-gold-hex.png` | Unused — gold outline not rendered |
+| `svg/frame-gold-hex.svg` | Unused — gold outline not rendered |
 | `print/*.png` | ≥2400px long-edge print masters |
 | `reference/hugo-sample.png` | Visual canon |
 
