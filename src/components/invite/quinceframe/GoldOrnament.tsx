@@ -11,6 +11,11 @@ export default function GoldOrnament() {
             <stop offset="72%" stopColor="#C9A227" stopOpacity="0.75" />
             <stop offset="100%" stopColor="#C9A227" stopOpacity="0" />
           </linearGradient>
+          <radialGradient id="quinceframeOrnamentJewel" cx="38%" cy="30%" r="78%">
+            <stop offset="0%" stopColor="#FBE3EC" />
+            <stop offset="45%" stopColor="#E8A0B8" />
+            <stop offset="100%" stopColor="#C9678F" />
+          </radialGradient>
         </defs>
         <path
           d="M8 12 H96"
@@ -25,14 +30,19 @@ export default function GoldOrnament() {
           strokeLinecap="round"
         />
         <path
-          d="M104 12 C110 12 114 8 120 4 C126 8 130 12 136 12 C130 12 126 16 120 20 C114 16 110 12 104 12 Z"
-          fill="#E8A0B8"
+          d="M108 12 C113 12 116 8.5 120 5 C124 8.5 127 12 132 12 C127 12 124 15.5 120 19 C116 15.5 113 12 108 12 Z"
+          fill="url(#quinceframeOrnamentJewel)"
           stroke="#C9A227"
-          strokeWidth="0.7"
+          strokeWidth="0.6"
         />
-        <circle cx="120" cy="12" r="1.7" fill="#F6E7A8" />
-        <circle cx="99" cy="12" r="1.1" fill="#C9A227" />
-        <circle cx="141" cy="12" r="1.1" fill="#C9A227" />
+        <path
+          d="M120 5 L120 19 M108 12 L132 12"
+          stroke="#F6E7A8"
+          strokeWidth="0.4"
+          opacity="0.75"
+        />
+        <circle cx="101" cy="12" r="1" fill="#C9A227" />
+        <circle cx="139" cy="12" r="1" fill="#C9A227" />
       </svg>
     </div>
   );
