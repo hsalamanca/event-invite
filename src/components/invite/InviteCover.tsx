@@ -3,6 +3,11 @@
 import type { CSSProperties } from "react";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import type { InviteLayout } from "@/lib/templates";
+import type { ScheduleItem } from "@/lib/types";
+import {
+  QuinceFrameCover,
+  resolveQuinceFrameCopy,
+} from "@/components/invite/quinceframe";
 
 type InviteCoverProps = {
   layout: InviteLayout;
@@ -18,9 +23,13 @@ type InviteCoverProps = {
   venue: string;
   address: string;
   heroImage: string;
+  honoreePhotoUrl?: string;
+  honoreePhotoAlt?: string;
   heroVideoUrl?: string | null;
   motionKit?: "none" | "sparkle" | "float" | "parallax" | "pulse";
   contactPhone?: string;
+  contactName?: string;
+  rsvpDeadlineLabel?: string;
   invitesYou: string;
   comicPresents?: string;
   superYouAreInvited?: string;
@@ -34,6 +43,19 @@ type InviteCoverProps = {
   arcadePlayer?: string;
   quinceInvite?: string;
   quinceMisXv?: string;
+  quinceEventScript?: string;
+  quinceRelationPrefix?: string;
+  quinceParentsInvite?: string;
+  quinceMassLabel?: string;
+  quinceMassAt?: string;
+  quinceLunchLabel?: string;
+  quinceLunchAt?: string;
+  quinceRsvpTo?: string;
+  quinceRsvpAt?: string;
+  quinceRsvpBy?: string;
+  quinceAtTime?: string;
+  about?: string;
+  schedule?: ScheduleItem[];
   fiftyCelebrate?: string;
   splashInvite?: string;
   collageInvite?: string;
@@ -764,7 +786,8 @@ function Ornament({ layout }: { layout: InviteLayout }) {
     layout === "superhero" ||
     layout === "superburst" ||
     layout === "spiderweb" ||
-    layout === "quincebloom"
+    layout === "quincebloom" ||
+    layout === "quinceframe"
   ) {
     return null;
   }
@@ -974,6 +997,8 @@ export default function InviteCover({
   venue,
   address,
   heroImage,
+  honoreePhotoUrl,
+  honoreePhotoAlt,
   heroVideoUrl,
   motionKit = "none",
   invitesYou,
@@ -989,11 +1014,26 @@ export default function InviteCover({
   arcadePlayer,
   quinceInvite,
   quinceMisXv,
+  quinceEventScript,
+  quinceRelationPrefix,
+  quinceParentsInvite,
+  quinceMassLabel,
+  quinceMassAt,
+  quinceLunchLabel,
+  quinceLunchAt,
+  quinceRsvpTo,
+  quinceRsvpAt,
+  quinceRsvpBy,
+  quinceAtTime,
+  about,
+  schedule,
   fiftyCelebrate,
   splashInvite,
   collageInvite,
   balloonDigits,
   contactPhone,
+  contactName,
+  rsvpDeadlineLabel,
   rsvpLabel,
   detailsLabel,
   leaveNoteLabel = "Leave a note",
@@ -1035,6 +1075,7 @@ export default function InviteCover({
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
   const isQuincebloom = layout === "quincebloom";
+  const isQuinceframe = layout === "quinceframe";
   const isCeleste = quinceBordered;
   const isFifty = layout === "fifty";
 
@@ -1058,7 +1099,7 @@ export default function InviteCover({
               ? modernCelebrate || invitesYou
               : isArcade
                 ? arcadePlayer || invitesYou
-                : isQuince || isQuincebloom
+                : isQuince || isQuincebloom || isQuinceframe
                   ? quinceInvite || invitesYou
                   : isFifty
                     ? fiftyCelebrate || invitesYou
@@ -1362,6 +1403,44 @@ export default function InviteCover({
                 </div>
               ) : null}
             </>
+          ) : isQuinceframe ? (
+            <QuinceFrameCover
+              copy={resolveQuinceFrameCopy({
+                hostName,
+                headline,
+                title,
+                tagline,
+                about: about ?? "",
+                dateLabel,
+                weekdayLabel,
+                dateShortLabel,
+                timeLabel,
+                venue,
+                address,
+                schedule,
+                contactName,
+                contactPhone,
+                rsvpDeadlineLabel,
+                eventScript: quinceEventScript || quinceMisXv || "Quinceañera",
+                parentsInvite: quinceParentsInvite || invitesYou,
+                relationPrefix: quinceRelationPrefix || invitesYou,
+                massAt: quinceMassAt || quinceMassLabel || "Mass at",
+                lunchAt: quinceLunchAt || quinceLunchLabel || "Lunch",
+                rsvpTo: quinceRsvpTo || rsvpLabel,
+                timePrep: quinceAtTime || "at",
+                rsvpAt: quinceRsvpAt,
+                rsvpBy: quinceRsvpBy,
+              })}
+              printMode={printMode}
+              rsvpHref={isPast || !rsvpEnabled ? "#guestbook" : "#rsvp"}
+              rsvpLabel={
+                isPast || !rsvpEnabled ? leaveNoteLabel : rsvpLabel
+              }
+              inviteUrl={inviteUrl}
+              qrUrl={qrUrl}
+              honoreePhotoUrl={honoreePhotoUrl}
+              honoreePhotoAlt={honoreePhotoAlt}
+            />
           ) : isQuincebloom ? (
             <>
               <div className="quincebloom-card">

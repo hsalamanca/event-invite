@@ -1,0 +1,78 @@
+{
+  "id": "evt_quince_tiara_demo",
+  "slug": "quince-tiara-demo",
+  "ownerId": null,
+  "hostName": "Mr. & Mrs. [Last]",
+  "title": "Quinceañera",
+  "headline": "{First Last}",
+  "headlineEs": "{Nombre}",
+  "tagline": "of their daughter",
+  "taglineEs": "de su hija",
+  "dateISO": "2027-06-13",
+  "timeLabel": "1:00 PM",
+  "venue": "[Church]",
+  "address": "[City]",
+  "theme": {
+    "colors": {
+      "background": "#FFFCFA",
+      "surface": "#FFFCFA",
+      "accentPrimary": "#E8A0B8",
+      "accentSecondary": "#C9A227",
+      "textPrimary": "#6B5E52",
+      "textMuted": "#6B5E52"
+    },
+    "fonts": {
+      "display": "Great Vibes",
+      "body": "Cormorant Garamond"
+    }
+  },
+  "heroImage": "/templates/quince-tiara-hero.svg",
+  "motionKit": "none",
+  "customDomain": null,
+  "contactName": "[Contact]",
+  "contactPhone": "[phone]",
+  "rsvpFields": {
+    "plusOnes": {
+      "enabled": true,
+      "label": "Número de invitados",
+      "max": 2
+    },
+    "dietary": {
+      "enabled": true,
+      "label": "Restricciones alimentarias o alergias",
+      "placeholder": "Vegetariano, sin gluten, etc."
+    },
+    "attendance": {
+      "enabled": true,
+      "options": ["Asistiré con gusto", "Lamento no poder asistir"]
+    },
+    "deadline": "2027-05-30",
+    "prompt": "Por favor confirma para reservarte un lugar."
+  },
+  "about": "Lunch & reception · salon TBD",
+  "aboutEs": "Comida y recepción · salón por confirmar",
+  "published": true,
+  "visibility": "public",
+  "capacity": null,
+  "registryUrl": null,
+  "templateId": "quince-tiara",
+  "schedule": [
+    {
+      "id": "misa",
+      "time": "1:00 PM",
+      "title": "Mass",
+      "titleEs": "Misa",
+      "description": "[Church], [City]"
+    },
+    {
+      "id": "comida",
+      "time": "3:00 PM",
+      "title": "Lunch",
+      "titleEs": "Comida",
+      "description": "[Reception venue], [City]",
+      "descriptionEs": "[Salón], [Ciudad]"
+    }
+  ],
+  "premiumTheme": true,
+  "rsvpEnabled": true
+}

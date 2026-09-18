@@ -124,6 +124,11 @@ export type Dictionary = {
     rsvpEnabledHint: string;
     applyTemplate: string;
     applyTemplateHint: string;
+    honoreePhoto: string;
+    honoreePhotoHint: string;
+    honoreePhotoAdd: string;
+    honoreePhotoReplace: string;
+    honoreePhotoRemove: string;
   };
   dashboard: {
     eyebrow: string;
@@ -243,6 +248,18 @@ export type Dictionary = {
     arcadePlayer: string;
     quinceInvite: string;
     quinceMisXv: string;
+    quinceEventScript: string;
+    quinceRelationPrefix: string;
+    quinceParentsInvite: string;
+    quinceMass: string;
+    quinceMassAt: string;
+    quinceLunch: string;
+    quinceLunchAt: string;
+    quinceRsvpTo: string;
+    quinceRsvpAt: string;
+    quinceRsvpBy: string;
+    quinceAtTime: string;
+    honoreePhotoAlt: string;
     fiftyCelebrate: string;
     collageInvite: string;
     date: string;
@@ -506,6 +523,12 @@ const en: Dictionary = {
     rsvpEnabledHint:
       "Turn off for announcement-only invites (no RSVP form). Guests can still leave a note.",
     applyTemplate: "Apply template look",
+    honoreePhoto: "Birthday girl’s photo",
+    honoreePhotoHint:
+      "Oval portrait on the stationery card. Empty keeps the gown illustration. JPG, PNG, WEBP · max 8MB.",
+    honoreePhotoAdd: "Add her photo",
+    honoreePhotoReplace: "Replace",
+    honoreePhotoRemove: "Remove",
     applyTemplateHint:
       "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
   },
@@ -639,6 +662,18 @@ const en: Dictionary = {
     arcadePlayer: "player one invites you",
     quinceInvite: "cordially invites you to her quinceañera",
     quinceMisXv: "Mis XV Años",
+    quinceEventScript: "Quinceañera",
+    quinceRelationPrefix: "of their daughter",
+    quinceParentsInvite: "invite you to celebrate the",
+    quinceMass: "Mass",
+    quinceMassAt: "Mass at",
+    quinceLunch: "Lunch",
+    quinceLunchAt: "Celebratory Lunch at",
+    quinceRsvpTo: "Rsvp to",
+    quinceRsvpAt: "at",
+    quinceRsvpBy: "by",
+    quinceAtTime: "at",
+    honoreePhotoAlt: "Photo of {name}",
     fiftyCelebrate: "is celebrating fifty fabulous years",
     collageInvite: "birthday of",
     date: "Date",
@@ -913,6 +948,12 @@ const es: Dictionary = {
     rsvpEnabledHint:
       "Desactívalo para invitaciones solo informativas (sin formulario RSVP). Los invitados aún pueden dejar un mensaje.",
     applyTemplate: "Aplicar look de plantilla",
+    honoreePhoto: "Foto de la quinceañera",
+    honoreePhotoHint:
+      "Retrato ovalado en la tarjeta. Vacío deja el vestido ilustrado. JPG, PNG, WEBP · máx. 8MB.",
+    honoreePhotoAdd: "Agregar su foto",
+    honoreePhotoReplace: "Reemplazar",
+    honoreePhotoRemove: "Quitar",
     applyTemplateHint:
       "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",
   },
@@ -1049,6 +1090,18 @@ const es: Dictionary = {
     arcadePlayer: "el jugador uno te invita",
     quinceInvite: "te invita cordialmente a su fiesta de quince años",
     quinceMisXv: "Mis XV Años",
+    quinceEventScript: "Quinceañera",
+    quinceRelationPrefix: "de su hija",
+    quinceParentsInvite: "los invitan a celebrar la",
+    quinceMass: "Misa",
+    quinceMassAt: "Misa en",
+    quinceLunch: "Comida",
+    quinceLunchAt: "Almuerzo celebratorio en",
+    quinceRsvpTo: "Confirmar con",
+    quinceRsvpAt: "al",
+    quinceRsvpBy: "antes del",
+    quinceAtTime: "a las",
+    honoreePhotoAlt: "Foto de {name}",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
     collageInvite: "cumpleaños de",
     date: "Fecha",

@@ -12,6 +12,8 @@ const SCHEDULE_TITLE_ES: Record<string, string> = {
   Reception: "Recepción",
   Dinner: "Cena",
   Lunch: "Comida",
+  Mass: "Misa",
+  "Thanksgiving Mass": "Misa de Acción de Gracias",
   Brunch: "Brunch",
   "Food Service Starts": "Empieza el servicio de comida",
   "Food service starts": "Empieza el servicio de comida",
@@ -75,6 +77,8 @@ const HEADLINE_ES: Record<string, string> = {
   "Double the Fifty": "Doble cincuenta",
   "50th Birthday Party": "Fiesta de 50 cumpleaños",
   "A Night to Celebrate Fifty Years": "Una noche para celebrar cincuenta años",
+  Isabella: "Isabella",
+  "{First Last}": "{Nombre}",
 };
 
 /** Common / known host taglines (EN → ES), including light HTML. */
@@ -99,6 +103,8 @@ const TAGLINE_ES: Record<string, string> = {
     "Los dos cumplimos cincuenta.<br /><b>Ven a celebrar con nosotros</b> — buena comida, amigos cercanos y un poco de baile.",
   "We're both turning fifty.<br /><b>Come celebrate with us</b> — good food, close friends, and a little dancing.":
     "Los dos cumplimos cincuenta.<br /><b>Ven a celebrar con nosotros</b> — buena comida, amigos cercanos y un poco de baile.",
+  "daughter of [Parents TBD]": "hija de [Padres por confirmar]",
+  "of their daughter": "de su hija",
 };
 
 const ABOUT_ES: Record<string, string> = {
@@ -106,6 +112,8 @@ const ABOUT_ES: Record<string, string> = {
     "Otro año, otra razón para reunirnos. Me encantaría contar con tu compañía para una cena relajada — sin regalos, solo tu presencia.",
   "I'd love your company — no gifts, just your presence.":
     "Me encantaría contar con tu compañía — sin regalos, solo tu presencia.",
+  "Lunch & reception · salon TBD":
+    "Comida y recepción · salón por confirmar",
   "<h3>What to expect</h3>Dinner, dancing, and cake.<br /><b>No gifts — just your presence.</b>":
     "<h3>Qué esperar</h3>Cena, baile y pastel.<br /><b>Sin regalos — solo tu presencia.</b>",
   "Join us in celebrating\nHugo & Mayra's 50th Birthday\nWe're turning the big 5-0 and we'd love for you to celebrate with us":

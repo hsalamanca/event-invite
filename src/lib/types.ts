@@ -96,6 +96,11 @@ export type EventRecord = {
   address: string;
   theme: Theme;
   heroImage: string;
+  /**
+   * Quinceframe only: birthday-girl portrait in the gown slot.
+   * Separate from heroImage (template stock + paper-wash atmosphere).
+   */
+  honoreePhotoUrl?: string;
   /** Optional looping hero video (mp4/webm URL); falls back to heroImage */
   heroVideoUrl?: string | null;
   /** Cover motion accent kit */
@@ -127,6 +132,8 @@ export type EventRecord = {
   whatToBring?: string;
   contactEmail?: string;
   contactPhone?: string;
+  /** Optional RSVP contact name on stationery (quinceframe). */
+  contactName?: string;
   hotelInfo?: string;
   travelInfo?: string;
   spotifyUrl?: string;
