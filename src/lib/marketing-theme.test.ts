@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { paperThemeVars } from "./marketing-theme";
+import {
+  bodyFont,
+  heroDisplayFont,
+  marqueeFont,
+  paperThemeVars,
+} from "./marketing-theme";
 import { MARQUEE } from "./marquee-assets";
 import { getDictionary } from "./i18n/dictionaries";
 import { PEEK_DEMO_PATH } from "./template-gallery";
@@ -20,6 +25,17 @@ describe("marquee marketing chrome", () => {
     assert.equal(vars["--landing-blush"], "#FFE8EF");
     assert.equal(vars["--landing-rose-gold"], "#C9A27A");
     assert.equal(vars["--landing-ink"], "#3A2A30");
+    assert.equal(vars["--landing-muted"], "#5C564E");
+    assert.equal(vars["--landing-soft"], "#5C564E");
+    const bodyCss = JSON.stringify(bodyFont);
+    const heroCss = JSON.stringify(heroDisplayFont);
+    const marqueeCss = JSON.stringify(marqueeFont);
+    assert.match(bodyCss, /dm-sans/i);
+    assert.match(css, /dm-sans/i);
+    assert.match(heroCss, /fraunces/i);
+    assert.equal(/playfair/i.test(heroCss), false);
+    assert.match(marqueeCss, /dm-sans/i);
+    assert.equal(/space-grotesk/i.test(marqueeCss), false);
   });
 
   it("locks Scout EN/ES hero copy, Katia demo, and Peek on princesa", () => {

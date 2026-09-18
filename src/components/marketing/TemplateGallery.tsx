@@ -14,7 +14,9 @@ export default function TemplateGallery({
   locale?: Locale;
   path?: string;
 }) {
-  const t = getDictionary(locale).gallery;
+  const dict = getDictionary(locale);
+  const t = dict.gallery;
+  const priceLine = dict.landing.priceLine;
 
   return (
     <MarketingShell
@@ -57,6 +59,13 @@ export default function TemplateGallery({
         >
           {t.support}
         </p>
+        <Link
+          href={localePath(locale, "/pricing")}
+          className="marquee-price mt-5 inline-flex max-w-md items-center rounded-lg px-3 py-2 text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
+          style={{ color: "var(--landing-ink)" }}
+        >
+          {priceLine}
+        </Link>
 
         <GalleryPicker locale={locale} />
 

@@ -3,10 +3,11 @@ import type { CSSProperties } from "react";
 /**
  * Ink A cream / rose / gold marketing chrome.
  * Pixel B Marquee Domain composition. Never navy SaaS.
+ * CoS type lock: Fraunces (display) + DM Sans (UI).
  */
 export const paperThemeVars = {
   "--landing-ink": "#3A2A30",
-  "--landing-muted": "#7A5A64",
+  "--landing-muted": "#5C564E",
   "--landing-paper": "#FBF6F2",
   "--landing-paper-2": "#F3E6DC",
   "--landing-blush": "#FFE8EF",
@@ -20,30 +21,30 @@ export const paperThemeVars = {
   "--landing-cedar-deep": "#6B3F48",
   "--landing-line": "#E8D9C8",
   "--landing-fg": "#3A2A30",
-  "--landing-soft": "#7A5A64",
+  "--landing-soft": "#5C564E",
   "--landing-accent": "#B76E79",
   "--landing-surface": "#FFFCFA",
   background:
     "linear-gradient(180deg, #FFFCFA 0%, #FFE8EF 42%, #FBF6F2 100%)",
   color: "#3A2A30",
-  fontFamily: "var(--font-source-sans), 'Source Sans 3', sans-serif",
+  fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif",
 } as CSSProperties;
 
 export const displayFont: CSSProperties = {
   fontFamily: "var(--font-fraunces), 'Fraunces', Georgia, serif",
 };
 
-/** Billboard display for the marquee landing hero (FORGE: Playfair / Cormorant). */
+/** Billboard display — CoS lock is Fraunces, not Playfair. */
 export const heroDisplayFont: CSSProperties = {
-  fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+  fontFamily: "var(--font-fraunces), 'Fraunces', Georgia, serif",
 };
 
 export const bodyFont: CSSProperties = {
-  fontFamily: "var(--font-source-sans), 'Source Sans 3', sans-serif",
+  fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif",
 };
 
 export const marqueeFont: CSSProperties = {
-  fontFamily: "var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif",
+  fontFamily: "var(--font-dm-sans), 'DM Sans', ui-sans-serif, sans-serif",
   fontVariantNumeric: "tabular-nums",
   letterSpacing: "0.02em",
 };

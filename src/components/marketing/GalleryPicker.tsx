@@ -112,7 +112,7 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                         color: "var(--landing-ink)",
                         border: "1px solid var(--landing-gold, #C4A574)",
                         fontFamily:
-                          "var(--font-space-grotesk), 'Space Grotesk', sans-serif",
+                          "var(--font-dm-sans), 'DM Sans', sans-serif",
                       }}
                     >
                       {t.domainChip}

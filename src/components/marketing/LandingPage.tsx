@@ -3,7 +3,6 @@ import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import AddressBarMarquee from "@/components/marketing/AddressBarMarquee";
 import LandingReveal from "@/components/marketing/LandingReveal";
-import LandingSparkle from "@/components/marketing/LandingSparkle";
 import LandingStills from "@/components/marketing/LandingStills";
 import PeekFilmstrip from "@/components/marketing/PeekFilmstrip";
 import { MARQUEE } from "@/lib/marquee-assets";
@@ -163,8 +162,6 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
           </Link>
         </div>
       </section>
-
-      <LandingSparkle />
 
       <section
         className="relative z-10 border-t"
@@ -386,9 +383,16 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
                 {t.ctaStart}
               </Link>
               <Link
+                href={peekHref}
+                className="text-sm font-semibold underline-offset-[6px] transition hover:underline"
+                style={{ color: "var(--landing-rose-deep)" }}
+              >
+                {t.ctaDemo} →
+              </Link>
+              <Link
                 href={localePath(locale, "/pricing")}
                 className="text-sm font-medium underline-offset-[6px] transition hover:underline"
-                style={{ color: "var(--landing-rose-deep)" }}
+                style={{ color: "var(--landing-muted)" }}
               >
                 {t.seePricing}
               </Link>

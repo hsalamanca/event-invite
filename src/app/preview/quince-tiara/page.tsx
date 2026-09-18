@@ -12,7 +12,7 @@ export default async function QuinceTiaraPreviewPage() {
 
   return (
     <div className="relative">
-      <div className="absolute right-3 top-3 z-30 sm:right-5 sm:top-5">
+      <div className="absolute right-3 top-14 z-30 sm:right-5 sm:top-16">
         <LanguageSwitcher locale={locale} variant="invite" />
       </div>
       <PreviewInvite event={event} locale={locale} />
