@@ -2,7 +2,7 @@
   "id": "evt_quince_tiara_demo",
   "slug": "quince-tiara-demo",
   "ownerId": null,
-  "hostName": "Mr. & Mrs. [Last]",
+  "hostName": "Mr. & Mrs. Zelaya",
   "title": "Quinceañera",
   "headline": "Katia Xiomara Zelaya",
   "headlineEs": "Katia Xiomara Zelaya",
@@ -10,8 +10,8 @@
   "taglineEs": "de su hija",
   "dateISO": "2027-06-13",
   "timeLabel": "1:00 PM",
-  "venue": "[Church]",
-  "address": "[City]",
+  "venue": "",
+  "address": "",
   "theme": {
     "colors": {
       "background": "#FFFCFA",
@@ -29,8 +29,8 @@
   "heroImage": "/templates/quince-tiara-hero.svg",
   "motionKit": "none",
   "customDomain": null,
-  "contactName": "[Contact]",
-  "contactPhone": "[phone]",
+  "contactName": "",
+  "contactPhone": "",
   "rsvpFields": {
     "plusOnes": {
       "enabled": true,
@@ -62,15 +62,15 @@
       "time": "1:00 PM",
       "title": "Mass",
       "titleEs": "Misa",
-      "description": "[Church], [City]"
+      "description": ""
     },
     {
       "id": "comida",
       "time": "3:00 PM",
       "title": "Lunch",
       "titleEs": "Comida",
-      "description": "[Reception venue], [City]",
-      "descriptionEs": "[Salón], [Ciudad]"
+      "description": "",
+      "descriptionEs": ""
     }
   ],
   "premiumTheme": true,

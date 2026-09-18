@@ -110,7 +110,14 @@ const TOKEN_RE = /\{[^{}]+\}/g;
 
 /** Guest preview must never show raw `{First Last}` (or any `{…}`) tokens. */
 export function stripTemplateTokens(value: string): string {
-  return value.replace(TOKEN_RE, "").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+  return value
+    .replace(TOKEN_RE, "")
+    .replace(/\[[^\]]+\]/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/,\s*,/g, ",")
+    .replace(/^[,\s]+|[,\s]+$/g, "")
+    .trim();
 }
 
 function resolveHonoreeName(raw: string): string {
