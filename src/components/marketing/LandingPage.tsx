@@ -52,18 +52,18 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
       <LandingSparkle />
 
       <header
-        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8 sm:py-6"
+        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8 sm:py-5"
         style={fade(40)}
       >
-        <BrandLogo tone="paper" height={28} href="/" />
+        <BrandLogo tone="paper" height={26} href="/" />
         <nav
-          className="flex flex-wrap items-center justify-end gap-3 text-sm sm:gap-5"
+          className="flex flex-wrap items-center justify-end gap-2.5 text-sm sm:gap-5"
           style={{ color: "var(--landing-muted)" }}
         >
           <LanguageSwitcher locale={locale} path="/" variant="paper" />
           <Link
             href={localePath(locale, "/marketplace")}
-            className="transition hover:text-[var(--landing-ink)]"
+            className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
           >
             {nav.templates}
           </Link>
@@ -96,19 +96,19 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
       </header>
 
       <section className="relative z-10">
-        <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 pb-12 pt-2 sm:gap-10 sm:px-8 sm:pb-20 sm:pt-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 lg:pb-24 lg:pt-4">
+        <div className="mx-auto grid max-w-6xl items-center gap-5 px-5 pb-10 pt-1 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] sm:gap-10 sm:px-8 sm:pb-20 sm:pt-4 lg:gap-10 lg:pb-24 lg:pt-2">
           <div>
             <p
-              className="text-xs uppercase tracking-[0.28em]"
+              className="text-[11px] uppercase tracking-[0.28em] sm:text-xs"
               style={{ color: "var(--landing-rose)", ...fade(80) }}
             >
               {t.brand}
             </p>
             <h1
-              className="mt-3 max-w-xl"
+              className="mt-2 max-w-xl sm:mt-3"
               style={{
                 ...displayFont,
-                fontSize: "clamp(2.35rem, 8vw, 4.4rem)",
+                fontSize: "clamp(2.05rem, 7.4vw, 4.4rem)",
                 fontWeight: 600,
                 lineHeight: 1.02,
                 letterSpacing: "-0.03em",
@@ -119,18 +119,18 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               {t.headline}
             </h1>
             <p
-              className="mt-4 max-w-md text-base leading-relaxed sm:text-lg"
+              className="mt-3 hidden max-w-md text-base leading-relaxed sm:mt-4 sm:block sm:text-lg"
               style={{ color: "var(--landing-muted)", ...fade(180) }}
             >
               {t.support}
             </p>
             <div
-              className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-stretch"
+              className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 sm:mt-7"
               style={fade(240)}
             >
               <Link
                 href="/register"
-                className="inline-flex min-h-12 flex-1 items-center justify-center rounded-md px-6 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:flex-none sm:px-7"
+                className="inline-flex min-h-12 items-center justify-center rounded-md px-5 py-3.5 text-sm font-semibold text-white transition hover:opacity-95 sm:px-7"
                 style={{
                   background: "var(--landing-rose)",
                   boxShadow: "0 1px 2px rgba(143,78,88,0.18)",
@@ -140,28 +140,26 @@ export default function LandingPage({ locale = "en" }: { locale?: Locale }) {
               </Link>
               <Link
                 href={localePath(locale, "/preview/quince-princesa")}
-                className="inline-flex min-h-12 flex-1 items-center justify-center rounded-md px-6 py-3.5 text-sm font-semibold transition hover:bg-[var(--landing-blush)] sm:flex-none sm:px-7"
-                style={{
-                  border: "1.5px solid var(--landing-rose)",
-                  color: "var(--landing-rose-deep)",
-                }}
+                className="inline-flex items-center text-sm font-semibold underline-offset-[5px] transition hover:underline"
+                style={{ color: "var(--landing-rose-deep)" }}
               >
-                {t.ctaDemo}
+                {t.ctaDemo} →
               </Link>
             </div>
             <p
-              className="mt-4 text-sm leading-relaxed"
+              className="mt-3 text-xs leading-relaxed sm:mt-4 sm:text-sm"
               style={{ color: "var(--landing-muted)", ...fade(300) }}
             >
               {t.priceLine}
             </p>
           </div>
 
-          <div style={fade(160)}>
+          <div className="pt-1 sm:pt-0" style={fade(160)}>
             <HeroCraftMock
               url={t.mockUrl}
               peekHref={localePath(locale, "/preview/quince-princesa")}
               peekLabel={t.ctaDemo}
+              locale={locale}
             />
           </div>
         </div>

@@ -80,7 +80,7 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                 featured
                   ? "sm:col-span-2 lg:col-span-2"
                   : lead
-                    ? "lg:col-span-1"
+                    ? "sm:col-span-1 lg:col-span-1"
                     : ""
               }
             >
@@ -94,7 +94,7 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
               >
                 <div
                   className={`relative overflow-hidden ${
-                    featured ? "aspect-[5/4] sm:aspect-[16/10]" : "aspect-[3/4]"
+                    featured ? "aspect-[4/5] sm:aspect-[5/4]" : "aspect-[3/4]"
                   }`}
                   style={{ background: "var(--landing-blush)" }}
                 >
@@ -134,9 +134,8 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
                       href={templatePreviewPath(tpl.id)}
                       className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                       style={{
-                        border: "1.5px solid var(--landing-rose)",
+                        background: "var(--landing-blush)",
                         color: "var(--landing-rose-deep)",
-                        background: "transparent",
                       }}
                     >
                       {t.preview}

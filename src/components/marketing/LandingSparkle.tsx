@@ -1,33 +1,33 @@
 const PETALS = [
   {
     src: "/templates/quince-princesa/petal-single.png",
-    className: "landing-petal left-[8%] top-[18%] w-7 opacity-70",
+    className: "landing-petal left-[6%] top-[12%] w-7 opacity-70",
     style: { animationDelay: "0s" },
   },
   {
     src: "/templates/quince-princesa/petal-single.png",
-    className: "landing-petal right-[12%] top-[28%] w-6 opacity-60",
+    className: "landing-petal right-[10%] top-[14%] w-6 opacity-60",
     style: { animationDelay: "2.4s" },
   },
   {
     src: "/templates/quince-princesa/petal-single.png",
-    className: "landing-petal left-[18%] bottom-[22%] w-5 opacity-50",
+    className: "landing-petal left-[18%] top-[38%] w-5 opacity-50",
     style: { animationDelay: "4.1s" },
   },
   {
     src: "/templates/quince-princesa/petal-single.png",
-    className: "landing-petal right-[22%] bottom-[18%] w-8 opacity-55",
+    className: "landing-petal right-[22%] top-[42%] w-8 opacity-55",
     style: { animationDelay: "1.2s" },
   },
 ] as const;
 
 const SPARKS = [
-  { top: "16%", left: "22%", delay: "0.2s" },
-  { top: "24%", left: "78%", delay: "1.1s" },
-  { top: "72%", left: "8%", delay: "2.3s" },
-  { top: "78%", left: "88%", delay: "0.7s" },
-  { top: "8%", left: "42%", delay: "1.8s" },
-  { top: "12%", left: "64%", delay: "3s" },
+  { top: "10%", left: "18%", delay: "0.2s" },
+  { top: "14%", left: "82%", delay: "1.1s" },
+  { top: "36%", left: "8%", delay: "2.3s" },
+  { top: "32%", left: "88%", delay: "0.7s" },
+  { top: "6%", left: "42%", delay: "1.8s" },
+  { top: "8%", left: "64%", delay: "3s" },
 ] as const;
 
 /** Soft petal + sparkle field. CSS pauses itself under prefers-reduced-motion. */
