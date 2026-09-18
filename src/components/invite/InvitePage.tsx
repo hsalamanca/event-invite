@@ -4379,23 +4379,28 @@ export default function InvitePage({
         }
 
         /* —— Quince rosa (premium bloom) —— */
+        :global(.invite-cover[data-layout="quincebloom"] .invite-cover-atmosphere-img) {
+          filter: saturate(1.05) brightness(0.92);
+          transform: scale(1.04);
+        }
+
         :global(.invite-cover[data-layout="quincebloom"] .invite-cover-atmosphere-veil) {
           background:
             radial-gradient(
               circle at 18% 20%,
-              rgba(210, 80, 130, 0.45),
+              rgba(210, 80, 130, 0.28),
               transparent 42%
             ),
             radial-gradient(
               circle at 82% 18%,
-              rgba(212, 160, 23, 0.28),
+              rgba(212, 160, 23, 0.18),
               transparent 40%
             ),
             linear-gradient(
-              165deg,
-              #4a1228 0%,
-              #2a0c18 48%,
-              #1a0810 100%
+              180deg,
+              rgba(42, 12, 24, 0.35) 0%,
+              rgba(42, 12, 24, 0.55) 45%,
+              rgba(26, 8, 16, 0.72) 100%
             );
         }
 
@@ -4414,6 +4419,11 @@ export default function InvitePage({
           animation: quincebloomTwinkle 4.5s ease-in-out infinite;
         }
 
+        :global(.invite-cover[data-layout="quincebloom"] .invite-cover-stage) {
+          width: min(100%, 36rem);
+          margin-inline: auto;
+        }
+
         :global(.invite-cover[data-layout="quincebloom"] .invite-card) {
           position: relative;
           z-index: 1;
@@ -4424,13 +4434,15 @@ export default function InvitePage({
           box-shadow: none;
           padding: 0;
           color: #3a1224;
+          width: 100%;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-card) {
           position: relative;
           margin: 0 auto;
-          padding: 1.35rem 1.15rem 1.4rem;
-          width: min(100%, 420px);
+          padding: 1.5rem 1.35rem 1.55rem;
+          width: 100%;
+          max-width: 34rem;
           border-radius: 1.45rem;
           background:
             linear-gradient(180deg, #fffafc 0%, #fff0f5 55%, #ffe4ef 100%);
@@ -4482,7 +4494,7 @@ export default function InvitePage({
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-photo-stage) {
           position: relative;
           z-index: 1;
-          width: min(78%, 260px);
+          width: min(72%, 280px);
           margin: 0 auto 0.85rem;
           aspect-ratio: 3 / 4;
         }
@@ -4566,7 +4578,7 @@ export default function InvitePage({
           z-index: 1;
           margin: 0 auto;
           padding: 0.85rem 1rem;
-          width: min(100%, 300px);
+          width: min(100%, 340px);
           border-radius: 1rem;
           background: color-mix(in srgb, #c2185b 8%, #fff);
           border: 1px solid color-mix(in srgb, #d4a017 40%, #fff);
@@ -4599,7 +4611,14 @@ export default function InvitePage({
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions) {
-          margin-top: 1rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          justify-content: center;
+          align-items: center;
+          margin-top: 1.15rem;
+          padding: 0 0.5rem 0.25rem;
+          width: 100%;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions .btn-primary) {
@@ -4608,6 +4627,7 @@ export default function InvitePage({
           color: #fff8fb;
           border: none;
           box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
+          min-width: 7.5rem;
         }
 
         :global(.invite-cover[data-layout="quincebloom"] .quincebloom-actions .btn-ghost) {
@@ -4615,6 +4635,7 @@ export default function InvitePage({
           border: 1.5px solid #d4a017;
           color: #d4a017;
           background: color-mix(in srgb, #2a0c18 55%, transparent);
+          min-width: 7.5rem;
         }
 
         @keyframes quincebloomFlutter {
