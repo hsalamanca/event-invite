@@ -1,13 +1,46 @@
 .invite-cover[data-layout="quinceframe"] {
   --qf-gold: #c9a227;
+  --qf-gold-deep: #a9821c;
+  --qf-gold-light: #e8ce7c;
   --qf-pink: #e8a0b8;
-  --qf-pink-deep: #d4789a;
+  --qf-pink-deep: #c9678f;
   --qf-ink: #6b5e52;
   --qf-paper: #fffcfa;
 }
 
 .invite-root[data-layout="quinceframe"] {
-  background: var(--qf-paper);
+  background:
+    radial-gradient(
+      120% 80% at 50% 0%,
+      #fdf3f6 0%,
+      #f8e7ec 46%,
+      #f3dde4 100%
+    );
+}
+
+/* Blush studio backdrop so the white card reads as stock lying on a surface. */
+.invite-cover[data-layout="quinceframe"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      42% 32% at 20% 14%,
+      color-mix(in srgb, #e8c98a 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      38% 30% at 82% 82%,
+      color-mix(in srgb, #e8a0b8 20%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      120% 100% at 50% 120%,
+      color-mix(in srgb, #6b5e52 16%, transparent),
+      transparent 62%
+    );
 }
 
 /* Atmosphere hero SVG is an opaque #FFFCFA rect — hide it so florals stay true-alpha. */
@@ -18,12 +51,12 @@
 }
 
 .invite-cover[data-layout="quinceframe"] .invite-cover-stage {
-  width: min(100%, 30rem);
+  width: min(100%, 35rem);
 }
 
 /* Beat InvitePage :global(.invite-card) cream/overflow so only .quinceframe-card paints paper. */
 .invite-cover[data-layout="quinceframe"] .invite-card {
-  width: min(100%, 28.5rem);
+  width: min(100%, 33rem);
   margin: 0 auto;
   padding: 0;
   overflow: visible !important;
@@ -35,15 +68,54 @@
   color: var(--qf-ink);
 }
 
+/* Card is the type-scale container: every size below is a share of card width,
+   so the stationery keeps its proportions from a phone to a wide desktop. */
 .quinceframe-card {
   position: relative;
+  container-type: inline-size;
   width: 100%;
   aspect-ratio: 5 / 7;
-  background: var(--qf-paper);
   color: var(--qf-ink);
   text-align: center;
   overflow: hidden;
-  box-shadow: 0 18px 44px color-mix(in srgb, #6b5e52 14%, transparent);
+  background:
+    radial-gradient(
+      86% 66% at 50% 8%,
+      #fffdfc 0%,
+      var(--qf-paper) 52%,
+      #fdf6f3 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--qf-gold) 16%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -22px 44px color-mix(in srgb, #c9a227 5%, transparent),
+    0 1px 2px color-mix(in srgb, #6b5e52 18%, transparent),
+    0 26px 54px color-mix(in srgb, #6b5e52 22%, transparent);
+}
+
+/* Cotton-stock tooth: crossed hairlines plus a corner wash, all under 4% alpha. */
+.quinceframe-grain {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(
+      64deg,
+      rgba(107, 94, 82, 0.035) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      -58deg,
+      rgba(107, 94, 82, 0.028) 0 1px,
+      transparent 1px 4px
+    ),
+    radial-gradient(
+      120% 100% at 50% 50%,
+      transparent 58%,
+      color-mix(in srgb, #6b5e52 7%, transparent) 100%
+    );
 }
 
 .quinceframe-sparkle {
@@ -51,12 +123,62 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.45;
+  opacity: 0.6;
   background-image:
-    radial-gradient(circle at 18% 16%, #e0b84a 0 0.7px, transparent 1.2px),
-    radial-gradient(circle at 78% 14%, #c9a227 0 0.6px, transparent 1.1px),
-    radial-gradient(circle at 30% 74%, #e0b84a 0 0.55px, transparent 1px),
-    radial-gradient(circle at 70% 78%, #fff 0 0.55px, transparent 1px);
+    radial-gradient(circle at 18% 16%, #e0b84a 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 78% 14%, #c9a227 0 0.7px, transparent 1.2px),
+    radial-gradient(circle at 30% 74%, #e0b84a 0 0.6px, transparent 1.1px),
+    radial-gradient(circle at 70% 78%, #fff 0 0.6px, transparent 1.1px),
+    radial-gradient(circle at 46% 34%, #f6e7a8 0 0.7px, transparent 1.3px),
+    radial-gradient(circle at 62% 56%, #e8a0b8 0 0.6px, transparent 1.1px),
+    radial-gradient(circle at 24% 44%, #f6e7a8 0 0.5px, transparent 1px);
+  animation: quinceframe-twinkle 6s ease-in-out infinite;
+}
+
+/* One slow foil pass on load, the way light catches gold when a card is tilted. */
+.quinceframe-foil {
+  pointer-events: none;
+  position: absolute;
+  top: -25%;
+  left: -60%;
+  z-index: 4;
+  width: 45%;
+  height: 150%;
+  transform: rotate(18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5) 40%,
+    color-mix(in srgb, #f6e7a8 55%, transparent) 52%,
+    rgba(255, 255, 255, 0.42) 62%,
+    transparent
+  );
+  opacity: 0;
+  animation: quinceframe-foil-sweep 2.6s cubic-bezier(0.32, 0.9, 0.36, 1) 0.5s 1
+    forwards;
+}
+
+@keyframes quinceframe-foil-sweep {
+  0% {
+    left: -60%;
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.95;
+  }
+  82% {
+    opacity: 0.95;
+  }
+  100% {
+    left: 118%;
+    opacity: 0;
+  }
+}
+
+@keyframes quinceframe-twinkle {
+  50% {
+    opacity: 0.32;
+  }
 }
 
 .quinceframe-floral,
@@ -83,8 +205,8 @@
 .quinceframe-floral--tl {
   top: -1%;
   left: -2%;
-  width: 42%;
-  height: 22%;
+  width: 46%;
+  height: 25%;
 }
 
 .quinceframe-floral--tr {
@@ -104,8 +226,16 @@
 .quinceframe-floral--br {
   right: -1%;
   bottom: -2%;
-  width: 38%;
-  height: 24%;
+  width: 40%;
+  height: 26%;
+}
+
+/* Watercolour lifts off the stock with a warm, barely-there cast shadow. */
+.quinceframe-floral--tl .quinceframe-asset,
+.quinceframe-floral--br .quinceframe-asset,
+.quinceframe-floral--tr .quinceframe-asset,
+.quinceframe-floral--bl .quinceframe-asset {
+  filter: drop-shadow(0 3px 5px color-mix(in srgb, #6b5e52 16%, transparent));
 }
 
 .quinceframe-floral .quinceframe-asset,
@@ -174,110 +304,154 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 9% 12% 3%;
+  padding: 7.5% 11% 4%;
 }
 
 .quinceframe-tiara {
   display: block;
-  width: min(38%, 7rem);
-  margin: 0.15rem auto 0.15rem;
+  width: min(34%, 8.5rem);
+  margin: 0 auto;
+  filter: drop-shadow(0 2px 3px color-mix(in srgb, #c9678f 26%, transparent));
 }
 
 .quinceframe-host {
-  margin: 0.15rem 0 0;
+  margin: 0.5rem 0 0;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(0.62rem, 2.4vw, 0.78rem);
+  font-size: clamp(0.74rem, 2.6vw, 0.95rem);
+  font-size: max(0.74rem, 2.9cqw);
   font-weight: 600;
-  letter-spacing: 0.16em;
-  line-height: 1.45;
+  letter-spacing: 0.17em;
+  line-height: 1.6;
   text-transform: uppercase;
   white-space: pre-line;
-  color: var(--qf-gold);
+  color: var(--qf-gold-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .quinceframe-script {
-  margin: 0.2rem 0 0;
+  margin: 0.35rem 0 0;
   font-family: var(--font-great-vibes), cursive;
-  font-size: clamp(1.7rem, 7.2vw, 2.35rem);
-  line-height: 1.05;
-  color: var(--qf-pink);
+  font-size: clamp(1.9rem, 7.6vw, 3rem);
+  font-size: max(1.9rem, 9.2cqw);
+  line-height: 1.1;
+  color: var(--qf-pink-deep);
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.85));
 }
 
 .quinceframe-relation {
-  margin: 0.2rem 0 0;
+  margin: 0.3rem 0 0;
   font-family: var(--font-cormorant), Georgia, serif;
   font-style: normal;
-  font-size: clamp(0.62rem, 2.3vw, 0.76rem);
+  font-size: clamp(0.72rem, 2.5vw, 0.92rem);
+  font-size: max(0.72rem, 2.8cqw);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.19em;
   text-transform: uppercase;
-  color: var(--qf-gold);
+  color: var(--qf-gold-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .quinceframe-name {
-  margin: 0.15rem 0 0;
+  margin: 0.25rem 0 0;
   font-family: var(--font-great-vibes), cursive;
-  font-size: clamp(2.1rem, 8.6vw, 3.05rem);
+  font-size: clamp(2.15rem, 9vw, 3.8rem);
+  font-size: max(2.15rem, 11.6cqw);
   font-weight: 400;
-  line-height: 1.05;
-  color: var(--qf-pink);
+  line-height: 1.08;
+  color: var(--qf-pink-deep);
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.9));
+}
+
+/* Rose-foil wash on the honoree name; solid pink above stays the fallback. */
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .quinceframe-name {
+    background: linear-gradient(
+      104deg,
+      #b95a80 0%,
+      #e08fae 26%,
+      #f6cddb 46%,
+      #d4789a 66%,
+      #b95a80 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .quinceframe-date {
-  margin: 0.55rem 0 0;
+  margin: 0.85rem 0 0;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(0.62rem, 2.3vw, 0.76rem);
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: clamp(0.78rem, 2.6vw, 0.98rem);
+  font-size: max(0.78rem, 3.05cqw);
+  font-weight: 700;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
-  color: var(--qf-gold);
+  color: var(--qf-gold-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .quinceframe-mass {
-  margin: 0.4rem auto 0;
-  max-width: 86%;
+  margin: 0.5rem auto 0;
+  max-width: 90%;
 }
 
 .quinceframe-kicker {
   margin: 0;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(0.62rem, 2.2vw, 0.74rem);
+  font-size: clamp(0.8rem, 2.6vw, 1rem);
+  font-size: max(0.8rem, 3.05cqw);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  line-height: 1.45;
   text-transform: none;
-  color: var(--qf-gold);
+  color: var(--qf-gold-deep);
 }
 
 .quinceframe-mass-detail,
 .quinceframe-side-detail {
-  margin: 0.18rem 0 0;
+  margin: 0.25rem 0 0;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(0.68rem, 2.3vw, 0.8rem);
-  line-height: 1.35;
+  font-size: clamp(0.76rem, 2.5vw, 0.95rem);
+  font-size: max(0.76rem, 2.9cqw);
+  line-height: 1.45;
   white-space: pre-line;
-  color: var(--qf-gold);
+  color: var(--qf-gold-deep);
+}
+
+.quinceframe-ornament {
+  display: block;
+  width: 58%;
+  margin: 0.9rem auto 0;
+}
+
+.quinceframe-ornament-svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .quinceframe-col-head {
   margin: 0;
   font-family: var(--font-great-vibes), cursive;
-  font-size: clamp(1.05rem, 3.8vw, 1.35rem);
-  line-height: 1.1;
-  color: var(--qf-pink);
+  font-size: clamp(1.15rem, 4vw, 1.7rem);
+  font-size: max(1.15rem, 5.2cqw);
+  line-height: 1.15;
+  color: var(--qf-pink-deep);
 }
 
+/* Columns hug the outer edges so the gown owns the centre without collisions. */
 .quinceframe-footer {
   position: relative;
   z-index: 5;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 30%) minmax(0, 30%);
+  justify-content: space-between;
   align-items: start;
-  gap: 0.4rem 1.5rem;
+  gap: 0.4rem;
   margin-top: auto;
-  min-height: 38%;
-  padding-top: 0.35rem;
-  padding-left: 1.15rem;
-  padding-right: 1.15rem;
+  min-height: 40%;
+  padding-top: 0.6rem;
 }
 
 .quinceframe-footer-gown {
@@ -285,11 +459,12 @@
   left: 50%;
   bottom: 0;
   z-index: 1;
-  width: 56%;
-  height: 100%;
+  width: 46%;
+  height: 96%;
   transform: translateX(-50%);
   overflow: visible;
   pointer-events: none;
+  filter: drop-shadow(0 6px 10px color-mix(in srgb, #6b5e52 18%, transparent));
 }
 
 .quinceframe-footer-gown:has(.quinceframe-honoree--filled) {
@@ -416,5 +591,26 @@
   .quinceframe-sparkle,
   .quinceframe-floral {
     animation: none !important;
+  }
+
+  .quinceframe-foil {
+    display: none;
+  }
+}
+
+/* Print and postcard capture: flat ink, no sheen, no gradient-clipped type. */
+@media print {
+  .quinceframe-foil {
+    display: none;
+  }
+
+  .quinceframe-name {
+    background: none;
+    -webkit-text-fill-color: var(--qf-pink-deep);
+    color: var(--qf-pink-deep);
+  }
+
+  .quinceframe-card {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--qf-gold) 18%, transparent);
   }
 }

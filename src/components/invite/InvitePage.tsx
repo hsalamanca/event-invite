@@ -5669,14 +5669,18 @@ export default function InvitePage({
           background: none;
           -webkit-background-clip: unset;
           background-clip: unset;
-          color: #e8a0b8;
-          font-family: var(--font-great-vibes), cursive;
-          font-weight: 400;
+          color: #b2597d;
+          font-family: var(--font-title);
+          font-weight: 700;
           letter-spacing: 0.01em;
         }
 
+        .invite-root[data-layout="quinceframe"] .invite-section-title--sm {
+          color: #a9821c;
+        }
+
         .invite-root[data-layout="quinceframe"] .invite-meta dt {
-          color: #c9a227;
+          color: #a9821c;
           font-family: var(--font-cormorant), Georgia, serif;
           letter-spacing: 0.14em;
           text-transform: uppercase;
@@ -5684,8 +5688,9 @@ export default function InvitePage({
 
         .invite-root[data-layout="quinceframe"] .btn-primary,
         .invite-root[data-layout="quinceframe"] .invite-section--rsvp .btn-submit {
-          background: #c9a227;
+          background: linear-gradient(135deg, #b8901f, #96701a);
           color: #fffcfa;
+          box-shadow: 0 10px 22px color-mix(in srgb, #a9821c 30%, transparent);
         }
 
         .invite-root[data-quince="bordered"] .invite-section,

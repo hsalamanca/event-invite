@@ -2,6 +2,7 @@ import DateLine from "./DateLine";
 import EventScript from "./EventScript";
 import FloralCorner from "./FloralCorner";
 import FooterSplit from "./FooterSplit";
+import GoldOrnament from "./GoldOrnament";
 import HonoreeName from "./HonoreeName";
 import HonoreePortrait from "./HonoreePortrait";
 import HostLine from "./HostLine";
@@ -37,7 +38,9 @@ export default function QuinceFrameCover({
 }) {
   return (
     <div className="quinceframe-card">
+      <div className="quinceframe-grain" aria-hidden />
       <div className="quinceframe-sparkle" aria-hidden />
+      {printMode ? null : <div className="quinceframe-foil" aria-hidden />}
       <FloralCorner corner="tl" />
       {denseFlorals ? <FloralCorner corner="tr" /> : null}
       {denseFlorals ? <FloralCorner corner="bl" /> : null}
@@ -50,6 +53,7 @@ export default function QuinceFrameCover({
         <HonoreeName>{copy.honoreeName}</HonoreeName>
         <DateLine>{copy.dateLine}</DateLine>
         <MassLine label={copy.massLabel} detail={copy.massDetail} />
+        <GoldOrnament />
         <FooterSplit
           lunch={
             <LunchBlock label={copy.lunchLabel} detail={copy.lunchDetail} />
