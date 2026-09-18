@@ -34,6 +34,8 @@ export type Dictionary = {
     chipWedding: string;
     chipFiesta: string;
     chipBirthday: string;
+    domainChip: string;
+    featuredHonoree: string;
   };
   landing: {
     brand: string;
@@ -42,8 +44,13 @@ export type Dictionary = {
     ctaStart: string;
     ctaDemo: string;
     ctaHow: string;
+    ctaBrowse: string;
+    demoCredit: string;
     priceLine: string;
     mockUrl: string;
+    demoUrl: string;
+    filmstripTitle: string;
+    filmstripCaptions: string[];
     stillsTitle: string;
     domainTitle: string;
     domainBody: string;
@@ -423,23 +430,30 @@ const en: Dictionary = {
     chipWedding: "Wedding",
     chipFiesta: "Fiesta",
     chipBirthday: "Birthday",
+    domainChip: "katia.com",
+    featuredHonoree: "Katia Gonzalez",
   },
   landing: {
     brand: "Ownvite",
     headline: "A celebration worth opening.",
     support:
-      "Stationery-grade invites on cream paper, living on the address you already own.",
+      "Stationery-grade invites on cream paper — hosted on your domain, not ours.",
     ctaStart: "Create an invitation",
     ctaDemo: "Peek a live invite",
     ctaHow: "See how it works",
+    ctaBrowse: "Browse templates",
+    demoCredit: "Katia Gonzalez · Mis XV años",
     priceLine: "Free to start · Pay per event · No per-guest · No ads",
     mockUrl: "yourevent.com",
+    demoUrl: "katia.com",
+    filmstripTitle: "See a real Ownvite invite",
+    filmstripCaptions: ["Envelope", "The night", "RSVP"],
     stillsTitle: "Looks guests actually open.",
     domainTitle: "Hosted on your name, not ours.",
     domainBody:
       "Guests open your domain. RSVPs, updates, and memories stay under your brand — not a disposable link.",
     domainLink: "Connect your domain",
-    domainUrl: "mayraandhugo.com",
+    domainUrl: "katia.com",
     craftTitle: "Designed like print. Delivered like the web.",
     craftBody:
       "Typography, paper texture, and layout that feel intentional — then open instantly on any phone.",
@@ -460,7 +474,7 @@ const en: Dictionary = {
     closeBody: "Start free. Connect a domain when you’re ready.",
     closeNote: "No credit card to explore templates.",
     seePricing: "See pricing",
-    footer: "Ownvite · Your event, your domain, your design",
+    footer: "ownvite.app · Your event, your domain, your design",
   },
   pricing: {
     title: "Pricing",
@@ -900,23 +914,30 @@ const es: Dictionary = {
     chipWedding: "Boda",
     chipFiesta: "Fiesta",
     chipBirthday: "Cumpleaños",
+    domainChip: "katia.com",
+    featuredHonoree: "Katia Gonzalez",
   },
   landing: {
     brand: "Ownvite",
-    headline: "Una celebración que da gusto abrir.",
+    headline: "Una celebración que vale la pena abrir.",
     support:
-      "Invitaciones de papelería en cream, que viven en la dirección que ya es tuya.",
+      "Invitaciones con calidad de papelería en papel crema — en tu dominio, no en el nuestro.",
     ctaStart: "Crear una invitación",
     ctaDemo: "Ver una invitación en vivo",
     ctaHow: "Cómo funciona",
-    priceLine: "Gratis para empezar · Pagas por evento · Sin cobro por invitado · Sin anuncios",
+    ctaBrowse: "Ver plantillas",
+    demoCredit: "Katia Gonzalez · Mis XV años",
+    priceLine: "Empieza gratis · Pagas por evento · Sin costo por invitado · Sin anuncios",
     mockUrl: "yourevent.com",
+    demoUrl: "katia.com",
+    filmstripTitle: "Mira una invitación Ownvite de verdad",
+    filmstripCaptions: ["El sobre", "La noche", "RSVP"],
     stillsTitle: "Looks que los invitados sí abren.",
     domainTitle: "En tu nombre, no en el nuestro.",
     domainBody:
       "Tus invitados abren tu dominio. Confirmaciones, novedades y recuerdos quedan bajo tu marca — no en un enlace genérico.",
     domainLink: "Conecta tu dominio",
-    domainUrl: "mayraandhugo.com",
+    domainUrl: "katia.com",
     craftTitle: "Diseñada como impresión. Entregada como la web.",
     craftBody:
       "Tipografía, textura de papel y composición intencional — y se abre al instante en cualquier teléfono.",
@@ -941,7 +962,7 @@ const es: Dictionary = {
     closeBody: "Empieza gratis. Conecta un dominio cuando quieras.",
     closeNote: "Sin tarjeta para explorar plantillas.",
     seePricing: "Ver precios",
-    footer: "Ownvite · Tu evento, tu dominio, tu diseño",
+    footer: "ownvite.app · Tu evento, tu dominio, tu diseño",
   },
   pricing: {
     title: "Precios",

@@ -22,7 +22,7 @@ export default function PricingPageView({ locale = "en" }: { locale?: Locale }) 
       headerExtra={
         <Link
           href={localePath(locale, "/preview/quince-princesa")}
-          className="hidden text-sm transition hover:text-[var(--landing-ink)] sm:inline"
+          className="text-sm transition hover:text-[var(--landing-ink)]"
           style={{ color: "var(--landing-muted)" }}
         >
           {t.seeDemo}

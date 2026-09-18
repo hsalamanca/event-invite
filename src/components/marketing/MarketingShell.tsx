@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import MarketingNav from "@/components/marketing/MarketingNav";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -55,48 +55,7 @@ export default function MarketingShell({
             tone="paper"
             height={28}
           />
-          <nav
-            className="flex flex-wrap items-center justify-end gap-3 text-sm sm:gap-5"
-            style={{ ...bodyFont, color: "var(--landing-muted)" }}
-          >
-            <LanguageSwitcher
-              locale={locale}
-              path={path}
-              variant="paper"
-            />
-            {headerExtra}
-            <Link
-              href={localePath(locale, "/marketplace")}
-              className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
-            >
-              {nav.templates}
-            </Link>
-            <Link
-              href={localePath(locale, "/domains")}
-              className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
-            >
-              {nav.domains}
-            </Link>
-            <Link
-              href={localePath(locale, "/pricing")}
-              className="hidden transition hover:text-[var(--landing-ink)] sm:inline"
-            >
-              {nav.pricing}
-            </Link>
-            <Link
-              href="/login"
-              className="transition hover:text-[var(--landing-ink)]"
-            >
-              {nav.signIn}
-            </Link>
-            <Link
-              href="/register"
-            className="rounded-md px-3.5 py-2 font-medium text-white transition hover:opacity-95"
-            style={{ background: "var(--landing-cta)" }}
-            >
-              {nav.signUp}
-            </Link>
-          </nav>
+          <MarketingNav locale={locale} path={path} extra={headerExtra} />
         </div>
       </header>
 

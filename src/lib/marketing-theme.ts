@@ -1,35 +1,53 @@
 import type { CSSProperties } from "react";
 
-/** Warm blush / cream / rose-gold marketing chrome (quince craft, not navy SaaS). */
+/**
+ * Ink A cream / rose / gold marketing chrome.
+ * Pixel B Marquee Domain composition. Never navy SaaS.
+ * CoS type lock: Fraunces (display) + DM Sans (UI).
+ */
 export const paperThemeVars = {
-  "--landing-ink": "#1A1714",
+  "--ink": "#3A2A30",
+  "--landing-ink": "#3A2A30",
   "--landing-muted": "#5C564E",
   "--landing-paper": "#FBF6F2",
   "--landing-paper-2": "#F3E6DC",
-  "--landing-blush": "#F6E9EC",
+  "--landing-blush": "#FFE8EF",
   "--landing-rose": "#B76E79",
   "--landing-rose-deep": "#8F4E58",
   "--landing-rose-gold": "#C9A27A",
+  "--landing-gold": "#C4A574",
+  "--landing-champagne": "#E8D5B5",
   "--landing-cta": "#B76E79",
-  "--landing-cedar": "#6B5338",
-  "--landing-cedar-deep": "#534028",
-  "--landing-line": "#E4D5C8",
-  "--landing-fg": "#1A1714",
+  "--landing-cedar": "#8F4E58",
+  "--landing-cedar-deep": "#6B3F48",
+  "--landing-line": "#E8D9C8",
+  "--landing-fg": "#3A2A30",
   "--landing-soft": "#5C564E",
   "--landing-accent": "#B76E79",
   "--landing-surface": "#FFFCFA",
   background:
-    "linear-gradient(180deg, #FBF6F2 0%, #F6E9EC 38%, #F7F3EE 100%)",
-  color: "#1A1714",
-  fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
+    "linear-gradient(180deg, #FFFCFA 0%, #FFE8EF 42%, #FBF6F2 100%)",
+  color: "#3A2A30",
+  fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif",
 } as CSSProperties;
 
 export const displayFont: CSSProperties = {
   fontFamily: "var(--font-fraunces), 'Fraunces', Georgia, serif",
 };
 
+/** Billboard display — CoS lock is Fraunces, not Playfair. */
+export const heroDisplayFont: CSSProperties = {
+  fontFamily: "var(--font-fraunces), 'Fraunces', Georgia, serif",
+};
+
 export const bodyFont: CSSProperties = {
-  fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
+  fontFamily: "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif",
+};
+
+export const marqueeFont: CSSProperties = {
+  fontFamily: "var(--font-dm-sans), 'DM Sans', ui-sans-serif, sans-serif",
+  fontVariantNumeric: "tabular-nums",
+  letterSpacing: "0.02em",
 };
 
 export const paperGrainStyle: CSSProperties = {

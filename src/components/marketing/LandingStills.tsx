@@ -35,13 +35,27 @@ export default function LandingStills({
           <Link
             key={tpl.id}
             href={localePath(locale, `/preview/${tpl.id}`)}
-            className="relative h-40 w-28 shrink-0 overflow-hidden rounded-md border sm:h-48 sm:w-36"
+            className="relative h-44 w-[7.25rem] shrink-0 overflow-hidden rounded-md sm:h-52 sm:w-36"
             style={{
-              borderColor: "var(--landing-line)",
+              border: "1px solid var(--landing-champagne, #E8D5B5)",
               background: "var(--landing-surface)",
+              boxShadow:
+                "0 10px 24px rgba(58,42,48,0.08), inset 0 0 0 3px #FFFCFA",
             }}
           >
             <StationeryThumb template={tpl} locale={locale} />
+            {tpl.id === "quince-princesa" ? (
+              <span
+                className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide"
+                style={{
+                  background: "rgba(255,252,250,0.94)",
+                  color: "var(--landing-ink)",
+                  border: "1px solid var(--landing-gold, #C4A574)",
+                }}
+              >
+                katia.com
+              </span>
+            ) : null}
           </Link>
         ))}
       </div>

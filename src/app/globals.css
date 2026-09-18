@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0f1a2e;
-  --slate: #1a2744;
+  --ink: #3a2a30;
+  --slate: #5c564e;
   --champagne: #c9a962;
   --champagne-bright: #e4c77a;
   --ember: #e07a5f;
@@ -12,10 +12,17 @@
   --mist: #9ba8bc;
   --coral: #e07a5f;
   --sun: #ffc857;
-  --background: var(--ink);
-  --foreground: var(--ivory);
+  --background: #fffcfa;
+  --foreground: #3a2a30;
   --font-display: var(--font-cormorant), Georgia, serif;
   --font-body: var(--font-source-sans), system-ui, sans-serif;
+}
+
+html:not(:has(.paper-surface)) {
+  --ink: #0f1a2e;
+  --slate: #1a2744;
+  --background: #0f1a2e;
+  --foreground: var(--ivory);
 }
 
 html {
@@ -149,11 +156,62 @@ body {
   }
 }
 
-/* Marketing home/gallery: never flash navy body chrome. */
+/* Marketing home/gallery: cream/rose tokens only — never flash navy. */
+html:has(.paper-surface) {
+  --ink: #3a2a30;
+  --slate: #5c564e;
+  --background: #fffcfa;
+  --foreground: #3a2a30;
+}
 html:has(.paper-surface),
 html:has(.paper-surface) body {
-  background: #fbf6f2;
-  color: #1a1714;
+  background: #fffcfa;
+  color: #3a2a30;
+}
+
+.marquee-hero-veil {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 252, 250, 0.22) 0%,
+    rgba(58, 42, 48, 0.08) 28%,
+    rgba(58, 42, 48, 0.42) 62%,
+    rgba(58, 42, 48, 0.78) 100%
+  );
+}
+
+.marquee-price {
+  background: rgba(255, 252, 250, 0.92);
+  border: 1px solid #e8d5b5;
+}
+
+.marquee-sheen {
+  position: relative;
+  isolation: isolate;
+}
+
+.marquee-sheen::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 252, 250, 0.55) 48%,
+    transparent 72%
+  );
+  background-size: 220% 100%;
+  animation: marquee-sheen 4.8s ease-in-out infinite;
+}
+
+@keyframes marquee-sheen {
+  0% {
+    background-position: 120% 50%;
+  }
+  100% {
+    background-position: -40% 50%;
+  }
 }
 
 @keyframes landing-petal {
@@ -208,7 +266,8 @@ html:has(.paper-surface) body {
 @media (prefers-reduced-motion: reduce) {
   .landing-petal,
   .landing-spark,
-  .landing-float {
+  .landing-float,
+  .marquee-sheen::after {
     animation: none !important;
   }
 }
