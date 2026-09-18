@@ -75,6 +75,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     },
     schedule: raw.schedule ?? [],
     faqs: raw.faqs ?? [],
+    padrinos: raw.padrinos ?? [],
     gallery: normalizeGallery(raw.gallery),
     galleryLayout: normalizeGalleryLayout(raw.galleryLayout),
     parking: raw.parking ?? "",

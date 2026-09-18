@@ -24,6 +24,7 @@ import {
   suggestSpanishFaq,
   suggestSpanishHeadline,
   suggestSpanishParking,
+  suggestSpanishPadrinoRole,
   suggestSpanishScheduleTitle,
   suggestSpanishTagline,
 } from "@/lib/i18n/event-content";
@@ -31,6 +32,7 @@ import type {
   CustomQuestion,
   EventRecord,
   FaqItem,
+  PadrinoItem,
   ScheduleItem,
   Theme,
 } from "@/lib/types";
@@ -99,6 +101,7 @@ type Draft = {
   customQuestions: CustomQuestion[];
   schedule: ScheduleItem[];
   faqs: FaqItem[];
+  padrinos: PadrinoItem[];
   gallery: string[];
   galleryLayout: GalleryLayout;
   parking: string;
@@ -148,6 +151,15 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
           : item.answer,
     };
   });
+  const padrinos = (event.padrinos ?? []).map((item) => ({
+    ...item,
+    role:
+      locale === "es"
+        ? item.roleEs ||
+          suggestSpanishPadrinoRole(item.role) ||
+          item.role
+        : item.role,
+  }));
   return {
     hostName: event.hostName,
     title: event.title,
@@ -224,6 +236,7 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
     customQuestions: [...(event.rsvpFields.customQuestions ?? [])],
     schedule,
     faqs,
+    padrinos,
     gallery: normalizeGallery(event.gallery),
     galleryLayout: normalizeGalleryLayout(event.galleryLayout),
     parking:
@@ -262,6 +275,7 @@ function mergeLocalizedContent(
   | "aboutEs"
   | "schedule"
   | "faqs"
+  | "padrinos"
   | "parking"
   | "parkingEs"
 > {
@@ -294,6 +308,15 @@ function mergeLocalizedContent(
           answer: prev?.answer || d.answer,
           questionEs: d.question,
           answerEs: d.answer,
+        };
+      }),
+      padrinos: draft.padrinos.map((d) => {
+        const prev = (base.padrinos ?? []).find((p) => p.id === d.id);
+        return {
+          id: d.id,
+          name: d.name,
+          role: prev?.role || d.role,
+          roleEs: d.role,
         };
       }),
     };
@@ -345,6 +368,16 @@ function mergeLocalizedContent(
         answer: d.answer,
         questionEs: prev?.questionEs || suggested.question,
         answerEs: prev?.answerEs || suggested.answer,
+      };
+    }),
+    padrinos: draft.padrinos.map((d) => {
+      const prev = (base.padrinos ?? []).find((p) => p.id === d.id);
+      return {
+        id: d.id,
+        name: d.name,
+        role: d.role,
+        roleEs:
+          prev?.roleEs || suggestSpanishPadrinoRole(d.role) || undefined,
       };
     }),
   };
@@ -427,6 +460,7 @@ function toPreviewEvent(
     },
     schedule: localized.schedule,
     faqs: localized.faqs,
+    padrinos: localized.padrinos,
     gallery: normalizeGallery(draft.gallery),
     galleryLayout: draft.galleryLayout,
     parking: localized.parking,
@@ -560,6 +594,7 @@ export default function EventCustomizer({
       },
       schedule: localized.schedule,
       faqs: localized.faqs,
+      padrinos: localized.padrinos,
       gallery: preview.gallery,
       galleryLayout: draft.galleryLayout,
       parking: localized.parking,
@@ -1317,7 +1352,8 @@ export default function EventCustomizer({
           <fieldset>
             <legend>Celebration extras</legend>
             <p className="field-hint">
-              Schedule, FAQ, parking, gallery, Spotify, and guest logistics.
+              Schedule, padrinos, FAQ, parking, gallery, Spotify, and guest
+              logistics.
             </p>
             <div className="nested-block">
               <span className="nested-label">Day-of schedule</span>
@@ -1371,6 +1407,60 @@ export default function EventCustomizer({
                 }
               >
                 + Add schedule row
+              </button>
+            </div>
+
+            <div className="nested-block">
+              <span className="nested-label">Padrinos</span>
+              <p className="field-hint">
+                Add padrinos and madrinas with their role (honor, vals, cake,
+                etc.).
+              </p>
+              {draft.padrinos.map((item, idx) => (
+                <div key={item.id} className="nested-row">
+                  <input
+                    placeholder="Name"
+                    value={item.name}
+                    onChange={(e) => {
+                      const next = [...draft.padrinos];
+                      next[idx] = { ...item, name: e.target.value };
+                      updateField("padrinos", next);
+                    }}
+                  />
+                  <input
+                    placeholder="Role (e.g. Padrinos de honor)"
+                    value={item.role}
+                    onChange={(e) => {
+                      const next = [...draft.padrinos];
+                      next[idx] = { ...item, role: e.target.value };
+                      updateField("padrinos", next);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="host-ghost-btn"
+                    onClick={() =>
+                      updateField(
+                        "padrinos",
+                        draft.padrinos.filter((x) => x.id !== item.id),
+                      )
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="host-ghost-btn"
+                onClick={() =>
+                  updateField("padrinos", [
+                    ...draft.padrinos,
+                    { id: newId("pad"), name: "", role: "" },
+                  ])
+                }
+              >
+                + Add padrino
               </button>
             </div>
 

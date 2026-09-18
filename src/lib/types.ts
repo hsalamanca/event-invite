@@ -61,6 +61,15 @@ export type FaqItem = {
   answerEs?: string;
 };
 
+/** Quinceañera / celebration sponsors (padrinos & madrinas) */
+export type PadrinoItem = {
+  id: string;
+  name: string;
+  role: string;
+  /** Optional Spanish role for locale switching */
+  roleEs?: string;
+};
+
 import type { GalleryLayout } from "./gallery";
 
 export type EventTier = "free" | "pro" | "studio";
@@ -117,6 +126,8 @@ export type EventRecord = {
   /** Celebration extras */
   schedule?: ScheduleItem[];
   faqs?: FaqItem[];
+  /** Padrinos / madrinas (name + role); shown when non-empty */
+  padrinos?: PadrinoItem[];
   gallery?: string[];
   /** How gallery photos are shaped/arranged on the invite */
   galleryLayout?: GalleryLayout;

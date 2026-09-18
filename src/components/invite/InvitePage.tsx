@@ -12,6 +12,7 @@ import { sanitizeAboutHtml } from "@/lib/sanitize-about";
 import {
   resolveLocalizedAbout,
   resolveLocalizedFaqs,
+  resolveLocalizedPadrinos,
   resolveLocalizedParking,
   resolveLocalizedSchedule,
 } from "@/lib/i18n/event-content";
@@ -513,6 +514,7 @@ export default function InvitePage({
   const about = resolveLocalizedAbout(event.about, event.aboutEs, locale);
   const schedule = resolveLocalizedSchedule(event.schedule, locale);
   const faqs = resolveLocalizedFaqs(event.faqs, locale);
+  const padrinos = resolveLocalizedPadrinos(event.padrinos, locale);
   const parking = resolveLocalizedParking(
     event.parking,
     event.parkingEs,
@@ -994,6 +996,20 @@ export default function InvitePage({
           )}
         </section>
       )}
+
+      {padrinos.length > 0 ? (
+        <section id="padrinos" className="invite-section invite-section--surface">
+          <h2 className="invite-section-title">{ui.padrinos}</h2>
+          <ul className="invite-padrinos">
+            {padrinos.map((p) => (
+              <li key={p.id}>
+                {p.role ? <span className="padrino-role">{p.role}</span> : null}
+                {p.name ? <strong className="padrino-name">{p.name}</strong> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {faqs.length > 0 ? (
         <section id="faq" className="invite-section invite-section--surface">
@@ -5753,6 +5769,37 @@ export default function InvitePage({
           font-style: normal;
           color: var(--invite-muted);
           font-size: 0.95rem;
+        }
+
+        .invite-padrinos {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: grid;
+          gap: 1.15rem;
+          text-align: center;
+        }
+
+        .invite-padrinos li {
+          display: grid;
+          gap: 0.25rem;
+          justify-items: center;
+        }
+
+        .invite-padrinos .padrino-role {
+          font-size: 0.78rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--invite-accent);
+        }
+
+        .invite-padrinos .padrino-name {
+          font-family: var(--font-display);
+          font-size: clamp(1.2rem, 3.5vw, 1.45rem);
+          font-weight: 400;
+          line-height: 1.25;
+          color: var(--invite-text);
         }
 
         .invite-extra-line {

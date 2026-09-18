@@ -1,4 +1,4 @@
-import type { FaqItem, ScheduleItem } from "@/lib/types";
+import type { FaqItem, PadrinoItem, ScheduleItem } from "@/lib/types";
 import type { Locale } from "@/lib/i18n/config";
 
 /** Common day-of schedule titles (EN → ES). */
@@ -259,6 +259,66 @@ export function resolveLocalizedFaqs(
   });
 }
 
+const PADRINO_ROLE_ES: Record<string, string> = {
+  "Honor sponsors": "Padrinos de honor",
+  "Honor sponsor": "Padrino de honor",
+  "Godparents of honor": "Padrinos de honor",
+  "Waltz sponsors": "Padrinos del vals",
+  "Waltz godmother": "Madrina del vals",
+  "Waltz godfather": "Padrino del vals",
+  "Last doll": "Última muñeca",
+  "Last doll sponsors": "Padrinos de la última muñeca",
+  "Cake sponsors": "Padrinos del pastel",
+  "Toast sponsors": "Padrinos del brindis",
+  "Crown sponsors": "Padrinos de la corona",
+  "Shoe sponsors": "Padrinos de los zapatos",
+  "Ring sponsors": "Padrinos del anillo",
+  "Bible sponsors": "Padrinos de la biblia",
+  "Rosary sponsors": "Padrinos del Rosario",
+  Chambelanes: "Chambelanes",
+  "Court of honor": "Corte de honor",
+};
+
+const PADRINO_ROLE_EN: Record<string, string> = Object.fromEntries(
+  Object.entries(PADRINO_ROLE_ES).map(([en, es]) => [es, en]),
+);
+
+function lookupPadrinoRoleEs(role: string): string | undefined {
+  const raw = normalizeForLookup(role);
+  if (PADRINO_ROLE_ES[role]) return PADRINO_ROLE_ES[role];
+  for (const [en, es] of Object.entries(PADRINO_ROLE_ES)) {
+    if (normalizeForLookup(en) === raw) return es;
+  }
+  return undefined;
+}
+
+export function resolveLocalizedPadrinos(
+  items: PadrinoItem[] | undefined,
+  locale: Locale,
+): PadrinoItem[] {
+  return (items ?? [])
+    .filter((item) => item.name?.trim() || item.role?.trim() || item.roleEs?.trim())
+    .map((item) => {
+      if (locale === "es") {
+        return {
+          ...item,
+          role:
+            item.roleEs?.trim() ||
+            lookupPadrinoRoleEs(item.role) ||
+            item.role,
+        };
+      }
+      return {
+        ...item,
+        role:
+          item.role?.trim() ||
+          (item.roleEs ? PADRINO_ROLE_EN[item.roleEs] : undefined) ||
+          item.roleEs ||
+          "",
+      };
+    });
+}
+
 function lookupParkingEs(parking: string): string | undefined {
   const raw = normalizeForLookup(parking);
   if (PARKING_ES[raw]) return PARKING_ES[raw];
@@ -296,6 +356,10 @@ export function suggestSpanishTagline(tagline: string): string | undefined {
 
 export function suggestSpanishScheduleTitle(title: string): string | undefined {
   return lookupScheduleTitleEs(title);
+}
+
+export function suggestSpanishPadrinoRole(role: string): string | undefined {
+  return lookupPadrinoRoleEs(role);
 }
 
 export function suggestSpanishParking(parking: string): string | undefined {

@@ -286,6 +286,7 @@ export type Dictionary = {
     emailHost: string;
     callText: string;
     faq: string;
+    padrinos: string;
     gallery: string;
     playlist: string;
     weather: string;
@@ -683,6 +684,7 @@ const en: Dictionary = {
     emailHost: "Email {name}",
     callText: "Call / text",
     faq: "FAQ",
+    padrinos: "Padrinos",
     gallery: "Gallery",
     playlist: "Playlist",
     weather: "Weather",
@@ -1093,6 +1095,7 @@ const es: Dictionary = {
     emailHost: "Escribir a {name}",
     callText: "Llamar / mensaje",
     faq: "Preguntas frecuentes",
+    padrinos: "Padrinos",
     gallery: "Galería",
     playlist: "Playlist",
     weather: "Clima",
