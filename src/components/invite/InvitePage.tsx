@@ -5862,22 +5862,23 @@ export default function InvitePage({
         }
 
         .invite-padrinos .padrino-role {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
+          display: block;
           font-size: 0.78rem;
           font-weight: 700;
           letter-spacing: 0.14em;
+          line-height: 1.4;
           text-transform: uppercase;
+          text-wrap: balance;
           color: color-mix(in srgb, var(--invite-accent) 85%, var(--invite-text));
         }
 
-        .invite-padrinos .padrino-role::before,
-        .invite-padrinos .padrino-role::after {
+        .invite-padrinos .padrino-role::before {
           content: "";
-          width: 1.15rem;
+          display: block;
+          width: 1.75rem;
           height: 1px;
-          background: color-mix(in srgb, var(--invite-accent-2) 70%, transparent);
+          margin: 0 auto 0.6rem;
+          background: color-mix(in srgb, var(--invite-accent-2) 75%, transparent);
         }
 
         .invite-padrinos .padrino-name {
@@ -6227,12 +6228,12 @@ export default function InvitePage({
         }
 
         .invite-section-title--sm {
-          font-size: clamp(1.2rem, 2.6vw, 1.35rem);
+          font-size: clamp(0.95rem, 2.2vw, 1.05rem);
           font-weight: 700;
-          letter-spacing: 0.06em;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: color-mix(in srgb, var(--invite-text) 82%, var(--invite-accent));
-          margin-bottom: 0.9rem;
+          color: color-mix(in srgb, var(--invite-accent) 72%, var(--invite-text));
+          margin-bottom: 1rem;
         }
 
         .invite-meta {
