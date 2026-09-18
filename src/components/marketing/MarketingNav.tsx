@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useId, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
@@ -20,7 +27,23 @@ export default function MarketingNav({
 }: MarketingNavProps) {
   const nav = getDictionary(locale).nav;
   const [open, setOpen] = useState(false);
+  const [panelTop, setPanelTop] = useState(0);
   const panelId = useId();
+  const navRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const header = navRef.current?.closest("header");
+    if (!header) return;
+    const sync = () => setPanelTop(header.getBoundingClientRect().bottom);
+    sync();
+    window.addEventListener("resize", sync);
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => {
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("scroll", sync);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -44,6 +67,7 @@ export default function MarketingNav({
   return (
     <>
       <nav
+        ref={navRef}
         className="flex items-center justify-end gap-2.5 text-sm sm:gap-5"
         style={{ color: "var(--landing-ink)" }}
         aria-label={locale === "es" ? "Principal" : "Primary"}
@@ -121,8 +145,9 @@ export default function MarketingNav({
       {open ? (
         <div
           id={panelId}
-          className="absolute inset-x-0 top-full z-30 border-b px-5 py-3 sm:hidden"
+          className="fixed inset-x-0 z-[80] border-b px-5 py-3 sm:hidden"
           style={{
+            top: panelTop,
             background: "rgba(255,252,250,0.98)",
             borderColor: "var(--landing-line)",
             boxShadow: "0 12px 24px rgba(58,42,48,0.08)",
