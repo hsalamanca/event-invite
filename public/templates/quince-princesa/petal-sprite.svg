@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Soft blush petal for CSS/JS particle systems -->
+  <ellipse cx="60" cy="62" rx="28" ry="42" fill="#E8A0B8" opacity="0.85"
+           transform="rotate(-18 60 62)"/>
+  <ellipse cx="58" cy="58" rx="14" ry="28" fill="#FFE8EF" opacity="0.55"
+           transform="rotate(-18 58 58)"/>
+</svg>

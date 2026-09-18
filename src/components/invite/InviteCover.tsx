@@ -787,7 +787,8 @@ function Ornament({ layout }: { layout: InviteLayout }) {
     layout === "superburst" ||
     layout === "spiderweb" ||
     layout === "quincebloom" ||
-    layout === "quinceframe"
+    layout === "quinceframe" ||
+    layout === "quinceweb"
   ) {
     return null;
   }
@@ -1075,7 +1076,7 @@ export default function InviteCover({
   const isArcade = layout === "arcade";
   const isQuince = layout === "quince";
   const isQuincebloom = layout === "quincebloom";
-  const isQuinceframe = layout === "quinceframe";
+  const isQuinceframe = layout === "quinceframe" || layout === "quinceweb";
   const isCeleste = quinceBordered;
   const isFifty = layout === "fifty";
 

@@ -72,6 +72,15 @@ export type PadrinoItem = {
 
 import type { GalleryLayout } from "./gallery";
 
+/** Quince web corte / padrinos rows — same shape as stationery padrinos. */
+export type QuincePartyRole = PadrinoItem;
+
+export type QuinceVenueBlock = {
+  place: string;
+  address: string;
+  time: string;
+};
+
 export type EventTier = "free" | "pro" | "studio";
 
 export type SeatingAssignment = {
@@ -106,10 +115,17 @@ export type EventRecord = {
   theme: Theme;
   heroImage: string;
   /**
-   * Quinceframe only: birthday-girl portrait in the gown slot.
+   * Quince portrait: gown oval on quince-tiara, cinematic hero on quinceweb.
    * Separate from heroImage (template stock + paper-wash atmosphere).
    */
   honoreePhotoUrl?: string;
+  /** Quince web: parents / host line shown in the padres block. */
+  parentsLine?: string;
+  misa?: QuinceVenueBlock;
+  recepcion?: QuinceVenueBlock;
+  corte?: QuincePartyRole[];
+  gifts?: string;
+  whatsappPhone?: string;
   /** Optional looping hero video (mp4/webm URL); falls back to heroImage */
   heroVideoUrl?: string | null;
   /** Cover motion accent kit */

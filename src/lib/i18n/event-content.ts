@@ -272,7 +272,9 @@ export function resolveLocalizedFaqs(
 const PADRINO_ROLE_ES: Record<string, string> = {
   "Honor sponsors": "Padrinos de honor",
   "Honor sponsor": "Padrino de honor",
+  "Honor godmother": "Madrina de honor",
   "Godparents of honor": "Padrinos de honor",
+  "Mass godfather": "Padrino de misa",
   "Waltz sponsors": "Padrinos del vals",
   "Waltz godmother": "Madrina del vals",
   "Waltz godfather": "Padrino del vals",
@@ -286,6 +288,8 @@ const PADRINO_ROLE_ES: Record<string, string> = {
   "Bible sponsors": "Padrinos de la biblia",
   "Rosary sponsors": "Padrinos del Rosario",
   Chambelanes: "Chambelanes",
+  "Honor escort": "Chambelán de honor",
+  "Maid of honor": "Dama de honor",
   "Court of honor": "Corte de honor",
 };
 
@@ -296,8 +300,23 @@ const PADRINO_ROLE_EN: Record<string, string> = Object.fromEntries(
 function lookupPadrinoRoleEs(role: string): string | undefined {
   const raw = normalizeForLookup(role);
   if (PADRINO_ROLE_ES[role]) return PADRINO_ROLE_ES[role];
+  if (PADRINO_ROLE_EN[role]) return role;
   for (const [en, es] of Object.entries(PADRINO_ROLE_ES)) {
-    if (normalizeForLookup(en) === raw) return es;
+    if (normalizeForLookup(en) === raw || normalizeForLookup(es) === raw) {
+      return es;
+    }
+  }
+  return undefined;
+}
+
+function lookupPadrinoRoleEn(role: string): string | undefined {
+  const raw = normalizeForLookup(role);
+  if (PADRINO_ROLE_EN[role]) return PADRINO_ROLE_EN[role];
+  if (PADRINO_ROLE_ES[role]) return role;
+  for (const [en, es] of Object.entries(PADRINO_ROLE_ES)) {
+    if (normalizeForLookup(en) === raw || normalizeForLookup(es) === raw) {
+      return en;
+    }
   }
   return undefined;
 }
@@ -321,8 +340,9 @@ export function resolveLocalizedPadrinos(
       return {
         ...item,
         role:
+          lookupPadrinoRoleEn(item.role) ||
+          (item.roleEs ? lookupPadrinoRoleEn(item.roleEs) : undefined) ||
           item.role?.trim() ||
-          (item.roleEs ? PADRINO_ROLE_EN[item.roleEs] : undefined) ||
           item.roleEs ||
           "",
       };

@@ -8,7 +8,7 @@ import { getRequestLocale } from "@/lib/i18n/locale";
 import { getEventBySlug } from "@/lib/events";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
 import { stripAboutHtml } from "@/lib/sanitize-about";
-import { resolveLocalizedInviteCopy } from "@/lib/templates";
+import { resolveInviteLayout, resolveLocalizedInviteCopy } from "@/lib/templates";
 import { shouldShowOwnviteFooter } from "@/lib/tier";
 import { fetchEventWeather } from "@/lib/weather";
 
@@ -83,11 +83,16 @@ export default async function EventInvitePage({ params }: PageProps) {
     showOwnviteFooter: shouldShowOwnviteFooter(event),
   };
 
+  const hideOuterLocale =
+    resolveInviteLayout(safeEvent.templateId) === "quinceweb";
+
   return (
     <div className="relative">
-      <div className="absolute right-3 top-3 z-30 sm:right-5 sm:top-5">
-        <LanguageSwitcher locale={locale} variant="invite" />
-      </div>
+      {hideOuterLocale ? null : (
+        <div className="absolute right-3 top-3 z-30 sm:right-5 sm:top-5">
+          <LanguageSwitcher locale={locale} variant="invite" />
+        </div>
+      )}
       <InvitePage
         event={safeEvent}
         locale={locale}

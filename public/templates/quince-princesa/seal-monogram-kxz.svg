@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Princesa envelope seal: rose-gold ring + KXZ -->
+  <circle cx="100" cy="100" r="88" stroke="#C9A27A" stroke-width="2.5" opacity="0.95"/>
+  <circle cx="100" cy="100" r="78" stroke="#B76E79" stroke-width="1" opacity="0.85"/>
+  <text x="100" y="112" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+        font-size="42" font-weight="600" letter-spacing="0.12em" fill="#B76E79">KXZ</text>
+  <!-- tiny crown hint above letters -->
+  <path d="M70 58 L78 72 L90 60 L100 74 L110 60 L122 72 L130 58 L130 78 L70 78 Z"
+        fill="#C9A27A" opacity="0.9"/>
+</svg>

@@ -7,6 +7,8 @@ import GalleryEditor from "@/components/host/GalleryEditor";
 import ImageUpload from "@/components/host/ImageUpload";
 import InvitePage from "@/components/invite/InvitePage";
 import { QUINCE_TIARA_ASSETS } from "@/components/invite/quinceframe/assets";
+import { newQuinceRoleId } from "@/lib/quince-fields";
+import { QUINCE_PRINCESA_SEED } from "@/lib/quince-princesa-seed";
 import { safeInviteImageUrl } from "@/lib/safe-image-url";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -35,6 +37,8 @@ import type {
   EventRecord,
   FaqItem,
   PadrinoItem,
+  QuincePartyRole,
+  QuinceVenueBlock,
   ScheduleItem,
   Theme,
 } from "@/lib/types";
@@ -109,6 +113,12 @@ type Draft = {
   galleryLayout: GalleryLayout;
   parking: string;
   dressCode: string;
+  parentsLine: string;
+  corte: QuincePartyRole[];
+  misa: QuinceVenueBlock;
+  recepcion: QuinceVenueBlock;
+  gifts: string;
+  whatsappPhone: string;
   whatToBring: string;
   contactEmail: string;
   contactPhone: string;
@@ -251,6 +261,20 @@ function toDraft(event: EventRecord, locale: Locale = "en"): Draft {
           ""
         : event.parking ?? "",
     dressCode: event.dressCode ?? "",
+    parentsLine: event.parentsLine ?? "",
+    corte: event.corte ?? [],
+    misa: {
+      place: event.misa?.place ?? "",
+      address: event.misa?.address ?? "",
+      time: event.misa?.time ?? "",
+    },
+    recepcion: {
+      place: event.recepcion?.place ?? "",
+      address: event.recepcion?.address ?? "",
+      time: event.recepcion?.time ?? "",
+    },
+    gifts: event.gifts ?? "",
+    whatsappPhone: event.whatsappPhone ?? "",
     whatToBring: event.whatToBring ?? "",
     contactEmail: event.contactEmail ?? "",
     contactPhone: event.contactPhone ?? "",
@@ -471,6 +495,12 @@ function toPreviewEvent(
     parking: localized.parking,
     parkingEs: localized.parkingEs,
     dressCode: draft.dressCode,
+    parentsLine: draft.parentsLine,
+    corte: draft.corte,
+    misa: draft.misa,
+    recepcion: draft.recepcion,
+    gifts: draft.gifts,
+    whatsappPhone: draft.whatsappPhone,
     whatToBring: draft.whatToBring,
     contactEmail: draft.contactEmail,
     contactPhone: draft.contactPhone,
@@ -606,6 +636,12 @@ export default function EventCustomizer({
       parking: localized.parking,
       parkingEs: localized.parkingEs,
       dressCode: draft.dressCode,
+      parentsLine: draft.parentsLine,
+      corte: draft.corte,
+      misa: draft.misa,
+      recepcion: draft.recepcion,
+      gifts: draft.gifts,
+      whatsappPhone: draft.whatsappPhone,
       whatToBring: draft.whatToBring,
       contactEmail: draft.contactEmail,
       contactPhone: draft.contactPhone,
@@ -813,7 +849,8 @@ export default function EventCustomizer({
               onChange={(url) => updateField("heroImage", url)}
               labels={uploadLabels}
             />
-            {resolveInviteLayout(draft.templateId) === "quinceframe" ? (
+            {resolveInviteLayout(draft.templateId) === "quinceframe" ||
+            resolveInviteLayout(draft.templateId) === "quinceweb" ? (
               <ImageUpload
                 slug={event.slug}
                 value={draft.honoreePhotoUrl}
@@ -948,6 +985,30 @@ export default function EventCustomizer({
                             : prev.balloonDigits,
                       colors: { ...tpl.theme.colors },
                       fonts: { ...tpl.theme.fonts },
+                      ...(tpl.id === "quince-princesa"
+                        ? {
+                            parentsLine:
+                              prev.parentsLine || QUINCE_PRINCESA_SEED.parentsLine,
+                            padrinos: prev.padrinos.length
+                              ? prev.padrinos
+                              : [...QUINCE_PRINCESA_SEED.padrinos],
+                            corte: prev.corte.length
+                              ? prev.corte
+                              : [...QUINCE_PRINCESA_SEED.corte],
+                            misa: prev.misa.place
+                              ? prev.misa
+                              : { ...QUINCE_PRINCESA_SEED.misa },
+                            recepcion: prev.recepcion.place
+                              ? prev.recepcion
+                              : { ...QUINCE_PRINCESA_SEED.recepcion },
+                            gifts: prev.gifts || QUINCE_PRINCESA_SEED.gifts,
+                            dressCode:
+                              prev.dressCode || QUINCE_PRINCESA_SEED.dressCode,
+                            whatsappPhone:
+                              prev.whatsappPhone ||
+                              QUINCE_PRINCESA_SEED.whatsappPhone,
+                          }
+                        : {}),
                     };
                   });
                   setSaveMessage(null);
@@ -1566,6 +1627,152 @@ export default function EventCustomizer({
                 onChange={(e) => updateField("dressCode", e.target.value)}
               />
             </label>
+            {resolveInviteLayout(draft.templateId) === "quinceweb" ? (
+              <div className="nested-block">
+                <span className="nested-label">{t.quinceStory}</span>
+                <label>
+                  <span>{t.parentsLine}</span>
+                  <input
+                    value={draft.parentsLine}
+                    onChange={(e) => updateField("parentsLine", e.target.value)}
+                  />
+                </label>
+                <label>
+                  <span>{t.misaPlace}</span>
+                  <input
+                    value={draft.misa.place}
+                    onChange={(e) =>
+                      updateField("misa", { ...draft.misa, place: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.misaAddress}</span>
+                  <input
+                    value={draft.misa.address}
+                    onChange={(e) =>
+                      updateField("misa", {
+                        ...draft.misa,
+                        address: e.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.misaTime}</span>
+                  <input
+                    value={draft.misa.time}
+                    onChange={(e) =>
+                      updateField("misa", { ...draft.misa, time: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.recepcionPlace}</span>
+                  <input
+                    value={draft.recepcion.place}
+                    onChange={(e) =>
+                      updateField("recepcion", {
+                        ...draft.recepcion,
+                        place: e.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.recepcionAddress}</span>
+                  <input
+                    value={draft.recepcion.address}
+                    onChange={(e) =>
+                      updateField("recepcion", {
+                        ...draft.recepcion,
+                        address: e.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.recepcionTime}</span>
+                  <input
+                    value={draft.recepcion.time}
+                    onChange={(e) =>
+                      updateField("recepcion", {
+                        ...draft.recepcion,
+                        time: e.target.value,
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>{t.gifts}</span>
+                  <textarea
+                    rows={2}
+                    value={draft.gifts}
+                    onChange={(e) => updateField("gifts", e.target.value)}
+                  />
+                </label>
+                <label>
+                  <span>{t.whatsappPhone}</span>
+                  <input
+                    value={draft.whatsappPhone}
+                    onChange={(e) => updateField("whatsappPhone", e.target.value)}
+                  />
+                </label>
+                <div className="stack-gap">
+                  <span className="nested-label">{t.corte}</span>
+                  {draft.corte.map((item, idx) => (
+                    <div key={item.id} className="stack-gap">
+                      <input
+                        placeholder={t.role}
+                        value={item.role}
+                        onChange={(e) => {
+                          const next = [...draft.corte];
+                          next[idx] = { ...item, role: e.target.value };
+                          updateField("corte", next);
+                        }}
+                      />
+                      <input
+                        placeholder={t.personName}
+                        value={item.name}
+                        onChange={(e) => {
+                          const next = [...draft.corte];
+                          next[idx] = { ...item, name: e.target.value };
+                          updateField("corte", next);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="host-ghost-btn"
+                        onClick={() =>
+                          updateField(
+                            "corte",
+                            draft.corte.filter((row) => row.id !== item.id),
+                          )
+                        }
+                      >
+                        {t.honoreePhotoRemove}
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="host-ghost-btn"
+                    onClick={() =>
+                      updateField("corte", [
+                        ...draft.corte,
+                        {
+                          id: newQuinceRoleId("corte"),
+                          role: "",
+                          name: "",
+                        },
+                      ])
+                    }
+                  >
+                    {t.addRow}
+                  </button>
+                </div>
+              </div>
+            ) : null}
             <label>
               <span>What to bring</span>
               <textarea
@@ -1640,6 +1847,10 @@ export default function EventCustomizer({
 
           <fieldset>
             <legend>{t.colors}</legend>
+            {draft.templateId === "quince-princesa" ? (
+              <p className="field-hint">{t.quincePaletteLocked}</p>
+            ) : (
+              <>
             <label className="color-row">
               <span>{t.background}</span>
               <input
@@ -1688,6 +1899,8 @@ export default function EventCustomizer({
                 onChange={(e) => updateColor("textPrimary", e.target.value)}
               />
             </label>
+              </>
+            )}
           </fieldset>
 
           <fieldset>

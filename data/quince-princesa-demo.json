@@ -1,0 +1,103 @@
+{
+  "id": "evt_quince_princesa_demo",
+  "slug": "quince-princesa-demo",
+  "ownerId": null,
+  "hostName": "Sr. Carlos Zelaya y Sra. María Elena de Zelaya",
+  "title": "Mis XV Años",
+  "headline": "Katia Xiomara Zelaya",
+  "headlineEs": "Katia Xiomara Zelaya",
+  "tagline": "Con la bendición de Dios y de mis padres, te invitamos a celebrar esta noche inolvidable.",
+  "taglineEs": "Con la bendición de Dios y de mis padres, te invitamos a celebrar esta noche inolvidable.",
+  "dateISO": "2027-05-15",
+  "timeLabel": "4:00 PM",
+  "venue": "Parroquia Nuestra Señora de la Merced",
+  "address": "Barrio El Centro, San Pedro Sula",
+  "theme": {
+    "colors": {
+      "background": "#FFF7F9",
+      "surface": "#FFE8EF",
+      "accentPrimary": "#B76E79",
+      "accentSecondary": "#C9A27A",
+      "textPrimary": "#3A2A30",
+      "textMuted": "#7A5A64"
+    },
+    "fonts": {
+      "display": "Great Vibes",
+      "body": "Source Sans 3"
+    }
+  },
+  "heroImage": "/templates/quince-princesa/petals-drift.png",
+  "honoreePhotoUrl": "",
+  "motionKit": "none",
+  "customDomain": null,
+  "contactName": "Familia Zelaya",
+  "contactPhone": "+504 9000-0000",
+  "whatsappPhone": "+50490000000",
+  "parentsLine": "Sr. Carlos Zelaya y Sra. María Elena de Zelaya",
+  "padrinos": [
+    { "id": "pad_honor", "role": "Madrina de honor", "name": "Sra. Ana Lucía Mejía" },
+    { "id": "pad_misa", "role": "Padrino de misa", "name": "Sr. Roberto Castillo" },
+    { "id": "pad_vals", "role": "Padrinos del vals", "name": "Sr. y Sra. Herrera" }
+  ],
+  "misa": {
+    "place": "Parroquia Nuestra Señora de la Merced",
+    "address": "Barrio El Centro, San Pedro Sula",
+    "time": "4:00 PM"
+  },
+  "recepcion": {
+    "place": "Salón Los Jardines",
+    "address": "Col. Trejo, San Pedro Sula",
+    "time": "7:00 PM"
+  },
+  "corte": [
+    { "id": "corte_chambelan", "role": "Chambelán de honor", "name": "Diego Andrés López" },
+    { "id": "corte_dama", "role": "Dama de honor", "name": "Valentina Rivas" }
+  ],
+  "dressCode": "Formal — vestido de gala o traje oscuro. Paleta rosa, ivory y oro.",
+  "gifts": "Tu presencia es el regalo más importante. Si deseas dejar un detalle, habrá mesa de sobres.",
+  "rsvpFields": {
+    "plusOnes": {
+      "enabled": true,
+      "label": "Número de invitados",
+      "max": 2
+    },
+    "dietary": {
+      "enabled": true,
+      "label": "Restricciones alimentarias o alergias",
+      "placeholder": "Vegetariano, sin gluten, etc."
+    },
+    "attendance": {
+      "enabled": true,
+      "options": ["Asistiré con gusto", "Lamento no poder asistir"]
+    },
+    "deadline": "2027-04-30",
+    "prompt": "Por favor confirma para reservarte un lugar."
+  },
+  "about": "Misa a las 4:00 PM · recepción y baile a las 7:00 PM en Salón Los Jardines.",
+  "aboutEs": "Misa a las 4:00 PM · recepción y baile a las 7:00 PM en Salón Los Jardines.",
+  "published": true,
+  "visibility": "public",
+  "capacity": null,
+  "registryUrl": null,
+  "templateId": "quince-princesa",
+  "schedule": [
+    {
+      "id": "misa",
+      "time": "4:00 PM",
+      "title": "Mass",
+      "titleEs": "Misa",
+      "description": "Parroquia Nuestra Señora de la Merced, Barrio El Centro, San Pedro Sula"
+    },
+    {
+      "id": "recepcion",
+      "time": "7:00 PM",
+      "title": "Reception",
+      "titleEs": "Recepción",
+      "description": "Salón Los Jardines, Col. Trejo, San Pedro Sula",
+      "descriptionEs": "Salón Los Jardines, Col. Trejo, San Pedro Sula"
+    }
+  ],
+  "gallery": [],
+  "premiumTheme": true,
+  "rsvpEnabled": true
+}

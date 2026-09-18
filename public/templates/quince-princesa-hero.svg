@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#FFF7F9"/>
+  <rect x="48" y="40" width="704" height="420" rx="28" fill="#FFE8EF"/>
+  <circle cx="400" cy="168" r="58" stroke="#C9A27A" stroke-width="3"/>
+  <circle cx="400" cy="168" r="48" stroke="#B76E79" stroke-width="1.2" opacity="0.85"/>
+  <text x="400" y="180" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="600" letter-spacing="6" fill="#B76E79">KXZ</text>
+  <text x="400" y="268" text-anchor="middle" font-family="Georgia, serif" font-size="18" letter-spacing="6" fill="#C9A27A">MIS XV AÑOS</text>
+  <text x="400" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="#B76E79">Katia Xiomara</text>
+  <text x="400" y="378" text-anchor="middle" font-family="Georgia, serif" font-size="22" letter-spacing="4" fill="#3A2A30">ZELAYA</text>
+</svg>

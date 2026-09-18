@@ -2,6 +2,7 @@
 
 import InvitePage from "@/components/invite/InvitePage";
 import type { Locale } from "@/lib/i18n/config";
+import { toQuincePrintCompanion } from "@/lib/quince-print-companion";
 import type { EventRecord } from "@/lib/types";
 
 /** Printable download that mirrors the live web invite cover. */
@@ -18,7 +19,7 @@ export default function PrintPostcard({
 }) {
   return (
     <InvitePage
-      event={event}
+      event={toQuincePrintCompanion(event)}
       locale={locale}
       printCoverOnly
       trackViews={false}
