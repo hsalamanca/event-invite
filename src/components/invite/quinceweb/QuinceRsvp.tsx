@@ -13,6 +13,16 @@ function daysUntil(deadline: string): number | null {
   return Math.ceil((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
 
+function formatHumanDate(dateISO: string, locale: Locale): string {
+  const d = new Date(`${dateISO}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return dateISO;
+  return d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function QuinceRsvp({
   event,
   locale,
@@ -138,14 +148,14 @@ export default function QuinceRsvp({
 
   return (
     <form className="qw-rsvp-form" onSubmit={handleSubmit} noValidate>
-      {rsvpFields.prompt ? <p className="qw-body">{rsvpFields.prompt}</p> : null}
+      {rsvpFields.prompt ? (
+        <p className="qw-rsvp-prompt">{rsvpFields.prompt}</p>
+      ) : null}
       {rsvpFields.deadline ? (
-        <p className="qw-body">
+        <p className="qw-rsvp-deadline">
           {deadlineDays === 0
             ? ui.deadlineToday
-            : ui.deadlineInDays
-                .replace("{days}", String(deadlineDays ?? 0))
-                .replace("{date}", rsvpFields.deadline)}
+            : `${ui.quinceRsvpBy} ${formatHumanDate(rsvpFields.deadline, locale)}`}
         </p>
       ) : null}
       {event.capacity ? (

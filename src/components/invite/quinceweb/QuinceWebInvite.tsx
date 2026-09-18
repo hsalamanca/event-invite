@@ -15,6 +15,16 @@ import QuinceRsvp from "./QuinceRsvp";
 import StoryStack from "./StoryStack";
 import "./quinceweb.css";
 
+function formatLongDate(dateISO: string, locale: Locale) {
+  const d = new Date(`${dateISO}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return dateISO;
+  return d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function countdownFrom(dateISO: string, timeLabel?: string) {
   const time = timeLabel?.match(/(\d{1,2}):(\d{2})/);
   const hours = time ? Number(time[1]) : 12;
@@ -119,6 +129,10 @@ export default function QuinceWebInvite({
         photoUrl={event.honoreePhotoUrl}
         photoAlt={ui.honoreePhotoAlt.replace("{name}", honoreeName)}
         heroImage={event.heroImage}
+        dateLabel={formatLongDate(event.dateISO, locale)}
+        metaLabel={[ui.quinceMass, event.misa?.time || event.timeLabel]
+          .filter(Boolean)
+          .join(" · ")}
         scrollLabel={ui.quinceScroll}
       />
       {opened ? (

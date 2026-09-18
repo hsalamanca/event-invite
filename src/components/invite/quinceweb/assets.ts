@@ -9,4 +9,5 @@ export const QUINCE_PRINCESA_ASSETS = {
   petalsScatter: "/templates/quince-princesa/petals-scatter.png",
   tiara: "/templates/quince-princesa/tiara-pink-glitter.png",
   hero: "/templates/quince-princesa-hero.svg",
+  gownAtmosphere: "/templates/quince-tiara/gown-back-pink.webp",
 } as const;

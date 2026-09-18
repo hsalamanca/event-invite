@@ -18,7 +18,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="qw-section">
+    <section id={id} className="qw-section qw-card">
       <p className="qw-kicker">{kicker}</p>
       {children}
     </section>
@@ -50,24 +50,27 @@ function VenueCard({
   if (!venueBlockHasContent(block)) return null;
   const query = [block!.place, block!.address].filter(Boolean).join(", ");
   return (
-    <div className="qw-venue">
-      {block!.place ? <p className="qw-venue-place">{block!.place}</p> : null}
-      {block!.address ? (
-        <p className="qw-venue-address">{block!.address}</p>
-      ) : null}
-      {block!.time ? <p className="qw-venue-time">{block!.time}</p> : null}
-      {query ? (
-        <p style={{ margin: "0.85rem 0 0" }}>
-          <a
-            className="qw-cta-link"
-            href={mapsSearchUrl(query)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {mapLabel}
-          </a>
-        </p>
-      ) : null}
+    <div className="qw-rail">
+      <div className="qw-rail-track" aria-hidden />
+      <div className="qw-rail-body">
+        {block!.time ? <p className="qw-rail-time">{block!.time}</p> : null}
+        {block!.place ? <p className="qw-venue-place">{block!.place}</p> : null}
+        {block!.address ? (
+          <p className="qw-venue-address">{block!.address}</p>
+        ) : null}
+        {query ? (
+          <p className="qw-rail-cta">
+            <a
+              className="qw-cta-link"
+              href={mapsSearchUrl(query)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {mapLabel}
+            </a>
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -129,7 +132,7 @@ export default function StoryStack({
     <div className="qw-stack">
       {parentsLine?.trim() ? (
         <Section id="padres" kicker={labels.padres}>
-          <p className="qw-body">{parentsLine}</p>
+          <p className="qw-prose">{parentsLine}</p>
         </Section>
       ) : null}
 
@@ -159,13 +162,13 @@ export default function StoryStack({
 
       {dressCode?.trim() ? (
         <Section id="vestimenta" kicker={labels.vestimenta}>
-          <p className="qw-body">{dressCode}</p>
+          <p className="qw-prose">{dressCode}</p>
         </Section>
       ) : null}
 
       {gifts?.trim() ? (
         <Section id="regalos" kicker={labels.regalos}>
-          <p className="qw-body">{gifts}</p>
+          <p className="qw-prose">{gifts}</p>
         </Section>
       ) : null}
 
@@ -220,7 +223,7 @@ export default function StoryStack({
         </Section>
       ) : null}
 
-      <section id="rsvp" className="qw-section qw-rsvp">
+      <section id="rsvp" className="qw-section qw-card qw-rsvp">
         <p className="qw-kicker">{labels.rsvp}</p>
         {rsvp}
       </section>
