@@ -4,6 +4,8 @@ import {
   resolveLocalizedHeadline,
   resolveLocalizedTagline,
 } from "@/lib/i18n/event-content";
+import { isGenericQuinceTitle } from "./quince-fields";
+import { QUINCE_PRINCESA_SEED } from "./quince-princesa-seed";
 
 export type TemplateCategory =
   | "birthday"
@@ -38,6 +40,7 @@ export type InviteLayout =
   | "quince"
   | "quincebloom"
   | "quinceframe"
+  | "quinceweb"
   | "fifty"
   | "splash"
   | "collage";
@@ -372,6 +375,19 @@ const quinceAzul: Theme = {
     textMuted: "#5B6F8C",
   },
   fonts: { display: "Playfair Display", body: "Outfit" },
+};
+
+/** Hugo mini-web quinceañera — princesa blush palette (§2A) */
+const quincePrincesa: Theme = {
+  colors: {
+    background: "#FFF7F9",
+    surface: "#FFE8EF",
+    accentPrimary: "#B76E79",
+    accentSecondary: "#C9A27A",
+    textPrimary: "#3A2A30",
+    textMuted: "#7A5A64",
+  },
+  fonts: { display: "Great Vibes", body: "Source Sans 3" },
 };
 
 /** Hugo stationery quinceañera — white card, champagne gold, pink script */
@@ -1200,6 +1216,28 @@ export const TEMPLATES: EventTemplate[] = [
     taglineEs: "de su hija",
   },
   {
+    id: "quince-princesa",
+    name: "Quince princesa",
+    nameEs: "Quinceañera princesa",
+    description:
+      "Blush mini-web quinceañera — envelope, cinematic hero, family story, and RSVP. Print stays on Quince tiara.",
+    descriptionEs:
+      "Mini-web quinceañera en blush — sobre, héroe cinematográfico, historia familiar y RSVP. La impresión sigue en Quince tiara.",
+    inspiredBy: "Hugo / Ink quinceañera mini-web — princesa palette",
+    inspiredByEs: "Hugo / Ink mini-web quinceañera — paleta princesa",
+    categories: ["birthday", "party"],
+    layout: "quinceweb",
+    premium: true,
+    theme: quincePrincesa,
+    heroImage: "/templates/quince-princesa-hero.svg",
+    headline: "Katia Xiomara Zelaya",
+    headlineEs: "Katia Xiomara Zelaya",
+    tagline:
+      "With God’s blessing and my parents’, you are invited to this unforgettable night.",
+    taglineEs:
+      "Con la bendición de Dios y de mis padres, te invitamos a celebrar esta noche inolvidable.",
+  },
+  {
     id: "golden-fifty",
     name: "Golden fifty",
     nameEs: "Cincuenta dorado",
@@ -1346,6 +1384,7 @@ const LATIN_TEMPLATE_IDS = new Set([
   "quince-azul",
   "quince-rosa",
   "quince-tiara",
+  "quince-princesa",
   "blush-collage",
   "disco-silver",
   "candy-bubble",
@@ -1526,21 +1565,50 @@ export function buildEventFromTemplate(input: {
   const about =
     tpl.id === "quince-tiara" && genericAbout
       ? QUINCE_TIARA_ABOUT.en
-      : input.about;
+      : tpl.id === "quince-princesa" && genericAbout
+        ? QUINCE_PRINCESA_SEED.about
+        : input.about;
+  const princesa = tpl.id === "quince-princesa";
+  const honoreeName =
+    princesa && !isGenericQuinceTitle(input.title)
+      ? input.title.trim()
+      : tpl.headline;
+  const parentsLine = princesa
+    ? input.hostName.trim() || QUINCE_PRINCESA_SEED.parentsLine
+    : undefined;
+  const misa = princesa
+    ? {
+        place: input.venue.trim() || QUINCE_PRINCESA_SEED.misa.place,
+        address: input.address.trim() || QUINCE_PRINCESA_SEED.misa.address,
+        time: input.timeLabel.trim() || QUINCE_PRINCESA_SEED.misa.time,
+      }
+    : undefined;
+  const recepcion = princesa
+    ? {
+        ...QUINCE_PRINCESA_SEED.recepcion,
+      }
+    : undefined;
+  const rsvp = defaultRsvpFields(
+    princesa ? QUINCE_PRINCESA_SEED.rsvpDeadline : input.dateISO,
+    {
+      locale: input.locale,
+      templateId: tpl.id,
+    },
+  );
   return {
     slug: input.slug,
     ownerId: input.ownerId,
-    hostName: input.hostName,
-    title: input.title,
+    hostName: parentsLine || input.hostName,
+    title: princesa ? QUINCE_PRINCESA_SEED.title : input.title,
     // Store English stock copy; guests see ES via resolveLocalizedInviteCopy
-    headline: tpl.headline,
+    headline: honoreeName,
     tagline: tpl.tagline,
-    headlineEs: tpl.headlineEs,
+    headlineEs: honoreeName,
     taglineEs: tpl.taglineEs,
-    dateISO: input.dateISO,
+    dateISO: input.dateISO || (princesa ? QUINCE_PRINCESA_SEED.dateISO : input.dateISO),
     timeLabel: input.timeLabel,
-    venue: input.venue,
-    address: input.address,
+    venue: input.venue || (princesa ? QUINCE_PRINCESA_SEED.venue : input.venue),
+    address: input.address || (princesa ? QUINCE_PRINCESA_SEED.address : input.address),
     theme: tpl.theme,
     heroImage: tpl.heroImage,
     balloonDigits:
@@ -1550,20 +1618,27 @@ export function buildEventFromTemplate(input: {
           ? "7"
           : null,
     customDomain: null,
-    rsvpFields: defaultRsvpFields(input.dateISO, {
-      locale: input.locale,
-      templateId: tpl.id,
-    }),
+    rsvpFields: rsvp,
     about,
     aboutEs:
       tpl.id === "quince-tiara" && genericAbout
         ? QUINCE_TIARA_ABOUT.es
-        : undefined,
+        : princesa && genericAbout
+          ? QUINCE_PRINCESA_SEED.about
+          : undefined,
     published: true,
     visibility: "public",
     capacity: null,
     registryUrl: null,
     templateId: tpl.id,
+    parentsLine,
+    padrinos: princesa ? [...QUINCE_PRINCESA_SEED.padrinos] : undefined,
+    misa,
+    recepcion,
+    corte: princesa ? [...QUINCE_PRINCESA_SEED.corte] : undefined,
+    dressCode: princesa ? QUINCE_PRINCESA_SEED.dressCode : undefined,
+    gifts: princesa ? QUINCE_PRINCESA_SEED.gifts : undefined,
+    whatsappPhone: princesa ? QUINCE_PRINCESA_SEED.whatsappPhone : undefined,
     schedule:
       tpl.id === "quince-tiara"
         ? [
@@ -1585,7 +1660,28 @@ export function buildEventFromTemplate(input: {
               descriptionEs: "Salón por confirmar",
             },
           ]
-        : undefined,
+        : princesa
+          ? [
+              {
+                id: "misa",
+                time: misa?.time || input.timeLabel,
+                title: "Mass",
+                titleEs: "Misa",
+                description: [misa?.place, misa?.address]
+                  .filter(Boolean)
+                  .join(", "),
+              },
+              {
+                id: "recepcion",
+                time: recepcion?.time || "",
+                title: "Reception",
+                titleEs: "Recepción",
+                description: [recepcion?.place, recepcion?.address]
+                  .filter(Boolean)
+                  .join(", "),
+              },
+            ]
+          : undefined,
     rsvpEnabled: true,
     showOwnviteFooter: true,
     tier: "free",

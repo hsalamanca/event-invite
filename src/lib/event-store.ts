@@ -4,6 +4,10 @@ import {
   normalizeGallery,
   normalizeGalleryLayout,
 } from "./gallery";
+import {
+  normalizePartyRoles,
+  normalizeVenueBlock,
+} from "./quince-fields";
 import { remapBrokenHeroImage } from "./templates";
 import type { EventRecord } from "./types";
 
@@ -55,6 +59,13 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     templateId: raw.templateId ?? "evening",
     heroImage: remapBrokenHeroImage(raw.heroImage),
     honoreePhotoUrl: raw.honoreePhotoUrl ?? "",
+    parentsLine: typeof raw.parentsLine === "string" ? raw.parentsLine : "",
+    misa: normalizeVenueBlock(raw.misa),
+    recepcion: normalizeVenueBlock(raw.recepcion),
+    corte: normalizePartyRoles(raw.corte),
+    gifts: typeof raw.gifts === "string" ? raw.gifts : "",
+    whatsappPhone:
+      typeof raw.whatsappPhone === "string" ? raw.whatsappPhone : "",
     heroVideoUrl:
       typeof raw.heroVideoUrl === "string" && raw.heroVideoUrl.trim()
         ? raw.heroVideoUrl.trim()
@@ -76,7 +87,7 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     },
     schedule: raw.schedule ?? [],
     faqs: raw.faqs ?? [],
-    padrinos: raw.padrinos ?? [],
+    padrinos: normalizePartyRoles(raw.padrinos),
     gallery: normalizeGallery(raw.gallery),
     galleryLayout: normalizeGalleryLayout(raw.galleryLayout),
     parking: raw.parking ?? "",

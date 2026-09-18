@@ -129,6 +129,22 @@ export type Dictionary = {
     honoreePhotoAdd: string;
     honoreePhotoReplace: string;
     honoreePhotoRemove: string;
+    quinceStory: string;
+    parentsLine: string;
+    padrinos: string;
+    corte: string;
+    misaPlace: string;
+    misaAddress: string;
+    misaTime: string;
+    recepcionPlace: string;
+    recepcionAddress: string;
+    recepcionTime: string;
+    gifts: string;
+    whatsappPhone: string;
+    addRow: string;
+    role: string;
+    personName: string;
+    quincePaletteLocked: string;
   };
   dashboard: {
     eyebrow: string;
@@ -259,6 +275,22 @@ export type Dictionary = {
     quinceRsvpAt: string;
     quinceRsvpBy: string;
     quinceAtTime: string;
+    quincePadres: string;
+    quincePadrinos: string;
+    quinceRecepcion: string;
+    quinceCorte: string;
+    quinceVestimenta: string;
+    quinceRegalos: string;
+    quinceCountdown: string;
+    quinceDays: string;
+    quinceHours: string;
+    quinceMinutes: string;
+    quinceMap: string;
+    quinceWhatsapp: string;
+    quinceEnvelopeHint: string;
+    quinceScroll: string;
+    quinceMute: string;
+    quinceUnmute: string;
     honoreePhotoAlt: string;
     fiftyCelebrate: string;
     collageInvite: string;
@@ -530,6 +562,22 @@ const en: Dictionary = {
     honoreePhotoAdd: "Add her photo",
     honoreePhotoReplace: "Replace",
     honoreePhotoRemove: "Remove",
+    quinceStory: "Quince story",
+    parentsLine: "Parents line",
+    padrinos: "Padrinos",
+    corte: "Court of honor",
+    misaPlace: "Mass place",
+    misaAddress: "Mass address",
+    misaTime: "Mass time",
+    recepcionPlace: "Reception place",
+    recepcionAddress: "Reception address",
+    recepcionTime: "Reception time",
+    gifts: "Gifts note",
+    whatsappPhone: "WhatsApp number",
+    addRow: "Add row",
+    role: "Role",
+    personName: "Name",
+    quincePaletteLocked: "Princesa palette is locked for this slice. More palettes follow.",
     applyTemplateHint:
       "Updates colors, fonts, and headlines from a template. Your uploaded photo is kept.",
   },
@@ -674,6 +722,22 @@ const en: Dictionary = {
     quinceRsvpAt: "at",
     quinceRsvpBy: "by",
     quinceAtTime: "at",
+    quincePadres: "Parents",
+    quincePadrinos: "Sponsors",
+    quinceRecepcion: "Reception",
+    quinceCorte: "Court of honor",
+    quinceVestimenta: "Dress code",
+    quinceRegalos: "Gifts",
+    quinceCountdown: "Countdown",
+    quinceDays: "Days",
+    quinceHours: "Hours",
+    quinceMinutes: "Minutes",
+    quinceMap: "Map",
+    quinceWhatsapp: "WhatsApp",
+    quinceEnvelopeHint: "Tap to open",
+    quinceScroll: "Scroll",
+    quinceMute: "Mute music",
+    quinceUnmute: "Play music",
     honoreePhotoAlt: "Photo of {name}",
     fiftyCelebrate: "is celebrating fifty fabulous years",
     collageInvite: "birthday of",
@@ -956,6 +1020,22 @@ const es: Dictionary = {
     honoreePhotoAdd: "Agregar su foto",
     honoreePhotoReplace: "Reemplazar",
     honoreePhotoRemove: "Quitar",
+    quinceStory: "Historia del quince",
+    parentsLine: "Línea de los padres",
+    padrinos: "Padrinos",
+    corte: "Corte de honor",
+    misaPlace: "Lugar de la misa",
+    misaAddress: "Dirección de la misa",
+    misaTime: "Hora de la misa",
+    recepcionPlace: "Lugar de la recepción",
+    recepcionAddress: "Dirección de la recepción",
+    recepcionTime: "Hora de la recepción",
+    gifts: "Nota de regalos",
+    whatsappPhone: "Número de WhatsApp",
+    addRow: "Agregar fila",
+    role: "Rol",
+    personName: "Nombre",
+    quincePaletteLocked: "La paleta princesa está fija en este corte. Más paletas vienen después.",
     applyTemplateHint:
       "Actualiza colores, fuentes y titulares desde una plantilla. Se conserva tu foto subida.",
   },
@@ -1103,6 +1183,22 @@ const es: Dictionary = {
     quinceRsvpAt: "al",
     quinceRsvpBy: "antes del",
     quinceAtTime: "a las",
+    quincePadres: "Padres",
+    quincePadrinos: "Padrinos",
+    quinceRecepcion: "Recepción",
+    quinceCorte: "Corte de honor",
+    quinceVestimenta: "Vestimenta",
+    quinceRegalos: "Regalos",
+    quinceCountdown: "Cuenta regresiva",
+    quinceDays: "Días",
+    quinceHours: "Horas",
+    quinceMinutes: "Minutos",
+    quinceMap: "Mapa",
+    quinceWhatsapp: "WhatsApp",
+    quinceEnvelopeHint: "Toca para abrir",
+    quinceScroll: "Desliza",
+    quinceMute: "Silenciar música",
+    quinceUnmute: "Reproducir música",
     honoreePhotoAlt: "Foto de {name}",
     fiftyCelebrate: "celebra cincuenta años fabulosos",
     collageInvite: "cumpleaños de",
