@@ -91,7 +91,7 @@
   position: absolute;
   z-index: 1;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .quinceframe-floral--tl {
@@ -122,12 +122,16 @@
   height: 24%;
 }
 
-.quinceframe-floral--tl .quinceframe-asset,
-.quinceframe-floral--tl .quinceframe-floral-svg {
-  width: 100%;
-  height: 100%;
+.quinceframe-floral .quinceframe-asset,
+.quinceframe-floral .quinceframe-floral-svg {
+  width: 100% !important;
+  height: 100% !important;
   max-width: none;
   object-fit: contain;
+}
+
+.quinceframe-floral--tl .quinceframe-asset,
+.quinceframe-floral--tl .quinceframe-floral-svg {
   object-position: top left;
 }
 
