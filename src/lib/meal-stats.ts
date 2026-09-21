@@ -1,3 +1,4 @@
+import { isAttendingRsvp } from "./attendance";
 import type { CustomQuestion, RsvpSubmission } from "./types";
 
 export type MealCount = { option: string; count: number };
@@ -18,7 +19,7 @@ export function mealCountsFromRsvps(
   const tallies = new Map<string, number>();
 
   for (const r of rsvps) {
-    if (!r.attendance.toLowerCase().includes("attend")) continue;
+    if (!isAttendingRsvp(r)) continue;
     const heads = Math.max(1, r.guestCount || 1);
 
     let choice = r.mealChoice?.trim();
@@ -41,7 +42,7 @@ export function dietaryCountsFromRsvps(
 ): MealCount[] {
   const tallies = new Map<string, number>();
   for (const r of rsvps) {
-    if (!r.attendance.toLowerCase().includes("attend")) continue;
+    if (!isAttendingRsvp(r)) continue;
     const raw = r.dietary?.trim();
     if (!raw) continue;
     // Split common separators so "vegetarian, nut allergy" tallies separately
@@ -66,7 +67,7 @@ export function questionAnswerCounts(
 ): MealCount[] {
   const tallies = new Map<string, number>();
   for (const r of rsvps) {
-    if (!r.attendance.toLowerCase().includes("attend")) continue;
+    if (!isAttendingRsvp(r)) continue;
     const raw = r.answers?.[question.id];
     const values = Array.isArray(raw) ? raw : raw ? [raw] : [];
     if (values.length === 0) {

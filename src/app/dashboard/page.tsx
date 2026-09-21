@@ -4,6 +4,7 @@ import { auth, signOut } from "@/auth";
 import BrandLogo from "@/components/BrandLogo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { isAdminEmail } from "@/lib/admin";
+import { isAttendingRsvp, seatsTaken } from "@/lib/attendance";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { isAgencyActive } from "@/lib/agency-clients";
@@ -31,12 +32,8 @@ async function withStats(events: EventRecord[]) {
         listRsvpsByEventId(event.id),
         listViewsByEventId(event.id),
       ]);
-      const yes = rsvps.filter((r) =>
-        r.attendance.toLowerCase().includes("attend"),
-      ).length;
-      const seats = rsvps
-        .filter((r) => r.attendance.toLowerCase().includes("attend"))
-        .reduce((n, r) => n + (r.guestCount || 1), 0);
+      const yes = rsvps.filter((rsvp) => isAttendingRsvp(rsvp)).length;
+      const seats = seatsTaken(rsvps);
       return {
         event,
         rsvpCount: rsvps.length,

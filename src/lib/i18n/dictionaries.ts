@@ -113,6 +113,11 @@ export type Dictionary = {
   host: {
     studio: string;
     customize: string;
+    tabDesign: string;
+    tabGuests: string;
+    tabShare: string;
+    tabDayOf: string;
+    dayOfEmpty: string;
     viewInvite: string;
     rsvps: string;
     yes: string;
@@ -575,6 +580,11 @@ const en: Dictionary = {
   host: {
     studio: "Host studio",
     customize: "Customize invite",
+    tabDesign: "Design",
+    tabGuests: "Guests",
+    tabShare: "Share",
+    tabDayOf: "Day-of",
+    dayOfEmpty: "Seating, check-in, and the album show up here after the first RSVP.",
     viewInvite: "View invite",
     rsvps: "RSVPs",
     yes: "yes",
@@ -1063,6 +1073,12 @@ const es: Dictionary = {
   host: {
     studio: "Estudio del anfitrión",
     customize: "Personalizar invitación",
+    tabDesign: "Diseño",
+    tabGuests: "Invitados",
+    tabShare: "Compartir",
+    tabDayOf: "El día",
+    dayOfEmpty:
+      "El plano de mesas, el registro y el álbum aparecen aquí después del primer RSVP.",
     viewInvite: "Ver invitación",
     rsvps: "RSVPs",
     yes: "sí",

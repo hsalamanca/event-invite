@@ -1,7 +1,9 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+import { attendanceStatus } from "./attendance";
 import { isBlobNotFound } from "./blob-json";
+import { commitWithRetry } from "./json-commit";
 import type { RsvpSubmission } from "./types";
 
 const BLOB_PATH = "ownvite/rsvps.json";
@@ -116,7 +118,6 @@ export async function appendRsvp(
     editToken?: string;
   }
 ): Promise<RsvpSubmission> {
-  const rsvps = await readAll();
   const now = new Date().toISOString();
   const record: RsvpSubmission = {
     id:
@@ -127,6 +128,7 @@ export async function appendRsvp(
     email: submission.email,
     phone: submission.phone,
     attendance: submission.attendance,
+    status: submission.status ?? attendanceStatus(submission.attendance),
     guestCount: submission.guestCount,
     dietary: submission.dietary,
     note: submission.note,
@@ -138,8 +140,13 @@ export async function appendRsvp(
     createdAt: submission.createdAt ?? now,
     updatedAt: now,
   };
-  rsvps.push(record);
-  await writeAll(rsvps);
+  await commitWithRetry({
+    read: readAll,
+    write: writeAll,
+    mutate: (rsvps) =>
+      rsvps.some((rsvp) => rsvp.id === record.id) ? rsvps : [...rsvps, record],
+    persisted: (rsvps) => rsvps.some((rsvp) => rsvp.id === record.id),
+  });
   return record;
 }
 
@@ -161,35 +168,57 @@ export async function updateRsvpByToken(
   token: string,
   partial: Partial<RsvpSubmission>
 ): Promise<RsvpSubmission | undefined> {
-  const rsvps = await readAll();
-  const idx = rsvps.findIndex((r) => r.editToken === token);
-  if (idx < 0) return undefined;
-  const next: RsvpSubmission = {
-    ...rsvps[idx]!,
-    ...partial,
-    id: rsvps[idx]!.id,
-    eventId: rsvps[idx]!.eventId,
-    editToken: rsvps[idx]!.editToken,
-    createdAt: rsvps[idx]!.createdAt,
-    updatedAt: new Date().toISOString(),
-  };
-  rsvps[idx] = next;
-  await writeAll(rsvps);
-  return next;
+  const existing = await getRsvpByToken(token);
+  if (!existing) return undefined;
+  const updatedAt = new Date().toISOString();
+  let result = existing;
+  await commitWithRetry({
+    read: readAll,
+    write: writeAll,
+    mutate: (rsvps) => {
+      const idx = rsvps.findIndex((rsvp) => rsvp.editToken === token);
+      if (idx < 0) return rsvps;
+      const current = rsvps[idx]!;
+      const next: RsvpSubmission = {
+        ...current,
+        ...partial,
+        id: current.id,
+        eventId: current.eventId,
+        editToken: current.editToken,
+        createdAt: current.createdAt,
+        status:
+          partial.attendance != null
+            ? attendanceStatus(partial.attendance)
+            : current.status,
+        updatedAt,
+      };
+      result = next;
+      const copy = rsvps.slice();
+      copy[idx] = next;
+      return copy;
+    },
+    persisted: (rsvps) =>
+      rsvps.some(
+        (rsvp) => rsvp.editToken === token && rsvp.updatedAt === updatedAt,
+      ),
+  });
+  return result;
 }
 
 export async function deleteRsvpById(
   rsvpId: string,
   eventId?: string,
 ): Promise<boolean> {
-  const rsvps = await readAll();
-  const before = rsvps.length;
-  const next = rsvps.filter(
-    (r) =>
-      !(r.id === rsvpId && (eventId == null || r.eventId === eventId)),
-  );
-  if (next.length === before) return false;
-  await writeAll(next);
+  const matches = (rsvp: RsvpSubmission) =>
+    rsvp.id === rsvpId && (eventId == null || rsvp.eventId === eventId);
+  const existing = await readAll();
+  if (!existing.some(matches)) return false;
+  await commitWithRetry({
+    read: readAll,
+    write: writeAll,
+    mutate: (rsvps) => rsvps.filter((rsvp) => !matches(rsvp)),
+    persisted: (rsvps) => !rsvps.some(matches),
+  });
   return true;
 }
 
@@ -197,15 +226,30 @@ export async function setCheckedIn(
   rsvpId: string,
   checkedIn: boolean
 ): Promise<RsvpSubmission | undefined> {
-  const rsvps = await readAll();
-  const idx = rsvps.findIndex((r) => r.id === rsvpId);
-  if (idx < 0) return undefined;
-  rsvps[idx] = {
-    ...rsvps[idx]!,
-    checkedIn,
-    checkedInAt: checkedIn ? new Date().toISOString() : null,
-    updatedAt: new Date().toISOString(),
-  };
-  await writeAll(rsvps);
-  return rsvps[idx];
+  const existing = (await readAll()).find((rsvp) => rsvp.id === rsvpId);
+  if (!existing) return undefined;
+  const updatedAt = new Date().toISOString();
+  const checkedInAt = checkedIn ? updatedAt : null;
+  let result = existing;
+  await commitWithRetry({
+    read: readAll,
+    write: writeAll,
+    mutate: (rsvps) => {
+      const idx = rsvps.findIndex((rsvp) => rsvp.id === rsvpId);
+      if (idx < 0) return rsvps;
+      const next: RsvpSubmission = {
+        ...rsvps[idx]!,
+        checkedIn,
+        checkedInAt,
+        updatedAt,
+      };
+      result = next;
+      const copy = rsvps.slice();
+      copy[idx] = next;
+      return copy;
+    },
+    persisted: (rsvps) =>
+      rsvps.some((rsvp) => rsvp.id === rsvpId && rsvp.updatedAt === updatedAt),
+  });
+  return result;
 }

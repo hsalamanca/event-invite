@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isAttendingRsvp } from "@/lib/attendance";
 
 type Row = {
   id: string;
@@ -156,9 +157,7 @@ export function CheckInPanel({ slug }: { slug: string }) {
     setScanning(false);
   }
 
-  const attending = rows.filter((r) =>
-    r.attendance.toLowerCase().includes("attend"),
-  );
+  const attending = rows.filter((row) => isAttendingRsvp(row));
   const filtered = attending.filter((r) => {
     const needle = q.trim().toLowerCase();
     if (!needle) return true;

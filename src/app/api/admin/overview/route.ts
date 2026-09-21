@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth, isGoogleAuthEnabled } from "@/auth";
 import { isAdminEmail } from "@/lib/admin";
+import { isAttendingRsvp } from "@/lib/attendance";
 import { listEvents } from "@/lib/events";
 import { listUsers, findUserById } from "@/lib/users";
 import { listRsvpsByEventId } from "@/lib/rsvp-store";
@@ -43,9 +44,7 @@ export async function GET() {
         ownerEmail: owner?.email ?? null,
         ownerName: owner?.name ?? null,
         rsvpCount: rsvps.length,
-        attendingCount: rsvps.filter((r) =>
-          r.attendance.toLowerCase().includes("attend"),
-        ).length,
+        attendingCount: rsvps.filter((rsvp) => isAttendingRsvp(rsvp)).length,
         updatedAt: event.updatedAt,
         createdAt: event.createdAt,
       };

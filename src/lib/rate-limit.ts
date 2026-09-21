@@ -123,6 +123,18 @@ export function matchApiRateLimit(
   if (m === "POST" && pathname === "/api/events") {
     return { name: "create-event", limit: 20, windowMs: 60 * 60 * 1000 };
   }
+  if (m === "POST" && pathname === "/api/ai/parse-invite") {
+    return { name: "parse-invite", limit: 20, windowMs: 60 * 60 * 1000 };
+  }
+  if (m === "POST" && pathname === "/api/guests/import") {
+    return { name: "guest-import", limit: 20, windowMs: 60 * 60 * 1000 };
+  }
+  if (m === "POST" && pathname === "/api/domains/verify") {
+    return { name: "domain-verify", limit: 30, windowMs: 60 * 60 * 1000 };
+  }
+  if (m === "POST" && pathname === "/api/billing/checkout") {
+    return { name: "billing-checkout", limit: 20, windowMs: 60 * 60 * 1000 };
+  }
   if (
     (m === "POST" || m === "DELETE") &&
     (pathname === "/api/guest-book" || pathname === "/api/guest-book/import")

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { isAttendingRsvp } from "@/lib/attendance";
 import type { EventRecord, RsvpSubmission, SeatingTable } from "@/lib/types";
 import { canUseSeating } from "@/lib/tier";
 
@@ -29,7 +30,7 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
 
   const attending = useMemo(
     () =>
-      rsvps.filter((r) => r.attendance.toLowerCase().includes("attend")),
+      rsvps.filter((rsvp) => isAttendingRsvp(rsvp)),
     [rsvps],
   );
 
@@ -55,8 +56,7 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
     for (const t of tables) {
       for (const a of t.assignments) {
         const r = rsvpById.get(a.rsvpId);
-        const stillGoing =
-          r && r.attendance.toLowerCase().includes("attend");
+        const stillGoing = r ? isAttendingRsvp(r) : false;
         if (!stillGoing) {
           rows.push({
             tableId: t.id,
@@ -310,8 +310,7 @@ export function SeatingChart({ event, rsvps }: SeatingChartProps) {
                 <ul className="mt-2 space-y-1 text-sm">
                   {table.assignments.map((a) => {
                     const r = rsvpById.get(a.rsvpId);
-                    const declined =
-                      !r || !r.attendance.toLowerCase().includes("attend");
+                    const declined = !r || !isAttendingRsvp(r);
                     return (
                       <li
                         key={a.rsvpId}

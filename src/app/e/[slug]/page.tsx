@@ -10,6 +10,8 @@ import { listRsvpsByEventId } from "@/lib/rsvp-store";
 import { stripAboutHtml } from "@/lib/sanitize-about";
 import { resolveInviteLayout, resolveLocalizedInviteCopy } from "@/lib/templates";
 import { shouldShowOwnviteFooter } from "@/lib/tier";
+import { seatsTaken as countSeatsTaken } from "@/lib/attendance";
+import { INVITE_UNLOCK_COOKIE, unlockCookieGrants } from "@/lib/invite-unlock";
 import { fetchEventWeather } from "@/lib/weather";
 
 type PageProps = {
@@ -17,13 +19,6 @@ type PageProps = {
 };
 
 export const dynamic = "force-dynamic";
-
-const UNLOCK_COOKIE = "OWNVITE_INVITE_UNLOCK";
-
-function isUnlocked(cookieValue: string | undefined, slug: string): boolean {
-  if (!cookieValue) return false;
-  return cookieValue.split(",").map((s) => s.trim()).includes(slug);
-}
 
 export async function generateMetadata({
   params,
@@ -53,16 +48,20 @@ export default async function EventInvitePage({ params }: PageProps) {
 
   if (event.visibility === "private" && event.invitePasswordHash) {
     const jar = await cookies();
-    const unlocked = isUnlocked(jar.get(UNLOCK_COOKIE)?.value, slug);
+    const unlocked = unlockCookieGrants(
+      jar.get(INVITE_UNLOCK_COOKIE)?.value,
+      slug,
+      process.env.AUTH_SECRET || "",
+    );
     if (!unlocked) {
       return <InviteUnlock slug={slug} title={event.title} />;
     }
   }
 
+  // Seat totals stay derived from the RSVP list. A stored counter would read
+  // as zero for every event saved before that field existed.
   const rsvps = await listRsvpsByEventId(event.id);
-  const seatsTaken = rsvps
-    .filter((r) => r.attendance.toLowerCase().includes("attend"))
-    .reduce((n, r) => n + (r.guestCount || 1), 0);
+  const seatsTaken = countSeatsTaken(rsvps);
   const atCapacity =
     event.capacity != null && event.capacity > 0 && seatsTaken >= event.capacity;
 

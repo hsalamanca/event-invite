@@ -13,11 +13,13 @@ import { GuestBookPanel } from "@/components/host/GuestBookPanel";
 import GuestManager from "@/components/host/GuestManager";
 import { GuestbookModeration } from "@/components/host/GuestbookModeration";
 import HostActions from "@/components/host/HostActions";
+import HostStudioTabs from "@/components/host/HostStudioTabs";
 import { MealDashboard } from "@/components/host/MealDashboard";
 import { OpenTracking } from "@/components/host/OpenTracking";
 import { PrivacyCompliancePanel } from "@/components/host/PrivacyCompliancePanel";
 import { SeatingChart } from "@/components/host/SeatingChart";
 import { WaitlistPanel } from "@/components/host/WaitlistPanel";
+import { isAttendingRsvp, seatsTaken } from "@/lib/attendance";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -40,12 +42,8 @@ export default function HostStudioShell({
 }: HostStudioShellProps) {
   const t = getDictionary(locale).host;
   const nav = getDictionary(locale).nav;
-  const attending = rsvps.filter((r) =>
-    r.attendance.toLowerCase().includes("attend"),
-  ).length;
-  const seats = rsvps
-    .filter((r) => r.attendance.toLowerCase().includes("attend"))
-    .reduce((n, r) => n + (r.guestCount || 1), 0);
+  const attending = rsvps.filter((rsvp) => isAttendingRsvp(rsvp)).length;
+  const seats = seatsTaken(rsvps);
 
   return (
     <div className="min-h-screen bg-[var(--ink)] text-[var(--ivory)]">
@@ -71,7 +69,7 @@ export default function HostStudioShell({
                 {nav.dashboard}
               </Link>
             ) : null}
-            <span className="hidden rounded-md border border-white/10 bg-[var(--slate)] px-3 py-1.5 text-[var(--mist)] sm:inline">
+            <span className="rounded-md border border-white/10 bg-[var(--slate)] px-2 py-1 text-xs text-[var(--mist)] sm:px-3 sm:py-1.5 sm:text-sm">
               {rsvps.length} {t.rsvps} · {attending} {t.yes}
               {event.capacity ? ` · ${seats}/${event.capacity}` : ""}
             </span>
@@ -84,48 +82,70 @@ export default function HostStudioShell({
           </div>
         </div>
       </header>
-      <EventCustomizer event={event} locale={locale} />
-      <div className="mx-auto max-w-[1600px] space-y-10 px-4 pb-24 sm:px-6 sm:pb-16">
+      <div className="mx-auto max-w-[1600px] px-4 pt-4 sm:px-6">
         <CollabPresenceBanner slug={event.slug} />
-        <AnalyticsFunnelPanel slug={event.slug} />
-        <MealDashboard
-          rsvps={rsvps}
-          questions={event.rsvpFields.customQuestions ?? []}
-          dietaryEnabled={event.rsvpFields.dietary?.enabled !== false}
-        />
-        <WaitlistPanel slug={event.slug} capacity={event.capacity} />
-        <GuestbookModeration slug={event.slug} />
-        <AlbumModeration
-          slug={event.slug}
-          enabled={Boolean(event.albumEnabled)}
-        />
-        <OpenTracking slug={event.slug} />
-        <DeliveryInbox slug={event.slug} />
-        <GuestBookPanel slug={event.slug} />
-        <GiftsThankYouPanel slug={event.slug} />
-        <GuestManager
-          slug={event.slug}
-          locale={locale}
-          initialRsvps={rsvps}
-          questions={event.rsvpFields.customQuestions ?? []}
-        />
-        <SeatingChart event={event} rsvps={rsvps} />
-        {event.checkInEnabled ? <CheckInPanel slug={event.slug} /> : null}
-        <PrivacyCompliancePanel slug={event.slug} />
-        <Suspense fallback={null}>
-          <HostActions
-            slug={event.slug}
-            locale={locale}
-            canDelete={canDelete}
-            tier={event.tier ?? "free"}
-            emailCredits={event.emailCredits ?? 0}
-            smsCredits={event.smsCredits ?? 0}
-            unlockedPackIds={event.unlockedPackIds ?? []}
-            registryClicks={event.registryClicks ?? 0}
-            cashFundClicks={event.cashFundClicks ?? 0}
-          />
-        </Suspense>
       </div>
+      <HostStudioTabs
+        labels={{
+          tabDesign: t.tabDesign,
+          tabGuests: t.tabGuests,
+          tabShare: t.tabShare,
+          tabDayOf: t.tabDayOf,
+        }}
+        hasRsvps={rsvps.length > 0}
+        dayOfEmpty={t.dayOfEmpty}
+        design={<EventCustomizer event={event} locale={locale} />}
+        guests={
+          <>
+            <GuestManager
+              slug={event.slug}
+              locale={locale}
+              initialRsvps={rsvps}
+              questions={event.rsvpFields.customQuestions ?? []}
+            />
+            <MealDashboard
+              rsvps={rsvps}
+              questions={event.rsvpFields.customQuestions ?? []}
+              dietaryEnabled={event.rsvpFields.dietary?.enabled !== false}
+            />
+            <WaitlistPanel slug={event.slug} capacity={event.capacity} />
+            <GuestBookPanel slug={event.slug} />
+          </>
+        }
+        share={
+          <>
+            <AnalyticsFunnelPanel slug={event.slug} />
+            <OpenTracking slug={event.slug} />
+            <DeliveryInbox slug={event.slug} />
+            <PrivacyCompliancePanel slug={event.slug} />
+            <Suspense fallback={null}>
+              <HostActions
+                slug={event.slug}
+                locale={locale}
+                canDelete={canDelete}
+                tier={event.tier ?? "free"}
+                emailCredits={event.emailCredits ?? 0}
+                smsCredits={event.smsCredits ?? 0}
+                unlockedPackIds={event.unlockedPackIds ?? []}
+                registryClicks={event.registryClicks ?? 0}
+                cashFundClicks={event.cashFundClicks ?? 0}
+              />
+            </Suspense>
+          </>
+        }
+        dayOf={
+          <>
+            <SeatingChart event={event} rsvps={rsvps} />
+            {event.checkInEnabled ? <CheckInPanel slug={event.slug} /> : null}
+            <GuestbookModeration slug={event.slug} />
+            <AlbumModeration
+              slug={event.slug}
+              enabled={Boolean(event.albumEnabled)}
+            />
+            <GiftsThankYouPanel slug={event.slug} />
+          </>
+        }
+      />
     </div>
   );
 }

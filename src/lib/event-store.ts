@@ -9,6 +9,7 @@ import {
   normalizeVenueBlock,
 } from "./quince-fields";
 import { remapBrokenHeroImage } from "./templates";
+import { commitWithRetry } from "./json-commit";
 import { safeHttpsUrl } from "./safe-https-url";
 import type { EventRecord } from "./types";
 
@@ -179,6 +180,24 @@ async function save(registry: EventRegistry) {
   await writeJsonBlob(PATH, registry);
 }
 
+async function readEvents(): Promise<EventRecord[]> {
+  return (await load()).events;
+}
+
+async function commitEvents(
+  mutate: (events: EventRecord[]) => EventRecord[],
+  persisted: (events: EventRecord[]) => boolean,
+): Promise<EventRecord[]> {
+  return commitWithRetry({
+    read: readEvents,
+    write: async (events) => {
+      await save({ version: 1, events });
+    },
+    mutate,
+    persisted,
+  });
+}
+
 export async function listAllEvents(): Promise<EventRecord[]> {
   return (await load()).events;
 }
@@ -237,8 +256,7 @@ export async function createEvent(
     id?: string;
   }
 ): Promise<EventRecord> {
-  const registry = await load();
-  if (registry.events.some((e) => e.slug === input.slug)) {
+  if ((await readEvents()).some((existing) => existing.slug === input.slug)) {
     throw new Error(`Event with slug "${input.slug}" already exists`);
   }
   const now = new Date().toISOString();
@@ -250,26 +268,36 @@ export async function createEvent(
     createdAt: now,
     updatedAt: now,
   };
-  registry.events.push(event);
-  await save(registry);
-  return event;
+  try {
+    await commitEvents(
+      (events) =>
+        events.some((existing) => existing.slug === event.slug)
+          ? events
+          : [...events, event],
+      (events) => events.some((existing) => existing.id === event.id),
+    );
+  } catch (err) {
+    const taken = (await readEvents()).find(
+      (existing) => existing.slug === event.slug && existing.id !== event.id,
+    );
+    if (taken) {
+      throw new Error(`Event with slug "${input.slug}" already exists`);
+    }
+    throw err;
+  }
+  const saved = (await readEvents()).find((existing) => existing.id === event.id);
+  if (!saved) {
+    throw new Error(`Event with slug "${input.slug}" already exists`);
+  }
+  return saved;
 }
 
-export async function updateEvent(
-  slug: string,
-  partial: Partial<EventRecord>
-): Promise<EventRecord | undefined> {
-  const registry = await load();
-  const idx = registry.events.findIndex((e) => e.slug === slug);
-  if (idx < 0) return undefined;
-  const existing = registry.events[idx]!;
+function mergeEventUpdate(
+  existing: EventRecord,
+  partial: Partial<EventRecord>,
+  updatedAt: string,
+): EventRecord {
   const nextSlug = partial.slug ?? existing.slug;
-  if (
-    nextSlug !== slug &&
-    registry.events.some((e) => e.slug === nextSlug)
-  ) {
-    throw new Error(`Slug "${nextSlug}" is already taken`);
-  }
   const updated: EventRecord = {
     ...existing,
     ...partial,
@@ -283,7 +311,7 @@ export async function updateEvent(
     rsvpFields: partial.rsvpFields
       ? { ...existing.rsvpFields, ...partial.rsvpFields }
       : existing.rsvpFields,
-    updatedAt: new Date().toISOString(),
+    updatedAt,
   };
   if (partial.gallery !== undefined) {
     updated.gallery = normalizeGallery(partial.gallery);
@@ -291,29 +319,82 @@ export async function updateEvent(
   if (partial.galleryLayout !== undefined) {
     updated.galleryLayout = normalizeGalleryLayout(partial.galleryLayout);
   }
-  registry.events[idx] = updated;
-  await save(registry);
   return updated;
 }
 
+export async function updateEvent(
+  slug: string,
+  partial: Partial<EventRecord>
+): Promise<EventRecord | undefined> {
+  const current = await getEventBySlug(slug);
+  if (!current) return undefined;
+  const nextSlug = partial.slug ?? current.slug;
+  if (
+    nextSlug !== slug &&
+    (await readEvents()).some((event) => event.slug === nextSlug)
+  ) {
+    throw new Error(`Slug "${nextSlug}" is already taken`);
+  }
+  const updatedAt = new Date().toISOString();
+  try {
+    await commitEvents(
+      (events) => {
+        const idx = events.findIndex((event) => event.id === current.id);
+        if (idx < 0) return events;
+        const existing = events[idx]!;
+        const mergedSlug = partial.slug ?? existing.slug;
+        if (
+          mergedSlug !== existing.slug &&
+          events.some((event) => event.slug === mergedSlug && event.id !== existing.id)
+        ) {
+          return events;
+        }
+        const copy = events.slice();
+        copy[idx] = mergeEventUpdate(existing, partial, updatedAt);
+        return copy;
+      },
+      (events) =>
+        events.some(
+          (event) => event.id === current.id && event.updatedAt === updatedAt,
+        ),
+    );
+  } catch (err) {
+    const latest = (await readEvents()).find((event) => event.id === current.id);
+    if (!latest) return undefined;
+    if (
+      partial.slug &&
+      partial.slug !== latest.slug &&
+      (await readEvents()).some((event) => event.slug === partial.slug)
+    ) {
+      throw new Error(`Slug "${partial.slug}" is already taken`);
+    }
+    throw err;
+  }
+  return (await readEvents()).find((event) => event.id === current.id);
+}
+
 export async function deleteEvent(slug: string, ownerId: string): Promise<boolean> {
-  const registry = await load();
-  const before = registry.events.length;
-  registry.events = registry.events.filter(
-    (e) => !(e.slug === slug && e.ownerId === ownerId)
+  const events = await readEvents();
+  const target = events.find(
+    (event) => event.slug === slug && event.ownerId === ownerId,
   );
-  if (registry.events.length === before) return false;
-  await save(registry);
+  if (!target) return false;
+  await commitEvents(
+    (current) => current.filter((event) => event.id !== target.id),
+    (current) => !current.some((event) => event.id === target.id),
+  );
   return true;
 }
 
 /** Admin / support: delete any event regardless of owner. */
 export async function adminDeleteEvent(slug: string): Promise<boolean> {
-  const registry = await load();
-  const before = registry.events.length;
-  registry.events = registry.events.filter((e) => e.slug !== slug);
-  if (registry.events.length === before) return false;
-  await save(registry);
+  const events = await readEvents();
+  const target = events.find((event) => event.slug === slug);
+  if (!target) return false;
+  await commitEvents(
+    (current) => current.filter((event) => event.id !== target.id),
+    (current) => !current.some((event) => event.id === target.id),
+  );
   return true;
 }
 

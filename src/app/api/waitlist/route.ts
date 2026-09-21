@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { seatsTaken as countSeatsTaken } from "@/lib/attendance";
 import { canManageEvent } from "@/lib/access";
 import { getEventBySlug } from "@/lib/events";
 import {
@@ -12,10 +13,7 @@ import { listRsvpsByEventId } from "@/lib/rsvp-store";
 export const runtime = "nodejs";
 
 async function seatsTaken(eventId: string): Promise<number> {
-  const rsvps = await listRsvpsByEventId(eventId);
-  return rsvps
-    .filter((r) => r.attendance.toLowerCase().includes("attend"))
-    .reduce((n, r) => n + (r.guestCount || 1), 0);
+  return countSeatsTaken(await listRsvpsByEventId(eventId));
 }
 
 export async function GET(request: Request) {

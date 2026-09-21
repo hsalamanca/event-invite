@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { canManageEvent } from "@/lib/access";
+import { isAttendingRsvp } from "@/lib/attendance";
 import { createBlast } from "@/lib/blast-store";
 import { sendEventEmail } from "@/lib/email";
 import { inviteEmailHtml } from "@/lib/email-templates";
@@ -66,8 +67,8 @@ export async function POST(
         .filter((e) => e && !responded.has(e.toLowerCase()));
     } else {
       targets = rsvps
-        .filter((r) => r.attendance.toLowerCase().includes("attend"))
-        .map((r) => r.email);
+        .filter((rsvp) => isAttendingRsvp(rsvp))
+        .map((rsvp) => rsvp.email);
     }
 
     targets = [...new Set(targets.filter(Boolean))];
@@ -197,11 +198,8 @@ export async function POST(
       );
   } else {
     phoneTargets = rsvps
-      .filter(
-        (r) =>
-          r.phone && r.attendance.toLowerCase().includes("attend"),
-      )
-      .map((r) => r.phone!);
+      .filter((rsvp) => rsvp.phone && isAttendingRsvp(rsvp))
+      .map((rsvp) => rsvp.phone!);
     for (const g of manual) {
       if (g.phone && (g.status === "going" || g.status === "maybe")) {
         phoneTargets.push(g.phone);

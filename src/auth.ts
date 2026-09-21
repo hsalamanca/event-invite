@@ -1,7 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { compare } from "bcryptjs";
+import { passwordLoginBlockReason } from "@/lib/password-login";
 import { findUserByEmail, upsertOAuthUser } from "@/lib/users";
 import {
   authCookies,
@@ -12,6 +13,10 @@ import {
 import { safeAuthRedirect } from "@/lib/safe-callback-url";
 
 warnIfAuthSecretMissing();
+
+class EmailNotVerified extends CredentialsSignin {
+  code = "email_not_verified";
+}
 
 /** Auth.js auto-detects AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET; also accept CLIENT_* aliases. */
 const googleClientId =
@@ -52,6 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth((request) => {
           if (!user?.passwordHash) return null;
           const ok = await compare(password, user.passwordHash);
           if (!ok) return null;
+          if (passwordLoginBlockReason(user)) throw new EmailNotVerified();
           return {
             id: user.id,
             email: user.email,

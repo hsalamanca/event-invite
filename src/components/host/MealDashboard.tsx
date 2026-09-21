@@ -1,5 +1,6 @@
 "use client";
 
+import { isAttendingRsvp, seatsTaken } from "@/lib/attendance";
 import type { CustomQuestion, RsvpSubmission } from "@/lib/types";
 import {
   collectMealQuestions,
@@ -19,10 +20,8 @@ export function MealDashboard({
 }) {
   const mealQs = collectMealQuestions(questions);
   const meal = mealQs[0];
-  const attending = rsvps.filter((r) =>
-    r.attendance.toLowerCase().includes("attend"),
-  );
-  const seats = attending.reduce((n, r) => n + (r.guestCount || 1), 0);
+  const attending = rsvps.filter((rsvp) => isAttendingRsvp(rsvp));
+  const seats = seatsTaken(rsvps);
   const mealCounts = mealCountsFromRsvps(rsvps, questions);
   const dietaryCounts = dietaryEnabled
     ? dietaryCountsFromRsvps(rsvps)

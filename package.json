@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsx --test src/lib/security.test.ts src/lib/template-gallery.test.ts src/lib/marketing-theme.test.ts"
+    "test": "tsx --test src/lib/security.test.ts src/lib/template-gallery.test.ts src/lib/marketing-theme.test.ts src/lib/attendance.test.ts src/lib/invite-unlock.test.ts src/lib/password-login.test.ts src/lib/json-commit.test.ts src/lib/rate-limit.test.ts"
   },
   "dependencies": {
     "@vercel/blob": "^2.6.1",

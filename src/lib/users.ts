@@ -1,4 +1,6 @@
 import { readJsonBlob, writeJsonBlob } from "./blob-json";
+import { commitWithRetry } from "./json-commit";
+import { googleLinkUpdate } from "./password-login";
 import type { UserRecord } from "./types";
 
 const PATH = "ownvite/users.json";
@@ -76,9 +78,8 @@ export async function createUser(input: {
   verifyToken?: string | null;
   verifyTokenExpires?: string | null;
 }): Promise<UserRecord> {
-  const registry = await load();
   const email = input.email.trim().toLowerCase();
-  if (registry.users.some((u) => u.email === email)) {
+  if ((await load()).users.some((existing) => existing.email === email)) {
     throw new Error("An account with this email already exists");
   }
   const user: UserRecord = normalizeUser({
@@ -91,22 +92,54 @@ export async function createUser(input: {
     verifyTokenExpires: input.verifyTokenExpires ?? null,
     createdAt: new Date().toISOString(),
   });
-  registry.users.push(user);
-  await save(registry);
-  return user;
+  try {
+    await commitWithRetry({
+      read: load,
+      write: save,
+      mutate: (registry) =>
+        registry.users.some((existing) => existing.email === email)
+          ? registry
+          : { ...registry, users: [...registry.users, user] },
+      persisted: (registry) => registry.users.some((existing) => existing.id === user.id),
+    });
+  } catch (err) {
+    const taken = (await load()).users.find(
+      (existing) => existing.email === email && existing.id !== user.id,
+    );
+    if (taken) throw new Error("An account with this email already exists");
+    throw err;
+  }
+  const saved = (await load()).users.find((existing) => existing.id === user.id);
+  if (!saved) throw new Error("An account with this email already exists");
+  return saved;
 }
 
 export async function updateUser(
   id: string,
   partial: Partial<UserRecord>,
 ): Promise<UserRecord | undefined> {
-  const registry = await load();
-  const idx = registry.users.findIndex((u) => u.id === id);
-  if (idx < 0) return undefined;
-  const updated = normalizeUser({ ...registry.users[idx]!, ...partial, id });
-  registry.users[idx] = updated;
-  await save(registry);
-  return updated;
+  const existing = await findUserById(id);
+  if (!existing) return undefined;
+  await commitWithRetry({
+    read: load,
+    write: save,
+    mutate: (registry) => {
+      const idx = registry.users.findIndex((user) => user.id === id);
+      if (idx < 0) return registry;
+      const updated = normalizeUser({ ...registry.users[idx]!, ...partial, id });
+      const users = registry.users.slice();
+      users[idx] = updated;
+      return { ...registry, users };
+    },
+    persisted: (registry) => {
+      const user = registry.users.find((candidate) => candidate.id === id);
+      if (!user) return false;
+      return (Object.keys(partial) as (keyof UserRecord)[]).every(
+        (key) => user[key] === partial[key],
+      );
+    },
+  });
+  return findUserById(id);
 }
 
 export async function findUserByVerifyToken(
@@ -141,17 +174,13 @@ export async function upsertOAuthUser(input: {
 }): Promise<UserRecord> {
   const existing = await findUserByEmail(input.email);
   if (existing) {
-    if (!existing.emailVerifiedAt) {
-      return (
-        (await updateUser(existing.id, {
-          emailVerifiedAt: new Date().toISOString(),
-          verifyToken: null,
-          verifyTokenExpires: null,
-          name: existing.name || input.name,
-        })) ?? existing
-      );
-    }
-    return existing;
+    const patch = googleLinkUpdate(
+      existing,
+      input.name,
+      new Date().toISOString(),
+    );
+    if (!patch) return existing;
+    return (await updateUser(existing.id, patch)) ?? existing;
   }
   return createUser({
     email: input.email,

@@ -9,6 +9,7 @@ import {
   listRsvpsByEventId,
   updateRsvpByToken,
 } from "@/lib/rsvp-store";
+import { exceedsCapacity } from "@/lib/attendance";
 import { omitRsvpEditToken, toGuestRsvpConfirmation } from "@/lib/guest-rsvp";
 import type { RsvpAnswers, RsvpSubmission } from "@/lib/types";
 
@@ -127,23 +128,19 @@ export async function POST(request: Request) {
   const existing = await listRsvpsByEventId(eventId);
   const prior = existing.find((r) => r.email === email);
 
-  if (event.capacity) {
-    const going = existing
-      .filter(
-        (r) =>
-          r.attendance.toLowerCase().includes("attend") &&
-          (!prior || r.id !== prior.id),
-      )
-      .reduce((n, r) => n + (r.guestCount || 1), 0);
-    const nextCount = attendance.toLowerCase().includes("attend")
-      ? Math.max(1, guestCount || 1)
-      : 0;
-    if (going + nextCount > event.capacity) {
-      return NextResponse.json(
-        { error: "This event is at capacity" },
-        { status: 409 },
-      );
-    }
+  if (
+    exceedsCapacity({
+      capacity: event.capacity,
+      rsvps: existing,
+      nextAttendance: attendance,
+      nextGuestCount: Number.isFinite(guestCount) ? guestCount : 1,
+      excludeId: prior?.id,
+    })
+  ) {
+    return NextResponse.json(
+      { error: "This event is at capacity" },
+      { status: 409 },
+    );
   }
 
   try {
@@ -228,22 +225,20 @@ export async function PATCH(request: Request) {
   const guestCount =
     data.guestCount != null ? Number(data.guestCount) : undefined;
 
-  if (event.capacity && attendance?.toLowerCase().includes("attend")) {
-    const all = await listRsvpsByEventId(event.id);
-    const going = all
-      .filter(
-        (r) =>
-          r.id !== existing.id &&
-          r.attendance.toLowerCase().includes("attend"),
-      )
-      .reduce((n, r) => n + (r.guestCount || 1), 0);
-    const next = Math.max(1, guestCount ?? existing.guestCount);
-    if (going + next > event.capacity) {
-      return NextResponse.json(
-        { error: "This event is at capacity" },
-        { status: 409 },
-      );
-    }
+  if (
+    attendance != null &&
+    exceedsCapacity({
+      capacity: event.capacity,
+      rsvps: await listRsvpsByEventId(event.id),
+      nextAttendance: attendance,
+      nextGuestCount: guestCount ?? existing.guestCount,
+      excludeId: existing.id,
+    })
+  ) {
+    return NextResponse.json(
+      { error: "This event is at capacity" },
+      { status: 409 },
+    );
   }
 
   const updated = await updateRsvpByToken(token, {

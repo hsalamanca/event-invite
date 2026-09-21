@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { isAttendingRsvp, isDecliningRsvp, seatsTaken } from "@/lib/attendance";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import type { CustomQuestion, ManualGuest, RsvpSubmission } from "@/lib/types";
@@ -74,15 +75,9 @@ export default function GuestManager({
   }, [load]);
 
   const stats = useMemo(() => {
-    const yes = rsvps.filter((r) =>
-      r.attendance.toLowerCase().includes("attend"),
-    ).length;
-    const no = rsvps.filter((r) =>
-      r.attendance.toLowerCase().includes("declin"),
-    ).length;
-    const heads = rsvps
-      .filter((r) => r.attendance.toLowerCase().includes("attend"))
-      .reduce((n, r) => n + (r.guestCount || 1), 0);
+    const yes = rsvps.filter((rsvp) => isAttendingRsvp(rsvp)).length;
+    const no = rsvps.filter((rsvp) => isDecliningRsvp(rsvp)).length;
+    const heads = seatsTaken(rsvps);
     return { yes, no, heads, total: rsvps.length };
   }, [rsvps]);
 

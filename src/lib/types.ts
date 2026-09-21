@@ -222,6 +222,11 @@ export type RsvpSubmission = {
   /** Optional mobile for SMS / WhatsApp reminders */
   phone?: string;
   attendance: string;
+  /**
+   * Optional canonical yes/no/maybe. Absent on older rows; readers derive it
+   * from `attendance` so the RSVP file does not need a backfill.
+   */
+  status?: "yes" | "no" | "maybe" | null;
   guestCount: number;
   dietary: string;
   note: string;

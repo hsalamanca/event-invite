@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAttendingRsvp, isDecliningRsvp } from "@/lib/attendance";
 import { canManageEvent, managerDeniedStatus } from "@/lib/access";
 import { listBlastsForEvent, summarizeBlastDelivery } from "@/lib/blast-store";
 import { listOutboundForEvent } from "@/lib/email";
@@ -38,12 +39,8 @@ export async function GET(
     ]);
 
   const viewSummary = summarizeViews(views);
-  const yes = rsvps.filter((r) =>
-    r.attendance.toLowerCase().includes("attend"),
-  );
-  const no = rsvps.filter((r) =>
-    r.attendance.toLowerCase().includes("declin"),
-  );
+  const yes = rsvps.filter((rsvp) => isAttendingRsvp(rsvp));
+  const no = rsvps.filter((rsvp) => isDecliningRsvp(rsvp));
   const checkedIn = rsvps.filter((r) => r.checkedIn).length;
   const mealChoices: Record<string, number> = {};
   for (const r of yes) {

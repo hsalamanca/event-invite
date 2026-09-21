@@ -51,6 +51,12 @@ export default function LoginForm({
         redirect: false,
       });
       if (res?.error) {
+        if (res.code === "email_not_verified") {
+          setError(
+            "Verify your email before signing in. Check your inbox for the Ownvite link.",
+          );
+          return;
+        }
         setError("Invalid email or password.");
         return;
       }

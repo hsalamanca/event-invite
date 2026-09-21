@@ -1,10 +1,16 @@
 import { compare } from "bcryptjs";
 import { NextResponse } from "next/server";
 import { getEventBySlug } from "@/lib/events";
+import {
+  INVITE_UNLOCK_COOKIE,
+  withUnlockedSlug,
+} from "@/lib/invite-unlock";
 
 export const runtime = "nodejs";
 
-const COOKIE = "OWNVITE_INVITE_UNLOCK";
+function unlockSecret(): string {
+  return process.env.AUTH_SECRET || "";
+}
 
 export async function POST(
   request: Request,
@@ -26,18 +32,24 @@ export async function POST(
     return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
   }
 
+  const secret = unlockSecret();
+  if (!secret) {
+    return NextResponse.json(
+      { error: "Invite unlock is not configured" },
+      { status: 500 },
+    );
+  }
+
   const res = NextResponse.json({ ok: true, unlocked: true });
   const existing = request.headers.get("cookie") ?? "";
-  const unlocked = new Set(
-    existing
-      .split(";")
-      .map((c) => c.trim())
-      .filter((c) => c.startsWith(`${COOKIE}=`))
-      .flatMap((c) => decodeURIComponent(c.slice(COOKIE.length + 1)).split(","))
-      .filter(Boolean),
-  );
-  unlocked.add(slug);
-  res.cookies.set(COOKIE, [...unlocked].join(","), {
+  const current = existing
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${INVITE_UNLOCK_COOKIE}=`));
+  const raw = current
+    ? decodeURIComponent(current.slice(INVITE_UNLOCK_COOKIE.length + 1))
+    : "";
+  res.cookies.set(INVITE_UNLOCK_COOKIE, withUnlockedSlug(raw, slug, secret), {
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
     sameSite: "lax",
