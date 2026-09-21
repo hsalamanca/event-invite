@@ -41,5 +41,7 @@ next-env.d.ts
 # data/rsvps.json is committed as []
 # local stand-in for Vercel Blob
 data/.blob/
+# local copies of production Blob documents (guest data — do not commit)
+backups/
 .vercel
 .env*
