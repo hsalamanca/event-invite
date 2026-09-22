@@ -45,7 +45,11 @@ export default function RegisterForm({
         redirect: false,
       });
       if (login?.error) {
-        router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+        setError(
+          login.code === "email_not_verified"
+            ? "Account created. Open the verification email, then sign in."
+            : "Account created. Sign in with the email and password you just used, or with Google.",
+        );
         return;
       }
       router.push(callbackUrl);

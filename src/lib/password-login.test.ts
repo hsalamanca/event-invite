@@ -20,13 +20,13 @@ describe("password login verification", () => {
     );
   });
 
-  it("blocks a new registration until the email is verified", () => {
+  it("lets a new account sign in before the verification email is opened", () => {
     assert.equal(
       passwordLoginBlockReason({
         emailVerifiedAt: null,
         verifyToken: "hashed-token",
       }),
-      "email_not_verified",
+      null,
     );
   });
 });

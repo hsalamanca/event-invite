@@ -1,15 +1,14 @@
 /**
- * Password login is blocked only when this account was issued a verification
- * token and has not used it. Older accounts with no token stay able to sign in
- * without a users.json rewrite.
+ * A verification email is sent for new accounts, but it does not lock the
+ * password. Otherwise Create account signs the host out until they open the
+ * inbox, and Google is the only way into a new account.
+ * Older accounts with no token were already able to sign in.
  */
-export function passwordLoginBlockReason(user: {
+export function passwordLoginBlockReason(_user: {
   emailVerifiedAt?: string | null;
   verifyToken?: string | null;
 }): "email_not_verified" | null {
-  if (user.emailVerifiedAt) return null;
-  if (!user.verifyToken) return null;
-  return "email_not_verified";
+  return null;
 }
 
 /**
