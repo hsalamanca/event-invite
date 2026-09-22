@@ -5,7 +5,7 @@ import {
   listPublishedListings,
   publishListing,
 } from "@/lib/marketplace";
-import { TEMPLATES } from "@/lib/templates";
+import { TEMPLATES, templateCatalogImage } from "@/lib/templates";
 import { findUserById } from "@/lib/users";
 import { isAdminEmail } from "@/lib/admin";
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     title,
     description: body.description || tpl.tagline || "",
     priceCents: body.priceCents ?? 900,
-    previewImage: tpl.heroImage,
+    previewImage: templateCatalogImage(tpl),
   });
 
   // Auto-publish for admins; others pending review

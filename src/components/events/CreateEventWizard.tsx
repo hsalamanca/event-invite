@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import {
   TEMPLATE_CATEGORIES,
   TEMPLATES,
+  templateCatalogImage,
   templatesByCategory,
   type TemplateCategory,
 } from "@/lib/templates";
@@ -206,7 +207,7 @@ export default function CreateEventWizard({
                   <div className="relative aspect-[4/3] overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={tpl.heroImage}
+                      src={templateCatalogImage(tpl)}
                       alt=""
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
