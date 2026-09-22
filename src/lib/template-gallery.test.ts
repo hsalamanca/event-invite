@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { describe, it } from "node:test";
-import { TEMPLATES } from "./templates";
+import { TEMPLATES, buildEventFromTemplate, templateCatalogImage } from "./templates";
 import {
   GALLERY_ALIAS_PATHS,
   GALLERY_BIRTHDAY_SAMPLE_PATH,
@@ -80,5 +81,40 @@ describe("public template gallery", () => {
     assert.equal(gold?.ownerId, null);
 
     assert.equal(getCatalogPreviewEvent("not-a-template"), null);
+  });
+
+  it("shows real quince stills in the picker without changing invite backgrounds", () => {
+    const tiara = TEMPLATES.find((tpl) => tpl.id === "quince-tiara");
+    const princesa = TEMPLATES.find((tpl) => tpl.id === "quince-princesa");
+    assert.ok(tiara && princesa);
+    assert.equal(templateCatalogImage(tiara), "/templates/quince-tiara-card.webp");
+    assert.equal(
+      templateCatalogImage(princesa),
+      "/templates/quince-princesa-card.webp",
+    );
+    assert.notEqual(tiara.thumbImage, tiara.heroImage);
+    assert.notEqual(princesa.thumbImage, princesa.heroImage);
+    for (const tpl of [tiara, princesa]) {
+      assert.equal(
+        existsSync(new URL(`../../public${tpl.thumbImage}`, import.meta.url)),
+        true,
+        tpl.thumbImage,
+      );
+    }
+
+    const created = buildEventFromTemplate({
+      templateId: "quince-princesa",
+      ownerId: "owner",
+      hostName: "Mr. and Mrs. Gonzalez",
+      title: "Katia Gonzalez",
+      slug: "katia-thumb-check",
+      dateISO: "2026-10-04",
+      timeLabel: "3:00 PM",
+      venue: "Chapel",
+      address: "1 Main",
+      about: "",
+    });
+    assert.equal(created.heroImage, princesa.heroImage);
+    assert.equal(created.heroImage?.includes("quince-princesa-card"), false);
   });
 });

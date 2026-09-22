@@ -59,6 +59,11 @@ export type EventTemplate = {
   layout: InviteLayout;
   theme: Theme;
   heroImage: string;
+  /**
+   * Catalog still for the create-event picker. Kept off heroImage so a
+   * screenshot is not copied onto new invites as the page background.
+   */
+  thumbImage?: string;
   headline: string;
   headlineEs: string;
   tagline: string;
@@ -1210,6 +1215,7 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: quinceTiara,
     heroImage: "/templates/quince-tiara-hero.svg",
+    thumbImage: "/templates/quince-tiara-card.webp",
     headline: "Katia Gonzalez",
     headlineEs: "Katia Gonzalez",
     tagline: "of their daughter",
@@ -1230,6 +1236,7 @@ export const TEMPLATES: EventTemplate[] = [
     premium: true,
     theme: quincePrincesa,
     heroImage: "/templates/quince-princesa-hero.svg",
+    thumbImage: "/templates/quince-princesa-card.webp",
     headline: "Katia Gonzalez",
     headlineEs: "Katia Gonzalez",
     tagline:
@@ -1346,6 +1353,11 @@ export function resolveLocalizedInviteCopy(
 
 export function getTemplate(id: string): EventTemplate {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0]!;
+}
+
+/** Picker / listing still. Does not follow heroImage onto a new event. */
+export function templateCatalogImage(tpl: Pick<EventTemplate, "heroImage" | "thumbImage">) {
+  return tpl.thumbImage || tpl.heroImage;
 }
 
 /** Remap retired/404 Unsplash stock heroes to working replacements. */
