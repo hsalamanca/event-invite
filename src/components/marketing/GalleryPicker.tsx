@@ -28,6 +28,7 @@ export default function GalleryPicker({ locale = "en" }: { locale?: Locale }) {
     wedding: t.chipWedding,
     fiesta: t.chipFiesta,
     birthday: t.chipBirthday,
+    baby: t.chipBaby,
   };
 
   return (

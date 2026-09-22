@@ -25,6 +25,9 @@ export const PEEK_DEMO_PATH = "/preview/quince-princesa";
 export const GALLERY_TEMPLATE_IDS = [
   "quince-princesa",
   "quince-tiara",
+  "golden-hour",
+  "confetti-hour",
+  "little-arrival",
   "quince-rosa",
   "quince-azul",
   "champagne-wedding",
@@ -50,12 +53,18 @@ export const GALLERY_OCCASIONS = [
   },
   {
     id: "wedding",
-    templateIds: ["champagne-wedding", "watercolor-rose"],
+    templateIds: ["golden-hour", "champagne-wedding", "watercolor-rose"],
   },
+  { id: "baby", templateIds: ["little-arrival"] },
   { id: "fiesta", templateIds: ["latin-fiesta"] },
   {
     id: "birthday",
-    templateIds: ["golden-fifty", "gold-confetti", "blush-collage"],
+    templateIds: [
+      "confetti-hour",
+      "golden-fifty",
+      "gold-confetti",
+      "blush-collage",
+    ],
   },
 ] as const;
 

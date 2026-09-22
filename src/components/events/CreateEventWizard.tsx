@@ -52,10 +52,18 @@ export default function CreateEventWizard({
   const [aiNote, setAiNote] = useState<string | null>(null);
 
   const suggestedSlug = useMemo(() => slugify(title || "my-event"), [title]);
-  const visibleTemplates = useMemo(
-    () => templatesByCategory(category),
-    [category],
-  );
+  const visibleTemplates = useMemo(() => {
+    const list = templatesByCategory(category);
+    const lead = ["golden-hour", "confetti-hour", "little-arrival"];
+    return [...list].sort((a, b) => {
+      const ai = lead.indexOf(a.id);
+      const bi = lead.indexOf(b.id);
+      if (ai === -1 && bi === -1) return 0;
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  }, [category]);
 
   async function parseWithAi() {
     setAiBusy(true);

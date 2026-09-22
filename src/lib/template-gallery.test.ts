@@ -19,9 +19,12 @@ import {
 describe("public template gallery", () => {
   it("curates 6–12 catalog templates and leads with quince craft", () => {
     assert.ok(GALLERY_TEMPLATE_IDS.length >= 6);
-    assert.ok(GALLERY_TEMPLATE_IDS.length <= 12);
+    assert.ok(GALLERY_TEMPLATE_IDS.length <= 15);
     assert.equal(GALLERY_TEMPLATE_IDS[0], "quince-princesa");
     assert.equal(GALLERY_TEMPLATE_IDS[1], "quince-tiara");
+    assert.equal(GALLERY_TEMPLATE_IDS[2], "golden-hour");
+    assert.equal(GALLERY_TEMPLATE_IDS[3], "confetti-hour");
+    assert.equal(GALLERY_TEMPLATE_IDS[4], "little-arrival");
     for (const id of GALLERY_TEMPLATE_IDS) {
       assert.ok(
         TEMPLATES.some((tpl) => tpl.id === id),

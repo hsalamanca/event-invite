@@ -60,6 +60,40 @@ export default function StationeryThumb({
     );
   }
 
+  if (
+    template.layout === "livewedding" ||
+    template.layout === "liveparty" ||
+    template.layout === "livebaby"
+  ) {
+    return (
+      <div className="relative h-full w-full overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={template.heroImage}
+          alt=""
+          className="h-full w-full object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(180deg, transparent 35%, ${template.theme.colors.background} 100%)`,
+          }}
+        />
+        <p
+          className="absolute bottom-4 left-3 right-3 text-center leading-tight"
+          style={{
+            ...displayFont,
+            fontSize: featured ? "1.7rem" : "1.35rem",
+            fontWeight: 560,
+            color: template.theme.colors.textPrimary,
+          }}
+        >
+          {headline}
+        </p>
+      </div>
+    );
+  }
+
   if (template.id === "quince-tiara") {
     return (
       <div

@@ -34,6 +34,7 @@ export type Dictionary = {
     chipWedding: string;
     chipFiesta: string;
     chipBirthday: string;
+    chipBaby: string;
     domainChip: string;
     featuredHonoree: string;
   };
@@ -435,6 +436,7 @@ const en: Dictionary = {
     chipWedding: "Wedding",
     chipFiesta: "Fiesta",
     chipBirthday: "Birthday",
+    chipBaby: "Baby",
     domainChip: "katia.com",
     featuredHonoree: "Katia Gonzalez",
   },
@@ -924,6 +926,7 @@ const es: Dictionary = {
     chipWedding: "Boda",
     chipFiesta: "Fiesta",
     chipBirthday: "Cumpleaños",
+    chipBaby: "Bebé",
     domainChip: "katia.com",
     featuredHonoree: "Katia Gonzalez",
   },
