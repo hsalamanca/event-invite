@@ -15,7 +15,12 @@ export const THEME_PACKS: ThemePack[] = [
     name: "Wedding season pack",
     nameEs: "Pack temporada de bodas",
     description: "Elegant wedding and celebration themes.",
-    templateIds: ["champagne-wedding", "watercolor-rose", "gold-confetti"],
+    templateIds: [
+      "golden-hour",
+      "champagne-wedding",
+      "watercolor-rose",
+      "gold-confetti",
+    ],
     amountCents: 1200,
   },
   {
@@ -48,6 +53,9 @@ export const THEME_PACKS: ThemePack[] = [
       "quince-tiara",
       "quince-princesa",
       "golden-fifty",
+      "golden-hour",
+      "confetti-hour",
+      "little-arrival",
     ],
     amountCents: 1200,
   },

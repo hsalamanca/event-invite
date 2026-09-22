@@ -1,3 +1,4 @@
+import { livePreviewOverlay } from "@/lib/live-invites";
 import { getQuincePrincesaPreviewEvent } from "@/lib/quince-princesa-preview";
 import { getQuinceTiaraPreviewEvent } from "@/lib/quince-tiara-preview";
 import { buildEventFromTemplate, TEMPLATES } from "@/lib/templates";
@@ -116,6 +117,7 @@ export function getCatalogPreviewEvent(
 
   return {
     ...base,
+    ...livePreviewOverlay(templateId),
     id: `preview-${tpl.id}`,
     ownerId: null,
     createdAt: now,

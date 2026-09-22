@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import InviteCover from "@/components/invite/InviteCover";
+import { LiveInvite } from "@/components/invite/live";
 import { QuinceWebInvite } from "@/components/invite/quinceweb";
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -521,7 +522,26 @@ export default function InvitePage({
   }
 
   const layout = resolveInviteLayout(event.templateId);
-  if (layout === "quinceweb" && !printCoverOnly) {
+  if (
+    (layout === "quinceweb" ||
+      layout === "livewedding" ||
+      layout === "liveparty" ||
+      layout === "livebaby") &&
+    !printCoverOnly
+  ) {
+    if (layout !== "quinceweb") {
+      return (
+        <LiveInvite
+          event={event}
+          locale={locale}
+          seatsTaken={seatsTaken}
+          atCapacity={atCapacity}
+          isPast={isPast}
+          trackViews={trackViews}
+          onRsvpSubmit={onRsvpSubmit}
+        />
+      );
+    }
     return (
       <QuinceWebInvite
         event={event}

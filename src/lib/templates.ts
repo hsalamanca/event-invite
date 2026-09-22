@@ -4,6 +4,7 @@ import {
   resolveLocalizedHeadline,
   resolveLocalizedTagline,
 } from "@/lib/i18n/event-content";
+import { liveEventExtras } from "./live-invites";
 import { isGenericQuinceTitle } from "./quince-fields";
 import { QUINCE_PRINCESA_SEED } from "./quince-princesa-seed";
 
@@ -43,7 +44,10 @@ export type InviteLayout =
   | "quinceweb"
   | "fifty"
   | "splash"
-  | "collage";
+  | "collage"
+  | "livewedding"
+  | "liveparty"
+  | "livebaby";
 
 export type EventTemplate = {
   id: string;
@@ -536,6 +540,42 @@ const latinFiesta: Theme = {
   fonts: { display: "Playfair Display", body: "Source Sans 3" },
 };
 
+const goldenHour: Theme = {
+  colors: {
+    background: "#1A1410",
+    surface: "#271E18",
+    accentPrimary: "#E7C98A",
+    accentSecondary: "#C9847A",
+    textPrimary: "#F7F1E7",
+    textMuted: "#C9B8A4",
+  },
+  fonts: { display: "Fraunces", body: "Outfit" },
+};
+
+const confettiHour: Theme = {
+  colors: {
+    background: "#FFF4EC",
+    surface: "#FFFFFF",
+    accentPrimary: "#FF4D3A",
+    accentSecondary: "#1F8A70",
+    textPrimary: "#1C1614",
+    textMuted: "#6B5348",
+  },
+  fonts: { display: "Fredoka", body: "Outfit" },
+};
+
+const littleArrival: Theme = {
+  colors: {
+    background: "#F3F0E8",
+    surface: "#FFFCF7",
+    accentPrimary: "#3E6B58",
+    accentSecondary: "#C4785A",
+    textPrimary: "#24312C",
+    textMuted: "#5C6A64",
+  },
+  fonts: { display: "Fraunces", body: "Source Sans 3" },
+};
+
 export const TEMPLATE_CATEGORIES: {
   id: TemplateCategory | "all";
   label: string;
@@ -569,6 +609,69 @@ export const TEMPLATES: EventTemplate[] = [
     headlineEs: "Una noche para celebrar",
     tagline: "An evening of good food, close friends, and a little dancing.",
     taglineEs: "Una noche de buena comida, amigos cercanos y un poco de baile.",
+  },
+  {
+    id: "golden-hour",
+    name: "Golden hour",
+    nameEs: "Hora dorada",
+    description:
+      "A live wedding site — countdown, the day's plan, the venue, and RSVP. Built to feel like the celebration is already in motion.",
+    descriptionEs:
+      "Una boda en vivo — cuenta regresiva, el plan del día, el lugar y confirmación. Se siente como si la fiesta ya hubiera empezado.",
+    inspiredBy: "Zola wedding websites and evening editorial",
+    inspiredByEs: "Sitios de boda Zola y editorial de atardecer",
+    categories: ["wedding", "dinner"],
+    layout: "livewedding",
+    premium: true,
+    theme: goldenHour,
+    heroImage:
+      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1920&q=80&auto=format&fit=crop",
+    headline: "Camila & Mateo",
+    headlineEs: "Camila & Mateo",
+    tagline: "Request the pleasure of your company as they promise the rest.",
+    taglineEs: "Les piden el honor de su compañía mientras se prometen el resto.",
+  },
+  {
+    id: "confetti-hour",
+    name: "Confetti hour",
+    nameEs: "Hora de confeti",
+    description:
+      "A live kids' birthday — the age on the door, a ticking countdown, games, cake, and pickup. The party page stays awake.",
+    descriptionEs:
+      "Un cumpleaños infantil en vivo — la edad en la puerta, cuenta regresiva, juegos, pastel y salida. La página no se queda quieta.",
+    inspiredBy: "Partiful party pages and backyard birthdays",
+    inspiredByEs: "Páginas de fiesta Partiful y cumpleaños de patio",
+    categories: ["birthday", "party"],
+    layout: "liveparty",
+    premium: true,
+    theme: confettiHour,
+    heroImage:
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1920&q=80&auto=format&fit=crop",
+    headline: "Luna",
+    headlineEs: "Luna",
+    tagline: "Seven years of sunshine. Come eat cake and stay for the games.",
+    taglineEs: "Siete años de sol. Vengan por el pastel y quédense a los juegos.",
+  },
+  {
+    id: "little-arrival",
+    name: "Little arrival",
+    nameEs: "Pequeña llegada",
+    description:
+      "A live baby shower — countdown to the gathering, lunch, wishes, and a gift note. Calm on purpose, busy underneath.",
+    descriptionEs:
+      "Un baby shower en vivo — cuenta regresiva, almuerzo, deseos y una nota de regalos. Calmo a propósito, vivo por dentro.",
+    inspiredBy: "Modern baby-shower sites and greenhouse lunches",
+    inspiredByEs: "Sitios modernos de baby shower y almuerzos en invernadero",
+    categories: ["baby", "brunch"],
+    layout: "livebaby",
+    premium: true,
+    theme: littleArrival,
+    heroImage:
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1920&q=80&auto=format&fit=crop",
+    headline: "Sofía & Andrés",
+    headlineEs: "Sofía & Andrés",
+    tagline: "Come celebrate the parents-to-be before the little one does.",
+    taglineEs: "Vengan a celebrar a los papás antes de que llegue el bebé.",
   },
   {
     id: "gold-confetti",
@@ -1596,6 +1699,11 @@ export function buildEventFromTemplate(input: {
       templateId: tpl.id,
     },
   );
+  const live = liveEventExtras(tpl.id, {
+    timeLabel: input.timeLabel,
+    venue: input.venue,
+    address: input.address,
+  });
   return {
     slug: input.slug,
     ownerId: input.ownerId,
@@ -1617,7 +1725,7 @@ export function buildEventFromTemplate(input: {
         ? "20"
         : tpl.layout === "superhero"
           ? "7"
-          : null,
+          : (live?.balloonDigits ?? null),
     customDomain: null,
     rsvpFields: rsvp,
     about,
@@ -1637,8 +1745,9 @@ export function buildEventFromTemplate(input: {
     misa,
     recepcion,
     corte: princesa ? [...QUINCE_PRINCESA_SEED.corte] : undefined,
-    dressCode: princesa ? QUINCE_PRINCESA_SEED.dressCode : undefined,
-    gifts: princesa ? QUINCE_PRINCESA_SEED.gifts : undefined,
+    dressCode: princesa ? QUINCE_PRINCESA_SEED.dressCode : live?.dressCode,
+    gifts: princesa ? QUINCE_PRINCESA_SEED.gifts : live?.gifts,
+    whatToBring: live?.whatToBring,
     whatsappPhone: princesa ? QUINCE_PRINCESA_SEED.whatsappPhone : undefined,
     schedule:
       tpl.id === "quince-tiara"
@@ -1682,7 +1791,7 @@ export function buildEventFromTemplate(input: {
                   .join(", "),
               },
             ]
-          : undefined,
+          : live?.schedule,
     rsvpEnabled: true,
     showOwnviteFooter: true,
     tier: "free",
