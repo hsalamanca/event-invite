@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -10,7 +11,7 @@ export default function PreviewPriceChrome({ locale }: { locale: Locale }) {
 
   return (
     <div
-      className="relative z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5 pr-24 sm:px-6 sm:pr-28"
+      className="sticky top-0 z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5 sm:px-6"
       style={{
         ...bodyFont,
         ...paperThemeVars,
@@ -20,7 +21,7 @@ export default function PreviewPriceChrome({ locale }: { locale: Locale }) {
     >
       <Link
         href={localePath(locale, "/pricing")}
-        className="text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
+        className="min-w-0 flex-1 text-xs leading-relaxed transition hover:opacity-90 sm:text-sm"
         style={{ color: "var(--landing-muted)" }}
       >
         {t.priceLine}
@@ -32,6 +33,7 @@ export default function PreviewPriceChrome({ locale }: { locale: Locale }) {
       >
         {t.ctaStart}
       </Link>
+      <LanguageSwitcher locale={locale} variant="invite" />
     </div>
   );
 }

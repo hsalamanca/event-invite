@@ -52,6 +52,12 @@ export default function CreateEventWizard({
   const [aiNote, setAiNote] = useState<string | null>(null);
 
   const suggestedSlug = useMemo(() => slugify(title || "my-event"), [title]);
+  const selectedTemplate = TEMPLATES.find((tpl) => tpl.id === templateId);
+  const selectedName = selectedTemplate
+    ? locale === "es"
+      ? selectedTemplate.nameEs
+      : selectedTemplate.name
+    : "";
   const visibleTemplates = useMemo(() => {
     const list = templatesByCategory(category);
     const lead = ["golden-hour", "confetti-hour", "little-arrival"];
@@ -151,15 +157,41 @@ export default function CreateEventWizard({
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-5xl">
-      <div className="mb-8 flex gap-2 text-xs uppercase tracking-[0.2em] text-[var(--landing-muted)]">
-        <span className={step === 1 ? "text-[var(--landing-cedar)]" : ""}>
-          1 · {t.stepTemplate}
-        </span>
-        <span>·</span>
-        <span className={step === 2 ? "text-[var(--landing-cedar)]" : ""}>
-          2 · {t.stepDetails}
-        </span>
+    <form
+      onSubmit={onSubmit}
+      className={`mx-auto max-w-5xl ${step === 1 ? "pb-24" : "pb-8"}`}
+    >
+      <div className="sticky top-[3.75rem] z-30 -mx-5 mb-6 border-b border-[var(--landing-line)] bg-[#FBF6F2]/95 px-5 py-3 backdrop-blur-md sm:-mx-8 sm:top-[4.25rem] sm:px-8">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--landing-muted)]">
+              {step === 1
+                ? `1 · ${t.stepTemplate}`
+                : `2 · ${t.stepDetails}`}
+            </p>
+            <p className="truncate text-sm font-medium text-[var(--landing-ink)]">
+              {step === 1 ? selectedName : title || t.detailsTitle}
+            </p>
+          </div>
+          {step === 1 ? (
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              disabled={!templateId}
+              className="shrink-0 rounded-md bg-[var(--landing-cta)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            >
+              {t.create}
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="shrink-0 rounded-md bg-[var(--landing-cta)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+            >
+              {loading ? t.creating : t.create}
+            </button>
+          )}
+        </div>
       </div>
 
       {step === 1 ? (
@@ -295,15 +327,6 @@ export default function CreateEventWizard({
           {visibleTemplates.length === 0 ? (
             <p className="mt-8 text-[var(--landing-muted)]">No templates in this category.</p>
           ) : null}
-
-          <button
-            type="button"
-            onClick={() => setStep(2)}
-            disabled={!templateId}
-            className="mt-8 rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-          >
-            {t.continue}
-          </button>
         </div>
       ) : (
         <div>
@@ -429,13 +452,25 @@ export default function CreateEventWizard({
             <button
               type="submit"
               disabled={loading}
-              className="rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-md bg-[var(--landing-cta)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             >
               {loading ? t.creating : t.create}
             </button>
           </div>
         </div>
       )}
+      {step === 1 ? (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--landing-line)] bg-[#FBF6F2]/95 px-5 py-3 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => setStep(2)}
+            disabled={!templateId}
+            className="flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--landing-cta)] px-5 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {t.continue}
+          </button>
+        </div>
+      ) : null}
     </form>
   );
 }

@@ -37,8 +37,8 @@ export default async function NewEventPage({
         className="pointer-events-none fixed inset-0 z-0"
         style={paperGrainStyle}
       />
-      <header className="relative z-20 border-b border-[var(--landing-line)]">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5 sm:px-8">
+      <header className="sticky top-0 z-30 border-b border-[var(--landing-line)] bg-[#FBF6F2]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5 sm:px-8 sm:py-4">
           <BrandLogo href="/dashboard" tone="paper" height={28} />
           <Link
             href="/dashboard"
@@ -49,7 +49,7 @@ export default async function NewEventPage({
           </Link>
         </div>
       </header>
-      <div className="relative z-10 px-5 py-10 sm:px-8">
+      <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
         <CreateEventWizard
           locale={locale}
           defaultHostName={user.name || ""}
