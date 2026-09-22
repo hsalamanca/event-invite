@@ -1302,9 +1302,9 @@ export const TEMPLATES: EventTemplate[] = [
     name: "Quince tiara",
     nameEs: "Quinceañera tiara oro-rosa",
     description:
-      "White stationery card with watercolor roses, pink glitter tiara, and a central gown — traditional quinceañera layout, no geometric frame.",
+      "Live quinceañera page on warm paper — countdown, mass and lunch, map, and RSVP — with the floral stationery card for print.",
     descriptionEs:
-      "Tarjeta blanca con rosas en acuarela, tiara rosa glitter y vestido al centro — quinceañera clásica, sin marco geométrico.",
+      "Página en vivo de quinceañera en papel cálido — cuenta regresiva, misa y comida, mapa y confirmación — con la tarjeta floral para imprimir.",
     inspiredBy: "Hugo stationery quinceañera — florals, tiara, gown (no gold outline)",
     inspiredByEs:
       "Papelería quinceañera Hugo — florales, tiara y vestido (sin marco dorado)",
@@ -1323,9 +1323,9 @@ export const TEMPLATES: EventTemplate[] = [
     name: "Quince princesa",
     nameEs: "Quinceañera princesa",
     description:
-      "Blush mini-web quinceañera — envelope, cinematic hero, family story, and RSVP. Print stays on Quince tiara.",
+      "Live blush quinceañera — countdown, the day’s plan, family, map, and RSVP. Print stays on Quince tiara.",
     descriptionEs:
-      "Mini-web quinceañera en blush — sobre, héroe cinematográfico, historia familiar y RSVP. La impresión sigue en Quince tiara.",
+      "Quinceañera en vivo en blush — cuenta regresiva, el plan del día, familia, mapa y confirmación. La impresión sigue en Quince tiara.",
     inspiredBy: "Hugo / Ink quinceañera mini-web — princesa palette",
     inspiredByEs: "Hugo / Ink mini-web quinceañera — paleta princesa",
     categories: ["birthday", "party"],

@@ -1,6 +1,6 @@
 import type { EventRecord, ScheduleItem } from "./types";
 
-export type LiveVariant = "wedding" | "party" | "baby";
+export type LiveVariant = "wedding" | "party" | "baby" | "quince";
 
 const VARIANTS: Record<string, LiveVariant> = {
   "golden-hour": "wedding",

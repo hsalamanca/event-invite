@@ -5,6 +5,7 @@ import QuinceRsvp from "@/components/invite/quinceweb/QuinceRsvp";
 import type { Locale } from "@/lib/i18n/config";
 import {
   resolveLocalizedFaqs,
+  resolveLocalizedPadrinos,
   resolveLocalizedSchedule,
 } from "@/lib/i18n/event-content";
 import {
@@ -13,6 +14,12 @@ import {
   localizeStock,
   type LiveVariant,
 } from "@/lib/live-invites";
+import {
+  filledPartyRoles,
+  mapsSearchUrl,
+  venueBlockHasContent,
+  whatsappHref,
+} from "@/lib/quince-fields";
 import { safeHttpsUrl } from "@/lib/safe-https-url";
 import { safeInviteImageUrl } from "@/lib/safe-image-url";
 import { sanitizeAboutHtml } from "@/lib/sanitize-about";
@@ -25,6 +32,7 @@ const COPY = {
     wedding: { kicker: "The wedding of", and: "and", story: "Our story" },
     party: { kicker: "A birthday party", and: "and", story: "The party" },
     baby: { kicker: "A baby shower", and: "and", story: "Before they arrive" },
+    quince: { kicker: "Mis XV años", and: "and", story: "The celebration" },
     live: "Live",
     rsvp: "RSVP",
     days: "Days",
@@ -46,11 +54,19 @@ const COPY = {
     questions: "Good to know",
     seats: "{open} seats still open",
     hosted: "Hosted by {name}",
+    padres: "Parents",
+    padrinos: "Sponsors",
+    corte: "Court of honor",
+    misa: "Mass",
+    reception: "Reception",
+    print: "The card",
+    whatsapp: "WhatsApp",
   },
   es: {
     wedding: { kicker: "La boda de", and: "y", story: "Nuestra historia" },
     party: { kicker: "Una fiesta de cumpleaños", and: "y", story: "La fiesta" },
     baby: { kicker: "Un baby shower", and: "y", story: "Antes de que llegue" },
+    quince: { kicker: "Mis XV años", and: "y", story: "La celebración" },
     live: "En vivo",
     rsvp: "Confirmar",
     days: "Días",
@@ -72,8 +88,22 @@ const COPY = {
     questions: "Para saber",
     seats: "{open} lugares disponibles",
     hosted: "Anfitrión: {name}",
+    padres: "Padres",
+    padrinos: "Padrinos",
+    corte: "Corte de honor",
+    misa: "Misa",
+    reception: "Recepción",
+    print: "La tarjeta",
+    whatsapp: "WhatsApp",
   },
 } as const;
+
+const QUINCE_GOWN = "/templates/quince-tiara/gown-back-pink.webp";
+const QUINCE_TIARA = "/templates/quince-tiara/tiara-pink-glitter.webp";
+const QUINCE_FLORAL_TL = "/templates/quince-tiara/floral-corner-tl.webp";
+const QUINCE_FLORAL_BR = "/templates/quince-tiara/floral-corner-br.webp";
+const QUINCE_PETALS = "/templates/quince-princesa/petals-drift.png";
+const QUINCE_SEAL = "/templates/quince-princesa/seal-monogram-kxz.svg";
 
 function fontStack(name: string, fallback: string) {
   const map: Record<string, string> = {
@@ -94,7 +124,28 @@ function variantFrom(templateId: string): LiveVariant {
   const layout = resolveInviteLayout(templateId);
   if (layout === "liveparty") return "party";
   if (layout === "livebaby") return "baby";
+  if (layout === "quinceweb" || layout === "quinceframe") return "quince";
   return "wedding";
+}
+
+function quinceLook(templateId: string): "princesa" | "tiara" {
+  return resolveInviteLayout(templateId) === "quinceweb" ? "princesa" : "tiara";
+}
+
+/** Uploaded portraits only. Stock petals and placeholder art stay off the photo slot. */
+function quincePortrait(event: EventRecord): string | undefined {
+  const portrait = safeInviteImageUrl(event.honoreePhotoUrl);
+  if (portrait) return portrait;
+  const hero = safeInviteImageUrl(event.heroImage);
+  if (!hero) return undefined;
+  if (/quince-(princesa|tiara)-hero/i.test(hero)) return undefined;
+  if (/petals?-/i.test(hero)) return undefined;
+  return hero;
+}
+
+function isDaughterLine(tagline: string) {
+  const text = tagline.replace(/<[^>]+>/g, "").trim().toLowerCase();
+  return text === "of their daughter" || text === "de su hija";
 }
 
 function coupleParts(headline: string): [string, string] | null {
@@ -142,12 +193,62 @@ export default function LiveInvite({
   }) => Promise<void> | void;
 }) {
   const variant = variantFrom(event.templateId);
+  const look = variant === "quince" ? quinceLook(event.templateId) : null;
   const ui = COPY[locale];
   const voice = ui[variant];
   const { headline, tagline, about } = resolveLocalizedInviteCopy(event, locale);
   const schedule = resolveLocalizedSchedule(event.schedule, locale);
   const faqs = resolveLocalizedFaqs(event.faqs, locale);
-  const photo = safeInviteImageUrl(event.heroImage);
+  const photo =
+    variant === "quince" ? quincePortrait(event) : safeInviteImageUrl(event.heroImage);
+  const daughterLine = variant === "quince" && isDaughterLine(tagline);
+  const parents =
+    variant === "quince" ? (event.parentsLine || event.hostName || "").trim() : "";
+  const padrinos =
+    variant === "quince"
+      ? filledPartyRoles(resolveLocalizedPadrinos(event.padrinos, locale))
+      : [];
+  const corte =
+    variant === "quince"
+      ? filledPartyRoles(resolveLocalizedPadrinos(event.corte, locale))
+      : [];
+  const photos = (event.gallery ?? [])
+    .map((src) => safeInviteImageUrl(src))
+    .filter((src): src is string => Boolean(src));
+  const whatsapp =
+    variant === "quince"
+      ? whatsappHref(event.whatsappPhone || event.contactPhone || "")
+      : null;
+  const quincePlaces =
+    variant === "quince"
+      ? (
+          [
+            { key: "misa", label: ui.misa, block: event.misa },
+            { key: "reception", label: ui.reception, block: event.recepcion },
+          ] as const
+        )
+          .filter((row) => venueBlockHasContent(row.block))
+          .map((row) => {
+            const line = [row.block?.place, row.block?.address]
+              .filter(Boolean)
+              .join(", ");
+            return {
+              key: row.key,
+              label: row.label,
+              time: row.block?.time || "",
+              line,
+              href: line ? safeHttpsUrl(mapsSearchUrl(line)) : undefined,
+            };
+          })
+      : [];
+  const printHref =
+    variant !== "quince"
+      ? null
+      : event.slug.startsWith("quince-princesa")
+        ? "/preview/quince-princesa/print"
+        : event.slug.startsWith("quince-tiara")
+          ? "/preview/quince-tiara/print"
+          : `/e/${event.slug}/print/postcard`;
   const [now, setNow] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const countdown = useMemo(
@@ -202,7 +303,12 @@ export default function LiveInvite({
     event.capacity != null
       ? Math.max(0, event.capacity - seatsTaken)
       : null;
-  const onAccent = variant === "wedding" ? "#1A1410" : "#FFFCFA";
+  const onAccent =
+    variant === "wedding"
+      ? "#1A1410"
+      : variant === "quince" && look === "tiara"
+        ? "#3A2A30"
+        : "#FFFCFA";
   const style = {
     "--lv-bg": event.theme.colors.background,
     "--lv-surface": event.theme.colors.surface,
@@ -226,14 +332,41 @@ export default function LiveInvite({
   }
 
   return (
-    <article className="lv" data-variant={variant} style={style}>
+    <article
+      className="lv"
+      data-variant={variant}
+      data-look={look ?? undefined}
+      style={style}
+    >
       <div
         className="lv-progress"
         style={{ width: `${progress * 100}%` }}
         aria-hidden
       />
       <header className="lv-hero">
-        {variant === "baby" ? (
+        {variant === "quince" ? (
+          <>
+            {photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="lv-hero-photo" src={photo} alt="" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="lv-gown" src={QUINCE_GOWN} alt="" />
+            )}
+            {look === "princesa" ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="lv-petals" src={QUINCE_PETALS} alt="" />
+            ) : (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="lv-floral lv-floral-tl" src={QUINCE_FLORAL_TL} alt="" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="lv-floral lv-floral-br" src={QUINCE_FLORAL_BR} alt="" />
+              </>
+            )}
+            <div className="lv-hero-shade" aria-hidden />
+          </>
+        ) : variant === "baby" ? (
           <div className="lv-arch">
             {photo ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -257,6 +390,13 @@ export default function LiveInvite({
           </>
         )}
         <div className="lv-hero-copy">
+          {look === "princesa" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="lv-seal" src={QUINCE_SEAL} alt="" />
+          ) : look === "tiara" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="lv-tiara-mark" src={QUINCE_TIARA} alt="" />
+          ) : null}
           <p>
             <span className="lv-kicker">{voice.kicker}</span>
             <span className="lv-live">
@@ -265,6 +405,7 @@ export default function LiveInvite({
             </span>
           </p>
           {variant === "party" && age ? <p className="lv-age">{age}</p> : null}
+          {daughterLine ? <p className="lv-relation">{tagline}</p> : null}
           <h1>
             {couple ? (
               <>
@@ -276,18 +417,22 @@ export default function LiveInvite({
               headline
             )}
           </h1>
-          {tagline ? (
+          {tagline && !daughterLine ? (
             <div
               className="lv-tagline"
               dangerouslySetInnerHTML={{ __html: sanitizeAboutHtml(tagline) }}
             />
           ) : null}
           <p className="lv-when">
-            {[formatWhen(event.dateISO, locale), event.timeLabel, event.venue]
+            {[
+              formatWhen(event.dateISO, locale),
+              event.timeLabel,
+              variant === "quince" ? event.misa?.place || event.venue : event.venue,
+            ]
               .filter(Boolean)
               .join(" · ")}
           </p>
-          {event.hostName ? (
+          {event.hostName && variant !== "quince" ? (
             <p className="lv-host">{ui.hosted.replace("{name}", event.hostName)}</p>
           ) : null}
           {event.rsvpEnabled !== false ? (
@@ -340,6 +485,13 @@ export default function LiveInvite({
         </section>
       ) : null}
 
+      {parents ? (
+        <section className="lv-section">
+          <h2>{ui.padres}</h2>
+          <p className="lv-note">{parents}</p>
+        </section>
+      ) : null}
+
       {schedule.length ? (
         <section className="lv-section">
           <h2>{ui.schedule}</h2>
@@ -362,7 +514,25 @@ export default function LiveInvite({
         </section>
       ) : null}
 
-      {event.venue || event.address ? (
+      {quincePlaces.length ? (
+        <section className="lv-section">
+          <h2>{ui.place}</h2>
+          {quincePlaces.map((place) => (
+            <article key={place.key} className="lv-place">
+              <h3>
+                {place.label}
+                {place.time ? <span>{place.time}</span> : null}
+              </h3>
+              {place.line ? <p className="lv-note">{place.line}</p> : null}
+              {place.href ? (
+                <a className="lv-text-link" href={place.href} target="_blank" rel="noreferrer">
+                  {ui.map}
+                </a>
+              ) : null}
+            </article>
+          ))}
+        </section>
+      ) : event.venue || event.address ? (
         <section className="lv-section">
           <h2>{ui.place}</h2>
           <p className="lv-note">
@@ -372,6 +542,37 @@ export default function LiveInvite({
             <a className="lv-text-link" href={mapHref} target="_blank" rel="noreferrer">
               {ui.map}
             </a>
+          ) : null}
+        </section>
+      ) : null}
+
+      {padrinos.length || corte.length ? (
+        <section className="lv-section lv-court">
+          {padrinos.length ? (
+            <div>
+              <h2>{ui.padrinos}</h2>
+              <ul className="lv-roles">
+                {padrinos.map((row) => (
+                  <li key={row.id || row.name}>
+                    {row.role ? <span>{row.role}</span> : null}
+                    <strong>{row.name}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {corte.length ? (
+            <div>
+              <h2>{ui.corte}</h2>
+              <ul className="lv-roles">
+                {corte.map((row) => (
+                  <li key={row.id || row.name}>
+                    {row.role ? <span>{row.role}</span> : null}
+                    <strong>{row.name}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : null}
         </section>
       ) : null}
@@ -399,6 +600,26 @@ export default function LiveInvite({
         </section>
       ) : null}
 
+      {whatsapp ? (
+        <section className="lv-section">
+          <h2>{ui.whatsapp}</h2>
+          <a className="lv-text-link" href={whatsapp} target="_blank" rel="noreferrer">
+            {ui.whatsapp}
+          </a>
+        </section>
+      ) : null}
+
+      {variant === "quince" && photos.length ? (
+        <section className="lv-section">
+          <div className="lv-gallery">
+            {photos.map((src) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={src} src={src} alt="" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {faqs.length ? (
         <section className="lv-section">
           <h2>{ui.questions}</h2>
@@ -421,12 +642,21 @@ export default function LiveInvite({
           isPast={isPast}
           onRsvpSubmit={onRsvpSubmit}
         />
+        {printHref ? (
+          <a className="lv-text-link" href={printHref}>
+            {ui.print}
+          </a>
+        ) : null}
       </section>
 
       <div className="lv-dock">
         <p>
           {formatWhen(event.dateISO, locale)}
-          <span>{[event.timeLabel, event.venue].filter(Boolean).join(" · ")}</span>
+          <span>
+            {[event.timeLabel, event.misa?.place || event.venue]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
         </p>
         {event.rsvpEnabled !== false ? <a href="#rsvp">{ui.rsvp}</a> : null}
       </div>

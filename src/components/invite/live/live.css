@@ -505,6 +505,169 @@
   font-weight: 500;
 }
 
+.lv[data-variant="quince"] .lv-hero {
+  align-items: end;
+}
+
+.lv[data-variant="quince"] h1 {
+  max-width: 11ch;
+  font-weight: 400;
+  font-size: clamp(3.1rem, 9vw, 5.8rem);
+  letter-spacing: 0;
+  line-height: 1.02;
+  color: var(--lv-accent);
+}
+
+.lv[data-variant="quince"] .lv-hero-shade {
+  background: linear-gradient(180deg, transparent 58%, var(--lv-bg) 96%);
+}
+
+.lv[data-variant="quince"][data-look="princesa"] .lv-hero-shade {
+  background:
+    linear-gradient(
+      90deg,
+      var(--lv-bg) 0%,
+      color-mix(in srgb, var(--lv-bg) 82%, transparent) 42%,
+      transparent 68%
+    ),
+    linear-gradient(180deg, transparent 52%, var(--lv-bg) 96%);
+}
+
+.lv-gown,
+.lv-petals,
+.lv-floral,
+.lv-seal,
+.lv-tiara-mark {
+  pointer-events: none;
+  user-select: none;
+}
+
+.lv-gown {
+  position: absolute;
+  right: -2%;
+  bottom: -4%;
+  width: min(34rem, 58vw);
+  height: 92%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.lv-petals {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 38%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.9;
+  animation: lv-drift 28s ease-in-out infinite alternate;
+}
+
+.lv-floral {
+  position: absolute;
+  width: min(15rem, 40vw);
+}
+
+.lv-floral-tl {
+  top: 0;
+  left: 0;
+}
+
+.lv-floral-br {
+  right: 0;
+  bottom: 0;
+}
+
+.lv-seal,
+.lv-tiara-mark {
+  display: block;
+  width: min(7.5rem, 34vw);
+  height: auto;
+  margin-bottom: 0.85rem;
+}
+
+.lv-relation {
+  margin: 0.7rem 0 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--lv-muted);
+}
+
+.lv[data-variant="quince"][data-look="tiara"] .lv-hero-shade {
+  background:
+    linear-gradient(
+      90deg,
+      var(--lv-bg) 0%,
+      color-mix(in srgb, var(--lv-bg) 74%, transparent) 46%,
+      transparent 72%
+    ),
+    linear-gradient(180deg, transparent 55%, var(--lv-bg) 96%);
+}
+
+.lv[data-variant="quince"] .lv-hero:has(.lv-hero-photo) .lv-hero-shade {
+  background:
+    linear-gradient(180deg, rgba(26, 20, 16, 0.18) 0%, transparent 32%, var(--lv-bg) 94%);
+}
+
+.lv-court {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.lv-place + .lv-place {
+  margin-top: 1.25rem;
+}
+
+.lv-place h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.lv-place h3 span {
+  margin-left: 0.55rem;
+  font-family: var(--lv-body);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  color: var(--lv-accent);
+}
+
+.lv-roles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.lv-roles li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.lv-roles span {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lv-accent);
+}
+
+.lv-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.lv-gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
 @keyframes lv-drift {
   from { transform: scale(1.06) translate3d(0, 0, 0); }
   to { transform: scale(1.12) translate3d(0, -1.5%, 0); }
@@ -538,10 +701,21 @@
     background: var(--lv-surface);
   }
   .lv[data-variant="party"] .lv-timeline li::before { display: none; }
+  .lv-court { grid-template-columns: 1fr 1fr; }
+  .lv-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .lv[data-variant="quince"] .lv-gown {
+    width: min(16rem, 72vw);
+    opacity: 0.72;
+    right: -12%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .lv-hero-photo,
+  .lv-petals,
   .lv-confetti i,
   .lv-dot {
     animation: none;

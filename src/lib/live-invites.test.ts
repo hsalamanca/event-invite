@@ -68,6 +68,49 @@ describe("live invites", () => {
     );
   });
 
+  it("does not rewrite quince schedules or the stationery hero", () => {
+    assert.equal(liveVariant("quince-princesa"), null);
+    assert.equal(liveVariant("quince-tiara"), null);
+    assert.equal(
+      liveEventExtras("quince-princesa", {
+        timeLabel: "4:00 PM",
+        venue: "Parroquia",
+        address: "El Centro",
+      }),
+      null,
+    );
+    const princesa = buildEventFromTemplate({
+      templateId: "quince-princesa",
+      ownerId: "owner",
+      hostName: "Los Gonzalez",
+      title: "Katia Gonzalez",
+      slug: "katia",
+      dateISO: "2027-05-15",
+      timeLabel: "4:00 PM",
+      venue: "Parroquia",
+      address: "El Centro",
+      about: "",
+    });
+    assert.equal(princesa.heroImage, "/templates/quince-princesa-hero.svg");
+    assert.equal(princesa.schedule?.length, 2);
+    assert.equal(princesa.parentsLine, "Los Gonzalez");
+    const tiara = buildEventFromTemplate({
+      templateId: "quince-tiara",
+      ownerId: "owner",
+      hostName: "Mr. & Mrs. Gonzalez",
+      title: "Katia Gonzalez",
+      slug: "katia-tiara",
+      dateISO: "2027-06-13",
+      timeLabel: "1:00 PM",
+      venue: "",
+      address: "",
+      about: "",
+    });
+    assert.equal(tiara.heroImage, "/templates/quince-tiara-hero.svg");
+    assert.equal(tiara.schedule?.[0]?.title, "Mass");
+    assert.equal(tiara.schedule?.[1]?.title, "Lunch");
+  });
+
   it("builds a live wedding that keeps the photo as the page background", () => {
     const event = buildEventFromTemplate({
       templateId: "golden-hour",
