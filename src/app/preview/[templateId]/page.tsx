@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PreviewInvite from "@/app/preview/quince-tiara/PreviewInvite";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { getCatalogPreviewEvent } from "@/lib/template-gallery";
@@ -31,12 +30,5 @@ export default async function CatalogPreviewPage({
   const event = getCatalogPreviewEvent(templateId);
   if (!event) notFound();
 
-  return (
-    <div className="relative">
-      <div className="absolute right-3 top-14 z-30 sm:right-5 sm:top-16">
-        <LanguageSwitcher locale={locale} variant="invite" />
-      </div>
-      <PreviewInvite event={event} locale={locale} />
-    </div>
-  );
+  return <PreviewInvite event={event} locale={locale} />;
 }

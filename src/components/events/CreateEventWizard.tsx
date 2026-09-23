@@ -52,6 +52,12 @@ export default function CreateEventWizard({
   const [aiNote, setAiNote] = useState<string | null>(null);
 
   const suggestedSlug = useMemo(() => slugify(title || "my-event"), [title]);
+  const pickedTemplate = TEMPLATES.find((tpl) => tpl.id === templateId);
+  const pickedName = pickedTemplate
+    ? locale === "es"
+      ? pickedTemplate.nameEs
+      : pickedTemplate.name
+    : "";
   const visibleTemplates = useMemo(() => {
     const list = templatesByCategory(category);
     const lead = ["golden-hour", "confetti-hour", "little-arrival"];
@@ -163,7 +169,7 @@ export default function CreateEventWizard({
       </div>
 
       {step === 1 ? (
-        <div>
+        <div className="pb-24">
           <h1 className="font-[family-name:var(--font-fraunces)] text-4xl tracking-tight">
             {t.pickTemplate}
           </h1>
@@ -296,14 +302,21 @@ export default function CreateEventWizard({
             <p className="mt-8 text-[var(--landing-muted)]">No templates in this category.</p>
           ) : null}
 
-          <button
-            type="button"
-            onClick={() => setStep(2)}
-            disabled={!templateId}
-            className="mt-8 rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-          >
-            {t.continue}
-          </button>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--landing-line)] bg-[var(--landing-paper,#FFFCFA)]/95 px-5 py-3 shadow-[0_-8px_24px_rgba(26,23,20,0.06)] backdrop-blur-md sm:px-8">
+            <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 pb-[env(safe-area-inset-bottom)]">
+              <p className="min-w-0 truncate text-sm text-[var(--landing-ink)]">
+                {pickedName}
+              </p>
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                disabled={!templateId}
+                className="shrink-0 rounded-md bg-[var(--landing-cedar)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {t.continue}
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
         <div>

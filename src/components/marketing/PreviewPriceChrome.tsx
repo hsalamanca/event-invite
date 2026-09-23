@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/i18n/config";
 import { localePath } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -10,7 +11,7 @@ export default function PreviewPriceChrome({ locale }: { locale: Locale }) {
 
   return (
     <div
-      className="relative z-40 flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5 pr-24 sm:px-6 sm:pr-28"
+      className="sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5 shadow-[0_8px_24px_rgba(26,23,20,0.06)] sm:px-6"
       style={{
         ...bodyFont,
         ...paperThemeVars,
@@ -32,6 +33,9 @@ export default function PreviewPriceChrome({ locale }: { locale: Locale }) {
       >
         {t.ctaStart}
       </Link>
+      <div className="ml-auto">
+        <LanguageSwitcher locale={locale} variant="invite" />
+      </div>
     </div>
   );
 }
