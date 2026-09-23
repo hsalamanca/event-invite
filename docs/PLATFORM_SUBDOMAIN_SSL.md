@@ -1,53 +1,25 @@
 # Platform subdomain SSL (`*.ownvite.com` / `*.ownvite.app`)
 
-## Symptom
-Browsers show **Not secure** (or fail TLS) on URLs like `https://my-party.ownvite.com`, while `https://ownvite.com/e/my-party` works.
+## Current status (verified)
 
-## Cause
-Vercel has `*.ownvite.com` and `*.ownvite.app` on the project, and Namecheap has a `*` CNAME → `cname.vercel-dns.com`.
+Both apex domains use **Vercel nameservers**, and wildcard TLS is active:
 
-Traffic reaches Vercel, but **wildcard TLS certificates require DNS-01**, which Vercel can only complete when the domain uses **Vercel nameservers** (`ns1.vercel-dns.com` / `ns2.vercel-dns.com`).
+| Domain | Nameservers | Wildcard cert |
+|--------|-------------|---------------|
+| `ownvite.com` | `ns1.vercel-dns.com`, `ns2.vercel-dns.com` | `CN=*.ownvite.com` |
+| `ownvite.app` | `ns1.vercel-dns.com`, `ns2.vercel-dns.com` | `CN=*.ownvite.app` |
 
-Today nameservers are still at Namecheap (`dns1.registrar-servers.com`), so Vercel only issues certs for **individually added** hostnames (HTTP-01), e.g. `h-birthday-2026.ownvite.com`.
+Any `{slug}.ownvite.com` / `{slug}.ownvite.app` gets a valid cert without registering each host individually.
 
-## Fix options
+Email forwarding MX/SPF for `ownvite.com` still points at Namecheap eForward (`eforward*.registrar-servers.com`) — keep those records in **Vercel DNS** if you change DNS again.
 
-### A) Recommended — switch nameservers to Vercel (true wildcard SSL)
+## History (why this mattered)
 
-At Namecheap (Domain List → Manage → Nameservers → Custom DNS):
+Wildcard TLS needs DNS-01. With only a registrar `*` CNAME → `cname.vercel-dns.com`, traffic reached Vercel but certs were **per-host** (HTTP-01). Switching nameservers to Vercel unlocked true `*.domain` certificates.
 
-| Nameserver |
-|------------|
-| `ns1.vercel-dns.com` |
-| `ns2.vercel-dns.com` |
+## Optional: per-slug registration
 
-Do this for **both** `ownvite.com` and `ownvite.app`.
-
-Before switching, copy any email/SPF/MX records into Vercel DNS (Domains → ownvite.com → DNS Records), or email will break.
-
-After propagation, Vercel issues `*.ownvite.com` / `*.ownvite.app` certs automatically.
-
-### B) Workaround without NS change — `_acme-challenge` NS delegation
-
-At Namecheap DNS for `ownvite.com` (and `.app`):
-
-1. **Remove** any `CNAME` on `_acme-challenge` (a CNAME here blocks wildcard issuance).
-2. Add:
-
-| Type | Host | Value |
-|------|------|-------|
-| NS | `_acme-challenge` | `ns1.vercel-dns.com` |
-| NS | `_acme-challenge` | `ns2.vercel-dns.com` |
-| CNAME | `*` | `cname.vercel-dns.com` |
-
-### C) App workaround (shipped) — auto-add each slug
-
-Ownvite now calls the Vercel Domains API to register:
-
-- `{slug}.ownvite.app`
-- `{slug}.ownvite.com`
-
-…when an event is created, duplicated, or opened in Host studio. Each host then gets its own Let's Encrypt cert in ~1 minute.
+`ensurePlatformSubdomains(slug)` still registers `{slug}.ownvite.app` + `{slug}.ownvite.com` on the Vercel project when events are created. That is now **belt-and-suspenders** (routing / project domain list), not required for SSL.
 
 Admin backfill:
 
@@ -61,8 +33,18 @@ POST /api/domains/ensure-platform
 ## Verify
 
 ```bash
+dig NS ownvite.com +short
+# expect: ns1.vercel-dns.com. / ns2.vercel-dns.com.
+
 openssl s_client -connect YOUR-SLUG.ownvite.com:443 -servername YOUR-SLUG.ownvite.com </dev/null \
   | openssl x509 -noout -subject -ext subjectAltName
+# expect: DNS:*.ownvite.com (or the specific host)
 ```
 
-You should see `DNS:YOUR-SLUG.ownvite.com` (or a wildcard `DNS:*.ownvite.com` after option A).
+## Rollback / emergency
+
+If you must move DNS off Vercel NS, wildcard SSL will stop for new hosts. Either:
+
+1. Keep nameservers on Vercel (preferred), or
+2. At the registrar, add `_acme-challenge` NS delegation to `ns1/ns2.vercel-dns.com` plus `CNAME * → cname.vercel-dns.com`, or
+3. Rely on per-slug `ensurePlatformSubdomains` HTTP-01 certs again.

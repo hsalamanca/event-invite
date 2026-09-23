@@ -107,8 +107,8 @@ export async function POST(request: Request) {
 
   try {
     const event = await createEvent(base);
-    // Provision {slug}.ownvite.app / .com so HTTPS certs issue (HTTP-01).
-    // Wildcard SSL needs Vercel nameservers; per-host add works with * CNAME.
+    // Ensure {slug}.ownvite.app / .com are on the Vercel project domain list.
+    // Apex domains already use Vercel NS with wildcard TLS; this is a safety net.
     try {
       const { ensurePlatformSubdomains } = await import(
         "@/lib/platform-subdomains"
